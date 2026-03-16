@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { formatDate, formatCurrency } from '@/lib/utils'
 import { Badge } from '@/components/ui/Badge'
+import { SendAssessmentLink } from './SendAssessmentLink'
 
 export const dynamic = 'force-dynamic'
 
@@ -130,6 +131,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
 
           {/* Sidebar info */}
           <div className="space-y-4">
+            <SendAssessmentLink clientId={clientId} />
             {/* תוכנית עסקית */}
             <div className="bento-card p-5 border-t-4 border-t-emerald-500">
               <div className="flex items-center justify-between mb-2">

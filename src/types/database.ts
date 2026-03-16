@@ -79,9 +79,25 @@ export interface ClientBusinessPlan {
   updated_at: string
 }
 
+export interface ClientAssessment {
+  id: string
+  token: string
+  client_id: string | null
+  status: string
+  answers: Record<string, unknown> | null
+  completed_at: string | null
+  created_at: string
+  updated_at: string
+}
+
 export interface Database {
   public: {
     Tables: {
+      client_assessments: {
+        Row: ClientAssessment
+        Insert: Omit<ClientAssessment, 'id' | 'created_at' | 'updated_at'> & { token?: string }
+        Update: Partial<Omit<ClientAssessment, 'id' | 'created_at' | 'updated_at'>>
+      }
       client_business_plans: {
         Row: ClientBusinessPlan
         Insert: Omit<ClientBusinessPlan, 'id' | 'created_at' | 'updated_at'>

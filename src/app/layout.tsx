@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { SidebarLogout } from './components/SidebarLogout'
+import { LayoutShell } from './components/LayoutShell'
 
 export const metadata: Metadata = {
   title: 'COR-SYS | Executive Dashboard',
@@ -13,18 +15,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;600;700;800&family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
       </head>
       <body className="min-h-screen bg-[#0f172a] text-slate-200 font-[Assistant,sans-serif]">
-        <div className="flex min-h-screen">
-          <Sidebar />
-          <main className="flex-1 overflow-auto">
-            {children}
-          </main>
-        </div>
+        <LayoutShell>{children}</LayoutShell>
       </body>
     </html>
   )
 }
 
-function Sidebar() {
+export function Sidebar() {
   return (
     <aside className="w-56 shrink-0 bg-slate-900/80 border-l border-slate-800 flex flex-col py-6 px-4 sticky top-0 h-screen">
       <div className="mb-8">
@@ -44,7 +41,8 @@ function Sidebar() {
         <NavLink href="/financials" icon="₪" label="כספים" />
       </nav>
 
-      <div className="border-t border-slate-800 pt-4 mt-4">
+      <div className="border-t border-slate-800 pt-4 mt-4 space-y-1">
+        <SidebarLogout />
         <p className="text-[10px] text-slate-600 text-center">J(t) = C(t) / E(t)</p>
       </div>
     </aside>

@@ -3,4 +3,5 @@ export { getSprints, getSprintsWithTasks, getSprintsByClient, getSprintById, get
 export { getTasksBySprint, getOpenTasks } from './tasks'
 export { getFinancials, getFinancialsByClient, getClientsForSelect } from './financials'
 export { getPlanByClientId } from './plans'
+export { getAssessmentByToken } from './assessments'
 export { getDashboardData, type DashboardData } from './dashboard'
