@@ -10,7 +10,7 @@ export default async function DashboardPage() {
   const data = await getDashboardData()
 
   return (
-    <div className="p-6 lg:p-8 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-800 via-slate-900 to-black min-h-screen">
+    <div className="p-4 sm:p-6 lg:p-8 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-800 via-slate-900 to-black min-h-screen">
 
       {/* Header */}
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b border-slate-800 pb-6">
@@ -29,12 +29,30 @@ export default async function DashboardPage() {
       </header>
 
       {/* KPI Row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <KpiCard label="לקוחות פעילים" value={data.activeClients.length.toString()} sub={`מתוך ${data.clients.length} סה"כ`} color="blue" />
         <KpiCard label="ספרינטים פעילים" value={data.activeSprints.length.toString()} sub="ספרינטי 14 יום" color="indigo" />
         <KpiCard label="משימות פתוחות" value={data.openTasks.toString()} sub="לא הושלמו" color="yellow" />
         <KpiCard label="הכנסות החודש" value={formatCurrency(data.revenueThisMonth)} sub={`סה"כ: ${formatCurrency(data.totalRevenue)}`} color="emerald" />
       </div>
+
+      {/* Portfolio Analytics */}
+      {data.portfolioAnalytics && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
+          <KpiCard label="אבחונים בפורטפוליו" value={data.portfolioAnalytics.totalClientsWithDiagnostics.toString()} sub="לקוחות עם אבחון" color="blue" />
+          <KpiCard label="תקין" value={data.portfolioAnalytics.byProfile.healthy.toString()} sub="healthy" color="emerald" />
+          <KpiCard label="בסיכון" value={data.portfolioAnalytics.byProfile.atRisk.toString()} sub="at-risk" color="yellow" />
+          <KpiCard label="קריטי" value={data.portfolioAnalytics.byProfile.critical.toString()} sub="critical" color="red" />
+          <KpiCard label="קריסה מערכתית" value={data.portfolioAnalytics.byProfile.systemicCollapse.toString()} sub="systemic-collapse" color="red" />
+          <div className="bento-card p-4 border border-slate-600">
+            <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-1">ממוצע DR/ND/UC</p>
+            <p className="text-sm font-mono text-slate-300">
+              DR {data.portfolioAnalytics.avgDR.toFixed(1)} · ND {data.portfolioAnalytics.avgND.toFixed(1)} · UC {data.portfolioAnalytics.avgUC.toFixed(1)}
+            </p>
+            <p className="text-[10px] text-slate-500 mt-0.5">פתולוגיה נפוצה: {data.portfolioAnalytics.mostCommonPathology ?? '—'}</p>
+          </div>
+        </div>
+      )}
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
@@ -120,7 +138,7 @@ export default async function DashboardPage() {
         <div className="bento-card col-span-1 md:col-span-2 p-6 border-t-4 border-emerald-500">
           <h2 className="text-lg font-bold text-white mb-2">ספרינט חוסם עורקים (14 יום)</h2>
           <p className="text-xs text-slate-400 mb-4">מתודולוגיית PRISM — MECE + Answer First + BCG</p>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {[
               { days: 'ימים 1-4', label: 'BIA & Diagnostic', color: 'border-emerald-900/40' },
               { days: 'ימים 5-8', label: 'Logic Injection (DDD)', color: 'border-emerald-900/40' },
@@ -141,7 +159,7 @@ export default async function DashboardPage() {
             <h2 className="text-lg font-bold text-white">כלכלה | P&L</h2>
             <Link href="/financials" className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors">נהל כספים →</Link>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-slate-800/30 p-4 rounded-xl border border-slate-700/50">
               <p className="text-[10px] text-slate-400 mb-1 uppercase">הכנסות החודש</p>
               <p className="text-xl font-black text-white">{formatCurrency(data.revenueThisMonth)}</p>
@@ -159,7 +177,7 @@ export default async function DashboardPage() {
         {/* 4 Agents */}
         <div className="bento-card col-span-1 md:col-span-2 p-6 border-t-4 border-indigo-500">
           <h2 className="text-lg font-bold text-white mb-4">מנוע הביצוע: 4 סוכנים חכמים</h2>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
               { sym: 'α', name: 'Alpha', role: 'אדריכל אונטולוגי', color: 'text-blue-400' },
               { sym: 'β', name: 'Beta', role: 'מתכנן ניסויים', color: 'text-indigo-400' },
@@ -190,12 +208,14 @@ function KpiCard({ label, value, sub, color }: { label: string; value: string; s
     indigo: 'border-indigo-500/30 bg-indigo-500/5',
     yellow: 'border-yellow-500/30 bg-yellow-500/5',
     emerald: 'border-emerald-500/30 bg-emerald-500/5',
+    red: 'border-red-500/30 bg-red-500/5',
   }
   const textColors: Record<string, string> = {
     blue: 'text-blue-400',
     indigo: 'text-indigo-400',
     yellow: 'text-yellow-400',
     emerald: 'text-emerald-400',
+    red: 'text-red-400',
   }
   return (
     <div className={`bento-card p-4 border ${colors[color]}`}>

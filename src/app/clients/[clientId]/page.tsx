@@ -19,11 +19,11 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
   const totalRevenue = financials.reduce((s, f) => s + (f.revenue ?? 0), 0)
 
   return (
-    <div className="p-6 lg:p-8 min-h-screen">
+    <div className="p-4 sm:p-6 lg:p-8 min-h-screen">
       <div className="max-w-5xl mx-auto">
 
         {/* Header */}
-        <div className="flex items-start justify-between mb-8">
+        <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-8">
           <div>
             <Link href="/clients" className="text-slate-400 hover:text-white text-sm transition-colors">← לקוחות</Link>
             <div className="flex items-center gap-3 mt-2">
@@ -45,7 +45,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
         </div>
 
         {/* KPIs */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="bento-card p-4 text-center">
             <p className="text-[10px] text-slate-500 uppercase mb-1">עיכוב החלטה</p>
             <p className="text-2xl font-black text-red-400">{client.decision_latency_hours ?? 0}h</p>

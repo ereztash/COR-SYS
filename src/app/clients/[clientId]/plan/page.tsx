@@ -1,19 +1,20 @@
-import { getClientById, getPlanByClientId } from '@/lib/data'
+import { getClientById, getPlanByClientId, getDiagnosticsByClientId } from '@/lib/data'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getOptionById } from '@/lib/service-catalog'
 import type { QuestionnaireAnswer } from '@/lib/corsys-questionnaire'
 import { computeDiagnostic } from '@/lib/diagnostic'
-import { EntropyDots, DSMDiagnosisCard, ComorbidityMap, InterventionProtocolsCard, PlanProtocolsCta } from '@/components/diagnostic'
+import { EntropyDots, DSMDiagnosisCard, ComorbidityMap, InterventionProtocolsCard, PlanProtocolsCta, DiagnosticHistoryCard } from '@/components/diagnostic'
 import { PlanQuestionnaireForm } from './PlanQuestionnaireForm'
 
 export const dynamic = 'force-dynamic'
 
 export default async function ClientPlanPage({ params }: { params: Promise<{ clientId: string }> }) {
   const { clientId } = await params
-  const [client, plan] = await Promise.all([
+  const [client, plan, diagnostics] = await Promise.all([
     getClientById(clientId),
     getPlanByClientId(clientId),
+    getDiagnosticsByClientId(clientId),
   ])
   if (!client) notFound()
 
@@ -38,7 +39,7 @@ export default async function ClientPlanPage({ params }: { params: Promise<{ cli
   }
 
   return (
-    <div className="p-6 lg:p-8 min-h-screen">
+    <div className="p-4 sm:p-6 lg:p-8 min-h-screen">
       <div className="max-w-3xl mx-auto">
         <Link href={`/clients/${clientId}`} className="text-slate-400 hover:text-white text-sm transition-colors">← {client.name}</Link>
         <h1 className="text-2xl font-black text-white mt-2">תוכנית עסקית — {client.name}</h1>
@@ -97,6 +98,9 @@ export default async function ClientPlanPage({ params }: { params: Promise<{ cli
 
             {/* Intervention Protocols */}
             <InterventionProtocolsCard protocols={interventionProtocols} ctaSlot={<PlanProtocolsCta />} />
+
+            {/* Diagnostic History */}
+            <DiagnosticHistoryCard diagnostics={diagnostics} />
 
             {/* Summary fallback */}
             {!planResult && plan.summary && (

@@ -27,7 +27,7 @@ export default async function SprintPage({ params }: { params: Promise<{ clientI
   const daysLeft = Math.max(0, Math.ceil((end.getTime() - today.getTime()) / 86400000))
 
   return (
-    <div className="p-6 lg:p-8 min-h-screen">
+    <div className="p-4 sm:p-6 lg:p-8 min-h-screen">
       <div className="max-w-6xl mx-auto">
 
         {/* Breadcrumb */}
@@ -57,7 +57,7 @@ export default async function SprintPage({ params }: { params: Promise<{ clientI
           </div>
 
           {/* Progress */}
-          <div className="mt-5 grid grid-cols-4 gap-4">
+          <div className="mt-5 grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
               <p className="text-2xl font-black text-white">{tasks.length}</p>
               <p className="text-[10px] text-slate-500 uppercase">משימות</p>

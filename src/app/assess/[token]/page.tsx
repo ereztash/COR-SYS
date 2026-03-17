@@ -22,7 +22,7 @@ export default async function AssessPage({ params }: { params: Promise<{ token: 
   }
 
   return (
-    <div className="min-h-screen bg-[#0f172a] p-6 lg:p-8">
+    <div className="min-h-screen bg-[#0f172a] p-4 sm:p-6 lg:p-8">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-2 mb-6">
           <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-black text-sm">C</div>

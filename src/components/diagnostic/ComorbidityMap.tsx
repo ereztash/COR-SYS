@@ -15,7 +15,8 @@ export function ComorbidityMap({ edges, diagnosis }: { edges: ComorbidityEdge[];
   return (
     <div className="bento-card p-6">
       <p className="text-xs font-bold text-slate-500 uppercase mb-3">מפת קומורבידיות</p>
-      <svg viewBox="0 0 300 200" className="w-full max-w-sm mx-auto" dir="ltr">
+      <div className="w-full max-w-full overflow-hidden">
+        <svg viewBox="0 0 300 200" className="w-full max-w-sm mx-auto" direction="ltr">
         {edges.map((edge) => {
           const from = nodeMap[edge.from]
           const to = nodeMap[edge.to]
@@ -61,7 +62,8 @@ export function ComorbidityMap({ edges, diagnosis }: { edges: ComorbidityEdge[];
             </g>
           )
         })}
-      </svg>
+        </svg>
+      </div>
       {activeEdges.length > 0 && (
         <div className="mt-3 space-y-2">
           {activeEdges.map((edge) => (

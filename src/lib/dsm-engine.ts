@@ -67,9 +67,9 @@ const PATHOLOGY_NAMES: Record<PathologyCode, { he: string; en: string }> = {
 }
 
 const LEVEL_LABELS: Record<SeverityLevel, string> = {
-  1: 'תפקוד תקין (subclinical)',
-  2: 'פתולוגיה מתונה (moderate)',
-  3: 'פתולוגיה חמורה (severe)',
+  1: 'תפקוד תקין / subclinical',
+  2: 'פתולוגיה מתונה / בינונית',
+  3: 'פתולוגיה חמורה / גבוהה',
 }
 
 /** Research-based correlations from N=10,000 simulation */
@@ -120,9 +120,17 @@ const LATENCY_MODIFIER: Record<string, number> = {
   under_5: 0,
 }
 
+function computeLatencyFactorFromModifier(latencyMod: number): number {
+  if (latencyMod >= 1.5) return 1.15
+  if (latencyMod >= 0.5) return 1.05
+  return 1
+}
+
 function scoreToLevel(score: number): SeverityLevel {
-  if (score <= 3.0) return 1
-  if (score <= 6.5) return 2
+  // ספים מותאמים לסקאלה היוריסטית:
+  // 0–2.5 ≈ subclinical, 2.5–5.5 ≈ moderate, 5.5–10 ≈ severe
+  if (score <= 2.5) return 1
+  if (score <= 5.5) return 2
   return 3
 }
 
@@ -138,24 +146,30 @@ function clampScore(score: number): number {
  */
 export function diagnose(answers: QuestionnaireAnswer): DSMDiagnosis {
   const latencyMod = LATENCY_MODIFIER[answers.decisionLatency ?? 'under_5'] ?? 0
+  const latencyFactor = computeLatencyFactorFromModifier(latencyMod)
 
   // DR score
   const drBase = DR_SCORES[answers.pathologyZeroSum ?? 'rare'] ?? 1.5
-  const drScore = clampScore(drBase + (drBase > 3.0 ? latencyMod : 0))
+  const drScore = clampScore((drBase + (drBase > 3.0 ? latencyMod : 0)) * latencyFactor)
   const drContributors = ['pathologyZeroSum']
   if (latencyMod > 0 && drBase > 3.0) drContributors.push('decisionLatency')
 
   // ND score
   const ndBase = ND_SCORES[answers.pathologyNod ?? 'low'] ?? 1.5
-  const ndScore = clampScore(ndBase + (ndBase > 3.0 ? latencyMod : 0))
+  const ndScore = clampScore((ndBase + (ndBase > 3.0 ? latencyMod : 0)) * latencyFactor)
   const ndContributors = ['pathologyNod']
   if (latencyMod > 0 && ndBase > 3.0) ndContributors.push('decisionLatency')
 
-  // UC score (average of learning + semantic)
+  // UC score (weighted combination of learning + semantic)
   const ucLearning = UC_LEARNING_SCORES[answers.pathologyLearning ?? 'double_loop'] ?? 1.0
   const ucSemantic = UC_SEMANTIC_SCORES[answers.pathologySemantic ?? 'low_drift'] ?? 1.0
-  const ucBase = (ucLearning + ucSemantic) / 2
-  const ucScore = clampScore(ucBase + (ucBase > 3.0 ? latencyMod : 0))
+  const ucBase = 0.6 * ucLearning + 0.4 * ucSemantic
+  let ucScore = clampScore((ucBase + (ucBase > 3.0 ? latencyMod : 0)) * latencyFactor)
+
+  // אם גם למידה single_loop וגם סחיפה סמנטית גבוהה — UC תמיד ברמת 3
+  if (answers.pathologyLearning === 'single_loop' && answers.pathologySemantic === 'high_drift') {
+    ucScore = Math.max(ucScore, 7)
+  }
   const ucContributors = ['pathologyLearning', 'pathologySemantic']
   if (latencyMod > 0 && ucBase > 3.0) ucContributors.push('decisionLatency')
 
@@ -208,10 +222,11 @@ export function diagnoseFromScores(
   latencyHours: number = 0
 ): DSMDiagnosis {
   const latencyMod = latencyHours > 15 ? 1.5 : latencyHours >= 5 ? 0.5 : 0
+  const latencyFactor = computeLatencyFactorFromModifier(latencyMod)
 
-  const dr = clampScore(drScore + (drScore > 3.0 ? latencyMod : 0))
-  const nd = clampScore(ndScore + (ndScore > 3.0 ? latencyMod : 0))
-  const uc = clampScore(ucScore + (ucScore > 3.0 ? latencyMod : 0))
+  const dr = clampScore((drScore + (drScore > 3.0 ? latencyMod : 0)) * latencyFactor)
+  const nd = clampScore((ndScore + (ndScore > 3.0 ? latencyMod : 0)) * latencyFactor)
+  const uc = clampScore((ucScore + (ucScore > 3.0 ? latencyMod : 0)) * latencyFactor)
 
   const pathologies: PathologySeverity[] = [
     {
@@ -242,8 +257,10 @@ export function diagnoseFromScores(
 function computeSeverityProfile(pathologies: PathologySeverity[]): SeverityProfile {
   const level3Count = pathologies.filter((p) => p.level === 3).length
   const level2Count = pathologies.filter((p) => p.level === 2).length
+  const totalScore = pathologies.reduce((sum, p) => sum + p.score, 0)
 
-  if (level3Count >= 2) return 'systemic-collapse'
+  // קריסה מערכתית דורשת גם עומס אנטרופיה גבוה, לא רק שתי פתולוגיות חמורות
+  if (level3Count >= 2 && totalScore >= 22) return 'systemic-collapse'
   if (level3Count === 1) return 'critical'
   if (level2Count >= 1) return 'at-risk'
   return 'healthy'

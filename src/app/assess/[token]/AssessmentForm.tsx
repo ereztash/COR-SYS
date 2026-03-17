@@ -32,19 +32,21 @@ export function AssessmentForm({ token }: { token: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex gap-2 mb-4">
-        {QUESTIONNAIRE_STEPS.map((s, i) => (
-          <button
-            key={s.id}
-            type="button"
-            onClick={() => setStep(i)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-              step === i ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'
-            }`}
-          >
-            {s.title}
-          </button>
-        ))}
+      <div className="flex gap-2 mb-4 overflow-x-auto pb-1 -mx-1">
+        <div className="flex gap-2 flex-nowrap min-w-0">
+          {QUESTIONNAIRE_STEPS.map((s, i) => (
+            <button
+              key={s.id}
+              type="button"
+              onClick={() => setStep(i)}
+              className={`px-3 py-2 rounded-lg text-xs font-bold transition-colors shrink-0 min-h-[44px] ${
+                step === i ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'
+              }`}
+            >
+              {s.title}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="bento-card p-6 border-t-4 border-t-emerald-500">
@@ -61,7 +63,7 @@ export function AssessmentForm({ token }: { token: string }) {
                   {f.options?.map((o) => (
                     <label
                       key={o.value}
-                      className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
+                      className={`flex items-start gap-3 p-3 py-3.5 rounded-lg border cursor-pointer transition-colors min-h-[44px] w-full ${
                         answers[f.key as keyof QuestionnaireAnswer] === o.value
                           ? 'border-blue-500 bg-blue-950/40 text-white'
                           : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-slate-500 hover:text-slate-300'

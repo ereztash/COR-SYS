@@ -1,3 +1,5 @@
+import type { SeverityProfile } from '@/lib/dsm-engine'
+
 export type ClientStatus = 'active' | 'prospect' | 'churned' | 'paused' | 'volunteer'
 export type SprintStatus = 'planned' | 'active' | 'completed' | 'cancelled'
 export type TaskStatus = 'todo' | 'in_progress' | 'done' | 'blocked'
@@ -83,49 +85,128 @@ export interface ClientAssessment {
   id: string
   token: string
   client_id: string | null
-  status: string
+  status: 'pending' | 'in_progress' | 'completed'
   answers: Record<string, unknown> | null
   completed_at: string | null
   created_at: string
   updated_at: string
 }
 
+export interface ClientDiagnosticSummary {
+  drScore: number
+  ndScore: number
+  ucScore: number
+  severityProfile: SeverityProfile
+  entropyScore: number
+}
+
+export interface ClientDiagnostic {
+  id: string
+  client_id: string
+  created_at: string
+  answers: Record<string, unknown>
+  dsm_summary: ClientDiagnosticSummary
+}
+
+// ---------------------------------------------------------------------------
+// Explicit Insert / Update helpers — aligned 1:1 with the SQL migrations.
+// These replace the previous Omit<Row, ...> approach which caused Postgrest
+// type-inference to collapse to `never` for tables with jsonb columns.
+// ---------------------------------------------------------------------------
+
+/** client_assessments — INSERT (token, id, timestamps all have DB defaults) */
+export interface ClientAssessmentInsert {
+  client_id?: string | null
+  token?: string
+  status?: 'pending' | 'in_progress' | 'completed'
+  answers?: Record<string, unknown> | null
+  completed_at?: string | null
+}
+
+/** client_assessments — UPDATE */
+export interface ClientAssessmentUpdate {
+  client_id?: string | null
+  status?: 'pending' | 'in_progress' | 'completed'
+  answers?: Record<string, unknown> | null
+  completed_at?: string | null
+  updated_at?: string
+}
+
+/** client_diagnostics — INSERT (id, created_at have DB defaults) */
+export interface ClientDiagnosticInsert {
+  client_id: string
+  answers: Record<string, unknown>
+  dsm_summary: ClientDiagnosticSummary
+  created_at?: string
+}
+
+/** client_business_plans — INSERT */
+export interface ClientBusinessPlanInsert {
+  client_id: string
+  status?: ClientBusinessPlanStatus
+  title?: string | null
+  questionnaire_response?: Record<string, unknown> | null
+  recommended_channel_id?: string | null
+  recommended_option_id?: string | null
+  summary?: string | null
+  next_steps?: string | null
+  updated_at?: string
+}
+
+/** client_business_plans — UPDATE / UPSERT payload */
+export type ClientBusinessPlanUpsert = ClientBusinessPlanInsert
+
 export interface Database {
+  __InternalSupabase: {
+    PostgrestVersion: '12'
+  }
   public: {
     Tables: {
       client_assessments: {
         Row: ClientAssessment
-        Insert: Omit<ClientAssessment, 'id' | 'created_at' | 'updated_at'> & { token?: string }
-        Update: Partial<Omit<ClientAssessment, 'id' | 'created_at' | 'updated_at'>>
+        Insert: ClientAssessmentInsert
+        Update: ClientAssessmentUpdate
+        Relationships: []
+      }
+      client_diagnostics: {
+        Row: ClientDiagnostic
+        Insert: ClientDiagnosticInsert
+        Update: Record<string, never>
+        Relationships: []
       }
       client_business_plans: {
         Row: ClientBusinessPlan
-        Insert: Omit<ClientBusinessPlan, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<ClientBusinessPlan, 'id' | 'created_at' | 'updated_at'>>
+        Insert: ClientBusinessPlanInsert
+        Update: Partial<ClientBusinessPlanInsert>
+        Relationships: []
       }
       clients: {
         Row: Client
         Insert: Omit<Client, 'id' | 'created_at' | 'updated_at'>
         Update: Partial<Omit<Client, 'id' | 'created_at' | 'updated_at'>>
+        Relationships: []
       }
       sprints: {
         Row: Sprint
         Insert: Omit<Sprint, 'id' | 'created_at' | 'clients'>
         Update: Partial<Omit<Sprint, 'id' | 'created_at' | 'clients'>>
+        Relationships: []
       }
       tasks: {
         Row: Task
         Insert: Omit<Task, 'id' | 'created_at' | 'updated_at' | 'sprints'>
         Update: Partial<Omit<Task, 'id' | 'created_at' | 'updated_at' | 'sprints'>>
+        Relationships: []
       }
       financials: {
         Row: Financial
         Insert: Omit<Financial, 'id' | 'created_at' | 'clients'>
         Update: Partial<Omit<Financial, 'id' | 'created_at' | 'clients'>>
+        Relationships: []
       }
     }
-    Views: {}
-    Functions: {}
-    Enums: {}
+    Views: Record<string, { Row: Record<string, unknown>; Relationships: [] }>
+    Functions: Record<string, { Args: Record<string, unknown>; Returns: unknown }>
+    Enums: Record<string, string>
   }
 }
