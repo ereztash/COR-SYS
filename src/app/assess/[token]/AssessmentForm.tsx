@@ -82,6 +82,32 @@ export function AssessmentForm({ token }: { token: string }) {
                   ))}
                 </div>
               )}
+              {f.type === 'scale' && (
+                <div>
+                  {'scaleLabels' in f && (
+                    <div className="flex justify-between text-xs text-slate-500 mb-2 px-1">
+                      <span>{f.scaleLabels.min}</span>
+                      <span>{f.scaleLabels.max}</span>
+                    </div>
+                  )}
+                  <div className="flex gap-1.5 justify-between">
+                    {f.options?.map((o) => (
+                      <button
+                        key={o.value}
+                        type="button"
+                        onClick={() => set(f.key as keyof QuestionnaireAnswer, o.value)}
+                        className={`flex-1 h-10 rounded-lg text-sm font-bold transition-colors border ${
+                          answers[f.key as keyof QuestionnaireAnswer] === o.value
+                            ? 'bg-blue-600 border-blue-500 text-white'
+                            : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500 hover:text-white'
+                        }`}
+                      >
+                        {o.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>

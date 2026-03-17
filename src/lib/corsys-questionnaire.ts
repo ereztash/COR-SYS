@@ -28,6 +28,12 @@ export type PathologySemantic = 'high_drift' | 'medium_drift' | 'low_drift'
 
 // ─── Block 3: Metrics ────────────────────────────────────────────────────────
 
+/** Edmondson PSI — 7-point Likert scale (1=Strongly Disagree, 7=Strongly Agree)
+ *  Academic source: Edmondson, A.C. (1999) — Administrative Science Quarterly
+ *  Items 1, 3, 5 are reverse-scored: score = 8 - raw_value
+ *  PSI average used in LG formula: LG = 0.571×(-ΔDR) + 0.429×(ΔPSI) */
+export type PsiRating = '1' | '2' | '3' | '4' | '5' | '6' | '7'
+
 export type DecisionLatency = 'over_15' | '5_to_15' | 'under_5'
 export type InterventionGoal = 'reduce_latency' | 'reduce_entropy' | 'both' | 'audit_only'
 export type UrgencyLevel = 'high' | 'medium' | 'low'
@@ -50,6 +56,17 @@ export interface QuestionnaireAnswer {
   decisionLatency?: DecisionLatency
   interventionGoal?: InterventionGoal
   urgencyLevel?: UrgencyLevel
+
+  // Block 4 — Edmondson PSI (7-item Psychological Safety Index)
+  // Scale: 1=Strongly Disagree, 7=Strongly Agree
+  // Items 1, 3, 5 are REVERSED (negatively worded)
+  psi1?: PsiRating  // "אם עושים טעות, זה מוחזק כנגדך" ← REVERSED
+  psi2?: PsiRating  // "חברי הצוות יכולים להעלות בעיות קשות"
+  psi3?: PsiRating  // "אנשים לפעמים דוחים אחרים שהם שונים" ← REVERSED
+  psi4?: PsiRating  // "זה בטוח לקחת סיכונים בצוות"
+  psi5?: PsiRating  // "קשה לבקש עזרה מחברי הצוות" ← REVERSED
+  psi6?: PsiRating  // "אף אחד לא יפגע במאמצים שלי בכוונה"
+  psi7?: PsiRating  // "הכישורים שלי מוערכים ומנוצלים"
 }
 
 // ─── Questionnaire Steps ──────────────────────────────────────────────────────
@@ -187,6 +204,117 @@ export const QUESTIONNAIRE_STEPS = [
       },
     ],
   },
+  {
+    id: 'psi',
+    title: 'בטיחות פסיכולוגית בצוות (Edmondson PSI)',
+    fields: [
+      {
+        key: 'psi1',
+        label: '⚠️ [1] בצוות שלנו, אם עושים טעות — זה מוחזק כנגדך',
+        type: 'scale' as const,
+        required: true,
+        scaleMin: 1,
+        scaleMax: 7,
+        scaleLabels: { min: 'לא מסכים כלל (1)', max: 'מסכים מאוד (7)' },
+        reversed: true,
+        options: [
+          { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' },
+          { value: '4', label: '4' }, { value: '5', label: '5' }, { value: '6', label: '6' },
+          { value: '7', label: '7' },
+        ],
+      },
+      {
+        key: 'psi2',
+        label: '[2] חברי הצוות יכולים להעלות בעיות ונושאים קשים',
+        type: 'scale' as const,
+        required: true,
+        scaleMin: 1,
+        scaleMax: 7,
+        scaleLabels: { min: 'לא מסכים כלל (1)', max: 'מסכים מאוד (7)' },
+        reversed: false,
+        options: [
+          { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' },
+          { value: '4', label: '4' }, { value: '5', label: '5' }, { value: '6', label: '6' },
+          { value: '7', label: '7' },
+        ],
+      },
+      {
+        key: 'psi3',
+        label: '⚠️ [3] אנשים בצוות לפעמים דוחים אחרים בגלל שהם שונים',
+        type: 'scale' as const,
+        required: true,
+        scaleMin: 1,
+        scaleMax: 7,
+        scaleLabels: { min: 'לא מסכים כלל (1)', max: 'מסכים מאוד (7)' },
+        reversed: true,
+        options: [
+          { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' },
+          { value: '4', label: '4' }, { value: '5', label: '5' }, { value: '6', label: '6' },
+          { value: '7', label: '7' },
+        ],
+      },
+      {
+        key: 'psi4',
+        label: '[4] זה בטוח לקחת סיכונים בצוות הזה',
+        type: 'scale' as const,
+        required: true,
+        scaleMin: 1,
+        scaleMax: 7,
+        scaleLabels: { min: 'לא מסכים כלל (1)', max: 'מסכים מאוד (7)' },
+        reversed: false,
+        options: [
+          { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' },
+          { value: '4', label: '4' }, { value: '5', label: '5' }, { value: '6', label: '6' },
+          { value: '7', label: '7' },
+        ],
+      },
+      {
+        key: 'psi5',
+        label: '⚠️ [5] קשה לבקש עזרה מחברי צוות אחרים',
+        type: 'scale' as const,
+        required: true,
+        scaleMin: 1,
+        scaleMax: 7,
+        scaleLabels: { min: 'לא מסכים כלל (1)', max: 'מסכים מאוד (7)' },
+        reversed: true,
+        options: [
+          { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' },
+          { value: '4', label: '4' }, { value: '5', label: '5' }, { value: '6', label: '6' },
+          { value: '7', label: '7' },
+        ],
+      },
+      {
+        key: 'psi6',
+        label: '[6] אף אחד בצוות לא יפעל בכוונה בדרך שפוגעת במאמצים שלי',
+        type: 'scale' as const,
+        required: true,
+        scaleMin: 1,
+        scaleMax: 7,
+        scaleLabels: { min: 'לא מסכים כלל (1)', max: 'מסכים מאוד (7)' },
+        reversed: false,
+        options: [
+          { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' },
+          { value: '4', label: '4' }, { value: '5', label: '5' }, { value: '6', label: '6' },
+          { value: '7', label: '7' },
+        ],
+      },
+      {
+        key: 'psi7',
+        label: '[7] הכישורים והיכולות הייחודיים שלי מוערכים ומנוצלים בעבודה',
+        type: 'scale' as const,
+        required: true,
+        scaleMin: 1,
+        scaleMax: 7,
+        scaleLabels: { min: 'לא מסכים כלל (1)', max: 'מסכים מאוד (7)' },
+        reversed: false,
+        options: [
+          { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' },
+          { value: '4', label: '4' }, { value: '5', label: '5' }, { value: '6', label: '6' },
+          { value: '7', label: '7' },
+        ],
+      },
+    ],
+  },
 ] as const
 
 // ─── Entropy Score ────────────────────────────────────────────────────────────
@@ -202,6 +330,25 @@ export function computeEntropyScore(answers: QuestionnaireAnswer): number {
   if (answers.pathologyLearning === 'single_loop') score++
   if (answers.pathologySemantic === 'high_drift') score++
   return score
+}
+
+// ─── PSI Score ────────────────────────────────────────────────────────────────
+
+/**
+ * Compute Edmondson PSI average from questionnaire answers.
+ * Items 1, 3, 5 are reverse-scored (8 - raw).
+ * Returns null if any of the 7 items is missing.
+ * Range: 1-7 (higher = more psychological safety).
+ */
+export function computePsiFromAnswers(answers: QuestionnaireAnswer): number | null {
+  const raws = [answers.psi1, answers.psi2, answers.psi3, answers.psi4, answers.psi5, answers.psi6, answers.psi7]
+  if (raws.some((r) => r == null)) return null
+  const REVERSED = [0, 2, 4] // 0-indexed: items 1, 3, 5
+  const scores = raws.map((r, i) => {
+    const v = parseInt(r as string, 10)
+    return REVERSED.includes(i) ? 8 - v : v
+  })
+  return scores.reduce((a, b) => a + b, 0) / 7
 }
 
 // ─── Dynamic Summary ──────────────────────────────────────────────────────────
