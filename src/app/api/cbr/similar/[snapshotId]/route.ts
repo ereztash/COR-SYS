@@ -15,9 +15,9 @@ import { findSimilarCases } from '@/lib/cbr'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { snapshotId: string } }
+  { params }: { params: Promise<{ snapshotId: string }> }
 ) {
-  const { snapshotId } = params
+  const { snapshotId } = await params
   const topK = parseInt(request.nextUrl.searchParams.get('top_k') ?? '5', 10)
 
   const supabase = await createClient()

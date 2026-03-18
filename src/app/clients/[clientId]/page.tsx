@@ -1,18 +1,20 @@
-import { getClientWithPlan, getSprintsByClient, getFinancialsByClient } from '@/lib/data'
+import { getClientWithPlan, getSprintsByClient, getFinancialsByClient, getLatestSnapshotForClient } from '@/lib/data'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { formatDate, formatCurrency } from '@/lib/utils'
 import { Badge } from '@/components/ui/Badge'
 import { SendAssessmentLink } from './SendAssessmentLink'
+import { CBRSection } from './CBRSection'
 
 export const dynamic = 'force-dynamic'
 
 export default async function ClientDetailPage({ params }: { params: Promise<{ clientId: string }> }) {
   const { clientId } = await params
-  const [clientWithPlan, sprints, financials] = await Promise.all([
+  const [clientWithPlan, sprints, financials, cbrSnapshot] = await Promise.all([
     getClientWithPlan(clientId),
     getSprintsByClient(clientId),
     getFinancialsByClient(clientId),
+    getLatestSnapshotForClient(clientId),
   ])
   if (!clientWithPlan) notFound()
   const { client, plan } = clientWithPlan
@@ -145,6 +147,33 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
               ) : (
                 <p className="text-xs text-slate-500">אין תוכנית. מלא שאלון לבניית תוכנית והמלצת שירות.</p>
               )}
+            </div>
+
+            {/* CBR Recommendations */}
+            {cbrSnapshot ? (
+              <CBRSection
+                snapshotId={cbrSnapshot.snapshot.snapshot_id}
+                clientId={clientId}
+                hourlyRate={client.hourly_rate}
+                decisionLatencyHours={client.decision_latency_hours}
+              />
+            ) : (
+              <div className="bento-card p-5">
+                <p className="text-xs font-bold text-slate-500 uppercase mb-2">המלצת CBR</p>
+                <p className="text-xs text-slate-500">אין snapshot אבחוני. השלם שאלון אבחון כדי לקבל המלצות מבוססות-מקרים.</p>
+              </div>
+            )}
+
+            {/* Follow-up link */}
+            <div className="bento-card p-5">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-bold text-slate-300">מדידה חוזרת</h3>
+                <Link href={`/clients/${clientId}/followup`}
+                  className="text-[10px] text-emerald-400 hover:text-emerald-300 font-bold">
+                  פתח →
+                </Link>
+              </div>
+              <p className="text-xs text-slate-500">מדד ΔDR, ΔPSI ו-λ אחרי ביצוע התערבות.</p>
             </div>
 
             {/* Notes */}
