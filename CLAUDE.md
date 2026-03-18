@@ -1,11 +1,23 @@
 # COR-SYS — Agent Entry Point
 
-## STOP — Before ANY tool call, read these files:
+## GATE 0 — Session Init (BLOCKING — before ANY tool call)
 
-1. **LOG.md** (this repo root) — environment facts, anti-patterns, lessons
-2. **index/CLAUDE.md** — full agent architecture (Board, pipelines, skills)
+Read in this exact order:
 
-If you haven't read LOG.md yet in this session, **read it now**. Do not proceed without it.
+| # | File | Tokens | What it gives you |
+|---|------|--------|-------------------|
+| 1 | `LOG.md` (repo root) | ~600 | Environment facts, anti-patterns, session history |
+| 2 | `~/.claude/projects/.../memory/MEMORY.md` | ~200 | Project state index, quick orientation |
+| 3 | `skill.md` (repo root) | ~300 | Heuristic skills + slash command reference |
+| 4 | `CLAUDE.md` (this file) | ~400 | Quick rules, stack, architecture |
+
+**Tier 1 — load only when task requires it:**
+- `index/CLAUDE.md` — full pipelines + Board (multi-step or strategic task)
+- `docs/cbr-execution-roadmap.md` — Phase 3 work
+
+**Context health:** >70% context → MONITOR mode. 2 self-corrections → /clear.
+
+If LOG.md not yet read this session → **read it now. Do not proceed without it.**
 
 ## Quick Rules (expanded in index/CLAUDE.md)
 
