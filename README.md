@@ -1,89 +1,222 @@
 # COR-SYS
 
-**מערכת ניהול ייעוץ אישית** — דשבורד אופציה פנימי לניהול לקוחות, ספרינטים וכספים.
+**Organizational Resilience Engineering Platform**
 
-- **COR** — Conservation of Resources (Hobfoll): ארגונים פועלים לשמור על משאבים; אובדן כואב יותר מרווח מקביל.
-- **SYS** — Systems: ההתערבות תמיד מבנית, לא אישית.
+COR-SYS diagnoses three structural pathologies that drive decision latency, entropy loss, and intervention failure in organizations. It combines a DSM-style diagnostic engine, a Case-Based Reasoning (CBR) retrieval system, and a mathematical resilience formula to provide evidence-based, loss-framed intervention recommendations for consultants and organizational development teams.
 
-הגרנטיה: *על כל שעת פגישה — הארגון חוסך לפחות שעת עבודה אחת בשבוע, לכל שארית חיי התהליך.*
+> **COR** — Conservation of Resources (Hobfoll): organizations act to preserve resources; loss is felt 2.25× more acutely than equivalent gain.
+> **SYS** — Systems: every intervention is structural, never personal.
 
----
-
-## מה האפליקציה עושה
-
-- **דשבורד:** KPIs (לקוחות פעילים, ספרינטים פעילים, משימות פתוחות, הכנסות), Decision Latency Tax, P&L, מתודולוגיית ספרינט 14 יום.
-- **לקוחות:** CRUD, סטטוס, תעריף שעתי ו-retainer, decision latency.
-- **ספרינטים:** ספרינטי 14 יום (PRISM — MECE + Answer First + BCG), משימות, סטטוסים.
-- **כספים:** הכנסות לפי לקוח וחודש, חיוב/תשלום, התקדמות ליעד שנה 1.
-- **שירותים וערוצים:** דף `/services` — ערוצי L1/L2/L3 ואפשרויות תמחור (Live Demo, ספרינט, Retainer, וכו').
-- **תוכנית עסקית ללקוח:** בדף הלקוח — בלוק "תוכנית עסקית" + קישור ל־`/clients/[id]/plan`. ניהול תוכנית אחת לכל לקוח (סיכום, המלצת שירות, צעדים).
-- **שאלון COR-SYS:** ב־`/clients/[id]/plan` — שאלון לפי ICP, פתולוגיות (NOD, Zero-Sum, Learning) ומדדים. התשובות בונות אוטומטית תוכנית עסקית והמלצת ערוץ/שירות.
+The guarantee: *for every hour of engagement — the organization saves at least one work-hour per week, for the remainder of the process.*
 
 ---
 
-## ICP (קהל יעד)
+## The Three Pathologies
 
-- **גודל:** 50–300 עובדים. **שלב:** Growth (Series A–C).
-- **סקטורים:** Cybersecurity, Fintech, Healthtech AI, B2B מורכב.
-- **Champions:** COO, CFO, CEO.
+| Code | Name | Theoretical Basis |
+|------|------|-------------------|
+| **DR** | Distorted Reciprocity | Różycka-Tran BZSG scale (N=10,000) — internal competition destroying cross-departmental collaboration |
+| **ND** | Normalization of Deviance | Vaughan (1996) Challenger — 5-stage procedural drift toward systemic failure |
+| **UC** | Unrepresentative Calibration | Edmondson (1999) Psychological Safety + Floridi (2014) Ontological Friction |
 
----
-
-## סטק
-
-- **Next.js 16**, **React 19**, **Supabase** (DB + auth-ready).
-- **TypeScript** strict.
+Severity profiles: `healthy` → `at-risk` → `critical` → `systemic-collapse`
 
 ---
 
-## הרצה
+## What It Does
 
-```bash
-# התקנת תלויות
-npm install
+1. **Diagnose** — structured questionnaire (ICP + pathologies + metrics + Edmondson PSI) produces DR/ND/UC scores (0–10 each) and a severity profile
+2. **Benchmark** — compares scores against McKinsey OHI (N=1,500), CultureAmp (N=6,000), and Qualtrics cohorts
+3. **Retrieve** — finds the most similar historical intervention cases via embedding-based CBR search (pgvector HNSW)
+4. **Recommend** — ranks interventions with Wilson-score confidence, daily loss framing (₪/day), and eigenvalue trajectory
+5. **Track** — measures delta (pre/post) to validate whether interventions moved the needle; feeds Bayesian calibration
 
-# העתקת משתני סביבה (ראה .env.example)
-cp .env.example .env.local
-# מלא ב-.env.local: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY
+---
 
-# שרת פיתוח
-npm run dev
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16 (App Router, Server Components) |
+| Database | Supabase PostgreSQL + pgvector (HNSW ANN indexing) |
+| Styling | Tailwind CSS v4 |
+| Language | TypeScript 5 (strict) |
+| Embeddings | OpenAI `text-embedding-3-small` (1536 dims) |
+| AI SDK | `@anthropic-ai/sdk` (Claude) |
+| PDF | `@react-pdf/renderer` |
+| Email | Resend (optional) |
+| Testing | Vitest |
+
+---
+
+## Core Engines
+
+### DSM Engine — `src/lib/dsm-engine.ts`
+Maps questionnaire answers to DR/ND/UC pathology codes and severity levels (1–3). Computes comorbidity edges (DR↔ND, DR↔UC, ND↔UC) and outputs structured intervention protocols. Based on N=10,000 simulation model.
+
+### DSM Policy Engine — `src/lib/dsm-policy-engine.ts`
+Decision support layer above the DSM engine. Transforms a diagnosis into:
+- **Benchmark context** — percentile estimates vs. OHI/CultureAmp/Qualtrics cohorts
+- **Golden-question answers** — system state, bottleneck narrative, economic impact, recommended CTA
+- **Policy rules** — `DECISION_RULES` table (data-driven; extend by adding rows, no code changes)
+- **Feedback schema** — session-level input/output snapshots for continuous threshold calibration
+
+### Resilience Formula — `src/lib/resilience-formula.ts`
+
+```
+LG = 0.571 × (−ΔDR) + 0.429 × (ΔPSI)
+λ  = 1 + κ × LG
 ```
 
-פתח [http://localhost:3000](http://localhost:3000).
+| Constant | Value | Source |
+|----------|-------|--------|
+| 0.571 | DR weight | Kahneman & Tversky Loss Aversion Ratio (2.25:1) |
+| 0.429 | PSI weight | Edmondson innovation multiplication |
+| κ = 0.5 | Learning absorption coefficient | Default; calibrated per organization |
+| Critical threshold | κ×LG ≤ −0.15 | Maladaptive regime — structural change required |
+
+Trajectory: `growth` (λ>1) / `stable` (λ≈1) / `decay` (0<λ<1) / `bifurcation` (λ≤0)
+
+### CBR Pipeline — `src/lib/cbr/`
+
+Implements Aamodt & Plaza (1994) Retrieve–Reuse–Revise–Retain:
+
+```
+1. Embed   → normalize DR/ND/UC/DLI/PSI (0–1) + contextual header + OpenAI embedding
+2. Filter  → SQL WHERE (industry + severity + DLI ≤ max) → ~100 candidates
+3. Search  → HNSW pgvector ANN (cosine distance) → Top-20
+4. Re-rank → cosine + severity bonus + learning_gain bonus − λ penalty → Top-5
+5. Return  → intervention type, outcomes, confidence, cold_start flag
+```
+
+Contextual header (Anthropic Contextual Retrieval pattern, −49% retrieval failure):
+```
+[CONTEXT: industry | size_band | severity_profile]
+[SCORES: DR=x/10, ND=x/10, UC=x/10]
+[METRICS: DLI=xd, J=x, Entropy=x, PSI=x]
+[NARRATIVE: bottleneck_text]
+```
 
 ---
 
-## תיעוד עסקי
+## API Routes
 
-- [מסגרת עסקית ומודל COR-SYS](docs/business-framework.md)
-- [מטרות ו-KPIs](docs/goals-and-kpis.md)
-- [תוכנית אסטרטגית](docs/strategic-plan.md)
-- [ערך ללקוח ועמדה](docs/value-proposition.md)
-- [ICP ומכירות (Live Demo, תמחור)](docs/icp-and-sales.md)
-- [מיצוב תחרותי](docs/competitive-positioning.md)
-- [סינתזת HTML ↔ אפליקציה](docs/synthesis-html-app.md)
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/cbr/similar/[snapshotId]` | GET | Returns Top-K similar historical cases. Param: `top_k` (default 5). Returns `cold_start: true` when no matching cases exist. Requires `OPENAI_API_KEY`. |
+| `/api/plans/[clientId]/pdf` | GET | Generates a PDF plan report (diagnosis + intervention protocols + recommendations) using `@react-pdf/renderer`. |
 
 ---
 
-## איפה כל ההרחבות (מה בנינו)
+## Pages
 
-| מה | איפה |
-|----|------|
-| **דשבורד אופציה** | `/` — KPIs, לקוחות, ספרינטים, כספים, Decision Latency, 4 סוכנים |
-| **זהות עסקית מלאה (4 לשוניות MECE)** | `/about` — טאבים: זהות, הבעיה, הפתרון, מסחור (כולל אקורדיונים, מתחרים, תמחור, GTM, 10-Day Blitz, P&L, Roadmap) |
-| **תיעוד עסקי** | `docs/` — 7 מסמכים (מסגרת, מטרות, אסטרטגיה, ערך, ICP, מיצוב, סינתזה) |
-| **קבועים עסקיים** | `src/lib/business-config.ts` — יעד שנה 1 (720K) |
-| **משתני סביבה** | `.env.example` — Supabase URL + anon key |
-| **סקיל התנהלות Claude** | `.cursor/skills/claude-conduct/` — Plan-Validate-Execute, כללי כשלון, קוד |
-| **סקיל יצירת DOCS ופרומפטים למצגות** | `.cursor/skills/create-docs-and-prompts/` — ייצור קבצי docs ופרומפטים למצגות |
-| **שירותים וערוצים** | `/services` + `src/lib/service-catalog.ts` — ערוצים L1/L2/L3 ואפשרויות שירות (תמחור) |
-| **תוכנית עסקית ללקוח** | `/clients/[id]/plan` — שאלון COR-SYS, סיכום, המלצת שירות, צעדים. טבלה: `client_business_plans` |
-| **מיגרציית תוכניות** | `supabase-migration-client-plans.sql` — הרץ ב-Supabase כדי לאפשר שמירת תוכניות |
+| Route | Purpose |
+|-------|---------|
+| `/` | Dashboard — active clients, sprints, tasks, monthly revenue, portfolio analytics (severity distribution, avg DR/ND/UC) |
+| `/clients` | Client list and management |
+| `/clients/[clientId]` | Client detail — diagnostics, actions (sprint, plan, assessment) |
+| `/clients/[clientId]/plan` | 4-step questionnaire (ICP → pathologies → metrics → PSI) → DSM diagnosis + CTA recommendation |
+| `/assess/[token]` | Public assessment — external stakeholders complete questionnaire without auth |
+| `/assess/[token]/results` | Results page — severity profile, pathology scores, intervention recommendations |
+| `/services` | Service portfolio — 3 channels (L1/L2/L3), 10 offerings with pricing |
+| `/services/calculator` | Free Decision Latency Index calculator (lead generation) |
+| `/sprints` | Sprint list across all clients |
+| `/financials` | Revenue tracking, invoicing, payment status |
+| `/about` | Architecture, research basis, methodology |
 
 ---
 
-## Learn More
+## Database Schema
 
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Deploy on Vercel](https://vercel.com/new)
+| Table | Purpose |
+|-------|---------|
+| `clients` | Client master data — industry, status, decision latency, hourly rate, retainer |
+| `sprints` | Sprint planning, status (planned/active/completed/cancelled), retrospectives |
+| `tasks` | Sprint tasks — priority (critical/high/medium/low), status, estimated/actual hours |
+| `financials` | Revenue, invoicing, payment tracking per client per month |
+| `client_assessments` | Assessment tokens + JSONB responses (external stakeholder flow) |
+| `client_diagnostics` | DSM diagnosis history per client (answers + dsm_summary JSONB) |
+| `client_business_plans` | Plan records — questionnaire_response, recommended channel/option, next steps |
+| `organizations_context` | CBR: org metadata (industry_sector, employee_size_band, culture_archetype) |
+| `dsm_diagnostic_snapshots` | CBR: historical DSM snapshots + `VECTOR(1536)` feature embeddings |
+| `interventions_and_feedback` | CBR: intervention outcomes, consultant overrides, delta metrics, learning_gain, λ eigenvalue |
+
+**RPC:** `get_similar_cases_with_stats(query_embedding, target_industry, target_severity, max_dli, match_limit)`
+
+---
+
+## Environment Variables
+
+```env
+# Required — Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Required for CBR similarity search
+OPENAI_API_KEY=sk-...
+
+# Optional — transactional email (assessment completion notifications)
+RESEND_API_KEY=
+RESEND_FROM=COR-SYS <onboarding@resend.dev>
+RESEND_TO=
+```
+
+---
+
+## Local Development
+
+```bash
+# Install dependencies
+npm install
+
+# Copy and fill environment variables
+cp .env.example .env.local
+# Add NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, OPENAI_API_KEY
+
+# Start dev server
+npm run dev
+# → http://localhost:3000
+
+# Run tests
+npm run test
+
+# Build for production
+npm run build
+```
+
+**Supabase prerequisite:** Enable the `pgvector` extension in your Supabase project dashboard before running CBR migrations.
+
+---
+
+## Research Foundation
+
+| Construct | Source | Evidence |
+|-----------|--------|----------|
+| Decision Latency | Eisenhardt (1989); McKinsey (2019) | Fast-decision orgs: +30% ROI; 70% managers report >10h/week lost |
+| Normalization of Deviance | Vaughan (1996) Challenger | 5-stage model; present in 67% of medical errors (Banja 2010) |
+| Psychological Safety | Edmondson (1999) | α=.82, r=.35 team learning; mediates 40% of safety outcomes |
+| Loss Aversion (DR weight) | Kahneman & Tversky (1991) | Ratio 2.25:1; underpins 0.571 DR coefficient |
+| Network Comorbidity | Borgatti et al. (2009) | COR-SYS N=10,000: DR↔ND r=.19, DR↔UC r=−.27, ND↔UC r=.28 |
+| Semantic Drift | Floridi (2014); Weick (1995) | Sensemaking failures precede 80% of org crises |
+| OHI Benchmarks | McKinsey (2017) | N=1,500 orgs |
+| Engagement Benchmarks | CultureAmp / Qualtrics (2022–2024) | N=6,000+ orgs |
+
+---
+
+## Development Status
+
+| Phase | Description | Status |
+|-------|-------------|--------|
+| Phase 0 | Auth + Row Level Security | Planned |
+| Phase 1 | CBR data layer, DB migration, resilience formula, Edmondson PSI questionnaire | Done |
+| Phase 2 | Embedding service, similarity search, CBR API endpoint | Done |
+| Phase 3 | Recommendation engine, loss-framed UI, consultant override form, follow-up page, Bayesian calibration | In progress |
+
+---
+
+## ICP
+
+- **Size:** 50–300 employees, Growth stage (Series A–C)
+- **Sectors:** Cybersecurity, Fintech, AI/Healthtech, complex B2B
+- **Champions:** COO, CFO, CEO
