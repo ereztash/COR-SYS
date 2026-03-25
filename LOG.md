@@ -54,6 +54,7 @@ npm run build 2>&1 | tail -5
 | 9 | Tried `execute_sql` then `apply_migration` for DML — both read-only | Didn't check MCP tool semantics first | **Supabase MCP: `execute_sql`=read-only, `apply_migration`=DDL only. DML must go via SQL Editor manually** |
 | 10 | Seed data has NULL feature_vectors — HNSW search returns no matches | Embeddings require OpenAI, seeded without them | **Seed data without embeddings breaks CBR similarity. Either embed on insert, or document that cold_start is expected until embeddings generated** |
 | 11 | Next.js 16 route params need `Promise<{...}>` type — pre-existing error caught at build | Didn't run build check after Phase 2 | **Always run `npm run build` after a Phase completes, before committing** |
+| 12 | `ROUND(double_precision / 4.0, 2)` fails in PostgreSQL — no matching function | `score_dr` etc. are `double precision`, ROUND needs `numeric` | **Always cast: `(expr)::numeric` before ROUND with decimal places** |
 
 ## Codebase Patterns (copy these, don't invent new ones)
 
@@ -100,6 +101,15 @@ const { data, error } = await rpc('function_name', { ...args })
 - Connected Supabase MCP
 - **Friction:** MCP config format, token in chat, TypeScript RPC typing (3 iterations), claude not in PATH
 - **Key lesson:** ALWAYS read existing codebase patterns before writing new Supabase code
+
+### 2026-03-25 — MVP Stabilization
+- Build: ✅ clean (Next.js 16, zero TypeScript errors)
+- Committed 16 files: Phase 3 CBR engine, score_sc dimension, UI polish
+- Pushed to `feat/tooling-and-project-memory`
+- Migration `add_score_sc` applied manually via SQL Editor (MCP read-only confirmed again)
+- ROUND fix: `(expr)::numeric` cast required in PostgreSQL for `ROUND(x, 2)`
+- CBR embeddings still cold-start — OpenAI quota pending
+- **Open:** PR → master, OpenAI billing top-up
 
 ### 2026-03-18 — Phase 3 CBR Intelligence Layer
 - Phase 3: `recommend.ts` (Wilson-score), `calibration.ts` (Bayesian), `trajectory.ts` (λ eigenvalue)
