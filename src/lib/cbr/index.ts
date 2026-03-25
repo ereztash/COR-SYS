@@ -3,6 +3,8 @@
  * Import from '@/lib/cbr' for all CBR functionality.
  */
 
+export { avg, SUCCESS_ENTROPY_DELTA, SUCCESS_J_QUOTIENT_THRESHOLD, CONFIDENCE_HIGH_THRESHOLD, CONFIDENCE_MEDIUM_THRESHOLD, CONFIDENCE_LOW_THRESHOLD, LAMBDA_TREND_THRESHOLD, jensenShannon, hybridScoreSimilarity, PSI_NORM_DEFAULT } from './utils'
+
 export { generateCaseEmbedding, buildContextualInput } from './embedding'
 export type { EmbeddingInput } from './embedding'
 

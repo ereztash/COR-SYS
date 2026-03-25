@@ -27,6 +27,7 @@ import {
   DEFAULT_KAPPA,
 } from '@/lib/resilience-formula'
 import type { Trajectory } from '@/lib/resilience-formula'
+import { avg, LAMBDA_TREND_THRESHOLD } from './utils'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -49,11 +50,6 @@ export interface TrajectoryPrediction {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function avg(values: number[]): number {
-  if (values.length === 0) return 1
-  return values.reduce((a, b) => a + b, 0) / values.length
-}
-
 function detectTrend(lambdaSeries: number[]): TrajectoryPrediction['trend'] {
   if (lambdaSeries.length < 2) return 'stable'
 
@@ -63,12 +59,12 @@ function detectTrend(lambdaSeries: number[]): TrajectoryPrediction['trend'] {
 
   if (firstHalf.length === 0) return 'stable'
 
-  const avgFirst = avg(firstHalf)
-  const avgSecond = avg(secondHalf)
+  const avgFirst = avg(firstHalf) ?? 1
+  const avgSecond = avg(secondHalf) ?? 1
   const delta = avgSecond - avgFirst
 
-  if (delta > 0.05) return 'improving'
-  if (delta < -0.05) return 'declining'
+  if (delta > LAMBDA_TREND_THRESHOLD) return 'improving'
+  if (delta < -LAMBDA_TREND_THRESHOLD) return 'declining'
   return 'stable'
 }
 
@@ -132,7 +128,7 @@ export function computeTrajectory(
   }
 
   const current_lambda = lambdaSeries[lambdaSeries.length - 1]
-  const mean_lambda = avg(lambdaSeries)
+  const mean_lambda = avg(lambdaSeries) ?? 1
 
   return {
     lambda_series: lambdaSeries,

@@ -14,7 +14,7 @@ import type { QuestionnaireAnswer } from './corsys-questionnaire'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-export type PathologyCode = 'DR' | 'ND' | 'UC'
+export type PathologyCode = 'DR' | 'ND' | 'UC' | 'SC'
 export type SeverityLevel = 1 | 2 | 3
 export type SeverityProfile = 'healthy' | 'at-risk' | 'critical' | 'systemic-collapse'
 
@@ -29,11 +29,11 @@ export interface PathologySeverity {
 }
 
 export interface DSMDiagnosis {
-  codes: string[]                     // ["DR-2", "ND-3", "UC-1"]
+  codes: string[]                     // ["DR-2", "ND-3", "UC-1", "SC-2"]
   primaryDiagnosis: PathologyCode     // הפתולוגיה החמורה ביותר
   severityProfile: SeverityProfile
   pathologies: PathologySeverity[]
-  totalEntropyScore: number           // 0–30 (סכום ציוני חומרה)
+  totalEntropyScore: number           // 0–40 (סכום ציוני חומרה — 4 ממדים)
 }
 
 export interface ComorbidityEdge {
@@ -64,6 +64,7 @@ const PATHOLOGY_NAMES: Record<PathologyCode, { he: string; en: string }> = {
   DR: { he: 'הדדיות מעוותת', en: 'Distorted Reciprocity' },
   ND: { he: 'נורמליזציית סטייה', en: 'Normalization of Deviance' },
   UC: { he: 'כיול לא-מייצג', en: 'Unrepresentative Calibration' },
+  SC: { he: 'עמימות מבנית', en: 'Structural Clarity Deficit' },
 }
 
 const LEVEL_LABELS: Record<SeverityLevel, string> = {
@@ -112,6 +113,13 @@ const UC_SEMANTIC_SCORES: Record<string, number> = {
   high_drift: 8.0,
   medium_drift: 4.5,
   low_drift: 1.0,
+}
+
+/** SC — Structural Clarity Deficit (Reductionist-Logical dimension, Phase 4) */
+const SC_SCORES: Record<string, number> = {
+  high: 8.5,   // severe structural dysfunction
+  medium: 5.0,
+  low: 1.5,    // well-defined structure
 }
 
 const LATENCY_MODIFIER: Record<string, number> = {
@@ -173,6 +181,11 @@ export function diagnose(answers: QuestionnaireAnswer): DSMDiagnosis {
   const ucContributors = ['pathologyLearning', 'pathologySemantic']
   if (latencyMod > 0 && ucBase > 3.0) ucContributors.push('decisionLatency')
 
+  // SC score — Structural Clarity Deficit (Reductionist-Logical dimension)
+  const scBase = SC_SCORES[answers.pathologySc ?? 'medium'] ?? 5.0
+  const scScore = clampScore(scBase)
+  const scContributors = ['pathologySc']
+
   const pathologies: PathologySeverity[] = [
     {
       code: 'DR',
@@ -201,12 +214,21 @@ export function diagnose(answers: QuestionnaireAnswer): DSMDiagnosis {
       levelLabel: LEVEL_LABELS[scoreToLevel(ucScore)],
       contributors: ucContributors,
     },
+    {
+      code: 'SC',
+      nameHe: PATHOLOGY_NAMES.SC.he,
+      nameEn: PATHOLOGY_NAMES.SC.en,
+      score: scScore,
+      level: scoreToLevel(scScore),
+      levelLabel: LEVEL_LABELS[scoreToLevel(scScore)],
+      contributors: scContributors,
+    },
   ]
 
   const codes = pathologies.map((p) => `${p.code}-${p.level}`)
   const primary = pathologies.reduce((max, p) => (p.score > max.score ? p : max)).code
   const severityProfile = computeSeverityProfile(pathologies)
-  const totalEntropyScore = drScore + ndScore + ucScore
+  const totalEntropyScore = drScore + ndScore + ucScore + scScore
 
   return { codes, primaryDiagnosis: primary, severityProfile, pathologies, totalEntropyScore }
 }
@@ -219,7 +241,8 @@ export function diagnoseFromScores(
   drScore: number,
   ndScore: number,
   ucScore: number,
-  latencyHours: number = 0
+  latencyHours: number = 0,
+  scScore: number = 5.0
 ): DSMDiagnosis {
   const latencyMod = latencyHours > 15 ? 1.5 : latencyHours >= 5 ? 0.5 : 0
   const latencyFactor = computeLatencyFactorFromModifier(latencyMod)
@@ -227,6 +250,7 @@ export function diagnoseFromScores(
   const dr = clampScore((drScore + (drScore > 3.0 ? latencyMod : 0)) * latencyFactor)
   const nd = clampScore((ndScore + (ndScore > 3.0 ? latencyMod : 0)) * latencyFactor)
   const uc = clampScore((ucScore + (ucScore > 3.0 ? latencyMod : 0)) * latencyFactor)
+  const sc = clampScore(scScore) // SC not affected by latency — structural, not behavioral
 
   const pathologies: PathologySeverity[] = [
     {
@@ -244,12 +268,17 @@ export function diagnoseFromScores(
       score: uc, level: scoreToLevel(uc), levelLabel: LEVEL_LABELS[scoreToLevel(uc)],
       contributors: ['direct-input'],
     },
+    {
+      code: 'SC', nameHe: PATHOLOGY_NAMES.SC.he, nameEn: PATHOLOGY_NAMES.SC.en,
+      score: sc, level: scoreToLevel(sc), levelLabel: LEVEL_LABELS[scoreToLevel(sc)],
+      contributors: ['direct-input'],
+    },
   ]
 
   const codes = pathologies.map((p) => `${p.code}-${p.level}`)
   const primary = pathologies.reduce((max, p) => (p.score > max.score ? p : max)).code
   const severityProfile = computeSeverityProfile(pathologies)
-  const totalEntropyScore = dr + nd + uc
+  const totalEntropyScore = dr + nd + uc + sc
 
   return { codes, primaryDiagnosis: primary, severityProfile, pathologies, totalEntropyScore }
 }
@@ -260,7 +289,8 @@ function computeSeverityProfile(pathologies: PathologySeverity[]): SeverityProfi
   const totalScore = pathologies.reduce((sum, p) => sum + p.score, 0)
 
   // קריסה מערכתית דורשת גם עומס אנטרופיה גבוה, לא רק שתי פתולוגיות חמורות
-  if (level3Count >= 2 && totalScore >= 22) return 'systemic-collapse'
+  // Threshold scaled from 22/30 (3D) → 29/40 (4D) proportionally
+  if (level3Count >= 2 && totalScore >= 29) return 'systemic-collapse'
   if (level3Count === 1) return 'critical'
   if (level2Count >= 1) return 'at-risk'
   return 'healthy'
@@ -354,6 +384,26 @@ const PROTOCOLS: InterventionProtocol[] = [
     timelineMonths: 6,
   },
   {
+    id: 'structural-clarity-remediation',
+    triggerCode: 'SC',
+    nameHe: 'תיקון עמימות מבנית',
+    nameEn: 'Structural Clarity Remediation',
+    phase: 'חודשים 1-4',
+    components: [
+      { step: 'מיפוי תפקידים ואחריות (RACI)', detail: 'הגדרת מטריצת RACI לכל פרויקט ותהליך ליבה — Responsible, Accountable, Consulted, Informed' },
+      { step: 'תיעוד תהליכים קריטיים', detail: 'מיפוי ותיעוד 5-10 תהליכים קריטיים; שמירה ב-Wiki נגיש לכולם' },
+      { step: 'פרוטוקול קבלת החלטות', detail: 'קביעת מי מחליט בכל סוג החלטה (ממשל החלטות) + SLA לתגובה' },
+      { step: 'תוכנית העברת ידע', detail: 'מנגנונים למניעת Single Point of Failure: תיעוד, פיצול ידע, Buddy System' },
+    ],
+    successMetrics: [
+      'ירידה של ≥1.5 נקודות בציון SC תוך 4 חודשים',
+      '≥80% מהתהליכים הקריטיים מתועדים ונגישים',
+      '≥70% מהעובדים יודעים מי מחליט בכל נושא עיקרי (סקר)',
+    ],
+    researchBasis: 'Simon (1947) — Bounded Rationality; Weick (1979) — Organizing; Phase 4 MECE fourth dimension',
+    timelineMonths: 4,
+  },
+  {
     id: 'integrated-system',
     triggerCode: 'MULTI',
     nameHe: 'התערבות מערכתית משולבת',
@@ -406,9 +456,14 @@ export function getInterventionProtocols(
     result.push(PROTOCOLS[2])
   }
 
+  // Protocol SC: Structural Clarity Remediation
+  if (scoreMap.SC && scoreMap.SC.level >= 2) {
+    result.push(PROTOCOLS[3]) // structural-clarity-remediation
+  }
+
   // Protocol 4.4: Integrated System (2+ pathologies at Level 2+)
   if (level2Plus.length >= 2) {
-    result.push(PROTOCOLS[3])
+    result.push(PROTOCOLS[4])
   }
 
   return result

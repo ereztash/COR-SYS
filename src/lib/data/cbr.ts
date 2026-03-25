@@ -12,6 +12,23 @@ import type {
   InterventionAndFeedback,
 } from '@/types/database'
 
+// ─── Private helpers ──────────────────────────────────────────────────────────
+
+async function fetchOrgContext(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  clientId: string
+): Promise<OrganizationContext | null> {
+  const { data, error } = await supabase
+    .from('organizations_context')
+    .select('*')
+    .eq('client_id', clientId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single()
+  if (error || !data) return null
+  return data as unknown as OrganizationContext
+}
+
 export interface LatestInterventionData {
   org: OrganizationContext
   snapshot: DsmDiagnosticSnapshot
@@ -34,16 +51,8 @@ export async function getLatestInterventionForClient(
   const supabase = await createClient()
 
   // Step 1: org context for this client
-  const { data: orgRaw, error: orgErr } = await supabase
-    .from('organizations_context')
-    .select('*')
-    .eq('client_id', clientId)
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .single()
-
-  if (orgErr || !orgRaw) return null
-  const org = orgRaw as unknown as OrganizationContext
+  const org = await fetchOrgContext(supabase, clientId)
+  if (!org) return null
 
   // Step 2: latest snapshot for this org
   const { data: snapRaw, error: snapErr } = await supabase
@@ -82,16 +91,8 @@ export async function getLatestSnapshotForClient(
 ): Promise<{ snapshot: DsmDiagnosticSnapshot; org: OrganizationContext } | null> {
   const supabase = await createClient()
 
-  const { data: orgRaw, error: orgErr } = await supabase
-    .from('organizations_context')
-    .select('*')
-    .eq('client_id', clientId)
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .single()
-
-  if (orgErr || !orgRaw) return null
-  const org = orgRaw as unknown as OrganizationContext
+  const org = await fetchOrgContext(supabase, clientId)
+  if (!org) return null
 
   const { data: snapRaw, error: snapErr } = await supabase
     .from('dsm_diagnostic_snapshots')

@@ -22,6 +22,14 @@ import type { RecommendationResult } from '@/types/database'
 import type { DsmDiagnosticSnapshot } from '@/types/database'
 import type { DSMDiagnosis } from '@/lib/dsm-engine'
 import { buildGoldenQuestions } from '@/lib/dsm-policy-engine'
+import {
+  avg,
+  SUCCESS_ENTROPY_DELTA,
+  SUCCESS_J_QUOTIENT_THRESHOLD,
+  CONFIDENCE_HIGH_THRESHOLD,
+  CONFIDENCE_MEDIUM_THRESHOLD,
+  CONFIDENCE_LOW_THRESHOLD,
+} from './utils'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -72,26 +80,18 @@ function wilsonScore(successes: number, total: number, z = 1.96): number {
  * Threshold source: cbr-execution-roadmap.md Step 3.1
  */
 function isSuccess(c: RankedCase): boolean {
-  if (c.delta_total_entropy != null && c.delta_total_entropy < -1.5) return true
-  if (c.j_quotient_recovered != null && c.j_quotient_recovered > 0.05) return true
+  if (c.delta_total_entropy != null && c.delta_total_entropy < SUCCESS_ENTROPY_DELTA) return true
+  if (c.j_quotient_recovered != null && c.j_quotient_recovered > SUCCESS_J_QUOTIENT_THRESHOLD) return true
   return false
 }
 
 // ─── Confidence Mapping ───────────────────────────────────────────────────────
 
 function mapConfidence(wilson: number): RecommendationResult['confidence_level'] {
-  if (wilson >= 0.6) return 'high'
-  if (wilson >= 0.35) return 'medium'
-  if (wilson >= 0.1) return 'low'
+  if (wilson >= CONFIDENCE_HIGH_THRESHOLD) return 'high'
+  if (wilson >= CONFIDENCE_MEDIUM_THRESHOLD) return 'medium'
+  if (wilson >= CONFIDENCE_LOW_THRESHOLD) return 'low'
   return 'insufficient'
-}
-
-// ─── Average (null-safe) ──────────────────────────────────────────────────────
-
-function avg(values: (number | null | undefined)[]): number | null {
-  const valid = values.filter((v): v is number => v != null)
-  if (valid.length === 0) return null
-  return valid.reduce((a, b) => a + b, 0) / valid.length
 }
 
 // ─── Cold-Start Fallback ──────────────────────────────────────────────────────

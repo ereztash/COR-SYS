@@ -39,14 +39,10 @@ export async function GET(
   const hoursPerWeek = parseFloat(request.nextUrl.searchParams.get('hours_per_week') ?? String(DEFAULT_HOURS_PER_WEEK))
   const monthlySalary = parseFloat(request.nextUrl.searchParams.get('monthly_salary') ?? String(DEFAULT_MONTHLY_SALARY))
 
+  // OPENAI_API_KEY is optional — embedding generation is attempted but if unavailable,
+  // findSimilarCases automatically falls back to score-based Jensen-Shannon similarity.
   if (!process.env.OPENAI_API_KEY) {
-    return NextResponse.json(
-      {
-        error: 'OPENAI_API_KEY not configured',
-        hint: 'Add OPENAI_API_KEY to .env.local to enable CBR recommendations',
-      },
-      { status: 503 }
-    )
+    console.warn('[CBR] OPENAI_API_KEY not set — KL score fallback will be used instead of HNSW')
   }
 
   const supabase = await createClient()
@@ -116,9 +112,13 @@ export async function GET(
       policy_fallback = golden.recommendedAction
     }
 
+    // Observability: which similarity path was used (Iteration 2+10)
+    const similarity_method = rankedCases[0]?.similarity_method ?? (cold_start ? 'none' : 'hnsw')
+
     return NextResponse.json({
       snapshot_id: snapshotId,
       cold_start,
+      similarity_method,
       recommendations,
       ...(policy_fallback ? { policy_fallback } : {}),
     })

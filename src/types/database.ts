@@ -139,6 +139,7 @@ export interface DsmDiagnosticSnapshot {
   score_dr: number
   score_nd: number
   score_uc: number
+  score_sc: number   // Structural Clarity Deficit — Phase 4 4th dimension
   total_entropy: number
   // Operational metrics
   j_quotient: number | null
@@ -209,6 +210,7 @@ export interface DsmDiagnosticSnapshotInsert {
   score_dr: number
   score_nd: number
   score_uc: number
+  score_sc?: number  // defaults to 5.0 in DB if omitted
   total_entropy: number
   j_quotient?: number | null
   decision_latency?: number | null

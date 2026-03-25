@@ -26,6 +26,10 @@ export type PathologyLearning = 'single_loop' | 'mixed' | 'double_loop'
 /** Semantic Drift / Ontological Friction (Floridi) */
 export type PathologySemantic = 'high_drift' | 'medium_drift' | 'low_drift'
 
+/** Structural Clarity — undefined roles, undocumented processes, missing first principles.
+ *  Reductionist-Logical dimension (MECE 4th category, Phase 4 addition). */
+export type PathologySc = 'high' | 'medium' | 'low' // high = high dysfunction
+
 // ─── Block 3: Metrics ────────────────────────────────────────────────────────
 
 /** Edmondson PSI — 7-point Likert scale (1=Strongly Disagree, 7=Strongly Agree)
@@ -51,6 +55,7 @@ export interface QuestionnaireAnswer {
   pathologyZeroSum?: PathologyZeroSum
   pathologyLearning?: PathologyLearning
   pathologySemantic?: PathologySemantic
+  pathologySc?: PathologySc
 
   // Block 3 — Metrics
   decisionLatency?: DecisionLatency
@@ -160,6 +165,17 @@ export const QUESTIONNAIRE_STEPS = [
           { value: 'high_drift', label: 'קיימים פערים משמעותיים בהבנה וויכוחים תכופים על תחומי אחריות והגדרות' },
           { value: 'medium_drift', label: 'ישנה הבנה כללית, אך נוצרים שטחים אפורים ובלבול מפעם לפעם' },
           { value: 'low_drift', label: 'בהירות גבוהה והסכמה מלאה על מילון המונחים הארגוני ותחומי האחריות' },
+        ],
+      },
+      {
+        key: 'pathologySc',
+        label: 'עד כמה המבנה הארגוני מוגדר בצורה ברורה — תפקידים, תהליכים, אחריות והיררכיית סמכות?',
+        type: 'select' as const,
+        required: false,
+        options: [
+          { value: 'high', label: 'גבוהה — תפקידים לא מוגדרים, תהליכים לא מתועדים, אחריות מטושטשת לעיתים קרובות' },
+          { value: 'medium', label: 'בינונית — קיים מבנה חלקי אך יש אי-בהירויות משמעותיות בשדות אפורים' },
+          { value: 'low', label: 'נמוכה — מבנה ברור, תפקידים מוגדרים ותהליכים מתועדים בצורה שיטתית' },
         ],
       },
     ],
