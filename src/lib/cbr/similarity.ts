@@ -234,8 +234,15 @@ export async function findSimilarCases(input: SimilaritySearchInput): Promise<Ra
     top_k = 5,
   } = input
 
-  // Step 1: Generate query embedding
-  const queryEmbedding = await generateCaseEmbedding({ snapshot, org })
+  // Step 1: Generate query embedding — graceful fallback if OpenAI unavailable (quota/key).
+  // When embedding fails we skip HNSW entirely and go straight to score-based KL path.
+  let queryEmbedding: number[] | null = null
+  try {
+    queryEmbedding = await generateCaseEmbedding({ snapshot, org })
+  } catch (embErr) {
+    console.warn('[CBR] embedding unavailable, using score-based fallback:', embErr)
+    return findSimilarCasesByScore(snapshot, org, top_k)
+  }
 
   // Step 2: RPC — Pre-filter (industry + severity + DLI) + HNSW ANN
   const supabase = await createClient()
