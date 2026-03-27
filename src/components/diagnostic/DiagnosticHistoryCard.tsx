@@ -1,5 +1,6 @@
 import type { ClientDiagnostic } from '@/types/database'
 import { formatDate } from '@/lib/utils'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 const PROFILE_LABELS: Record<string, string> = {
   healthy: 'תקין',
@@ -22,6 +23,12 @@ export function DiagnosticHistoryCard({ diagnostics }: { diagnostics: ClientDiag
     return (
       <div className="bento-card p-6 border-t-4 border-t-slate-600">
         <p className="text-xs font-bold text-slate-500 uppercase mb-3">היסטוריית אבחונים</p>
+        <ModeBlurb
+          className="mb-3"
+          beginner="השוואה פשוטה בין המדידה הקודמת למדידה הנוכחית."
+          advanced="Recent diagnostic timeline with directional trend indicators."
+          research="Short-horizon trajectory trace for state-transition analysis."
+        />
         <p className="text-sm text-slate-400 mb-2">אבחון יחיד — {formatDate(d.created_at)}</p>
         <div className="flex gap-4 text-sm">
           <span className="text-blue-400">DR {s.drScore.toFixed(1)}</span>
@@ -40,6 +47,12 @@ export function DiagnosticHistoryCard({ diagnostics }: { diagnostics: ClientDiag
   return (
     <div className="bento-card p-6 border-t-4 border-t-slate-600">
       <p className="text-xs font-bold text-slate-500 uppercase mb-3">היסטוריית אבחונים</p>
+      <ModeBlurb
+        className="mb-3"
+        beginner="השוואה פשוטה בין המדידה הקודמת למדידה הנוכחית."
+        advanced="Recent diagnostic timeline with directional trend indicators."
+        research="Short-horizon trajectory trace for state-transition analysis."
+      />
       <div className="space-y-3">
         {diagnostics.slice(0, 5).map((d, i) => (
           <div key={d.id} className="flex flex-wrap items-center gap-3 text-sm">

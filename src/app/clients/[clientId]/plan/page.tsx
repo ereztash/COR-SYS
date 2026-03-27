@@ -6,6 +6,7 @@ import type { QuestionnaireAnswer } from '@/lib/corsys-questionnaire'
 import { computeDiagnostic } from '@/lib/diagnostic'
 import { EntropyDots, DSMDiagnosisCard, ComorbidityMap, InterventionProtocolsCard, PlanProtocolsCta, DiagnosticHistoryCard } from '@/components/diagnostic'
 import { PlanQuestionnaireForm } from './PlanQuestionnaireForm'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 export const dynamic = 'force-dynamic'
 
@@ -44,6 +45,12 @@ export default async function ClientPlanPage({ params }: { params: Promise<{ cli
         <Link href={`/clients/${clientId}`} className="text-slate-400 hover:text-white text-sm transition-colors">← {client.name}</Link>
         <h1 className="text-2xl font-black text-white mt-2">תוכנית עסקית — {client.name}</h1>
         <p className="text-slate-400 text-sm mt-1">שאלון COR-SYS ומבנה תוכנית לפי פתולוגיות ו-ICP</p>
+        <ModeBlurb
+          className="mt-2"
+          beginner="כאן רואים תוכנית פעולה מסודרת לפי הבעיה המרכזית."
+          advanced="Plan workspace combining diagnosis, recommended service, and next steps."
+          research="Integrated plan artifact linking pathology profile to intervention protocol stack."
+        />
 
         {plan ? (
           <div className="mt-8 space-y-5">

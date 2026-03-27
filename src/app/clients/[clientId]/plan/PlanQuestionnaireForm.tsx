@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { QUESTIONNAIRE_STEPS, type QuestionnaireAnswer, type DynamicSummary, buildPlanFromQuestionnaire } from '@/lib/corsys-questionnaire'
 import { savePlanFromQuestionnaire } from '@/lib/actions/plans'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 export function PlanQuestionnaireForm({
   clientId,
@@ -42,6 +43,11 @@ export function PlanQuestionnaireForm({
 
   return (
     <div className="space-y-6">
+      <ModeBlurb
+        beginner="עוברים שאלה־שאלה ובסוף מקבלים תוכנית פעולה ראשונית."
+        advanced="Structured questionnaire that generates a business plan from diagnostic signals."
+        research="Rule-based elicitation flow for dynamic-summary synthesis and plan generation."
+      />
       {/* Step tabs */}
       <div className="flex gap-2 mb-4">
         {QUESTIONNAIRE_STEPS.map((s, i) => (

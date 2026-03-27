@@ -32,7 +32,7 @@ export async function AgentInsightsPanel({ planId }: Props) {
 
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
             <div className="rounded-xl border border-white/6 bg-slate-900/40 p-4">
-              <p className="type-meta mb-2">Alpha · Boundary Map</p>
+              <p className="type-meta mb-2">Alpha · מה הבעיה האמיתית</p>
               <div className="flex flex-wrap gap-2">
                 {payload.alphaSummary.boundedContexts.length > 0 ? (
                   payload.alphaSummary.boundedContexts.map((context) => (
@@ -45,45 +45,63 @@ export async function AgentInsightsPanel({ planId }: Props) {
                 )}
               </div>
               <p className="text-xs text-slate-400 mt-3">
-                Contradiction Loss: {payload.alphaSummary.contradictionLoss != null ? payload.alphaSummary.contradictionLoss.toFixed(2) : '—'}
+                מדד סתירות: {payload.alphaSummary.contradictionLoss != null ? payload.alphaSummary.contradictionLoss.toFixed(2) : '—'}
               </p>
             </div>
 
             <div className="rounded-xl border border-white/6 bg-slate-900/40 p-4">
-              <p className="type-meta mb-2">Gamma · Active Signals</p>
+              <p className="type-meta mb-2">Gamma · האם הארגון מחליק לבעיה</p>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <p className="text-slate-500">KL Drift</p>
+                  <p className="text-slate-500">פער בין תכנון לביצוע</p>
                   <p className="font-black text-white">{payload.gamma.semanticDriftKl.toFixed(2)}</p>
                 </div>
                 <div>
-                  <p className="text-slate-500">J(t)</p>
+                  <p className="text-slate-500">מדד עומס מערכת</p>
                   <p className="font-black text-white">{payload.gamma.currentJ.toFixed(2)}</p>
                 </div>
                 <div>
-                  <p className="text-slate-500">Emergence</p>
+                  <p className="text-slate-500">שינוי מצב</p>
                   <p className="font-black text-white">{payload.gamma.emergenceSignal}</p>
                 </div>
                 <div>
-                  <p className="text-slate-500">Loop</p>
+                  <p className="text-slate-500">סוג לולאה</p>
                   <p className="font-black text-white">{payload.gamma.feedbackLoopType ?? '—'}</p>
                 </div>
               </div>
               <div className="mt-3 flex items-center justify-between">
                 <span className={loop.className}>{loop.label}</span>
                 {payload.gamma.alert ? (
-                  <span className="text-xs text-intent-danger type-kpi">Alert: {payload.gamma.alert}</span>
+                    <span className="text-xs text-intent-danger type-kpi">התראה: {payload.gamma.alert}</span>
                 ) : (
-                  <span className="text-xs text-slate-500">No active alert</span>
+                    <span className="text-xs text-slate-500">אין התראה פעילה</span>
                 )}
               </div>
+            </div>
+          </div>
+          <div className="mt-4 rounded-xl border border-slate-700/50 bg-slate-900/35 px-4 py-3 mode-beginner-only">
+            <p className="type-meta mb-2">מילון קצר</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-slate-300">
+              <p><span className="text-slate-400">מדד סתירות:</span> עד כמה חלקים בארגון מושכים לכיוונים שונים.</p>
+              <p><span className="text-slate-400">פער תכנון-ביצוע:</span> כמה השטח שונה ממה שהוגדר למעלה.</p>
+              <p><span className="text-slate-400">לולאה מאזנת:</span> בעיה שמתחילה להירגע.</p>
+              <p><span className="text-slate-400">לולאה מחמירה:</span> בעיה שמזינה את עצמה ועלולה להסלים.</p>
+            </div>
+          </div>
+          <div className="mt-4 rounded-xl border border-slate-700/50 bg-slate-900/35 px-4 py-3 mode-research">
+            <p className="type-meta mb-2">Research Lens</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-slate-300">
+              <p><span className="text-slate-400">Alpha:</span> contradiction loss approximates context overlap and signaling conflict.</p>
+              <p><span className="text-slate-400">Beta:</span> seeded Monte Carlo percentiles constrain upside/downside variance.</p>
+              <p><span className="text-slate-400">Gamma:</span> semantic drift uses token KL divergence between declared vs observed states.</p>
+              <p><span className="text-slate-400">Delta:</span> reasoning trace aligns case-memory evidence with operator prompts.</p>
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
           <div className="rounded-2xl border border-white/6 bg-slate-950/40 p-5">
-            <p className="type-meta mb-3">Beta · Monte Carlo</p>
+            <p className="type-meta mb-3">Beta · מה קורה אם נבצע את זה</p>
             <div className="space-y-3">
               {payload.simulations.map((simulation) => (
                 <div key={simulation.interventionType} className="rounded-xl border border-white/6 bg-slate-900/30 p-4">
@@ -100,6 +118,9 @@ export async function AgentInsightsPanel({ planId }: Props) {
                   <p className="text-xs text-slate-400">
                     ROI P5/P50/P95: {simulation.roiPercentiles.p5.toFixed(2)} / {simulation.roiPercentiles.p50.toFixed(2)} / {simulation.roiPercentiles.p95.toFixed(2)}
                   </p>
+                  <p className="text-[11px] text-slate-500 mt-1 mode-advanced">
+                    טווח תחתון/אמצעי/עליון כדי להבין סיכון לפני ביצוע בפועל.
+                  </p>
                   <p className="text-xs text-slate-500 mt-1">
                     Benefit median ₪{Math.round(simulation.benefitPercentiles.p50).toLocaleString('he-IL')} · Risk median ₪{Math.round(simulation.riskPercentiles.p50).toLocaleString('he-IL')}
                   </p>
@@ -112,7 +133,7 @@ export async function AgentInsightsPanel({ planId }: Props) {
           </div>
 
           <div className="rounded-2xl border border-white/6 bg-slate-950/40 p-5">
-            <p className="type-meta mb-3">Delta · Reasoning Trace</p>
+            <p className="type-meta mb-3">Delta · למה זו ההחלטה</p>
             <div className="space-y-3">
               {payload.reasoningTrace.map((step) => (
                 <div key={step.title} className="rounded-xl border border-white/6 bg-slate-900/30 p-4">
@@ -123,7 +144,7 @@ export async function AgentInsightsPanel({ planId }: Props) {
             </div>
 
             <div className="mt-4 rounded-xl border border-amber-500/20 bg-amber-950/10 p-4">
-              <p className="type-meta mb-2 text-amber-300">Double-loop prompts</p>
+              <p className="type-meta mb-2 text-amber-300">שאלות עומק לצוות</p>
               <ul className="space-y-2 text-xs text-slate-300">
                 {payload.socraticQuestions.map((question) => (
                   <li key={question}>• {question}</li>

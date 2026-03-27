@@ -1,4 +1,5 @@
 import { SEVERITY_PROFILES, LEVEL_COLORS, type DSMDiagnosis } from '@/lib/dsm-engine'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 export function DSMDiagnosisCard({ diagnosis }: { diagnosis: DSMDiagnosis }) {
   const profile = SEVERITY_PROFILES[diagnosis.severityProfile]
@@ -10,6 +11,12 @@ export function DSMDiagnosisCard({ diagnosis }: { diagnosis: DSMDiagnosis }) {
           {profile.labelHe}
         </span>
       </div>
+      <ModeBlurb
+        className="mb-3"
+        beginner="זו תמונת מצב מהירה: איפה הציון הכי כואב כרגע."
+        advanced="Pathology profile by domain with severity and score intensity."
+        research="Structured DSM state vector for comparative and longitudinal interpretation."
+      />
       <div className="space-y-3">
         {diagnosis.pathologies.map((p) => {
           const colors = LEVEL_COLORS[p.level]

@@ -2,6 +2,8 @@
 
 **Organizational Resilience Engineering Platform**
 
+**Name it. Face it. Fix it.**
+
 COR-SYS diagnoses three structural pathologies that drive decision latency, entropy loss, and intervention failure in organizations. It combines a DSM-style diagnostic engine, a Case-Based Reasoning (CBR) retrieval system, and a mathematical resilience formula to provide evidence-based, loss-framed intervention recommendations for consultants and organizational development teams.
 
 > **COR** — Conservation of Resources (Hobfoll): organizations act to preserve resources; loss is felt 2.25× more acutely than equivalent gain.

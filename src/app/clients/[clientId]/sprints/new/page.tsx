@@ -3,6 +3,7 @@ import { getSprintCountByClient } from '@/lib/data/sprints'
 import { notFound } from 'next/navigation'
 import { SprintForm } from '@/components/forms/SprintForm'
 import Link from 'next/link'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,6 +23,12 @@ export default async function NewSprintPage({ params }: { params: Promise<{ clie
           <Link href={`/clients/${clientId}`} className="text-slate-400 hover:text-white text-sm transition-colors">← {client.name}</Link>
           <h1 className="text-3xl font-black text-white mt-2">ספרינט חדש #{nextSprintNumber}</h1>
           <p className="text-slate-400 text-sm mt-1">ספרינט 14 יום — חוסם עורקים</p>
+          <ModeBlurb
+            className="mt-2"
+            beginner="בוחרים מטרה קצרה וברורה לשבועיים הקרובים."
+            advanced="Define a 14-day sprint with focused goal and delivery window."
+            research="Set bounded intervention cycle for measurable short-horizon execution."
+          />
         </div>
         <div className="bento-card p-6">
           <SprintForm clientId={clientId} clientName={client.name} sprintNumber={nextSprintNumber} />

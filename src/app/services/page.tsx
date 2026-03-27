@@ -21,7 +21,9 @@ export default function ServicesPage() {
         <div className="mb-8">
           <Link href="/" className="text-slate-400 hover:text-white text-sm transition-colors">← דשבורד</Link>
           <h1 className="type-display text-white mt-2">שירותים וערוצים</h1>
-          <p className="type-body text-slate-400 mt-1">ערוצי מתן שירות ואפשרויות עסקיות — ניהול והצעות ללקוחות</p>
+          <p className="type-body text-slate-400 mt-1 mode-advanced">ערוצי מתן שירות ואפשרויות עסקיות — ניהול והצעות ללקוחות</p>
+          <p className="type-body text-slate-400 mt-1 mode-beginner-only">כאן בוחרים איך לעבוד: אבחון מהיר, ספרינט, או ליווי מתמשך.</p>
+          <p className="type-body text-slate-400 mt-1 mode-research">Service funnel mapped to intervention depth, evidence burden, and monetization horizon.</p>
         </div>
 
         <div className="space-y-8">
@@ -34,6 +36,12 @@ export default function ServicesPage() {
                   <span className="status-badge status-info">{options.length} אפשרויות</span>
                 </div>
                 <p className="type-body text-slate-400 mb-4">{ch.description}</p>
+                <p className="text-xs text-slate-500 mb-4 mode-beginner-only">
+                  במילים פשוטות: זה ערוץ עבודה שמתאים לשלב שונה במסע הלקוח.
+                </p>
+                <p className="text-xs text-slate-500 mb-4 mode-research">
+                  Channel abstraction: delivery lane with distinct evidence burden and intervention depth.
+                </p>
                 <div className="space-y-3">
                   {options.map((opt) => (
                     <div
@@ -112,9 +120,17 @@ export default function ServicesPage() {
           <UxKpiPanel />
         </div>
 
-        <div className="mt-8 p-4 rounded-xl bg-slate-800/30 border border-slate-700 text-xs text-slate-400">
+        <div className="mt-8 p-4 rounded-xl bg-slate-800/30 border border-slate-700 text-xs text-slate-400 mode-advanced">
           <p className="font-bold text-slate-300 mb-1">תמחור Value-Based</p>
           <p>לא T&M. ΔP = (H × C × 52) × Pₛ (20%). המלצה ללקוח נגזרת משאלון COR-SYS בדף הלקוח → תוכנית עסקית.</p>
+        </div>
+        <div className="mt-8 p-4 rounded-xl bg-slate-800/30 border border-slate-700 text-xs text-slate-400 mode-beginner-only">
+          <p className="font-bold text-slate-300 mb-1">איך המחיר נקבע?</p>
+          <p>לפי הערך העסקי שיוצרים בפועל (זמן שנחסך, החלטות שמתקבלות מהר יותר), ולא לפי שעות ייעוץ.</p>
+        </div>
+        <div className="mt-8 p-4 rounded-xl bg-slate-800/30 border border-slate-700 text-xs text-slate-400 mode-research">
+          <p className="font-bold text-slate-300 mb-1">Value Function</p>
+          <p>Pricing references expected recovered capacity (H), cost-per-hour (C), and conservative realization prior (Pₛ).</p>
         </div>
         </div>
 

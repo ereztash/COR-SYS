@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { getClientById } from '@/lib/data/clients'
 import { getSprintCountByClient } from '@/lib/data'
 import { DiagnosticWizard } from './DiagnosticWizard'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 interface Props {
   params: Promise<{ clientId: string }>
@@ -35,6 +36,12 @@ export default async function DiagnosticNewPage({ params }: Props) {
           <p className="text-slate-400 text-sm">
             9 שאלות · DR / ND / UC · embedding-based pathology matching
           </p>
+          <ModeBlurb
+            className="mt-2"
+            beginner="שאלון קצר שיעזור לזהות מהר את צוואר הבקבוק המרכזי."
+            advanced="Rapid diagnostic intake to initialize DSM and intervention planning."
+            research="Compact assessment entry point for model-guided pathology inference."
+          />
         </div>
 
         {/* Wizard */}

@@ -12,6 +12,7 @@
 
 import { useEffect, useRef, useState, useTransition } from 'react'
 import { saveIntervention } from '@/lib/actions/cbr'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 const UNDO_DELAY_MS = 5000
 
@@ -119,6 +120,11 @@ export function InterventionForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <ModeBlurb
+        beginner="כאן מאשרים איזו פעולה באמת נבחרה לביצוע."
+        advanced="Capture actual intervention choice and optional override rationale."
+        research="Decision capture node for recommendation-to-action trace integrity."
+      />
       {/* Recommended (readonly) */}
       <div>
         <label className="block type-meta mb-1">

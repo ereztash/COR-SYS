@@ -26,6 +26,8 @@ export default function AboutPage() {
               </span>
             </div>
             <p className="text-slate-400 text-sm mt-1">זהות עסקית — 4 לשוניות</p>
+            <p className="text-slate-500 text-xs mt-1 mode-beginner-only">אם חדש לך כאן: התחל מלשונית "הבעיה", אחר כך "הפתרון".</p>
+            <p className="text-slate-500 text-xs mt-1 mode-research">Suggested reading path: Problem → Solution → Conversion.</p>
           </div>
           <div className="flex items-center gap-3">
             <Link

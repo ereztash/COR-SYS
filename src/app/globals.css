@@ -315,3 +315,18 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 ::-webkit-scrollbar-track { background: #0f172a; }
 ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+/* ─── User mode visibility (beginner / advanced / research) ─────────────── */
+:root[data-user-mode='beginner'] .mode-advanced,
+:root[data-user-mode='beginner'] .mode-research {
+  display: none !important;
+}
+
+:root[data-user-mode='advanced'] .mode-beginner-only,
+:root[data-user-mode='advanced'] .mode-research {
+  display: none !important;
+}
+
+:root[data-user-mode='research'] .mode-beginner-only {
+  display: none !important;
+}

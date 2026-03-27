@@ -20,6 +20,7 @@
 import { useState, useTransition } from 'react'
 import { saveFollowup } from '@/lib/actions/cbr'
 import { computePsiScore } from '@/lib/resilience-formula'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 // ─── Edmondson PSI items ──────────────────────────────────────────────────────
 
@@ -124,6 +125,11 @@ export function FollowupForm({ interventionId, prevScoreDr, prevPsiScore, client
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      <ModeBlurb
+        beginner="מעדכנים תוצאות אחרי ההתערבות כדי לראות אם באמת היה שיפור."
+        advanced="Post-intervention measurement for LG/lambda update and learning loop closure."
+        research="Outcome measurement layer for state-transition and feedback-loop classification."
+      />
 
       {/* DR score */}
       <div>

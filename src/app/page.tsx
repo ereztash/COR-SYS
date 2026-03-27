@@ -20,11 +20,16 @@ export default async function DashboardPage() {
             <h1 className="text-4xl font-black text-white tracking-tight">COR-SYS</h1>
             <span className="status-badge status-info px-3 py-1 mr-2">Deep-Grid v2.2</span>
           </div>
-          <p className="text-slate-400 font-medium text-sm mt-2">מערכת הפעלה אונטולוגית: הנדסת חוסן, צמצום אנטרופיה ומקסום ROI</p>
+          <p className="text-xs text-indigo-300 font-bold tracking-wide mt-1">Name it. Face it. Fix it.</p>
+          <p className="text-slate-400 font-medium text-sm mt-2 mode-advanced">מערכת הפעלה אונטולוגית: הנדסת חוסן, צמצום אנטרופיה ומקסום ROI</p>
+          <p className="text-slate-400 font-medium text-sm mt-2 mode-beginner-only">מערכת שעוזרת לזהות בעיה, לבחור פעולה ולמדוד אם באמת השתפר.</p>
+          <p className="text-slate-400 font-medium text-sm mt-2 mode-research">A decision-operating system coupling diagnostic semantics, intervention priors, and adaptive feedback loops.</p>
         </div>
         <div className="flex items-center gap-2 bg-slate-800/80 px-4 py-2 rounded-xl text-xs font-mono text-emerald-400 border border-slate-700">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block"></span>
-          J(t) = C(t) / E(t) | Active
+          <span className="mode-advanced">J(t) = C(t) / E(t) | Active</span>
+          <span className="mode-beginner-only">מצב מערכת: פעיל</span>
+          <span className="mode-research">Load observable active</span>
         </div>
       </header>
 
@@ -174,26 +179,97 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* 4 Agents */}
-        <div className="bento-card col-span-1 md:col-span-2 p-6 border-t-4 border-indigo-500">
-          <h2 className="text-lg font-bold text-white mb-4">מנוע הביצוע: 4 סוכנים חכמים</h2>
+        {/* 4 Agents — full explanation */}
+        <div className="bento-card col-span-1 md:col-span-2 xl:col-span-2 p-6 border-t-4 border-indigo-500">
+          <div className="flex items-center justify-between gap-2 mb-4">
+            <h2 className="text-lg font-bold text-white">איך המערכת מחליטה מה לעשות</h2>
+            <span className="status-badge status-info">Autopoietic Loop</span>
+          </div>
+          <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+            במקום המלצה "מהבטן", המערכת עובדת ב-4 שלבים פשוטים: להבין מצב, לבדוק תרחישים, לזהות סיכון בזמן אמת, ולהסביר למה זו ההמלצה.
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
-              { sym: 'α', name: 'Alpha', role: 'אדריכל אונטולוגי', color: 'text-blue-400' },
-              { sym: 'β', name: 'Beta', role: 'מתכנן ניסויים', color: 'text-indigo-400' },
-              { sym: 'γ', name: 'Gamma', role: 'אנליסט אנטרופיה', color: 'text-emerald-400' },
-              { sym: 'δ', name: 'Delta', role: 'דשבורד מנהלים', color: 'text-purple-400' },
+              {
+                sym: 'α',
+                name: 'Alpha',
+                role: 'סידור התמונה',
+                io: 'קלט: שאלון/מסמכים → פלט: מה הבעיות המרכזיות ואיפה יש סתירות',
+                color: 'text-blue-400',
+              },
+              {
+                sym: 'β',
+                name: 'Beta',
+                role: 'בדיקת תרחישים',
+                io: 'קלט: המלצה + מקרים דומים → פלט: מה הסיכוי לתוצאה טובה/בינונית/חלשה',
+                color: 'text-indigo-400',
+              },
+              {
+                sym: 'γ',
+                name: 'Gamma',
+                role: 'ניטור הידרדרות',
+                io: 'קלט: מה תכננו מול מה שבוצע → פלט: האם יש סטייה מסוכנת או לולאה שמחמירה',
+                color: 'text-emerald-400',
+              },
+              {
+                sym: 'δ',
+                name: 'Delta',
+                role: 'שיקוף החלטה',
+                io: 'קלט: כל הנתונים → פלט: למה בחרנו את ההמלצה ומה לבדוק הלאה',
+                color: 'text-purple-400',
+              },
             ].map(agent => (
-              <div key={agent.sym} className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/30 border border-slate-700/30">
-                <div className={`w-8 h-8 rounded bg-slate-900 flex items-center justify-center font-mono font-bold border border-slate-700 ${agent.color}`}>
-                  {agent.sym}
+              <div key={agent.sym} className="p-3 rounded-xl bg-slate-800/30 border border-slate-700/30">
+                <div className="flex items-center gap-3 mb-1.5">
+                  <div className={`w-8 h-8 rounded bg-slate-900 flex items-center justify-center font-mono font-bold border border-slate-700 ${agent.color}`}>
+                    {agent.sym}
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-200">{agent.name}</p>
+                    <p className="text-[10px] text-slate-500">{agent.role}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs font-bold text-slate-200">{agent.name}</p>
-                  <p className="text-[10px] text-slate-500">{agent.role}</p>
-                </div>
+                <p className="text-[11px] text-slate-400 leading-relaxed">{agent.io}</p>
               </div>
             ))}
+          </div>
+          <p className="text-[11px] text-slate-500 mt-4">
+            בשורה אחת: המערכת קודם מבינה, אחר כך בודקת, תוך כדי מנטרת, ולבסוף מסבירה.
+          </p>
+        </div>
+
+        {/* Action Plan Basis */}
+        <div className="bento-card col-span-1 md:col-span-2 p-6 border-l-4 border-l-indigo-500">
+          <h2 className="text-lg font-bold text-white mb-2">על מה תוכנית הפעולה מבוססת (במילים פשוטות)</h2>
+          <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+            התוכנית לא נכתבת ידנית ולא נשלפת מתבנית. היא נוצרת משילוב של מצב אמיתי אצלך, ניסיון עבר, ומה אפשרי לבצע בפועל.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {[
+              { title: 'מצב נוכחי', text: 'איפה הכאב הכי גדול כרגע ומה חומרתו (למשל עומס החלטות, תקיעות בין צוותים).' },
+              { title: 'מה עבד בארגונים דומים', text: 'השוואה למקרי עבר דומים כדי להבין מה בדרך כלל עובד טוב יותר.' },
+              { title: 'מה באמת אפשר לבצע', text: 'התאמת ההמלצה לזמן, משאבים ורמת התנגדות צפויה בארגון.' },
+              { title: 'בקרה לאורך זמן', text: 'בדיקות קבועות כדי לוודא שההתערבות באמת משפרת ולא רק נראית טוב על הנייר.' },
+            ].map((item) => (
+              <div key={item.title} className="rounded-xl border border-slate-700/40 bg-slate-800/30 p-3">
+                <p className="text-xs font-bold text-indigo-300 mb-1">{item.title}</p>
+                <p className="text-[11px] text-slate-400 leading-relaxed">{item.text}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 rounded-xl border border-slate-700/50 bg-slate-900/40 p-3">
+            <p className="text-xs text-slate-300 font-bold mb-1">איך לקרוא את התוכנית מהר:</p>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              קודם מסתכלים על "מה הבעיה הכי דחופה", אחר כך על "מה ההמלצה", ואז על "איך מודדים הצלחה תוך 2-4 שבועות".
+            </p>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link href="/clients" className="text-xs font-bold px-3 py-1.5 rounded-lg border border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10 transition-colors">
+              מעבר ללקוחות →
+            </Link>
+            <Link href="/knowledge/dsm-org" className="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-700/40 transition-colors">
+              בסיס ידע DSM-Org →
+            </Link>
           </div>
         </div>
 

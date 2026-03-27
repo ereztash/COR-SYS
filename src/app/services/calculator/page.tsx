@@ -15,6 +15,7 @@ import {
   RESEARCH_MODULES,
   type GoldenQuestionAnswers,
 } from '@/lib/dsm-policy-engine'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 function formatILS(n: number) {
   return new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS', maximumFractionDigits: 0 }).format(n)
@@ -270,6 +271,12 @@ export default function CalculatorPage() {
           <div>
             <h1 className="text-2xl font-black text-white">מחשבון אבחון DSM ארגוני</h1>
             <p className="text-slate-400 text-sm mt-1">Decision Engine — 4 שאלות זהב, Policy Engine, Benchmark Context</p>
+            <ModeBlurb
+              className="mt-2"
+              beginner="ממלאים כמה שדות ומקבלים תמונת מצב + המלצה ראשונה."
+              advanced="Interactive diagnostic calculator with structured recommendation framing."
+              research="Score-driven policy inference sandbox with benchmark and comorbidity overlays."
+            />
           </div>
           <button
             onClick={() => setShowResearch((v) => !v)}

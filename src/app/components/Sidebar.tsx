@@ -12,12 +12,13 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
           <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center text-white font-black text-sm">C</div>
           <span className="font-black text-white text-lg" style={{ fontFamily: 'Heebo, sans-serif' }}>COR-SYS</span>
         </div>
+        <p className="text-[10px] text-indigo-300 font-bold mr-9">Name it. Face it. Fix it.</p>
         <p className="text-[10px] text-slate-500 mr-9">Deep-Grid v2.2</p>
       </div>
 
       <nav className="flex flex-col gap-1 flex-1">
         <NavLink href="/" icon="⊞" label="דשבורד" onNavigate={onNavigate} />
-        <NavLink href="/about" icon="🟣" label="זהות עסקית" onNavigate={onNavigate} />
+        <NavLink href="/about" icon="🟣" label="אודות" onNavigate={onNavigate} />
         <NavLink href="/services" icon="📋" label="שירותים וערוצים" onNavigate={onNavigate} />
         <NavLink href="/clients" icon="👥" label="לקוחות" onNavigate={onNavigate} />
         <NavLink href="/sprints" icon="⚡" label="ספרינטים" onNavigate={onNavigate} />
@@ -26,7 +27,9 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
 
       <div className="border-t border-slate-800 pt-4 mt-4 space-y-1">
         <SidebarLogout />
-        <p className="text-[10px] text-slate-600 text-center">J(t) = C(t) / E(t)</p>
+        <p className="text-[10px] text-slate-600 text-center mode-advanced">J(t) = C(t) / E(t)</p>
+        <p className="text-[10px] text-slate-600 text-center mode-beginner-only">מדד עומס המערכת</p>
+        <p className="text-[10px] text-slate-600 text-center mode-research">System load observable (capacity/entropy)</p>
         <div className="flex items-center justify-center gap-1 mt-2">
           <kbd className="text-[9px] text-slate-700 border border-slate-800 px-1.5 py-0.5 rounded bg-slate-900">⌘K</kbd>
           <span className="text-[9px] text-slate-700">פעולות מהירות</span>

@@ -1,5 +1,6 @@
 import { getSprintsWithTasks } from '@/lib/data/sprints'
 import Link from 'next/link'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,6 +16,12 @@ export default async function AllSprintsPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-black text-white">ספרינטים</h1>
           <p className="text-slate-400 text-sm mt-1">{sprints.length} ספרינטים סה"כ</p>
+          <ModeBlurb
+            className="mt-2"
+            beginner="זה מסך ההתקדמות: מה פעיל עכשיו, מה מחכה, ומה כבר הושלם."
+            advanced="Execution board grouped by sprint lifecycle with task completion ratios."
+            research="Intervention cadence view for throughput and completion dynamics."
+          />
         </div>
 
         {[
