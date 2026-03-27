@@ -107,6 +107,8 @@ Contextual header (Anthropic Contextual Retrieval pattern, −49% retrieval fail
 
 ## API Routes
 
+Most JSON API routes below require a logged-in Supabase session (the auth middleware exempts /api/*).
+
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/api/cbr/similar/[snapshotId]` | GET | Returns Top-K similar historical cases. Param: `top_k` (default 5). Returns `cold_start: true` when no matching cases exist. |
@@ -122,7 +124,7 @@ Contextual header (Anthropic Contextual Retrieval pattern, −49% retrieval fail
 | `/api/agents/beta/simulate` | POST | Beta Monte Carlo simulation (ROI/risk percentiles) from recommendations and similar cases (`use_cache`, `ttl_minutes`). |
 | `/api/agents/gamma/metrics` | GET | Gamma entropy metrics (KL drift, J, loop classification, emergence), optional persistence (`persist=1`). |
 | `/api/agents/delta/recommendation/[planId]` | GET | Delta explainability payload (reasoning trace, simulation evidence, Socratic prompts). |
-| `/api/agents/cron/process` | POST | Hybrid cron processor that claims/executes due `agent_jobs` and updates job outcomes. |
+| `/api/agents/cron/process` | POST | Requires `Authorization: Bearer <CRON_SECRET>` and `SUPABASE_SERVICE_ROLE_KEY` (service role). Claims/executes due `agent_jobs`. |
 
 ---
 
@@ -194,6 +196,7 @@ Run migrations in this order for a clean setup:
 14. `supabase-migration-org-network.sql`
 15. `supabase-migration-emergence-feedback.sql`
 16. `supabase-migration-agent-memory.sql`
+17. `supabase-migration-rls-authenticated-agent-tables.sql`
 
 Optional seed: `seed-cbr-cases.sql`
 

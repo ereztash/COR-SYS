@@ -1,8 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
+import { requireUser } from '@/lib/api/require-user'
 import { analyzeAlpha, type AlphaAnalyzeInput } from '@/lib/agents/alpha'
 import { getAgentMemory, hashAgentInput, setAgentMemory } from '@/lib/agents/memory'
 
 export async function POST(request: NextRequest) {
+  const auth = await requireUser()
+  if (!auth.ok) return auth.response
+
   try {
     const body = (await request.json()) as AlphaAnalyzeInput
     if (!body?.clientId) {

@@ -1,4 +1,6 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@/lib/supabase/server'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import type { Database } from '@/types/database'
 import type {
   Client,
   DsmDiagnosticSnapshot,
@@ -7,9 +9,13 @@ import type {
 } from '@/types/database'
 import { classifyFeedbackLoop, detectEmergence, type FeedbackLoopType } from './feedback-loop'
 
+type DbClient = SupabaseClient<Database>
+
 export interface GammaMetricInput {
   clientId: string
   persist?: boolean
+  /** When set (e.g. service role from cron), used instead of cookie-bound server client */
+  supabase?: DbClient
 }
 
 export interface GammaMetricResult {
@@ -61,8 +67,8 @@ function computeCurrentJ(snapshot: DsmDiagnosticSnapshot): number {
   return capacity / entropyLoad
 }
 
-async function loadGammaContext(clientId: string) {
-  const supabase = await createClient()
+async function loadGammaContext(clientId: string, existing?: DbClient) {
+  const supabase = existing ?? (await createClient())
   const [{ data: client }, { data: org }] = await Promise.all([
     supabase.from('clients').select('*').eq('id', clientId).single(),
     supabase.from('organizations_context').select('*').eq('client_id', clientId).order('created_at', { ascending: false }).limit(1).single(),
@@ -106,7 +112,7 @@ async function loadGammaContext(clientId: string) {
 }
 
 export async function computeGammaMetrics(input: GammaMetricInput): Promise<GammaMetricResult> {
-  const { supabase, client, snapshots, plan, interventions } = await loadGammaContext(input.clientId)
+  const { supabase, client, snapshots, plan, interventions } = await loadGammaContext(input.clientId, input.supabase)
   const latestSnapshot = snapshots[snapshots.length - 1]
   if (!latestSnapshot) {
     throw new Error('Gamma requires at least one diagnostic snapshot')

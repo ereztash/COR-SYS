@@ -1,8 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
+import { requireUser } from '@/lib/api/require-user'
 import { computeGammaMetrics } from '@/lib/agents/gamma'
 import { getAgentMemory, hashAgentInput, setAgentMemory } from '@/lib/agents/memory'
 
 export async function GET(request: NextRequest) {
+  const auth = await requireUser()
+  if (!auth.ok) return auth.response
+
   try {
     const clientId = request.nextUrl.searchParams.get('clientId')
     const persist = request.nextUrl.searchParams.get('persist') === '1'

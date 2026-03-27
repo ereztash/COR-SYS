@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server'
+﻿import { NextResponse } from 'next/server'
+import { requireUser } from '@/lib/api/require-user'
 import { buildDeltaPayload } from '@/lib/agents/delta'
 import { getAgentMemory, hashAgentInput, setAgentMemory } from '@/lib/agents/memory'
 
@@ -6,6 +7,9 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ planId: string }> }
 ) {
+  const auth = await requireUser()
+  if (!auth.ok) return auth.response
+
   try {
     const { planId } = await params
     const url = new URL(request.url)

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * GET /api/cbr/metrics
  *
  * Returns live SOTA metrics for the CBR intelligence layer.
@@ -9,9 +9,12 @@
  */
 
 import { NextResponse } from 'next/server'
+import { requireUser } from '@/lib/api/require-user'
 import { computeSotaMetrics } from '@/lib/cbr/metrics'
 
 export async function GET() {
+  const auth = await requireUser()
+  if (!auth.ok) return auth.response
   try {
     const metrics = await computeSotaMetrics()
     return NextResponse.json(metrics)
