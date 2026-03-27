@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
+import { requireUser } from '@/lib/api/require-user'
 import { findSimilarCases, getRecommendations } from '@/lib/cbr'
 import { simulateRecommendation } from '@/lib/agents/beta'
 import type { DsmDiagnosticSnapshot, OrganizationContext } from '@/types/database'
@@ -11,12 +11,15 @@ interface BetaRequestBody {
 }
 
 export async function POST(request: NextRequest) {
+  const auth = await requireUser()
+  if (!auth.ok) return auth.response
+
   try {
     const body = (await request.json()) as BetaRequestBody
     const useCache = request.nextUrl.searchParams.get('use_cache') !== '0'
     const ttlMinutes = parseInt(request.nextUrl.searchParams.get('ttl_minutes') ?? '60', 10)
     const inputHash = hashAgentInput(body)
-    if (useCache) {
+    if (useCache && body.snapshotId) {
       const cached = await getAgentMemory<Record<string, unknown>>('beta', 'snapshot', body.snapshotId, inputHash)
       if (cached) return NextResponse.json({ ...cached, cached: true })
     }
@@ -25,7 +28,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'snapshotId is required' }, { status: 400 })
     }
 
-    const supabase = await createClient()
+    const { supabase } = auth
     const { data: snapshotRaw } = await supabase
       .from('dsm_diagnostic_snapshots')
       .select('*')

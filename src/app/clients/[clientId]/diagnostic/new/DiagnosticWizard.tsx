@@ -25,6 +25,7 @@ import type { PathologyProfile, PathologyType } from '@/lib/diagnostic/pathology
 import { axisToPathologyType, detectCsAmplifier } from '@/lib/diagnostic/pathology-kb'
 import type { ActionPlanItem, ConstraintEnvelope } from '@/lib/diagnostic/action-plan'
 import type { DiagnosticRuntimeConfig } from '@/lib/diagnostic/action-plan'
+import { logUxEvent } from '@/lib/ux-metrics'
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 
@@ -296,6 +297,7 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
     setTriggerRules(triggers)
     clearDraft(clientId)
     setStage('result')
+    logUxEvent({ name: 'diagnostic_completed', ts: Date.now(), data: { method: 'slider', clientId } })
   }
 
   function goToQuestions() {
@@ -380,6 +382,7 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
       setTriggerRules(triggers)
       clearDraft(clientId)
       setStage('result')
+      logUxEvent({ name: 'diagnostic_completed', ts: Date.now(), data: { method: 'embedding', clientId } })
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'שגיאה — ממשיך עם ניתוח Slider')
       analyzeFromSliders()

@@ -1,5 +1,6 @@
 import React from 'react'
 import { NextResponse } from 'next/server'
+import { requireUser } from '@/lib/api/require-user'
 import { getClientById, getPlanByClientId } from '@/lib/data'
 import type { QuestionnaireAnswer } from '@/lib/corsys-questionnaire'
 import { computeDiagnostic } from '@/lib/diagnostic'
@@ -12,6 +13,9 @@ export async function GET(
   _request: Request,
   context: { params: Promise<{ clientId: string }> }
 ) {
+  const auth = await requireUser()
+  if (!auth.ok) return auth.response
+
   const { clientId } = await context.params
   const [client, plan] = await Promise.all([
     getClientById(clientId),

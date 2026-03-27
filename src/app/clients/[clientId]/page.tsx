@@ -95,7 +95,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
                 <div className="flex items-center gap-2 mb-3">
                   <span className="relative flex h-2.5 w-2.5">
                     <span
-                      className="absolute inline-flex h-full w-full rounded-full animate-pulse-ring"
+                      className="absolute inline-flex h-full w-full rounded-full animate-pulse-ring glow-breathe"
                       style={{ background: accent }}
                     />
                     <span
@@ -155,15 +155,15 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
 
           {/* Decision latency + loss frame */}
           <div
-            className="rounded-2xl p-4 border relative overflow-hidden"
-            style={{ background: 'rgba(244,63,94,0.07)', borderColor: 'rgba(244,63,94,0.2)' }}
+            className="rounded-2xl p-4 border relative overflow-hidden ambient-glow"
+            style={{ background: 'rgba(244,63,94,0.07)', borderColor: 'rgba(244,63,94,0.2)', '--card-glow': 'rgba(244,63,94,0.2)' } as React.CSSProperties}
           >
             <div
-              className="absolute top-0 left-0 right-0 h-0.5"
+              className="absolute top-0 left-0 right-0 h-0.5 shimmer-bar"
               style={{ background: 'linear-gradient(90deg,#f43f5e,transparent)' }}
             />
             <p className="type-meta mb-1">עיכוב החלטה</p>
-            <p className="text-2xl font-black text-red-400 type-kpi">{client.decision_latency_hours ?? 0}h</p>
+            <p className="text-2xl font-black text-red-400 type-kpi live-ticker">{client.decision_latency_hours ?? 0}h</p>
             <p className="type-meta normal-case">שעות לשבוע</p>
             {dailyLoss && (
               <p className="type-meta text-red-400 mt-1 type-kpi normal-case">≈₪{dailyLoss}/יום</p>
@@ -172,8 +172,8 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
 
           {/* Retainer */}
           <div
-            className="rounded-2xl p-4 border relative overflow-hidden"
-            style={{ background: 'rgba(16,185,129,0.07)', borderColor: 'rgba(16,185,129,0.2)' }}
+            className="rounded-2xl p-4 border relative overflow-hidden ambient-glow"
+            style={{ background: 'rgba(16,185,129,0.07)', borderColor: 'rgba(16,185,129,0.2)', '--card-glow': 'rgba(16,185,129,0.2)' } as React.CSSProperties}
           >
             <div
               className="absolute top-0 left-0 right-0 h-0.5"
@@ -362,7 +362,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
                     <Link
                       key={sprint.id}
                       href={`/clients/${clientId}/sprints/${sprint.id}`}
-                      className="block p-4 rounded-xl border transition-all hover:brightness-125"
+                      className="block p-4 rounded-xl border transition-all hover:translate-y-[-2px] hover:shadow-lg"
                       style={{ background: ss.bg, borderColor: ss.border }}
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -382,7 +382,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
                           </div>
                           <div className="h-1 bg-white/5 rounded-full overflow-hidden">
                             <div
-                              className="h-full rounded-full transition-all"
+                              className="h-full rounded-full transition-all animate-bar-fill"
                               style={{
                                 width: `${pct}%`,
                                 background: pct === 100

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * GET /api/cbr/recommend/[snapshotId]
  *
  * Full CBR intelligence pipeline for a given snapshot:
@@ -17,7 +17,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { requireUser } from '@/lib/api/require-user'
 import type { DsmDiagnosticSnapshot, OrganizationContext } from '@/types/database'
 import { findSimilarCases, getRecommendations } from '@/lib/cbr'
 import { diagnoseFromScores, type DSMDiagnosis } from '@/lib/dsm-engine'
@@ -31,6 +31,9 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ snapshotId: string }> }
 ) {
+  const auth = await requireUser()
+  if (!auth.ok) return auth.response
+
   const { snapshotId } = await params
   const topK = parseInt(request.nextUrl.searchParams.get('top_k') ?? '5', 10)
 
@@ -45,7 +48,7 @@ export async function GET(
     console.warn('[CBR] OPENAI_API_KEY not set — KL score fallback will be used instead of HNSW')
   }
 
-  const supabase = await createClient()
+  const { supabase } = auth
 
   // 1. Load snapshot
   const { data: snapshotRaw, error: snapErr } = await supabase
@@ -166,7 +169,7 @@ export async function GET(
   }
 }
 
-// ─── Score-only diagnosis reconstruction ─────────────────────────────────────
+// ג”€ג”€ג”€ Score-only diagnosis reconstruction ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 
 /**
  * Reconstruct a minimal DSMDiagnosis from numeric scores alone.
@@ -184,3 +187,4 @@ function reconstructDiagnosisFromScores(
 ): DSMDiagnosis {
   return diagnoseFromScores(drScore, ndScore, ucScore, latencyHours, scScore, { psiAverage })
 }
+

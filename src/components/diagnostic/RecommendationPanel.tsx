@@ -19,6 +19,7 @@ import type { RecommendationResult } from '@/types/database'
 import type { GoldenQuestionAnswers } from '@/lib/dsm-policy-engine'
 import { classifyTrajectory } from '@/lib/resilience-formula'
 import { ModeBlurb } from '@/components/ui/ModeBlurb'
+import { logUxEvent } from '@/lib/ux-metrics'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -429,6 +430,9 @@ export function RecommendationPanel({
         }
         const json: RecommendApiResponse = await res.json()
         setData(json)
+        if (json.cold_start) {
+          logUxEvent({ name: 'cbr_cold_start_shown', ts: Date.now(), data: { snapshotId } })
+        }
       } catch (e) {
         if ((e as Error).name !== 'AbortError') {
           setError(e instanceof Error ? e.message : 'שגיאה בטעינת המלצות')

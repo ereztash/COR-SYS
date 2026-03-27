@@ -1,9 +1,11 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import type { SupabaseClient } from '@supabase/supabase-js'
+import type { Database } from '@/types/database'
 import type { AgentJobRow } from '@/types/database'
 import { computeGammaMetrics } from './gamma'
 
-export async function claimDueAgentJobs(limit = 5): Promise<AgentJobRow[]> {
-  const supabase = await createClient()
+type DbClient = SupabaseClient<Database>
+
+export async function claimDueAgentJobs(supabase: DbClient, limit = 5): Promise<AgentJobRow[]> {
   const now = new Date().toISOString()
   const { data } = await supabase
     .from('agent_jobs')
@@ -32,10 +34,13 @@ export async function claimDueAgentJobs(limit = 5): Promise<AgentJobRow[]> {
   return jobs
 }
 
-export async function processAgentJob(job: AgentJobRow): Promise<Record<string, unknown>> {
+export async function processAgentJob(job: AgentJobRow, supabase: DbClient): Promise<Record<string, unknown>> {
   if (job.job_type === 'gamma-monitor' || job.job_type === 'feedback-eval') {
     if (!job.client_id) throw new Error('client_id required')
-    return (await computeGammaMetrics({ clientId: job.client_id, persist: true })) as unknown as Record<string, unknown>
+    return (await computeGammaMetrics({ clientId: job.client_id, persist: true, supabase })) as unknown as Record<
+      string,
+      unknown
+    >
   }
 
   if (job.job_type === 'network-refresh') {
@@ -46,11 +51,11 @@ export async function processAgentJob(job: AgentJobRow): Promise<Record<string, 
 }
 
 export async function finalizeAgentJob(
+  supabase: DbClient,
   jobId: string,
   status: 'completed' | 'failed',
   result: Record<string, unknown>
 ) {
-  const supabase = await createClient()
   await supabase
     .from('agent_jobs')
     // @ts-expect-error Supabase SSR generic infers update as never for JSONB-backed tables

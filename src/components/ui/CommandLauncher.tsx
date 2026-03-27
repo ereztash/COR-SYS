@@ -115,12 +115,12 @@ export function CommandLauncher() {
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<Element | null>(null)
 
-  // Extract clientId from current path if on a client page
   const clientIdMatch = pathname?.match(/\/clients\/([^/]+)/)
   const currentClientId = clientIdMatch?.[1]
 
-  // Filter commands by query
   const filtered = query.trim()
     ? COMMANDS.filter(cmd => {
         const q = query.toLowerCase()
@@ -133,6 +133,7 @@ export function CommandLauncher() {
     : COMMANDS
 
   const openPalette = useCallback(() => {
+    triggerRef.current = document.activeElement
     setOpen(true)
     setQuery('')
     setSelected(0)
@@ -141,6 +142,11 @@ export function CommandLauncher() {
   const closePalette = useCallback(() => {
     setOpen(false)
     setQuery('')
+    // Restore focus to the element that was focused before opening
+    if (triggerRef.current instanceof HTMLElement) {
+      triggerRef.current.focus()
+    }
+    triggerRef.current = null
   }, [])
 
   const runCommand = useCallback((cmd: Command) => {
@@ -173,31 +179,57 @@ export function CommandLauncher() {
     }
   }, [open])
 
-  // Selection reset is handled in the onChange handler below (avoids set-state-in-effect lint)
+  // Focus trap: keep Tab within the dialog
+  useEffect(() => {
+    if (!open) return
+    function onFocusTrap(e: KeyboardEvent) {
+      if (e.key !== 'Tab') return
+      const dialog = dialogRef.current
+      if (!dialog) return
+      const focusable = dialog.querySelectorAll<HTMLElement>(
+        'input, button, [tabindex]:not([tabindex="-1"])',
+      )
+      if (focusable.length === 0) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+    window.addEventListener('keydown', onFocusTrap)
+    return () => window.removeEventListener('keydown', onFocusTrap)
+  }, [open])
 
   if (!open) return null
+
+  const activeOptionId = filtered[selected] ? `cmd-option-${filtered[selected].id}` : undefined
 
   return (
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+        className="fixed inset-0 bg-black/60 backdrop-blur-md z-50"
         onClick={closePalette}
-        aria-hidden
+        aria-hidden="true"
       />
 
       {/* Palette */}
       <div
+        ref={dialogRef}
         className="fixed top-[20vh] left-1/2 -translate-x-1/2 w-full max-w-md z-50"
         role="dialog"
-        aria-modal
-        aria-label="Command Launcher"
+        aria-modal="true"
+        aria-label="פעולות מהירות"
       >
-        <div className="mx-4 rounded-2xl bg-slate-900 border border-slate-700 shadow-2xl overflow-hidden">
+        <div className="mx-4 rounded-2xl bg-slate-900 border border-slate-700 shadow-2xl overflow-hidden animate-scale-in">
 
           {/* Search input */}
           <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-800">
-            <span className="text-slate-500 text-sm">⌘</span>
+            <span className="text-slate-500 text-sm" aria-hidden="true">⌘</span>
             <input
               ref={inputRef}
               type="text"
@@ -206,25 +238,40 @@ export function CommandLauncher() {
               placeholder="חפש פעולה..."
               className="flex-1 bg-transparent text-white placeholder:text-slate-600 text-sm focus:outline-none"
               dir="rtl"
+              role="combobox"
+              aria-expanded="true"
+              aria-controls="cmd-listbox"
+              aria-activedescendant={activeOptionId}
+              aria-autocomplete="list"
             />
-            <kbd className="text-[10px] text-slate-600 border border-slate-700 px-1.5 py-0.5 rounded">ESC</kbd>
+            <kbd className="text-[10px] text-slate-600 border border-slate-700 px-1.5 py-0.5 rounded" aria-hidden="true">ESC</kbd>
           </div>
 
           {/* Commands */}
-          <div className="py-2 max-h-64 overflow-y-auto">
+          <ul
+            id="cmd-listbox"
+            role="listbox"
+            aria-label="פעולות"
+            className="py-2 max-h-64 overflow-y-auto"
+          >
             {filtered.length === 0 ? (
-              <p className="text-slate-600 text-xs text-center py-6">לא נמצאו פעולות</p>
+              <li role="option" aria-selected={false} className="text-slate-600 text-xs text-center py-6">
+                לא נמצאו פעולות
+              </li>
             ) : (
               filtered.map((cmd, i) => (
-                <button
+                <li
                   key={cmd.id}
+                  id={`cmd-option-${cmd.id}`}
+                  role="option"
+                  aria-selected={i === selected}
                   onClick={() => runCommand(cmd)}
                   onMouseEnter={() => setSelected(i)}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-right transition-colors ${
+                  className={`flex items-center gap-3 px-4 py-2.5 text-right transition-colors cursor-pointer ${
                     i === selected ? 'bg-blue-600/20 text-white' : 'text-slate-300 hover:bg-slate-800'
                   }`}
                 >
-                  <span className="text-base w-6 shrink-0">{cmd.icon}</span>
+                  <span className="text-base w-6 shrink-0" aria-hidden="true">{cmd.icon}</span>
                   <div className="flex-1 text-right">
                     <p className="text-sm font-medium">{cmd.labelHe}</p>
                     {cmd.requiresClient && !currentClientId && (
@@ -232,15 +279,15 @@ export function CommandLauncher() {
                     )}
                   </div>
                   {i === selected && (
-                    <kbd className="text-[10px] text-slate-500 border border-slate-700 px-1.5 py-0.5 rounded shrink-0">↵</kbd>
+                    <kbd className="text-[10px] text-slate-500 border border-slate-700 px-1.5 py-0.5 rounded shrink-0" aria-hidden="true">↵</kbd>
                   )}
-                </button>
+                </li>
               ))
             )}
-          </div>
+          </ul>
 
           {/* Footer hint */}
-          <div className="px-4 py-2 border-t border-slate-800 flex items-center justify-between">
+          <div className="px-4 py-2 border-t border-slate-800 flex items-center justify-between" aria-hidden="true">
             <p className="text-[10px] text-slate-600">↑↓ ניווט · ↵ בצע · ESC סגור</p>
             <p className="text-[10px] text-slate-700">⌘K</p>
           </div>

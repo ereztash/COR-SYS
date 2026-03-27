@@ -5,11 +5,11 @@
  * Used by the Recommendation Panel and for debugging.
  *
  * Query params:
- *   top_k  (optional, default 5) — number of results
+ *   top_k  (optional, default 5) - number of results
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { requireUser } from '@/lib/api/require-user'
 import type { DsmDiagnosticSnapshot, OrganizationContext } from '@/types/database'
 import { findSimilarCases } from '@/lib/cbr'
 
@@ -17,10 +17,13 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ snapshotId: string }> }
 ) {
+  const auth = await requireUser()
+  if (!auth.ok) return auth.response
+
   const { snapshotId } = await params
   const topK = parseInt(request.nextUrl.searchParams.get('top_k') ?? '5', 10)
 
-  const supabase = await createClient()
+  const { supabase } = auth
 
   // 1. Load the snapshot
   const { data: snapshotRaw, error: snapErr } = await supabase

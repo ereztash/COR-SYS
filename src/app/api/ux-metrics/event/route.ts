@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { requireUser } from '@/lib/api/require-user'
 
 interface IncomingUxEvent {
   name: string
@@ -14,12 +14,15 @@ interface UxMetricsEventInsert {
 
 export async function POST(req: Request) {
   try {
+    const auth = await requireUser()
+    if (!auth.ok) return auth.response
+
     const body = (await req.json()) as IncomingUxEvent
     if (!body?.name || !body?.ts) {
       return NextResponse.json({ ok: false, error: 'invalid payload' }, { status: 400 })
     }
 
-    const supabase = await createClient()
+    const { supabase } = auth
     const payload: UxMetricsEventInsert = {
       event_name: body.name,
       event_ts: new Date(body.ts).toISOString(),

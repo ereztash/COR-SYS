@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { formatDate } from '@/lib/utils'
 import { Badge } from '@/components/ui/Badge'
 import { ModeBlurb } from '@/components/ui/ModeBlurb'
+import { EmptyState } from '@/components/ui/EmptyState'
+import { Users } from 'lucide-react'
 
 export const revalidate = 30
 
@@ -59,12 +61,13 @@ export default async function ClientsPage() {
           ))}
 
           {clients.length === 0 && (
-            <div className="bento-card p-12 text-center">
-              <p className="text-slate-400 mb-4">אין לקוחות עדיין</p>
-              <Link href="/clients/new" className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-colors">
-                הוסף לקוח ראשון
-              </Link>
-            </div>
+            <EmptyState
+              icon={Users}
+              title="אין לקוחות עדיין"
+              description="הוסף את הלקוח הראשון כדי להתחיל לעבוד עם אבחונים, ספרינטים ותוכניות פעולה."
+              ctaLabel="הוסף לקוח ראשון"
+              ctaHref="/clients/new"
+            />
           )}
         </div>
       </div>

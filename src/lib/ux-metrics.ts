@@ -12,6 +12,12 @@ export type UxEventName =
   | 'pathology_viewed'
   | 'protocol_clicked'
   | 'dsm_export_clicked'
+  // Critical business flows
+  | 'diagnostic_completed'
+  | 'plan_opened'
+  | 'intervention_saved'
+  | 'followup_started'
+  | 'cbr_cold_start_shown'
 
 export interface UxEvent {
   name: UxEventName

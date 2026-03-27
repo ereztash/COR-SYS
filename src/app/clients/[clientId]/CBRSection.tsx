@@ -12,6 +12,7 @@
 import { useState } from 'react'
 import { RecommendationPanel } from '@/components/diagnostic/RecommendationPanel'
 import { InterventionForm } from '@/components/forms/InterventionForm'
+import { logUxEvent } from '@/lib/ux-metrics'
 
 interface Props {
   snapshotId: string
@@ -81,7 +82,7 @@ export function CBRSection({ snapshotId, clientId, hourlyRate, decisionLatencyHo
             recommendedCta={overrideCtx.recommended}
             initialActualCta={overrideCtx.actual}
             clientId={clientId}
-            onSuccess={(id) => setSavedInterventionId(id)}
+            onSuccess={(id) => { setSavedInterventionId(id); logUxEvent({ name: 'intervention_saved', ts: Date.now(), data: { clientId, interventionId: id } }) }}
             onCancel={() => setOverrideCtx(null)}
           />
         </div>
