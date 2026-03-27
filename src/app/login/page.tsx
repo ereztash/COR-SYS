@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { signInWithGoogle } from './actions'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 export const metadata = {
   title: 'התחברות | COR-SYS',
@@ -35,6 +36,12 @@ export default async function LoginPage({
         </div>
         <h1 className="text-xl font-bold text-white mb-2">התחברות למערכת</h1>
         <p className="text-slate-400 text-sm mb-8">התחבר עם חשבון Google כדי להמשיך</p>
+        <ModeBlurb
+          className="mb-6"
+          beginner="כניסה מהירה כדי להמשיך בדיוק מהמקום שעצרת."
+          advanced="Authenticated workspace access via Google SSO."
+          research="Secure entry point to the full diagnostic and learning environment."
+        />
         {error && (
           <p className="text-red-400 text-sm mb-4" role="alert">
             {error}

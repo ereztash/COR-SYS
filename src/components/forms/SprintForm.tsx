@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createSprintAction, updateSprintAction } from '@/lib/actions/sprints'
 import type { SprintStatus } from '@/types/database'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 interface SprintFormProps {
   clientId: string
@@ -70,6 +71,11 @@ export function SprintForm({ clientId, clientName, sprintNumber, initial }: Spri
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      <ModeBlurb
+        beginner="מגדירים יעד קצר וברור שאפשר לסיים תוך שבועיים."
+        advanced="Sprint setup form for timeboxed execution and accountability."
+        research="Intervention cycle configuration for short-horizon outcome measurement."
+      />
       {error && <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-xl text-sm">{error}</div>}
 
       <div>

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { InterventionProtocol } from '@/lib/dsm-engine'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 export function InterventionProtocolsCard({
   protocols,
@@ -12,6 +13,12 @@ export function InterventionProtocolsCard({
   return (
     <div className="bento-card p-6 border-r-4 border-r-red-500">
       <p className="text-xs font-bold text-slate-500 uppercase mb-4">פרוטוקולי התערבות מומלצים</p>
+      <ModeBlurb
+        className="mb-4"
+        beginner="כאן רואים איך לבצע את ההתערבות שלב-אחר-שלב."
+        advanced="Protocol stack with concrete steps and measurable success metrics."
+        research="Evidence-linked intervention templates for reproducible execution."
+      />
       <div className="space-y-5">
         {protocols.map((protocol) => (
           <div key={protocol.id} className="bg-slate-800/40 rounded-xl p-4">

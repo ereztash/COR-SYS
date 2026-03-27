@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { getAssessmentByToken } from '@/lib/data'
 import { AssessmentForm } from './AssessmentForm'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,6 +31,12 @@ export default async function AssessPage({ params }: { params: Promise<{ token: 
         </div>
         <h1 className="text-2xl font-black text-white mt-2">הערכת ארגון — שאלון אבחון</h1>
         <p className="text-slate-400 text-sm mt-1 mb-8">מלא את השאלון. בסיום תקבל תצוגת תוצאות (אבחון DSM, פרוטוקולי התערבות).</p>
+        <ModeBlurb
+          className="mb-6"
+          beginner="ענה פשוט לפי מה שקורה בפועל אצלכם כרגע."
+          advanced="Provide realistic operational responses for a reliable baseline."
+          research="Structured self-report instrument for downstream diagnostic inference."
+        />
         <AssessmentForm token={token} />
       </div>
     </div>

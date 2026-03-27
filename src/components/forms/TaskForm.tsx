@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { createTaskAction, updateTaskAction } from '@/lib/actions/tasks'
 import type { Task, TaskStatus } from '@/types/database'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 interface TaskFormProps {
   sprintId: string
@@ -55,6 +56,11 @@ export function TaskForm({ sprintId, clientId, initial, onSuccess, onCancel }: T
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3 p-4 bg-slate-800/60 rounded-xl border border-slate-700">
+      <ModeBlurb
+        beginner="כותבים משימה אחת ברורה שאפשר לסיים בפועל."
+        advanced="Task definition with priority, status, estimate, and due date."
+        research="Atomic execution unit entry for sprint flow instrumentation."
+      />
       <input className={inputCls} value={form.title} onChange={e => set('title', e.target.value)} required placeholder="כותרת המשימה *" autoFocus />
 
       <textarea className={`${inputCls} min-h-[60px] resize-y`} value={form.description} onChange={e => set('description', e.target.value)}

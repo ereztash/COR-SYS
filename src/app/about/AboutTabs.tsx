@@ -70,6 +70,9 @@ export function AboutTabs() {
 
   return (
     <div className={`max-w-[1280px] mx-auto p-4 md:p-5 dense-copy ${readingMode === 'focused' ? 'focused-density' : ''}`}>
+      <div className="mb-3 rounded-xl border border-indigo-500/20 bg-indigo-950/20 px-3 py-2">
+        <p className="text-xs font-bold text-indigo-300 tracking-wide">Name it. Face it. Fix it.</p>
+      </div>
       <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
         <p className="type-meta">מצב קריאה</p>
         <div className="flex items-center gap-2">
@@ -118,7 +121,21 @@ export function AboutTabs() {
 // ---- TAB 1: זהות ----
 function TabIdentity() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+    <>
+      <div className="mode-beginner-only bento-card p-4 mb-4 border border-slate-700/40">
+        <p className="text-sm font-bold text-white mb-2">תקציר פשוט: מי אנחנו</p>
+        <p className="text-xs text-slate-300 leading-relaxed">
+          אנחנו משלבים הבנה אנושית עמוקה עם חשיבה הנדסית כדי לזהות בעיות מערכתיות, לעצור "דימום" תפעולי,
+          ולהפוך אותו לתוכנית פעולה ברורה שניתנת למדידה.
+        </p>
+      </div>
+      <div className="mode-research bento-card p-4 mb-4 border border-slate-700/40">
+        <p className="text-sm font-bold text-white mb-2">Research framing: identity layer</p>
+        <p className="text-xs text-slate-400 leading-relaxed">
+          Dual-discipline operating posture: trauma-informed systems interpretation + algorithmic intervention design.
+        </p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mode-advanced">
       <section className="bento-card col-span-1 md:col-span-2 p-5 md:p-6 border-t-4 border-t-indigo-500">
         <div className="flex flex-col sm:flex-row gap-6 items-start">
           <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-2xl font-black text-white shrink-0 shadow-lg">
@@ -227,14 +244,29 @@ function TabIdentity() {
           ))}
         </div>
       </section>
-    </div>
+      </div>
+    </>
   )
 }
 
 // ---- TAB 2: הבעיה ----
 function TabProblem() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+    <>
+      <div className="mode-beginner-only bento-card p-4 mb-4 border border-slate-700/40">
+        <p className="text-sm font-bold text-white mb-2">תקציר פשוט: מה הבעיה</p>
+        <p className="text-xs text-slate-300 leading-relaxed">
+          בארגונים יש לרוב 3 תקלות חוזרות: נהלים שנשחקים, צוותים שלא מסונכרנים, ולמידה שלא מחלחלת.
+          התוצאה היא עיכוב החלטות, שחיקה, ואיבוד כסף.
+        </p>
+      </div>
+      <div className="mode-research bento-card p-4 mb-4 border border-slate-700/40">
+        <p className="text-sm font-bold text-white mb-2">Research framing: pathology layer</p>
+        <p className="text-xs text-slate-400 leading-relaxed">
+          Co-occurrence of NOD, zero-sum coordination failure, and learning deficits as primary latency multipliers.
+        </p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mode-advanced">
       <section className="bento-card col-span-1 p-6 md:p-8 border-t-4 border-t-red-500 max-h-[420px] overflow-y-auto">
         <h2 className="text-xl font-bold text-white mb-4" style={{ fontFamily: 'Heebo, sans-serif' }}>
           הדימום הקוגניטיבי <span className="text-intent-danger font-light">| Pathologies</span>
@@ -321,7 +353,8 @@ function TabProblem() {
           </Accordion>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   )
 }
 
@@ -349,7 +382,21 @@ const COMPETITORS = [
 
 function TabSolution() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+    <>
+      <div className="mode-beginner-only bento-card p-4 mb-4 border border-slate-700/40">
+        <p className="text-sm font-bold text-white mb-2">תקציר פשוט: איך פותרים</p>
+        <p className="text-xs text-slate-300 leading-relaxed">
+          המערכת פועלת עם 4 סוכנים: להבין את הבעיה, לבדוק תרחישים, לנטר הידרדרות,
+          ולהסביר החלטות באופן שקוף. זה מתורגם לספרינט ברור של 14 יום.
+        </p>
+      </div>
+      <div className="mode-research bento-card p-4 mb-4 border border-slate-700/40">
+        <p className="text-sm font-bold text-white mb-2">Research framing: intervention layer</p>
+        <p className="text-xs text-slate-400 leading-relaxed">
+          Agentic execution stack: ontology decomposition, stochastic simulation, semantic drift monitoring, and explainable control loop.
+        </p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mode-advanced">
       <section className="bento-card col-span-1 md:col-span-2 p-6 md:p-8 border-t-4 border-t-indigo-500">
         <div className="flex justify-between items-start mb-4">
           <h2 className="text-xl font-bold text-white" style={{ fontFamily: 'Heebo, sans-serif' }}>
@@ -502,7 +549,8 @@ function TabSolution() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   )
 }
 
@@ -530,7 +578,21 @@ const ROADMAP = [
 
 function TabConversion() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+    <>
+      <div className="mode-beginner-only bento-card p-4 mb-4 border border-slate-700/40">
+        <p className="text-sm font-bold text-white mb-2">תקציר פשוט: איך זה הופך לערך עסקי</p>
+        <p className="text-xs text-slate-300 leading-relaxed">
+          אנחנו מודדים כמה זמן וכסף נחסכים בפועל, ומתמחרים לפי ערך שנוצר — לא לפי שעות.
+          המטרה: ROI ברור וקצב החלטות מהיר יותר.
+        </p>
+      </div>
+      <div className="mode-research bento-card p-4 mb-4 border border-slate-700/40">
+        <p className="text-sm font-bold text-white mb-2">Research framing: commercialization layer</p>
+        <p className="text-xs text-slate-400 leading-relaxed">
+          Value capture model aligned to recovered organizational capacity and latency reduction economics.
+        </p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mode-advanced">
       <section className="bento-card col-span-1 md:col-span-2 p-6 md:p-8 border-l-4 border-l-emerald-500">
         <div className="flex justify-between items-start mb-4">
           <h2 className="text-2xl font-bold text-white" style={{ fontFamily: 'Heebo, sans-serif' }}>
@@ -682,6 +744,7 @@ function TabConversion() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   )
 }

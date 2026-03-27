@@ -18,6 +18,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { RecommendationResult } from '@/types/database'
 import type { GoldenQuestionAnswers } from '@/lib/dsm-policy-engine'
 import { classifyTrajectory } from '@/lib/resilience-formula'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -77,6 +78,18 @@ const CTA_LABELS: Record<string, string> = {
   sprint: 'Sprint חוסם עורקים',
   retainer: 'Resilience Retainer',
   'live-demo': 'Live Demo אבחוני',
+}
+
+function tomorrowActions(rec: RecommendationResult, isTopRanked: boolean): string[] {
+  const actions: string[] = []
+  if (isTopRanked) actions.push('לקבוע בעלים אחד להתערבות הזו כבר היום.')
+  actions.push('להגדיר מדד הצלחה אחד לשבועיים הקרובים (לדוגמה: זמן החלטה או עומס אישורים).')
+  if (rec.confidence_level === 'low' || rec.confidence_level === 'insufficient') {
+    actions.push('לאסוף עוד נתון Follow-up אחד כדי לשפר את הדיוק לפני הסלמה.')
+  } else {
+    actions.push('להתחיל פיילוט קטן בצוות אחד ולבדוק תוצאה אחרי 14 יום.')
+  }
+  return actions
 }
 
 // ─── Trajectory Label ─────────────────────────────────────────────────────────
@@ -194,6 +207,7 @@ function RecommendationCard({
 }) {
   const isTopRanked = rank === 0
   const insight = buildInsightSentence(rec, rank, dailyLoss)
+  const actions = tomorrowActions(rec, isTopRanked)
   const boldnessTone =
     rec.recommendation_boldness === 'bold'
       ? 'text-intent-danger'
@@ -273,6 +287,15 @@ function RecommendationCard({
           </p>
         </div>
       )}
+
+      <div className="rounded-lg border border-slate-700/50 bg-slate-900/35 px-3 py-2 mb-2">
+        <p className="type-meta mb-1">מה עושים מחר בבוקר</p>
+        <ul className="text-[11px] text-slate-300 space-y-0.5 leading-relaxed">
+          {actions.map((action) => (
+            <li key={action}>• {action}</li>
+          ))}
+        </ul>
+      </div>
 
       {onOverride && (
         <button
@@ -467,6 +490,12 @@ export function RecommendationPanel({
           )}
         </div>
       </div>
+      <ModeBlurb
+        className="mb-4"
+        beginner="המערכת מציעה את הצעד הבא לפי מקרים דומים ומה הצליח בהם."
+        advanced="Case-based intervention ranking with confidence and trajectory context."
+        research="CBR output layer: conservative ranking, dynamics signal, and executable probes."
+      />
 
       {/* Loss frame header */}
       {dailyLoss != null && dailyLoss > 0 && (
@@ -482,6 +511,26 @@ export function RecommendationPanel({
       )}
 
       {data.golden_questions && <GoldenQuestionsGrid golden={data.golden_questions} />}
+
+      <div className="rounded-xl border border-slate-700/50 bg-slate-900/35 px-4 py-3 mb-4 mode-beginner-only">
+        <p className="type-meta mb-2">מילון קצר (בלי ז'רגון)</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-slate-300">
+          <p><span className="text-slate-400">Wilson:</span> כמה אפשר לסמוך על ההמלצה לפי כמות ואיכות המקרים.</p>
+          <p><span className="text-slate-400">EoC:</span> כמה הארגון "רגיש לשינוי" כרגע.</p>
+          <p><span className="text-slate-400">Trajectory:</span> הכיוון הכללי של המערכת (משתפרת/נתקעת/נחלשת).</p>
+          <p><span className="text-slate-400">Follow-up:</span> מדידה חוזרת אחרי ההתערבות כדי לאמת תוצאה.</p>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-slate-700/50 bg-slate-900/35 px-4 py-3 mb-4 mode-research">
+        <p className="type-meta mb-2">Research Lens</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-slate-300">
+          <p><span className="text-slate-400">Ranking:</span> Wilson lower bound + EoC bias modifier.</p>
+          <p><span className="text-slate-400">Confidence:</span> Derived from conservative interval thresholds, not raw success rate.</p>
+          <p><span className="text-slate-400">Trajectory:</span> λ class from resilience dynamics (growth/stable/decay/bifurcation).</p>
+          <p><span className="text-slate-400">Actionability:</span> "Tomorrow" tasks convert recommendation into measurable 14-day probes.</p>
+        </div>
+      </div>
 
       {data.recommendations.length > 0 && (
         <div className="space-y-3">

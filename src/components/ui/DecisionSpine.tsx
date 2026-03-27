@@ -73,6 +73,12 @@ export function DecisionSpine({ data, className = '' }: Props) {
       <p className={`type-meta mb-3 ${sev.accentClass}`}>
         מצב · השפעה · פעולה
       </p>
+      <p className="text-[11px] text-slate-400 mb-3 mode-beginner-only">
+        בקצרה: זה מצב המערכת כרגע, מה המחיר של אי-פעולה, ומה הצעד הבא המומלץ.
+      </p>
+      <p className="text-[11px] text-slate-500 mb-3 mode-research">
+        Executive compression layer: state severity, economic pressure, and immediate intervention envelope.
+      </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
@@ -137,6 +143,8 @@ export function DecisionSpine({ data, className = '' }: Props) {
           {data.ctaRationale && (
             <p className="text-[10px] text-slate-400 leading-relaxed line-clamp-2">{data.ctaRationale}</p>
           )}
+          <p className="text-[10px] text-slate-500 mode-beginner-only">מהלך ראשון, קטן, שניתן למדוד תוך שבועיים.</p>
+          <p className="text-[10px] text-slate-500 mode-research">Execution hypothesis with explicit time boundary.</p>
           <Link
             href={data.ctaHref}
             className="inline-block mt-1 text-xs font-bold px-4 py-1.5 rounded-xl cta-primary transition-all"

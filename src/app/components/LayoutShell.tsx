@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { Sidebar } from './Sidebar'
 import { CommandLauncher } from '@/components/ui/CommandLauncher'
+import { UserModeSwitcher } from '@/components/ui/UserModeSwitcher'
 
 export function LayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -49,6 +50,7 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
       <main className="flex-1 overflow-auto min-w-0 pt-14 md:pt-0">
         {children}
       </main>
+      <UserModeSwitcher />
       <CommandLauncher />
     </div>
   )

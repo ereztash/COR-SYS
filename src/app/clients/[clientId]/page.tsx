@@ -119,6 +119,8 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
                 {client.company ?? ''}
                 {client.industry ? ` · ${client.industry}` : ''}
               </p>
+              <p className="text-xs text-slate-500 mt-1 mode-beginner-only">כאן רואים את מצב הלקוח ומה הצעד הבא המומלץ.</p>
+              <p className="text-xs text-slate-500 mt-1 mode-research">Client control node for diagnostic-to-action-to-learning loop.</p>
             </div>
 
             {/* Action buttons */}
@@ -212,6 +214,8 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
         return spineData ? (
           <div className="px-6 pb-4 max-w-6xl mx-auto">
             <DecisionSpine data={spineData} />
+            <p className="text-xs text-slate-500 mt-2 mode-beginner-only">התחל מפה: זה הסיכום הכי קצר של המצב, העלות, והצעד הבא.</p>
+            <p className="text-xs text-slate-500 mt-2 mode-research">Compressed control view for diagnosis-action loop entry.</p>
           </div>
         ) : null
       })()}
@@ -225,7 +229,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
       {/* ── DSM Raw Scores (compact, below spine) ────────────────────────── */}
       {snapshot && (
         <div className="px-6 pb-2 max-w-6xl mx-auto">
-          <div className="flex flex-wrap items-center gap-5 px-4 py-3 rounded-xl surface-strong">
+          <div className="flex flex-wrap items-center gap-5 px-4 py-3 rounded-xl surface-strong mode-advanced">
             <p className="type-meta">DSM Scores</p>
             {[
               { label: 'DR', value: snapshot.score_dr },
@@ -267,12 +271,22 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
               </Link>
             </div>
           </div>
+          <div className="px-4 py-3 rounded-xl surface-strong mode-beginner-only">
+            <p className="text-xs text-slate-300">
+              המדדים המלאים קיימים, אבל כדי לא להעמיס — כרגע התמקד ב"המלצה הבאה" ו"במדידה חוזרת".
+            </p>
+          </div>
+          <div className="px-4 py-3 rounded-xl surface-strong mode-research">
+            <p className="text-xs text-slate-400">
+              Full axis tensors (DR/ND/UC/SC + entropy) available in advanced view; hidden here for cognitive load control.
+            </p>
+          </div>
         </div>
       )}
 
       {snapshot && protocolMapping && (
         <div className="px-6 pb-3 max-w-6xl mx-auto">
-          <div className="rounded-xl border border-indigo-500/20 bg-indigo-950/20 px-4 py-3">
+          <div className="rounded-xl border border-indigo-500/20 bg-indigo-950/20 px-4 py-3 mode-advanced">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="type-meta text-indigo-300">
                 מיפוי פעולה קליני: <span className="type-kpi">{primaryPathology}</span>
@@ -289,6 +303,11 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
             </p>
             <p className="text-xs text-slate-400 mt-1">
               <span className="type-meta">KPI הצלחה:</span> {protocolMapping.successKpi}
+            </p>
+          </div>
+          <div className="rounded-xl border border-indigo-500/20 bg-indigo-950/20 px-4 py-3 mode-beginner-only">
+            <p className="text-xs text-indigo-200">
+              הסבר פשוט: זה סוג הבעיה הדומיננטי כרגע, ולכן זו משפחת ההתערבויות המומלצת.
             </p>
           </div>
         </div>

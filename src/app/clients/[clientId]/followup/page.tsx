@@ -15,6 +15,7 @@ import { FollowupForm } from './FollowupForm'
 import { formatDate } from '@/lib/utils'
 import { DecisionSpine } from '@/components/ui/DecisionSpine'
 import { buildDecisionSpineData } from '@/lib/decision-spine-builder'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 export const dynamic = 'force-dynamic'
 
@@ -70,6 +71,12 @@ export default async function FollowupPage({
           <p className="type-body text-slate-400 mt-1">
             הזן ציוני DSM עדכניים למדידת השפעת ההתערבות
           </p>
+          <ModeBlurb
+            className="mt-2"
+            beginner="כאן בודקים אם הפעולה שעשיתם באמת שיפרה את המצב."
+            advanced="Post-intervention measurement screen for effect validation and learning."
+            research="Follow-up observation layer for outcome attribution and loop classification."
+          />
         </div>
 
         {/* Decision Spine */}

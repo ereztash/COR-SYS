@@ -5,6 +5,7 @@ import type { QuestionnaireAnswer } from '@/lib/corsys-questionnaire'
 import { computeDiagnostic } from '@/lib/diagnostic'
 import { SEVERITY_PROFILES, type PathologySeverity } from '@/lib/dsm-engine'
 import { ComorbidityMap, InterventionProtocolsCard } from '@/components/diagnostic'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 export const dynamic = 'force-dynamic'
 
@@ -256,6 +257,12 @@ export default async function AssessResultsPage({ params }: { params: Promise<{ 
                 {planResult?.dynamicSummary.roleParagraph
                   ?? 'ניתוח מעמיק של הדינמיקות הארגוניות ומפת הפתולוגיות הפעילות.'}
               </p>
+              <ModeBlurb
+                className="mb-5"
+                beginner="זה דוח מצב: איפה הכאב המרכזי ומה הצעד הבא להתחלה."
+                advanced="Diagnostic snapshot linking severity, bottlenecks, and initial intervention direction."
+                research="Integrated output layer for pathology-state interpretation and intervention design."
+              />
 
               {/* Severity badge */}
               <div

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createAssessment } from '@/lib/actions/assessments'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 export function SendAssessmentLink({ clientId }: { clientId: string }) {
   const [url, setUrl] = useState<string | null>(null)
@@ -33,6 +34,12 @@ export function SendAssessmentLink({ clientId }: { clientId: string }) {
     <div className="bento-card p-5 border-r-4 border-r-cyan-500">
       <h3 className="text-sm font-bold text-slate-300 mb-2">לינק הערכה Self-Serve</h3>
       <p className="text-xs text-slate-500 mb-3">שלח לינק לארגון למלא שאלון אבחון בעצמם</p>
+      <ModeBlurb
+        className="mb-3"
+        beginner="שולחים קישור לארגון כדי שימלאו שאלון לבד."
+        advanced="Generate a shareable self-assessment link for remote diagnostic intake."
+        research="Distributed data-collection entrypoint for structured self-report capture."
+      />
       {!url ? (
         <>
           <button

@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { SprintBoard } from '@/components/SprintBoard'
 import { Badge } from '@/components/ui/Badge'
 import Link from 'next/link'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 export const dynamic = 'force-dynamic'
 
@@ -49,6 +50,12 @@ export default async function SprintPage({ params }: { params: Promise<{ clientI
               </div>
               {sprint.goal && <p className="text-slate-400 text-sm mt-1 max-w-2xl">{sprint.goal}</p>}
               <p className="text-xs text-slate-500 mt-2">{sprint.start_date} — {sprint.end_date}</p>
+              <ModeBlurb
+                className="mt-2"
+                beginner="לוח עבודה יומי: מה לעשות עכשיו כדי לסגור את הפער."
+                advanced="Sprint execution board with status flow, priorities, and completion tracking."
+                research="Operational micro-cycle view for task-flow and delivery performance."
+              />
             </div>
             <Link href={`/clients/${clientId}/sprints/new`}
               className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl font-bold transition-colors shrink-0">

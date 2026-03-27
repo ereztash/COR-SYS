@@ -2,6 +2,7 @@ import { getClients } from '@/lib/data/clients'
 import Link from 'next/link'
 import { formatDate } from '@/lib/utils'
 import { Badge } from '@/components/ui/Badge'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 export const revalidate = 30
 
@@ -16,6 +17,12 @@ export default async function ClientsPage() {
           <div>
             <h1 className="text-3xl font-black text-white">לקוחות</h1>
             <p className="text-slate-400 text-sm mt-1">{clients.length} לקוחות במערכת</p>
+            <ModeBlurb
+              className="mt-2"
+              beginner="כאן מנהלים לקוחות, רואים סטטוס נוכחי ונכנסים להמלצה הבאה לכל לקוח."
+              advanced="Client portfolio view with quick access to diagnosis, actions, and follow-up."
+              research="Portfolio index for cross-client pattern tracking and intervention-state comparison."
+            />
           </div>
           <Link href="/clients/new"
             className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-colors">

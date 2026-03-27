@@ -3,6 +3,7 @@ import { formatCurrency } from '@/lib/utils'
 import { YEAR_1_REVENUE_TARGET } from '@/lib/business-config'
 import Link from 'next/link'
 import { AddFinancialForm } from './AddFinancialForm'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,6 +29,12 @@ export default async function FinancialsPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-black text-white">כספים & P&L</h1>
           <p className="text-slate-400 text-sm mt-1">מעקב הכנסות לפי לקוח וחודש</p>
+          <ModeBlurb
+            className="mt-2"
+            beginner="המסך מראה כמה כסף נכנס, מה שולם, ומה עדיין ממתין."
+            advanced="Financial tracking by client-month with paid/unpaid split and year target progress."
+            research="Revenue-state ledger for value-realization monitoring across intervention cohorts."
+          />
         </div>
 
         {/* KPIs */}

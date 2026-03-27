@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClientAction, updateClientAction } from '@/lib/actions/clients'
 import type { Client, ClientStatus } from '@/types/database'
+import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 interface ClientFormProps {
   initial?: Partial<Client>
@@ -59,6 +60,11 @@ export function ClientForm({ initial, clientId }: ClientFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      <ModeBlurb
+        beginner="ממלאים פרטים בסיסיים כדי שהמערכת תבין את ההקשר של הלקוח."
+        advanced="Structured client intake form for operational and economic baseline."
+        research="Case metadata capture layer for downstream diagnostics and model learning."
+      />
       {error && <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-xl text-sm">{error}</div>}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
