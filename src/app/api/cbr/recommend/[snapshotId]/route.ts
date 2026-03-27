@@ -21,7 +21,7 @@ import { createClient } from '@/lib/supabase/server'
 import type { DsmDiagnosticSnapshot, OrganizationContext } from '@/types/database'
 import { findSimilarCases, getRecommendations } from '@/lib/cbr'
 import { diagnose } from '@/lib/dsm-engine'
-import { buildGoldenQuestions } from '@/lib/dsm-policy-engine'
+import { buildGoldenQuestions, type GoldenQuestionAnswers } from '@/lib/dsm-policy-engine'
 
 const DEFAULT_MANAGERS = 5
 const DEFAULT_HOURS_PER_WEEK = 10
@@ -105,21 +105,49 @@ export async function GET(
       coldStartEconomicParams: { managers, hoursPerWeek, monthlySalary },
     })
 
-    // 5. On cold start, also attach policy engine CTA for richer UI
+    // 5. Always attach Golden Questions for decision-quality UX (even when warm start).
+    // We reconstruct a minimal diagnosis from scores-only, which is sufficient for buildGoldenQuestions.
+    let golden_questions: GoldenQuestionAnswers | undefined = undefined
     let policy_fallback = undefined
-    if (cold_start && coldStartDiagnosis) {
-      const golden = buildGoldenQuestions(coldStartDiagnosis, { managers, hoursPerWeek, monthlySalary })
+    try {
+      const diagnosisForGolden =
+        coldStartDiagnosis ??
+        reconstructDiagnosisFromScores(snapshot.score_dr, snapshot.score_nd, snapshot.score_uc)
+
+      const golden = buildGoldenQuestions(diagnosisForGolden, { managers, hoursPerWeek, monthlySalary })
+      golden_questions = golden
       policy_fallback = golden.recommendedAction
+    } catch {
+      // Not blocking: recommendations list still works.
     }
 
     // Observability: which similarity path was used (Iteration 2+10)
     const similarity_method = rankedCases[0]?.similarity_method ?? (cold_start ? 'none' : 'hnsw')
+
+    // Telemetry: fire-and-forget (non-blocking)
+    const baseUrl = request.nextUrl.origin
+    fetch(`${baseUrl}/api/ux-metrics/event`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'cbr_recommend',
+        ts: Date.now(),
+        data: {
+          snapshot_id: snapshotId,
+          cold_start,
+          similarity_method,
+          n_recommendations: recommendations.length,
+          top_wilson: recommendations[0]?.wilson_score ?? 0,
+        },
+      }),
+    }).catch(() => {})
 
     return NextResponse.json({
       snapshot_id: snapshotId,
       cold_start,
       similarity_method,
       recommendations,
+      ...(golden_questions ? { golden_questions } : {}),
       ...(policy_fallback ? { policy_fallback } : {}),
     })
   } catch (err) {

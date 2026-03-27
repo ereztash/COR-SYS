@@ -1,5 +1,7 @@
 'use client'
 
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { SidebarLogout } from './SidebarLogout'
 
 export function Sidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
@@ -25,20 +27,31 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
       <div className="border-t border-slate-800 pt-4 mt-4 space-y-1">
         <SidebarLogout />
         <p className="text-[10px] text-slate-600 text-center">J(t) = C(t) / E(t)</p>
+        <div className="flex items-center justify-center gap-1 mt-2">
+          <kbd className="text-[9px] text-slate-700 border border-slate-800 px-1.5 py-0.5 rounded bg-slate-900">⌘K</kbd>
+          <span className="text-[9px] text-slate-700">פעולות מהירות</span>
+        </div>
       </div>
     </aside>
   )
 }
 
 function NavLink({ href, icon, label, onNavigate }: { href: string; icon: string; label: string; onNavigate?: () => void }) {
+  const pathname = usePathname()
+  const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href)
+
   return (
-    <a
+    <Link
       href={href}
       onClick={onNavigate}
-      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all text-sm font-medium min-h-[44px]"
+      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-sm font-medium min-h-[44px] ${
+        isActive
+          ? 'bg-blue-600/20 text-blue-300 border border-blue-500/30'
+          : 'text-slate-400 hover:text-white hover:bg-slate-800'
+      }`}
     >
       <span className="text-base">{icon}</span>
       {label}
-    </a>
+    </Link>
   )
 }

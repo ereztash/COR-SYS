@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { Sidebar } from './Sidebar'
+import { CommandLauncher } from '@/components/ui/CommandLauncher'
 
 export function LayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -24,7 +25,7 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
         <button
           type="button"
           onClick={() => setMenuOpen((o) => !o)}
-          className="p-2 rounded-lg bg-slate-800 border border-slate-700 text-white hover:bg-slate-700"
+          className="p-2 rounded-lg surface-strong text-white hover:bg-slate-700"
           aria-label="תפריט"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,6 +49,7 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
       <main className="flex-1 overflow-auto min-w-0 pt-14 md:pt-0">
         {children}
       </main>
+      <CommandLauncher />
     </div>
   )
 }

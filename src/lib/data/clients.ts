@@ -1,7 +1,8 @@
+import { cache } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import type { Client } from '@/types/database'
 
-export async function getClients(): Promise<Client[]> {
+export const getClients = cache(async function getClients(): Promise<Client[]> {
   const supabase = await createClient()
   const { data, error } = await supabase.from('clients').select('*').order('created_at', { ascending: false })
   if (error) {
@@ -9,7 +10,7 @@ export async function getClients(): Promise<Client[]> {
     return []
   }
   return data ?? []
-}
+})
 
 export async function getClientById(id: string): Promise<Client | null> {
   const supabase = await createClient()

@@ -20,6 +20,12 @@ export const SUCCESS_ENTROPY_DELTA = -1.5
 /** A case is successful if J-Quotient recovered by more than this fraction. */
 export const SUCCESS_J_QUOTIENT_THRESHOLD = 0.05
 
+/**
+ * When follow-up omits optional ΔEntropy / ΔJ, Wilson grouping still uses LG from ΔDR/ΔPSI.
+ * Success if learning gain is strictly above this (positive organizational outcome).
+ */
+export const SUCCESS_LEARNING_GAIN_MIN = 0
+
 // ─── Wilson Score Confidence Thresholds ───────────────────────────────────────
 
 export const CONFIDENCE_HIGH_THRESHOLD = 0.6

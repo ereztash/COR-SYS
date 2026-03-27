@@ -1,15 +1,26 @@
 /**
  * CBR Bayesian Calibration Module — Phase 3
  *
- * Updates per-intervention-type success priors as new follow-up observations arrive.
- * Implements Tier 1 (pure functions, no DB persistence).
- * Tier 2 (persist priors to calibration_priors table) is a future extension.
+ * Tier 1: Pure Bayesian update functions (no DB).
+ * Tier 2: Persist per-CTA priors to `calibration_priors` table and update
+ *         after every follow-up observation. Called from saveFollowup().
+ *
+ * Tier 2 table schema (supabase-migration-cbr-calibration.sql):
+ *   calibration_priors (
+ *     cta_type       TEXT PRIMARY KEY,
+ *     prior          FLOAT NOT NULL DEFAULT 0.5,
+ *     observation_count INT NOT NULL DEFAULT 0,
+ *     updated_at     TIMESTAMPTZ DEFAULT now()
+ *   )
  *
  * Research basis:
  *   - Bayes (1763) theorem: Posterior ∝ Prior × Likelihood
  *   - Analogous to ACC-Insula Prediction Error loop (meta-research-engine.md)
  *   - Wilson (1927) score as prior initialization
+ *   - SOTA target: calibration drift |posterior - prior| < 0.15 per update
  */
+
+import { createClient } from '@/lib/supabase/server'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -138,4 +149,79 @@ export function computeOverrideSignals(
     })
   }
   return signals
+}
+
+// ─── Tier 2: Persistent Prior Storage ────────────────────────────────────────
+
+export interface CalibrationPriorRow {
+  cta_type: string
+  prior: number
+  observation_count: number
+  updated_at: string
+}
+
+/**
+ * Load the current prior for a CTA type from the DB.
+ * Returns 0.5 (uninformative prior) if no row exists yet.
+ */
+export async function loadPrior(cta_type: string): Promise<{ prior: number; observation_count: number }> {
+  const supabase = await createClient()
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore calibration_priors not in generated Supabase types
+  const { data } = await supabase
+    .from('calibration_priors')
+    .select('prior, observation_count')
+    .eq('cta_type', cta_type)
+    .single()
+
+  if (!data) return { prior: 0.5, observation_count: 0 }
+  const row = data as { prior: number; observation_count: number }
+  return { prior: row.prior, observation_count: row.observation_count }
+}
+
+/**
+ * Persist an updated prior for a CTA type (upsert).
+ * Called after each follow-up observation.
+ */
+export async function persistPrior(
+  cta_type: string,
+  new_prior: number,
+  observation_count: number
+): Promise<void> {
+  const supabase = await createClient()
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore calibration_priors not in generated Supabase types
+  await supabase.from('calibration_priors').upsert(
+    {
+      cta_type,
+      prior: new_prior,
+      observation_count,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: 'cta_type' }
+  )
+}
+
+/**
+ * Full Tier 2 update cycle: load prior → Bayesian update → persist.
+ * Called from saveFollowup() after computing learning_gain.
+ *
+ * @param cta_type   The actual_cta of the intervention
+ * @param success    Whether this follow-up counts as a success (LG > 0)
+ * @returns          CalibrationResult with prior, posterior, and drift flag
+ */
+export async function updatePriorFromFollowup(
+  cta_type: string,
+  success: boolean
+): Promise<CalibrationResult> {
+  const { prior, observation_count } = await loadPrior(cta_type)
+  const posterior = bayesianUpdate(prior, success)
+  await persistPrior(cta_type, posterior, observation_count + 1)
+
+  return {
+    rule_id: cta_type,
+    prior,
+    posterior,
+    calibration_needed: Math.abs(posterior - prior) > 0.2,
+  }
 }

@@ -1,10 +1,14 @@
-import { getClientWithPlan, getSprintsByClient, getFinancialsByClient, getLatestSnapshotForClient } from '@/lib/data'
+import { getClientWithPlan, getSprintsByClient, getFinancialsByClient, getLatestSnapshotForClient, getInterventionHistoryForClient } from '@/lib/data'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { formatDate, formatCurrency } from '@/lib/utils'
 import { Badge } from '@/components/ui/Badge'
 import { SendAssessmentLink } from './SendAssessmentLink'
 import { CBRSection } from './CBRSection'
+import { DecisionSpine } from '@/components/ui/DecisionSpine'
+import { buildDecisionSpineData } from '@/lib/decision-spine-builder'
+import { PATHOLOGY_PROTOCOL_MAP } from '@/lib/diagnostic/action-plan'
+import type { PathologyType } from '@/lib/diagnostic/pathology-kb'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,13 +28,24 @@ const SEVERITY_LABEL: Record<string, string> = {
   'systemic-collapse': 'קריסה מערכתית',
 }
 
+function inferPrimaryPathology(snapshot: { score_dr?: number | null; score_nd?: number | null; score_uc?: number | null }): PathologyType {
+  const dr = snapshot.score_dr ?? 0
+  const nd = snapshot.score_nd ?? 0
+  const uc = snapshot.score_uc ?? 0
+  if (dr >= 6 && nd >= 6 && uc >= 6) return 'CS'
+  if (nd >= dr && nd >= uc) return dr < 5 ? 'ZSG' : 'NOD'
+  if (uc >= dr && uc >= nd) return nd >= dr ? 'OLD' : 'CLT'
+  return 'NOD'
+}
+
 export default async function ClientDetailPage({ params }: { params: Promise<{ clientId: string }> }) {
   const { clientId } = await params
-  const [clientWithPlan, sprints, financials, cbrSnapshot] = await Promise.all([
+  const [clientWithPlan, sprints, financials, cbrSnapshot, interventionHistory] = await Promise.all([
     getClientWithPlan(clientId),
     getSprintsByClient(clientId),
     getFinancialsByClient(clientId),
     getLatestSnapshotForClient(clientId),
+    getInterventionHistoryForClient(clientId),
   ])
   if (!clientWithPlan) notFound()
 
@@ -40,6 +55,8 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
   const severity       = snapshot?.severity_profile ?? null
   const accent         = severity ? (SEVERITY_ACCENT[severity] ?? '#818cf8') : '#6366f1'
   const activesprints  = sprints.filter(s => s.status === 'active').length
+  const primaryPathology = snapshot ? inferPrimaryPathology(snapshot) : null
+  const protocolMapping = primaryPathology ? PATHOLOGY_PROTOCOL_MAP[primaryPathology] : null
 
   // Loss frame: ₪/day from decision latency
   const dailyLoss = client.hourly_rate && client.decision_latency_hours
@@ -47,7 +64,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
     : null
 
   return (
-    <div className="min-h-screen" style={{ background: '#0a1020' }}>
+    <div className="min-h-screen" style={{ background: 'var(--bg-app)' }}>
 
       {/* ── Story Arc Header ─────────────────────────────────────────────── */}
       <div
@@ -85,32 +102,32 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
                       style={{ background: accent }}
                     />
                   </span>
-                  <span
-                    className="text-[11px] font-bold uppercase tracking-widest"
-                    style={{ color: accent }}
-                  >
+                  <span className="type-meta" style={{ color: accent }}>
                     {SEVERITY_LABEL[severity] ?? severity}
                   </span>
                 </div>
               )}
 
               <div className="flex items-center gap-3 mb-1">
-                <h1
-                  className="text-3xl font-black text-white"
-                  style={{ fontFamily: 'Heebo, sans-serif' }}
-                >
+                <h1 className="type-display text-white">
                   {client.name}
                 </h1>
                 <Badge status={client.status} />
               </div>
-              <p className="text-slate-500 text-sm">
+              <p className="type-body text-slate-400">
                 {client.company ?? ''}
                 {client.industry ? ` · ${client.industry}` : ''}
               </p>
             </div>
 
             {/* Action buttons */}
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2 shrink-0 flex-wrap">
+              <Link
+                href={`/clients/${clientId}/diagnostic/new`}
+                className="px-4 py-2 rounded-xl border border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/10 transition-all text-sm font-bold"
+              >
+                ⊕ אבחון מהיר
+              </Link>
               <Link
                 href={`/clients/${clientId}/edit`}
                 className="px-4 py-2 rounded-xl border border-white/10 text-slate-400 hover:text-white hover:border-white/20 transition-all text-sm font-medium"
@@ -142,11 +159,11 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
               className="absolute top-0 left-0 right-0 h-0.5"
               style={{ background: 'linear-gradient(90deg,#f43f5e,transparent)' }}
             />
-            <p className="text-[10px] text-slate-500 uppercase tracking-wide mb-1">עיכוב החלטה</p>
-            <p className="text-2xl font-black text-red-400">{client.decision_latency_hours ?? 0}h</p>
-            <p className="text-[10px] text-slate-600">שעות לשבוע</p>
+            <p className="type-meta mb-1">עיכוב החלטה</p>
+            <p className="text-2xl font-black text-red-400 type-kpi">{client.decision_latency_hours ?? 0}h</p>
+            <p className="type-meta normal-case">שעות לשבוע</p>
             {dailyLoss && (
-              <p className="text-[10px] text-red-500/70 mt-1 font-mono">≈₪{dailyLoss}/יום</p>
+              <p className="type-meta text-red-400 mt-1 type-kpi normal-case">≈₪{dailyLoss}/יום</p>
             )}
           </div>
 
@@ -159,11 +176,11 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
               className="absolute top-0 left-0 right-0 h-0.5"
               style={{ background: 'linear-gradient(90deg,#10b981,transparent)' }}
             />
-            <p className="text-[10px] text-slate-500 uppercase tracking-wide mb-1">ריטיינר</p>
-            <p className="text-2xl font-black text-emerald-400">
+            <p className="type-meta mb-1">ריטיינר</p>
+            <p className="text-2xl font-black text-emerald-400 type-kpi">
               {client.monthly_retainer ? formatCurrency(client.monthly_retainer) : '—'}
             </p>
-            <p className="text-[10px] text-slate-600">לחודש</p>
+            <p className="type-meta normal-case">לחודש</p>
           </div>
 
           {/* Total revenue */}
@@ -171,9 +188,9 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
             className="rounded-2xl p-4 border"
             style={{ background: 'rgba(30,41,59,0.6)', borderColor: 'rgba(255,255,255,0.07)' }}
           >
-            <p className="text-[10px] text-slate-500 uppercase tracking-wide mb-1">הכנסות סה&quot;כ</p>
-            <p className="text-2xl font-black text-white">{formatCurrency(totalRevenue)}</p>
-            <p className="text-[10px] text-slate-600">{financials.length} חודשים</p>
+            <p className="type-meta mb-1">הכנסות סה&quot;כ</p>
+            <p className="text-2xl font-black text-white type-kpi">{formatCurrency(totalRevenue)}</p>
+            <p className="type-meta normal-case">{financials.length} חודשים</p>
           </div>
 
           {/* Sprints */}
@@ -181,68 +198,91 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
             className="rounded-2xl p-4 border"
             style={{ background: 'rgba(99,102,241,0.07)', borderColor: 'rgba(99,102,241,0.2)' }}
           >
-            <p className="text-[10px] text-slate-500 uppercase tracking-wide mb-1">ספרינטים</p>
-            <p className="text-2xl font-black text-indigo-400">{sprints.length}</p>
-            <p className="text-[10px] text-slate-600">{activesprints} פעילים</p>
+            <p className="type-meta mb-1">ספרינטים</p>
+            <p className="text-2xl font-black text-indigo-400 type-kpi">{sprints.length}</p>
+            <p className="type-meta normal-case">{activesprints} פעילים</p>
           </div>
         </div>
       </div>
 
-      {/* ── Diagnostic Banner (if snapshot exists) ───────────────────────── */}
+      {/* ── Decision Spine (So What / Now What) ──────────────────────────── */}
+      {snapshot && (() => {
+        const spineData = buildDecisionSpineData(clientId, snapshot, client)
+        return spineData ? (
+          <div className="px-6 pb-4 max-w-6xl mx-auto">
+            <DecisionSpine data={spineData} />
+          </div>
+        ) : null
+      })()}
+
+      {/* ── DSM Raw Scores (compact, below spine) ────────────────────────── */}
       {snapshot && (
-        <div className="px-6 pb-4 max-w-6xl mx-auto">
-          <div
-            className="rounded-2xl p-5 border relative overflow-hidden"
-            style={{
-              background:  `linear-gradient(135deg,${accent}08 0%,rgba(10,16,32,0.9) 60%)`,
-              borderColor: `${accent}20`,
-            }}
-          >
-            <div
-              className="absolute top-0 left-0 right-0 h-px"
-              style={{ background: `linear-gradient(90deg,transparent,${accent}50,transparent)` }}
-            />
-            <div className="flex flex-wrap items-center gap-5">
-              <div>
-                <p className="text-[10px] text-slate-600 uppercase tracking-wide mb-0.5">DSM Snapshot</p>
-                <p className="text-xs font-bold" style={{ color: accent }}>
-                  {SEVERITY_LABEL[severity ?? ''] ?? severity}
-                </p>
-              </div>
-              {[
-                { label: 'DR', value: snapshot.score_dr },
-                { label: 'ND', value: snapshot.score_nd },
-                { label: 'UC', value: snapshot.score_uc },
-                { label: 'SC', value: (snapshot as { score_sc?: number }).score_sc },
-              ].map(d => d.value != null && (
-                <div key={d.label} className="text-center">
-                  <p className="text-[10px] text-slate-600 font-mono">{d.label}</p>
-                  <p
-                    className="text-lg font-black font-mono"
-                    style={{
-                      color: d.value > 5.5 ? '#f87171' : d.value > 2.5 ? '#fbbf24' : '#34d399',
-                    }}
-                  >
-                    {d.value.toFixed(1)}
-                  </p>
-                </div>
-              ))}
-              <div className="text-center">
-                <p className="text-[10px] text-slate-600 font-mono">אנטרופיה</p>
-                <p className="text-lg font-black text-slate-300 font-mono">
-                  {snapshot.total_entropy?.toFixed(2)}
-                </p>
-              </div>
-              <div className="mr-auto">
-                <Link
-                  href={`/clients/${clientId}/plan`}
-                  className="text-[11px] font-bold px-3 py-1.5 rounded-xl border transition-all"
-                  style={{ color: accent, borderColor: `${accent}30`, background: `${accent}08` }}
+        <div className="px-6 pb-2 max-w-6xl mx-auto">
+          <div className="flex flex-wrap items-center gap-5 px-4 py-3 rounded-xl surface-strong">
+            <p className="type-meta">DSM Scores</p>
+            {[
+              { label: 'DR', value: snapshot.score_dr },
+              { label: 'ND', value: snapshot.score_nd },
+              { label: 'UC', value: snapshot.score_uc },
+              { label: 'SC', value: (snapshot as { score_sc?: number }).score_sc },
+            ].map(d => d.value != null && (
+              <div key={d.label} className="text-center">
+                <p className="type-meta type-kpi normal-case">{d.label}</p>
+                <p
+                  className="text-base font-black type-kpi"
+                  style={{
+                    color: d.value > 5.5 ? '#f87171' : d.value > 2.5 ? '#fbbf24' : '#34d399',
+                  }}
                 >
-                  צפה בתוכנית →
-                </Link>
+                  {d.value.toFixed(1)}
+                </p>
               </div>
+            ))}
+            <div className="text-center">
+              <p className="type-meta type-kpi normal-case">אנטרופיה</p>
+              <p className="text-base font-black text-slate-300 type-kpi">
+                {snapshot.total_entropy?.toFixed(2)}
+              </p>
             </div>
+            <div className="mr-auto flex items-center gap-2">
+              <Link
+                href={`/clients/${clientId}/plan`}
+                className="text-[11px] font-bold px-3 py-1.5 rounded-xl border transition-all"
+                style={{ color: accent, borderColor: `${accent}30`, background: `${accent}08` }}
+              >
+                צפה בתוכנית →
+              </Link>
+              <Link
+                href="/knowledge/dsm-org"
+                className="text-[11px] font-bold px-3 py-1.5 rounded-xl border border-indigo-500/20 text-indigo-400 hover:bg-indigo-500/10 transition-all"
+              >
+                DSM-Org →
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {snapshot && protocolMapping && (
+        <div className="px-6 pb-3 max-w-6xl mx-auto">
+          <div className="rounded-xl border border-indigo-500/20 bg-indigo-950/20 px-4 py-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="type-meta text-indigo-300">
+                מיפוי פעולה קליני: <span className="type-kpi">{primaryPathology}</span>
+              </p>
+              <Link
+                href="/knowledge/dsm-org#section-interventions"
+                className="text-[11px] font-bold px-3 py-1.5 rounded-xl border border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10 transition-all"
+              >
+                Clinical Reference →
+              </Link>
+            </div>
+            <p className="text-xs text-slate-300 mt-2">
+              <span className="type-meta">Protocol:</span> {protocolMapping.protocol}
+            </p>
+            <p className="text-xs text-slate-400 mt-1">
+              <span className="type-meta">KPI הצלחה:</span> {protocolMapping.successKpi}
+            </p>
           </div>
         </div>
       )}
@@ -257,7 +297,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
             style={{ background: 'rgba(15,23,42,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}
           >
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-base font-bold text-white">ספרינטים</h2>
+              <h2 className="type-h2 text-white">ספרינטים</h2>
               <Link
                 href={`/clients/${clientId}/sprints/new`}
                 className="text-[11px] text-emerald-400 border border-emerald-500/25 px-3 py-1.5 rounded-xl hover:bg-emerald-500/10 transition-colors font-bold"
@@ -351,7 +391,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
               }}
             >
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-sm font-bold text-slate-200">תוכנית עסקית</h3>
+                <h3 className="type-h2 text-slate-100">תוכנית עסקית</h3>
                 <Link
                   href={`/clients/${clientId}/plan`}
                   className="text-[10px] text-emerald-400 hover:text-emerald-300 font-bold transition-colors"
@@ -398,7 +438,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
               style={{ background: 'rgba(15,23,42,0.5)', borderColor: 'rgba(255,255,255,0.06)' }}
             >
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-sm font-bold text-slate-200">מדידה חוזרת</h3>
+                <h3 className="type-h2 text-slate-100">מדידה חוזרת</h3>
                 <Link
                   href={`/clients/${clientId}/followup`}
                   className="text-[10px] text-emerald-400 hover:text-emerald-300 font-bold"
@@ -406,10 +446,97 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
                   פתח →
                 </Link>
               </div>
-              <p className="text-[11px] text-slate-600 leading-relaxed font-mono">
+              <p className="type-meta normal-case type-kpi">
                 ΔDR · ΔPSI · λ = 1 + κ×LG
               </p>
             </div>
+
+            {/* Learning Loop — Recommended vs Actual trend */}
+            {interventionHistory.length > 0 && (
+              <div
+                className="rounded-2xl p-5 border"
+                style={{ background: 'rgba(15,23,42,0.5)', borderColor: 'rgba(99,102,241,0.2)', borderTopWidth: '3px', borderTopColor: '#6366f1' }}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="type-h2 text-slate-100">לולאת למידה</h3>
+                  <span className="status-badge status-info">
+                    {interventionHistory.length} התערבויות
+                  </span>
+                </div>
+
+                {/* Override rate */}
+                {(() => {
+                  const overrides = interventionHistory.filter(i => i.consultant_override)
+                  const overridePct = Math.round((overrides.length / interventionHistory.length) * 100)
+                  const avgLG = interventionHistory
+                    .filter(i => i.learning_gain != null)
+                    .reduce((s, i) => s + (i.learning_gain ?? 0), 0) /
+                    Math.max(interventionHistory.filter(i => i.learning_gain != null).length, 1)
+                  const hasLG = interventionHistory.some(i => i.learning_gain != null)
+
+                  return (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-slate-500">שיעור Override</span>
+                        <span className={`font-bold ${overridePct > 50 ? 'text-yellow-400' : 'text-emerald-400'}`}>
+                          {overridePct}%
+                        </span>
+                      </div>
+                      <div className="w-full bg-slate-800 rounded-full h-1 overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all"
+                          style={{
+                            width: `${overridePct}%`,
+                            background: overridePct > 50 ? '#fbbf24' : '#10b981',
+                          }}
+                        />
+                      </div>
+
+                      {hasLG && (
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-slate-500">ממוצע LG</span>
+                          <span className={`font-bold font-mono ${avgLG > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                            {avgLG > 0 ? '+' : ''}{avgLG.toFixed(3)}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Recent interventions mini-list */}
+                      <div className="space-y-1.5 pt-1">
+                        {interventionHistory.slice(0, 3).map(i => (
+                          <div key={i.intervention_id} className="flex items-center justify-between text-[10px]">
+                            <span className="text-slate-600 font-mono">
+                              {new Date(i.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' })}
+                            </span>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-slate-500">{i.recommended_cta}</span>
+                              {i.consultant_override && (
+                                <>
+                                  <span className="text-slate-700">→</span>
+                                  <span className="text-yellow-500">{i.actual_cta}</span>
+                                </>
+                              )}
+                              {!i.consultant_override && (
+                                <span className="text-emerald-600">✓</span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Learning insight */}
+                      <p className="text-[10px] text-slate-600 leading-relaxed border-t border-slate-800 pt-2">
+                        {overridePct > 60
+                          ? 'שיעור override גבוה — שקול לכייל מחדש את כללי המדיניות.'
+                          : overridePct > 30
+                            ? 'override בינוני — המנוע לומד; המשך לתעד סיבות.'
+                            : 'יישור גבוה עם המלצות המנוע — אמינות CBR חזקה.'}
+                      </p>
+                    </div>
+                  )
+                })()}
+              </div>
+            )}
 
             {/* Notes */}
             {client.notes && (

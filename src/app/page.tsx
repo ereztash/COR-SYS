@@ -30,20 +30,20 @@ export default async function DashboardPage() {
 
       {/* KPI Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <KpiCard label="לקוחות פעילים" value={data.activeClients.length.toString()} sub={`מתוך ${data.clients.length} סה"כ`} color="blue" />
-        <KpiCard label="ספרינטים פעילים" value={data.activeSprints.length.toString()} sub="ספרינטי 14 יום" color="indigo" />
-        <KpiCard label="משימות פתוחות" value={data.openTasks.toString()} sub="לא הושלמו" color="yellow" />
-        <KpiCard label="הכנסות החודש" value={formatCurrency(data.revenueThisMonth)} sub={`סה"כ: ${formatCurrency(data.totalRevenue)}`} color="emerald" />
+        <KpiCard label="לקוחות פעילים" value={data.activeClients.length.toString()} sub={`מתוך ${data.clients.length} סה"כ`} color="blue" delay="delay-0" />
+        <KpiCard label="ספרינטים פעילים" value={data.activeSprints.length.toString()} sub="ספרינטי 14 יום" color="indigo" delay="delay-75" />
+        <KpiCard label="משימות פתוחות" value={data.openTasks.toString()} sub="לא הושלמו" color="yellow" delay="delay-150" />
+        <KpiCard label="הכנסות החודש" value={formatCurrency(data.revenueThisMonth)} sub={`סה"כ: ${formatCurrency(data.totalRevenue)}`} color="emerald" delay="delay-225" />
       </div>
 
       {/* Portfolio Analytics */}
       {data.portfolioAnalytics && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
-          <KpiCard label="אבחונים בפורטפוליו" value={data.portfolioAnalytics.totalClientsWithDiagnostics.toString()} sub="לקוחות עם אבחון" color="blue" />
-          <KpiCard label="תקין" value={data.portfolioAnalytics.byProfile.healthy.toString()} sub="healthy" color="emerald" />
-          <KpiCard label="בסיכון" value={data.portfolioAnalytics.byProfile.atRisk.toString()} sub="at-risk" color="yellow" />
-          <KpiCard label="קריטי" value={data.portfolioAnalytics.byProfile.critical.toString()} sub="critical" color="red" />
-          <KpiCard label="קריסה מערכתית" value={data.portfolioAnalytics.byProfile.systemicCollapse.toString()} sub="systemic-collapse" color="red" />
+          <KpiCard label="אבחונים בפורטפוליו" value={data.portfolioAnalytics.totalClientsWithDiagnostics.toString()} sub="לקוחות עם אבחון" color="blue" delay="delay-300" />
+          <KpiCard label="תקין" value={data.portfolioAnalytics.byProfile.healthy.toString()} sub="healthy" color="emerald" delay="delay-375" />
+          <KpiCard label="בסיכון" value={data.portfolioAnalytics.byProfile.atRisk.toString()} sub="at-risk" color="yellow" delay="delay-375" />
+          <KpiCard label="קריטי" value={data.portfolioAnalytics.byProfile.critical.toString()} sub="critical" color="red" delay="delay-450" />
+          <KpiCard label="קריסה מערכתית" value={data.portfolioAnalytics.byProfile.systemicCollapse.toString()} sub="systemic-collapse" color="red" delay="delay-450" />
           <div className="bento-card p-4 border border-slate-600">
             <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-1">ממוצע DR/ND/UC</p>
             <p className="text-sm font-mono text-slate-300">
@@ -202,7 +202,7 @@ export default async function DashboardPage() {
   )
 }
 
-function KpiCard({ label, value, sub, color }: { label: string; value: string; sub: string; color: string }) {
+function KpiCard({ label, value, sub, color, delay = '' }: { label: string; value: string; sub: string; color: string; delay?: string }) {
   const colors: Record<string, string> = {
     blue: 'border-blue-500/30 bg-blue-500/5',
     indigo: 'border-indigo-500/30 bg-indigo-500/5',
@@ -218,7 +218,7 @@ function KpiCard({ label, value, sub, color }: { label: string; value: string; s
     red: 'text-red-400',
   }
   return (
-    <div className={`bento-card p-4 border ${colors[color]}`}>
+    <div className={`bento-card p-4 border ${colors[color]} animate-fade-up ${delay}`}>
       <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-1">{label}</p>
       <p className={`text-2xl font-black ${textColors[color]}`}>{value}</p>
       <p className="text-[10px] text-slate-500 mt-0.5">{sub}</p>

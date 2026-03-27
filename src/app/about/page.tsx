@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { AboutTabs } from './AboutTabs'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600
 
 export const metadata = {
   title: 'זהות עסקית | COR-SYS',
@@ -16,20 +16,28 @@ export default function AboutPage() {
           <div>
             <div className="flex items-center gap-3 mb-1">
               <Link href="/" className="flex items-center gap-2 text-white hover:opacity-90 transition-opacity">
-                <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-black text-sm">C</div>
+                <div className="w-8 h-8 rounded-lg cta-primary flex items-center justify-center text-white font-black text-sm">C</div>
                 <h1 className="text-2xl font-black text-white tracking-tight" style={{ fontFamily: 'Heebo, sans-serif' }}>
                   COR-SYS
                 </h1>
               </Link>
-              <span className="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase">
+              <span className="status-badge status-success px-2 py-0.5 text-[10px]">
                 MECE v4
               </span>
             </div>
             <p className="text-slate-400 text-sm mt-1">זהות עסקית — 4 לשוניות</p>
           </div>
-          <div className="flex items-center gap-2 bg-slate-800/80 px-3 py-2 rounded-xl text-xs font-mono text-emerald-400 border border-slate-700">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            J(t) = C(t) / E(t)
+          <div className="flex items-center gap-3">
+            <Link
+              href="/knowledge/dsm-org"
+              className="text-xs font-bold px-3 py-2 rounded-xl border border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/10 transition-all"
+            >
+              🧬 DSM-Org Clinical Reference
+            </Link>
+            <div className="flex items-center gap-2 surface-strong px-3 py-2 rounded-xl text-xs font-mono text-intent-success">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-ring" />
+              J(t) = C(t) / E(t)
+            </div>
           </div>
         </div>
       </header>

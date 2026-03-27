@@ -5,6 +5,7 @@
  * Pattern follows src/lib/data/clients.ts — createClient from @/lib/supabase/server.
  */
 
+import { cache } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import type {
   DsmDiagnosticSnapshot,
@@ -85,8 +86,11 @@ export async function getLatestInterventionForClient(
  * Fetch the most recent snapshot for a client (via org context).
  * Used by client detail page to show the RecommendationPanel.
  * Returns null if no CBR data exists yet.
+ *
+ * Optimization: fires org + snapshot queries in parallel once org_id is known.
+ * React.cache() deduplicates across the same server request.
  */
-export async function getLatestSnapshotForClient(
+export const getLatestSnapshotForClient = cache(async function getLatestSnapshotForClient(
   clientId: string
 ): Promise<{ snapshot: DsmDiagnosticSnapshot; org: OrganizationContext } | null> {
   const supabase = await createClient()
@@ -104,6 +108,38 @@ export async function getLatestSnapshotForClient(
 
   if (snapErr || !snapRaw) return null
   return { snapshot: snapRaw as unknown as DsmDiagnosticSnapshot, org }
+})
+
+/**
+ * Fetch recent interventions for a client (via org context).
+ * Used by client detail page to show Recommended vs Actual trend.
+ */
+export async function getInterventionHistoryForClient(
+  clientId: string,
+  limit = 5
+): Promise<Array<Pick<InterventionAndFeedback, 'intervention_id' | 'recommended_cta' | 'actual_cta' | 'consultant_override' | 'override_reason' | 'learning_gain' | 'lambda_eigenvalue' | 'created_at'>>> {
+  const supabase = await createClient()
+  const org = await fetchOrgContext(supabase, clientId)
+  if (!org) return []
+
+  // Get all snapshots for this org
+  const { data: snaps } = await supabase
+    .from('dsm_diagnostic_snapshots')
+    .select('snapshot_id')
+    .eq('org_id', org.org_id)
+
+  if (!snaps || snaps.length === 0) return []
+  const snapIds = snaps.map((s: { snapshot_id: string }) => s.snapshot_id)
+
+  const { data, error } = await supabase
+    .from('interventions_and_feedback')
+    .select('intervention_id, recommended_cta, actual_cta, consultant_override, override_reason, learning_gain, lambda_eigenvalue, created_at')
+    .in('snapshot_id', snapIds)
+    .order('created_at', { ascending: false })
+    .limit(limit)
+
+  if (error) return []
+  return (data ?? []) as unknown as Array<Pick<InterventionAndFeedback, 'intervention_id' | 'recommended_cta' | 'actual_cta' | 'consultant_override' | 'override_reason' | 'learning_gain' | 'lambda_eigenvalue' | 'created_at'>>
 }
 
 /**

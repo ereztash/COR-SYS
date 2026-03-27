@@ -26,6 +26,7 @@ import {
   avg,
   SUCCESS_ENTROPY_DELTA,
   SUCCESS_J_QUOTIENT_THRESHOLD,
+  SUCCESS_LEARNING_GAIN_MIN,
   CONFIDENCE_HIGH_THRESHOLD,
   CONFIDENCE_MEDIUM_THRESHOLD,
   CONFIDENCE_LOW_THRESHOLD,
@@ -75,13 +76,16 @@ function wilsonScore(successes: number, total: number, z = 1.96): number {
 /**
  * A case is considered successful if:
  *   - entropy decreased by more than 1.5 points, OR
- *   - J-Quotient recovered by more than 5%
+ *   - J-Quotient recovered by more than 5%, OR
+ *   - learning gain is positive (when optional ΔEntropy/ΔJ were not recorded on follow-up,
+ *     LG still comes from ΔDR/ΔPSI via the resilience formula)
  *
- * Threshold source: cbr-execution-roadmap.md Step 3.1
+ * Threshold source: cbr-execution-roadmap.md Step 3.1; LG aligns with resilience-formula.ts
  */
 function isSuccess(c: RankedCase): boolean {
   if (c.delta_total_entropy != null && c.delta_total_entropy < SUCCESS_ENTROPY_DELTA) return true
   if (c.j_quotient_recovered != null && c.j_quotient_recovered > SUCCESS_J_QUOTIENT_THRESHOLD) return true
+  if (c.learning_gain != null && c.learning_gain > SUCCESS_LEARNING_GAIN_MIN) return true
   return false
 }
 

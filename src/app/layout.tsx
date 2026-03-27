@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { LayoutShell } from './components/LayoutShell'
+import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
   title: 'COR-SYS | Executive Dashboard',
@@ -15,6 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen bg-[#0f172a] text-slate-200 font-[Assistant,sans-serif]">
         <LayoutShell>{children}</LayoutShell>
+        <Toaster position="bottom-left" theme="dark" richColors />
       </body>
     </html>
   )

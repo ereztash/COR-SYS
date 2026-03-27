@@ -17,6 +17,7 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import type { InterventionAndFeedbackInsert } from '@/types/database'
 import { analyzeResilience, normalizeLearningGain } from '@/lib/resilience-formula'
+import { updatePriorFromFollowup } from '@/lib/cbr/calibration'
 
 // ─── saveIntervention ────────────────────────────────────────────────────────
 
@@ -73,6 +74,8 @@ export interface SaveFollowupPayload {
   delta_entropy?: number | null
   /** κ coefficient for this org (defaults to 0.5) */
   kappa?: number
+  /** The actual CTA that was applied — used for Tier 2 Bayesian prior update */
+  actual_cta?: string | null
   clientId: string  // for revalidatePath only
 }
 
@@ -111,6 +114,15 @@ export async function saveFollowup(
     .eq('intervention_id', payload.intervention_id)
 
   if (error) return { ok: false, error: error.message }
+
+  // Tier 2 Bayesian prior update — fire-and-forget (non-blocking)
+  // Updates the per-CTA success prior so future Wilson scores are better calibrated.
+  if (payload.actual_cta) {
+    const isSuccess = resilience.learning_gain > 0
+    updatePriorFromFollowup(payload.actual_cta, isSuccess).catch((e) => {
+      console.warn('[CBR] Tier 2 prior update failed (non-blocking):', e)
+    })
+  }
 
   revalidatePath(`/clients/${payload.clientId}`)
   revalidatePath(`/clients/${payload.clientId}/followup`)

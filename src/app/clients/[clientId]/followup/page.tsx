@@ -13,6 +13,8 @@ import Link from 'next/link'
 import { getLatestInterventionForClient } from '@/lib/data'
 import { FollowupForm } from './FollowupForm'
 import { formatDate } from '@/lib/utils'
+import { DecisionSpine } from '@/components/ui/DecisionSpine'
+import { buildDecisionSpineData } from '@/lib/decision-spine-builder'
 
 export const dynamic = 'force-dynamic'
 
@@ -44,6 +46,9 @@ export default async function FollowupPage({
 
   const { snapshot, intervention } = data
 
+  // Build Decision Spine from snapshot (no golden_questions on this page — use raw scores)
+  const spineData = buildDecisionSpineData(clientId, snapshot, {})
+
   const CTA_LABELS: Record<string, string> = {
     sprint: 'Sprint חוסם עורקים',
     retainer: 'Resilience Retainer',
@@ -61,24 +66,29 @@ export default async function FollowupPage({
           <Link href={`/clients/${clientId}`} className="text-slate-400 hover:text-white text-sm transition-colors">
             ← חזרה ללקוח
           </Link>
-          <h1 className="text-2xl font-black text-white mt-2">מדידה חוזרת</h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <h1 className="type-h1 text-white mt-2">מדידה חוזרת</h1>
+          <p className="type-body text-slate-400 mt-1">
             הזן ציוני DSM עדכניים למדידת השפעת ההתערבות
           </p>
         </div>
 
+        {/* Decision Spine */}
+        {spineData && (
+          <DecisionSpine data={spineData} className="mb-6" />
+        )}
+
         {/* Intervention Summary */}
         <div className="bento-card p-5 mb-6 border-t-4 border-slate-600">
-          <p className="text-xs font-bold text-slate-500 uppercase mb-3">פרטי ההתערבות</p>
+          <p className="type-meta mb-3">פרטי ההתערבות</p>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="text-slate-500 text-xs">המלצת מערכת</p>
+              <p className="type-meta normal-case">המלצת מערכת</p>
               <p className="text-white font-medium">
                 {CTA_LABELS[intervention.recommended_cta] ?? intervention.recommended_cta}
               </p>
             </div>
             <div>
-              <p className="text-slate-500 text-xs">התערבות שבוצעה</p>
+              <p className="type-meta normal-case">התערבות שבוצעה</p>
               <p className={`font-medium ${intervention.consultant_override ? 'text-yellow-400' : 'text-white'}`}>
                 {CTA_LABELS[intervention.actual_cta] ?? intervention.actual_cta}
                 {intervention.consultant_override && (
@@ -87,24 +97,24 @@ export default async function FollowupPage({
               </p>
             </div>
             <div>
-              <p className="text-slate-500 text-xs">תאריך התערבות</p>
+              <p className="type-meta normal-case">תאריך התערבות</p>
               <p className="text-white">{formatDate(intervention.created_at)}</p>
             </div>
             <div>
-              <p className="text-slate-500 text-xs">Snapshot מקורי</p>
-              <p className="text-slate-300 text-xs font-mono">{snapshot.snapshot_id.slice(0, 8)}…</p>
+              <p className="type-meta normal-case">Snapshot מקורי</p>
+              <p className="text-slate-300 text-xs type-kpi">{snapshot.snapshot_id.slice(0, 8)}…</p>
             </div>
           </div>
 
           {/* Original scores */}
           <div className="mt-4 pt-4 border-t border-slate-700">
-            <p className="text-xs font-bold text-slate-500 uppercase mb-2">ציונים מקוריים (Baseline)</p>
+            <p className="type-meta mb-2">ציונים מקוריים (Baseline)</p>
             <div className="flex gap-6 text-sm">
-              <span className="text-slate-300">DR: <strong className="text-white">{snapshot.score_dr.toFixed(1)}</strong></span>
-              <span className="text-slate-300">ND: <strong className="text-white">{snapshot.score_nd.toFixed(1)}</strong></span>
-              <span className="text-slate-300">UC: <strong className="text-white">{snapshot.score_uc.toFixed(1)}</strong></span>
+              <span className="text-slate-300 type-kpi">DR: <strong className="text-white">{snapshot.score_dr.toFixed(1)}</strong></span>
+              <span className="text-slate-300 type-kpi">ND: <strong className="text-white">{snapshot.score_nd.toFixed(1)}</strong></span>
+              <span className="text-slate-300 type-kpi">UC: <strong className="text-white">{snapshot.score_uc.toFixed(1)}</strong></span>
               {snapshot.psi_score != null && (
-                <span className="text-slate-300">PSI: <strong className="text-white">{snapshot.psi_score.toFixed(1)}</strong></span>
+                <span className="text-slate-300 type-kpi">PSI: <strong className="text-white">{snapshot.psi_score.toFixed(1)}</strong></span>
               )}
             </div>
           </div>
@@ -113,29 +123,29 @@ export default async function FollowupPage({
         {/* Follow-up already exists */}
         {hasFollowup ? (
           <div className="bento-card p-5 border-t-4 border-emerald-700">
-            <p className="text-xs font-bold text-emerald-500 uppercase mb-3">תוצאות מדידה קיימות</p>
+            <p className="type-meta text-emerald-400 mb-3">תוצאות מדידה קיימות</p>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <p className="text-slate-500 text-xs">Learning Gain (LG)</p>
-                <p className="text-white font-black text-lg">
+                <p className="type-meta normal-case">Learning Gain (LG)</p>
+                <p className="text-white font-black text-lg type-kpi">
                   {intervention.learning_gain?.toFixed(3) ?? '—'}
                 </p>
               </div>
               <div>
-                <p className="text-slate-500 text-xs">Eigenvalue (λ)</p>
-                <p className="text-white font-black text-lg">
+                <p className="type-meta normal-case">Eigenvalue (λ)</p>
+                <p className="text-white font-black text-lg type-kpi">
                   {intervention.lambda_eigenvalue?.toFixed(3) ?? '—'}
                 </p>
               </div>
               <div>
-                <p className="text-slate-500 text-xs">ΔDR</p>
-                <p className={`font-bold ${(intervention.delta_dr ?? 0) < 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                <p className="type-meta normal-case">ΔDR</p>
+                <p className={`font-bold type-kpi ${(intervention.delta_dr ?? 0) < 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                   {intervention.delta_dr != null ? (intervention.delta_dr > 0 ? '+' : '') + intervention.delta_dr.toFixed(2) : '—'}
                 </p>
               </div>
               <div>
-                <p className="text-slate-500 text-xs">ΔPSI</p>
-                <p className={`font-bold ${(intervention.delta_psi ?? 0) > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                <p className="type-meta normal-case">ΔPSI</p>
+                <p className={`font-bold type-kpi ${(intervention.delta_psi ?? 0) > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                   {intervention.delta_psi != null ? (intervention.delta_psi > 0 ? '+' : '') + intervention.delta_psi.toFixed(2) : '—'}
                 </p>
               </div>
@@ -143,6 +153,31 @@ export default async function FollowupPage({
             <p className="text-xs text-slate-600 mt-3">
               מדידה בוצעה: {formatDate(intervention.followup_date!)}
             </p>
+
+            {/* Learning loop insight */}
+            {intervention.learning_gain != null && (
+              <div className={`mt-4 pt-4 border-t border-slate-700 rounded-xl p-3 ${
+                intervention.learning_gain > 0.1
+                  ? 'bg-emerald-950/30 border border-emerald-700/20'
+                  : intervention.learning_gain < -0.05
+                    ? 'bg-red-950/30 border border-red-700/20'
+                    : 'bg-slate-800/40 border border-slate-700/20'
+              }`}>
+                <p className="type-meta mb-1">תובנת לולאת למידה</p>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  {intervention.learning_gain > 0.1
+                    ? `LG=${intervention.learning_gain.toFixed(3)} — ההתערבות הניבה שיפור משמעותי. λ=${intervention.lambda_eigenvalue?.toFixed(3) ?? '—'} מצביע על ${(intervention.lambda_eigenvalue ?? 1) > 1 ? 'מסלול צמיחה' : 'יציבות'}. המלצה: המשך עם אותה גישה.`
+                    : intervention.learning_gain < -0.05
+                      ? `LG=${intervention.learning_gain.toFixed(3)} — ההתערבות לא הניבה שיפור. שקול לבחון מחדש את הגישה ולאסוף אבחון עדכני.`
+                      : `LG=${intervention.learning_gain.toFixed(3)} — שיפור מינורי. ממשיך לאסוף נתונים לכיול מדויק יותר.`}
+                </p>
+                {intervention.consultant_override && (
+                  <p className="text-[10px] text-yellow-600 mt-1">
+                    ⚠ ההתערבות הייתה override — תוצאה זו מכיילת את המנוע לפרופיל דומה.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         ) : (
           <div className="bento-card p-6">
@@ -154,6 +189,7 @@ export default async function FollowupPage({
               prevScoreDr={snapshot.score_dr}
               prevPsiScore={snapshot.psi_score}
               clientId={clientId}
+              actualCta={intervention.actual_cta}
             />
           </div>
         )}
