@@ -1,9 +1,9 @@
-﻿import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { claimDueAgentJobs, finalizeAgentJob, processAgentJob } from '@/lib/agents/jobs'
 import { verifyCronRequest } from '@/lib/api/verify-cron'
 import { createServiceRoleClient } from '@/lib/supabase/service-role'
 
-export async function POST(request: Request) {
+async function handleCronRequest(request: Request) {
   const denied = verifyCronRequest(request)
   if (denied) return denied
 
@@ -34,4 +34,13 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ processed })
+}
+
+export async function POST(request: Request) {
+  return handleCronRequest(request)
+}
+
+/** Vercel Cron invokes scheduled jobs with HTTP GET (same auth as POST). */
+export async function GET(request: Request) {
+  return handleCronRequest(request)
 }

@@ -83,9 +83,9 @@ export function DecisionSpine({ data, className = '' }: Props) {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
         {/* Block 1 — מצב */}
-        <div className="space-y-1">
+        <div className="space-y-1 animate-fade-up delay-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className={`inline-block w-2 h-2 rounded-full ${sev.dotClass} animate-pulse`} />
+            <span className={`inline-block w-2 h-2 rounded-full ${sev.dotClass} animate-pulse glow-breathe`} />
             <span className="type-meta text-slate-400">מצב</span>
           </div>
           <p className={`type-h2 ${sev.accentClass}`}>
@@ -98,11 +98,11 @@ export function DecisionSpine({ data, className = '' }: Props) {
         </div>
 
         {/* Block 2 — השפעה */}
-        <div className={`space-y-1 rounded-xl p-3 ${urg ? `${urg.bg} border ${urg.border}` : 'bg-slate-800/40 border border-slate-700/30'}`}>
+        <div className={`space-y-1 rounded-xl p-3 animate-fade-up delay-150 ${urg ? `${urg.bg} border ${urg.border}` : 'bg-slate-800/40 border border-slate-700/30'}`}>
           <p className="type-meta text-slate-400 mb-1">השפעה כלכלית</p>
           {data.dailyLossILS != null && data.dailyLossILS > 0 ? (
             <>
-              <p className={`text-lg font-black type-kpi ${urg?.text ?? 'text-white'}`}>
+              <p className={`text-lg font-black type-kpi live-ticker ${urg?.text ?? 'text-white'}`}>
                 ₪{Math.round(data.dailyLossILS).toLocaleString('he-IL')}/יום
               </p>
               {data.weeklyLossILS != null && (
@@ -128,7 +128,7 @@ export function DecisionSpine({ data, className = '' }: Props) {
         </div>
 
         {/* Block 3 — פעולה */}
-        <div className="space-y-2">
+        <div className="space-y-2 animate-fade-up delay-300">
           <p className="type-meta text-slate-400">פעולה מומלצת</p>
           <p className="type-h2 text-white">{data.ctaLabel}</p>
           {data.ctaTimeMonths === 0 || data.ctaTimeMonths === null ? (
@@ -147,7 +147,7 @@ export function DecisionSpine({ data, className = '' }: Props) {
           <p className="text-[10px] text-slate-500 mode-research">Execution hypothesis with explicit time boundary.</p>
           <Link
             href={data.ctaHref}
-            className="inline-block mt-1 text-xs font-bold px-4 py-1.5 rounded-xl cta-primary transition-all"
+            className="inline-block mt-1 text-xs font-bold px-4 py-1.5 rounded-xl cta-primary transition-all hover:scale-[1.03] hover:shadow-lg hover:shadow-indigo-500/20"
           >
             בצע עכשיו →
           </Link>

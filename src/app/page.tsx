@@ -2,9 +2,11 @@ import { getDashboardData } from '@/lib/data/dashboard'
 import { formatCurrency } from '@/lib/utils'
 import { YEAR_1_REVENUE_TARGET } from '@/lib/business-config'
 import { Badge } from '@/components/ui/Badge'
+import { EmptyState } from '@/components/ui/EmptyState'
+import { Users, Zap } from 'lucide-react'
 import Link from 'next/link'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 30
 
 export default async function DashboardPage() {
   const data = await getDashboardData()
@@ -16,9 +18,9 @@ export default async function DashboardPage() {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b border-slate-800 pb-6">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-black">C</div>
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white font-black shadow-lg shadow-indigo-500/25 glow-breathe">C</div>
             <h1 className="text-4xl font-black text-white tracking-tight">COR-SYS</h1>
-            <span className="status-badge status-info px-3 py-1 mr-2">Deep-Grid v2.2</span>
+            <span className="status-badge status-info px-3 py-1 mr-2 shimmer-bar">Deep-Grid v2.2</span>
           </div>
           <p className="text-xs text-indigo-300 font-bold tracking-wide mt-1">Name it. Face it. Fix it.</p>
           <p className="text-slate-400 font-medium text-sm mt-2 mode-advanced">מערכת הפעלה אונטולוגית: הנדסת חוסן, צמצום אנטרופיה ומקסום ROI</p>
@@ -63,10 +65,10 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
 
         {/* Decision Latency */}
-        <div className="bento-card col-span-1 p-6 panel-dr flex flex-col justify-center items-center text-center">
+        <div className="bento-card ambient-glow col-span-1 p-6 panel-dr flex flex-col justify-center items-center text-center" style={{ '--card-glow': 'rgba(244, 63, 94, 0.2)' } as React.CSSProperties}>
           <span className="text-3xl mb-2">🕐</span>
           <h2 className="text-sm font-bold text-slate-300 mb-1">Decision Latency Tax</h2>
-          <div className="text-6xl font-black text-white font-mono my-1">
+          <div className="text-6xl font-black text-white font-mono my-1 live-ticker">
             {data.totalLatency.toFixed(0)}<span className="text-2xl axis-dr">h</span>
           </div>
           <p className="text-xs text-intent-danger font-bold uppercase tracking-widest mb-3">בשבוע, סה"כ</p>
@@ -85,7 +87,7 @@ export default async function DashboardPage() {
           </div>
           <div className="space-y-2">
             {data.clients.length === 0 ? (
-              <p className="text-slate-500 text-sm text-center py-4">אין לקוחות עדיין</p>
+              <EmptyState icon={Users} title="אין לקוחות עדיין" ctaLabel="הוסף לקוח" ctaHref="/clients/new" />
             ) : (
               data.clients.map(client => (
                 <Link key={client.id} href={`/clients/${client.id}`}
@@ -117,12 +119,7 @@ export default async function DashboardPage() {
           </div>
           <div className="space-y-2">
             {data.activeSprints.length === 0 ? (
-              <div className="text-center py-4">
-                <p className="text-slate-500 text-sm mb-2">אין ספרינטים פעילים</p>
-                <Link href="/clients" className="text-xs text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-lg hover:bg-emerald-500/10 transition-colors">
-                  התחל ספרינט
-                </Link>
-              </div>
+              <EmptyState icon={Zap} title="אין ספרינטים פעילים" ctaLabel="התחל ספרינט" ctaHref="/clients" />
             ) : (
               data.activeSprints.slice(0, 4).map(sprint => (
                 <Link key={sprint.id} href={`/clients/${sprint.client_id}/sprints/${sprint.id}`}
@@ -145,14 +142,18 @@ export default async function DashboardPage() {
           <p className="text-xs text-slate-400 mb-4">מתודולוגיית PRISM — MECE + Answer First + BCG</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {[
-              { days: 'ימים 1-4', label: 'BIA & Diagnostic', color: 'border-emerald-900/40' },
-              { days: 'ימים 5-8', label: 'Logic Injection (DDD)', color: 'border-emerald-900/40' },
-              { days: 'ימים 9-12', label: 'Tech Tourniquet', color: 'border-emerald-500/50 bg-emerald-900/20' },
-              { days: 'ימים 13-14', label: 'Validation & Handover', color: 'border-emerald-900/40' },
-            ].map(step => (
-              <div key={step.days} className={`p-3 rounded-xl border bg-slate-800/30 ${step.color}`}>
-                <p className="text-[10px] text-emerald-400 font-bold">{step.days}</p>
+              { days: 'ימים 1-4', label: 'BIA & Diagnostic', color: 'border-emerald-900/40', dot: 'bg-emerald-500' },
+              { days: 'ימים 5-8', label: 'Logic Injection (DDD)', color: 'border-emerald-900/40', dot: 'bg-emerald-400' },
+              { days: 'ימים 9-12', label: 'Tech Tourniquet', color: 'border-emerald-500/50 bg-emerald-900/20', dot: 'bg-emerald-300' },
+              { days: 'ימים 13-14', label: 'Validation & Handover', color: 'border-emerald-900/40', dot: 'bg-emerald-200' },
+            ].map((step, i) => (
+              <div key={step.days} className={`p-3 rounded-xl border bg-slate-800/30 ${step.color} relative group hover:bg-slate-800/50 transition-colors`}>
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className={`w-2 h-2 rounded-full ${step.dot} shrink-0 group-hover:scale-125 transition-transform`} />
+                  <p className="text-[10px] text-emerald-400 font-bold">{step.days}</p>
+                </div>
                 <p className="text-xs text-slate-300 mt-0.5">{step.label}</p>
+                {i < 3 && <div className="hidden sm:block absolute -bottom-3 left-1/2 w-px h-3 bg-emerald-800/40" />}
               </div>
             ))}
           </div>
@@ -219,13 +220,15 @@ export default async function DashboardPage() {
                 color: 'text-purple-400',
               },
             ].map(agent => (
-              <div key={agent.sym} className="p-3 rounded-xl bg-slate-800/30 border border-slate-700/30">
+              <div key={agent.sym} className="p-3 rounded-xl bg-slate-800/30 border border-slate-700/30 group hover:border-slate-600/50 hover:bg-slate-800/50 transition-all duration-200">
                 <div className="flex items-center gap-3 mb-1.5">
-                  <div className={`w-8 h-8 rounded bg-slate-900 flex items-center justify-center font-mono font-bold border border-slate-700 ${agent.color}`}>
+                  <div className={`w-8 h-8 rounded bg-slate-900 flex items-center justify-center font-mono font-bold border border-slate-700 ${agent.color} group-hover:scale-110 group-hover:shadow-lg transition-all duration-200`}
+                    style={{ transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+                  >
                     {agent.sym}
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-200">{agent.name}</p>
+                    <p className="text-xs font-bold text-slate-200 group-hover:text-white transition-colors">{agent.name}</p>
                     <p className="text-[10px] text-slate-500">{agent.role}</p>
                   </div>
                 </div>
@@ -293,8 +296,18 @@ function KpiCard({ label, value, sub, color, delay = '' }: { label: string; valu
     emerald: 'text-emerald-400',
     red: 'text-red-400',
   }
+  const glowColors: Record<string, string> = {
+    blue: 'rgba(59, 130, 246, 0.18)',
+    indigo: 'rgba(99, 102, 241, 0.18)',
+    yellow: 'rgba(234, 179, 8, 0.18)',
+    emerald: 'rgba(16, 185, 129, 0.18)',
+    red: 'rgba(239, 68, 68, 0.18)',
+  }
   return (
-    <div className={`bento-card p-4 border ${colors[color]} animate-fade-up ${delay}`}>
+    <div
+      className={`bento-card ambient-glow p-4 border ${colors[color]} animate-fade-up ${delay}`}
+      style={{ '--card-glow': glowColors[color] } as React.CSSProperties}
+    >
       <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-1">{label}</p>
       <p className={`text-2xl font-black ${textColors[color]}`}>{value}</p>
       <p className="text-[10px] text-slate-500 mt-0.5">{sub}</p>

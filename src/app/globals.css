@@ -5,9 +5,10 @@
   --bg-surface: rgba(30, 41, 59, 0.7);
   --bg-surface-strong: rgba(15, 23, 42, 0.9);
   --text-primary: #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --text-secondary: #a1b0c7;
+  --text-muted: #7c8aa0;
   --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.14);
 
   /* Semantic status colors */
   --color-info: #6366f1;
@@ -16,12 +17,16 @@
   --color-danger: #ef4444;
   --color-neutral: #475569;
 
+  /* Card glow (overridable per-card) */
+  --card-glow: rgba(99, 102, 241, 0.15);
+
   /* Motion tokens */
   --motion-fast: 140ms;
   --motion-base: 220ms;
   --motion-slow: 360ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-emphasized: cubic-bezier(0.2, 0, 0, 1.2);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 body {
@@ -44,14 +49,20 @@ h1, h2, h3, h4, h5, h6 {
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-subtle);
   border-radius: 1.5rem;
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  transition:
+    box-shadow var(--motion-base) var(--ease-standard),
+    border-color var(--motion-base) var(--ease-standard),
+    transform var(--motion-base) var(--ease-emphasized);
   position: relative;
   overflow: hidden;
 }
 
 .bento-card:hover {
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.3),
+    0 0 40px -10px var(--card-glow);
+  border-color: var(--border-hover);
 }
 
 /* ─── Premium glass card (diagnostic / client-facing) ─────────────────────── */
@@ -60,14 +71,20 @@ h1, h2, h3, h4, h5, h6 {
   backdrop-filter: blur(24px);
   border: 1px solid var(--border-subtle);
   border-radius: 1.5rem;
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  transition:
+    box-shadow var(--motion-base) var(--ease-standard),
+    border-color var(--motion-base) var(--ease-standard),
+    transform var(--motion-base) var(--ease-emphasized);
   position: relative;
   overflow: hidden;
 }
 
 .glass-card:hover {
-  box-shadow: 0 24px 48px -8px rgba(0, 0, 0, 0.5);
-  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-3px);
+  box-shadow:
+    0 24px 48px -8px rgba(0, 0, 0, 0.5),
+    0 0 60px -15px var(--card-glow);
+  border-color: var(--border-hover);
 }
 
 /* ─── Animations ──────────────────────────────────────────────────────────── */
@@ -87,6 +104,36 @@ h1, h2, h3, h4, h5, h6 {
   to   { stroke-dashoffset: 0;   }
 }
 
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 0.85; }
+}
+
+@keyframes shimmer-sweep {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes bar-fill {
+  from { width: 0%; }
+}
+
+@keyframes tick-flash {
+  0%, 80% { color: inherit; }
+  90%     { color: #fb923c; text-shadow: 0 0 8px rgba(251, 146, 60, 0.4); }
+  100%    { color: inherit; }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
 .animate-pulse-ring {
   animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
 }
@@ -94,6 +141,18 @@ h1, h2, h3, h4, h5, h6 {
 .animate-fade-up {
   opacity: 0;
   animation: fade-up 0.5s ease forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s var(--ease-emphasized) forwards;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s var(--ease-emphasized) forwards;
+}
+
+.animate-bar-fill {
+  animation: bar-fill 0.8s var(--ease-standard) forwards;
 }
 
 .delay-0   { animation-delay: 0ms; }
@@ -104,6 +163,8 @@ h1, h2, h3, h4, h5, h6 {
 .delay-375 { animation-delay: 375ms; }
 .delay-450 { animation-delay: 450ms; }
 .delay-525 { animation-delay: 525ms; }
+.delay-600 { animation-delay: 600ms; }
+.delay-700 { animation-delay: 700ms; }
 
 /* ─── Grid texture overlay ────────────────────────────────────────────────── */
 .grid-texture {
@@ -243,6 +304,73 @@ h1, h2, h3, h4, h5, h6 {
   animation: fade-up 380ms ease forwards;
 }
 
+/* ─── Ambient glow (follows cursor on hover) ──────────────────────────────── */
+.ambient-glow {
+  position: relative;
+}
+
+.ambient-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    var(--card-glow) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--motion-base) var(--ease-standard);
+  z-index: 0;
+}
+
+.ambient-glow:hover::before {
+  opacity: 1;
+}
+
+/* ─── Live ticker for loss/KPI numbers ─────────────────────────────────────── */
+.live-ticker {
+  animation: tick-flash 4s ease infinite;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Shimmer loading bar ──────────────────────────────────────────────────── */
+.shimmer-bar {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 100%
+  );
+  animation: shimmer-sweep 2s ease-in-out infinite;
+}
+
+/* ─── Glow breathe (for status dots, severity indicators) ──────────────────── */
+.glow-breathe {
+  animation: glow-breathe 3s ease-in-out infinite;
+}
+
+/* ─── Page transition (CSS-only) ───────────────────────────────────────────── */
+.page-enter {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s var(--ease-emphasized);
+}
+
 /* ─── Interaction polish ───────────────────────────────────────────────────── */
 a, button, input, textarea, select {
   transition:
@@ -255,7 +383,9 @@ a, button, input, textarea, select {
 
 a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.35);
+  box-shadow:
+    0 0 0 2px rgba(99, 102, 241, 0.35),
+    0 0 0 4px rgba(99, 102, 241, 0.1);
 }
 
 .motion-card {
@@ -266,7 +396,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 }
 
 .motion-card:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 32px -8px rgba(0, 0, 0, 0.35),
+    0 0 24px -6px var(--card-glow);
 }
 
 .dense-copy p {
