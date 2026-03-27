@@ -1,0 +1,2370 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSM-Org v1.0 | מדריך אבחוני לפתולוגיות מערכתיות ארגוניות</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@300;400;500;600;700;900&family=Noto+Sans+Hebrew:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fffef9;
+  --surface: #ffffff;
+  --surface-alt: #f9f7f2;
+  --text: #1c1917;
+  --text-2: #44403c;
+  --text-3: #78716c;
+  --text-4: #a8a29e;
+  --red: #991b1b;
+  --red-light: #fef2f2;
+  --red-border: #fca5a5;
+  --amber: #92400e;
+  --amber-light: #fffbeb;
+  --amber-border: #fcd34d;
+  --green: #166534;
+  --green-light: #f0fdf4;
+  --green-border: #86efac;
+  --blue: #1e40af;
+  --blue-light: #eff6ff;
+  --blue-border: #93c5fd;
+  --purple: #581c87;
+  --purple-light: #faf5ff;
+  --purple-border: #c4b5fd;
+  --border: #d6d3d1;
+  --border-light: #e7e5e4;
+  --border-dark: #78716c;
+  --code-bg: #f5f5f4;
+  --tam-t: #0d6244;
+  --tam-a: #b45309;
+  --tam-m: #1e3a5f;
+  --sidebar-w: 280px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+@page { size: A4; margin: 2cm; }
+
+body {
+  font-family: 'Noto Serif Hebrew', serif;
+  font-size: 15.5px;
+  line-height: 1.9;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+.page-wrap {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 28px 120px;
+}
+
+/* ════════════════════════════════════════
+   COVER
+   ════════════════════════════════════════ */
+.cover {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 0 60px;
+  border-bottom: 4px double var(--text);
+  margin-bottom: 64px;
+}
+
+.cover-overline {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 40px;
+}
+
+.cover h1 {
+  font-size: 56px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  letter-spacing: -0.5px;
+}
+
+.cover h1 .thin { font-weight: 300; }
+
+.cover-edition {
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text-2);
+  margin-bottom: 48px;
+  line-height: 1.6;
+}
+
+.cover-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 48px;
+}
+
+.cover-meta-cell {
+  background: var(--surface);
+  padding: 20px 24px;
+}
+
+.cover-meta-cell .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-4);
+  margin-bottom: 6px;
+}
+
+.cover-meta-cell .value {
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* ════════════════════════════════════════
+   SECTION SYSTEM
+   ════════════════════════════════════════ */
+.part-break {
+  margin: 80px 0 48px;
+  padding: 40px 0;
+  border-top: 4px double var(--text);
+  border-bottom: 1px solid var(--border);
+  page-break-before: always;
+}
+
+.part-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 12px;
+}
+
+.part-break h2 {
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1.25;
+  margin-bottom: 12px;
+}
+
+.part-lead {
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--text-2);
+  line-height: 1.8;
+  max-width: 720px;
+}
+
+/* Chapter */
+.chap {
+  margin-top: 56px;
+  margin-bottom: 28px;
+}
+
+.chap-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.chap h3 {
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-bottom: 6px;
+}
+
+/* Sub-section */
+h4 {
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 36px;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+h5 {
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  color: var(--text-2);
+}
+
+/* ════════════════════════════════════════
+   TYPOGRAPHY
+   ════════════════════════════════════════ */
+p { margin-bottom: 14px; }
+
+.body-sans {
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+strong { font-weight: 700; }
+
+em { font-style: italic; }
+
+.metric {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: var(--red);
+  font-size: 14px;
+}
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  background: var(--code-bg);
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+
+.footnote {
+  font-size: 13px;
+  color: var(--text-3);
+  border-top: 1px solid var(--border-light);
+  padding-top: 8px;
+  margin-top: 24px;
+}
+
+/* ════════════════════════════════════════
+   DSM-STYLE DIAGNOSTIC CRITERIA BOX
+   ════════════════════════════════════════ */
+.dx-box {
+  border: 2px solid var(--text);
+  margin: 32px 0;
+  page-break-inside: avoid;
+}
+
+.dx-box-header {
+  background: var(--text);
+  color: var(--bg);
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dx-box-header .dx-code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.dx-box-header .dx-name {
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.dx-box-body {
+  padding: 24px;
+}
+
+.dx-criteria-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.dx-criteria-label:first-child { margin-top: 0; }
+
+.dx-criterion {
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+  padding: 6px 0 6px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.dx-criterion .letter {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text-3);
+  flex-shrink: 0;
+  min-width: 24px;
+  text-align: center;
+}
+
+.dx-criterion .text { flex: 1; }
+
+/* Severity specifiers */
+.dx-severity {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border-light);
+  border: 1px solid var(--border-light);
+  margin: 12px 0;
+}
+
+.dx-severity-cell {
+  padding: 12px 16px;
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.dx-severity-cell.mild { background: var(--amber-light); }
+.dx-severity-cell.moderate { background: #fff7ed; }
+.dx-severity-cell.severe { background: var(--red-light); }
+
+.dx-severity-cell .sev-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.dx-severity-cell.mild .sev-label { color: var(--amber); }
+.dx-severity-cell.moderate .sev-label { color: #c2410c; }
+.dx-severity-cell.severe .sev-label { color: var(--red); }
+
+/* ════════════════════════════════════════
+   T/A/M SYSTEM
+   ════════════════════════════════════════ */
+.tam-strip {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  margin: 16px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+
+.tam-cell {
+  flex: 1;
+  padding: 10px 16px;
+  text-align: center;
+  border-left: 1px solid var(--border);
+}
+
+.tam-cell:last-child { border-left: none; }
+
+.tam-cell .tam-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.tam-cell .tam-val {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.tam-cell.t { background: #ecfdf5; }
+.tam-cell.t .tam-label, .tam-cell.t .tam-val { color: var(--tam-t); }
+.tam-cell.a { background: #fffbeb; }
+.tam-cell.a .tam-label, .tam-cell.a .tam-val { color: var(--tam-a); }
+.tam-cell.m { background: #eff6ff; }
+.tam-cell.m .tam-label, .tam-cell.m .tam-val { color: var(--tam-m); }
+.tam-cell.total { background: var(--surface-alt); }
+.tam-cell.total .tam-label { color: var(--text-3); }
+.tam-cell.total .tam-val { color: var(--text); }
+
+.tam-inline {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 13px;
+}
+.tam-inline.t { color: var(--tam-t); }
+.tam-inline.a { color: var(--tam-a); }
+.tam-inline.m { color: var(--tam-m); }
+
+/* ════════════════════════════════════════
+   TABLES
+   ════════════════════════════════════════ */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 13.5px;
+}
+
+thead th {
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  text-align: right;
+  border-bottom: 2px solid var(--text);
+  background: var(--surface-alt);
+}
+
+tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: top;
+  line-height: 1.6;
+}
+
+tbody tr:hover { background: var(--surface-alt); }
+
+/* ════════════════════════════════════════
+   DATA DISPLAYS
+   ════════════════════════════════════════ */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin: 24px 0;
+}
+
+.stat-cell {
+  background: var(--surface);
+  padding: 18px 20px;
+}
+
+.stat-cell .val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--red);
+}
+
+.stat-cell .lbl {
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.data-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 20px 24px;
+  margin: 20px 0;
+}
+
+.data-block.accent-right { border-right: 4px solid var(--red); }
+.data-block.accent-right-green { border-right: 4px solid var(--green); }
+.data-block.accent-right-amber { border-right: 4px solid var(--amber); }
+.data-block.accent-right-blue { border-right: 4px solid var(--blue); }
+
+.data-block .db-overline {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-4);
+  margin-bottom: 6px;
+}
+
+.data-block .db-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.data-block .db-desc {
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 13px;
+  color: var(--text-2);
+  margin-top: 4px;
+}
+
+/* ════════════════════════════════════════
+   CALLOUTS & NOTES
+   ════════════════════════════════════════ */
+.clinical-note {
+  background: var(--surface-alt);
+  border-right: 4px solid var(--border-dark);
+  padding: 18px 22px;
+  margin: 20px 0;
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.clinical-note .cn-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 6px;
+}
+
+.warning-box {
+  background: var(--red-light);
+  border: 1px solid var(--red-border);
+  border-right: 4px solid var(--red);
+  padding: 18px 22px;
+  margin: 20px 0;
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 14px;
+}
+
+.warning-box .wb-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--red);
+  margin-bottom: 6px;
+}
+
+.caution-box {
+  background: var(--amber-light);
+  border: 1px solid var(--amber-border);
+  border-right: 4px solid var(--amber);
+  padding: 18px 22px;
+  margin: 20px 0;
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 14px;
+}
+
+.caution-box .cb-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--amber);
+  margin-bottom: 6px;
+}
+
+/* ════════════════════════════════════════
+   CASE STUDY
+   ════════════════════════════════════════ */
+.case-block {
+  border: 1px solid var(--border);
+  margin: 20px 0;
+  page-break-inside: avoid;
+}
+
+.case-block-header {
+  background: var(--surface-alt);
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.case-block-header .case-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.case-block-header .case-tags {
+  display: flex;
+  gap: 6px;
+}
+
+.case-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+
+.case-tag.nod { background: #fef2f2; color: var(--red); }
+.case-tag.zsg { background: #eff6ff; color: var(--blue); }
+.case-tag.old { background: #faf5ff; color: var(--purple); }
+.case-tag.clt { background: #fffbeb; color: var(--amber); }
+.case-tag.cs { background: #f0fdf4; color: var(--green); }
+
+.case-block-body {
+  padding: 18px 20px;
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* ════════════════════════════════════════
+   DECISION TREE / FLOW
+   ════════════════════════════════════════ */
+.flow-step {
+  display: flex;
+  gap: 20px;
+  margin: 24px 0;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.flow-num {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  background: var(--text);
+  color: var(--bg);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flow-body h5 {
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: var(--text);
+}
+
+.flow-body p {
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 14px;
+  color: var(--text-2);
+  margin-bottom: 6px;
+}
+
+.flow-body .flow-output {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 8px;
+}
+
+/* ════════════════════════════════════════
+   INTERVENTION CARD
+   ════════════════════════════════════════ */
+.rx-card {
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--green);
+  margin: 28px 0;
+  page-break-inside: avoid;
+}
+
+.rx-card-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.rx-card-header h4 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.rx-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.rx-card-body {
+  padding: 20px 24px;
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.rx-card-body p { margin-bottom: 10px; }
+
+.rx-protocol {
+  background: var(--green-light);
+  border: 1px solid var(--green-border);
+  padding: 16px 20px;
+  margin: 12px 0;
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-size: 13px;
+}
+
+.rx-protocol .rp-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--green);
+  margin-bottom: 6px;
+}
+
+/* ════════════════════════════════════════
+   CONFIDENCE / METER
+   ════════════════════════════════════════ */
+.conf-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+}
+
+.conf-track {
+  flex: 1;
+  height: 10px;
+  background: var(--border-light);
+  border: 1px solid var(--border);
+}
+
+.conf-fill { height: 100%; }
+.conf-fill.high { background: var(--green); }
+.conf-fill.med { background: var(--amber); width: 72%; }
+
+.conf-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  min-width: 50px;
+  text-align: left;
+}
+
+/* ════════════════════════════════════════
+   SEPARATOR & UTILITY
+   ════════════════════════════════════════ */
+hr.sep {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 40px 0;
+}
+
+hr.sep-heavy {
+  border: none;
+  border-top: 2px solid var(--text);
+  margin: 48px 0;
+}
+
+.spacer-sm { height: 16px; }
+.spacer-md { height: 32px; }
+.spacer-lg { height: 48px; }
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.indent { padding-right: 28px; }
+
+/* ════════════════════════════════════════
+   APPENDIX
+   ════════════════════════════════════════ */
+.appendix-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 8px;
+}
+
+/* ════════════════════════════════════════
+   FOOTER
+   ════════════════════════════════════════ */
+.doc-footer {
+  margin-top: 80px;
+  padding-top: 24px;
+  border-top: 4px double var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-3);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ════════════════════════════════════════
+   PRINT
+   ════════════════════════════════════════ */
+@media print {
+  body { font-size: 10.5pt; }
+  .page-wrap { max-width: 100%; padding: 0; }
+  .cover { min-height: auto; page-break-after: always; }
+  .part-break { page-break-before: always; }
+  .dx-box, .case-block, .rx-card { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- COVER -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-overline">COR-SYS Clinical Reference</div>
+  <h1>DSM-Org <span class="thin">v1.0</span></h1>
+  <div class="cover-edition">
+    מדריך אבחוני וסטטיסטי לפתולוגיות מערכתיות ארגוניות<br>
+    מהדורת הייטק ישראלי 2024-2026
+  </div>
+  <p style="font-family:'Noto Sans Hebrew',sans-serif; font-size:15px; color:var(--text-2); max-width:640px;">
+    מסגרת קלינית מלאה לאבחון, סיווג, והתערבות בכשלים ארגוניים מבניים.
+    כולל קריטריונים אבחוניים, specifiers לחומרה, אבחנה מבדלת, 
+    comorbidity, כלי מדידה מאומתים, פרוטוקולי התערבות, 
+    ו-clinical vignettes.
+  </p>
+  <div class="cover-meta-grid">
+    <div class="cover-meta-cell">
+      <div class="label">VERSION</div>
+      <div class="value">1.0 | 2026</div>
+    </div>
+    <div class="cover-meta-cell">
+      <div class="label">FRAMEWORK</div>
+      <div class="value">COR-SYS T/A/M</div>
+    </div>
+    <div class="cover-meta-cell">
+      <div class="label">CLASSIFICATION</div>
+      <div class="value">מסמך עבודה קליני</div>
+    </div>
+    <div class="cover-meta-cell">
+      <div class="label">SCOPE</div>
+      <div class="value">Israeli High-Tech, 50-300 FTE</div>
+    </div>
+    <div class="cover-meta-cell">
+      <div class="label">ICP</div>
+      <div class="value">COO / CFO / VP People</div>
+    </div>
+    <div class="cover-meta-cell">
+      <div class="label">POC CONFIDENCE</div>
+      <div class="value">0.70 - 0.80</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- CAUTIONARY STATEMENT -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="warning-box">
+  <div class="wb-label">הצהרת זהירות לשימוש קליני</div>
+  <p style="margin:0;">
+    DSM-Org הוא כלי אבחוני מובנה, לא כלי ניבוי. הקריטריונים שלהלן מספקים מסגרת לזיהוי וסיווג פתולוגיות ארגוניות. הם אינם מחליפים שיקול דעת קליני. אבחון שלם דורש הפעלת תהליך שבעת השלבים (חלק II), איסוף נתונים כמותיים, והפעלת שאלונים מאומתים. חתימות T/A/M שניתנות בפרק זה מבוססות על ניתוח תאורטי ונתוני מאקרו, וטרם כויילו אמפירית על ארגונים ישראליים בודדים. כיול יתבצע בפיילוטים (ראו חלק VII).
+  </p>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- TABLE OF CONTENTS -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="chap">
+  <h3>תוכן עניינים</h3>
+</div>
+
+<table>
+  <tbody>
+    <tr><td><strong>חלק I</strong></td><td>מבוא: הפרדוקס המאקרו-כלכלי</td></tr>
+    <tr><td></td><td class="indent" style="color:var(--text-2); font-size:13px;">1.1 הפרדוקס הישראלי: M&A לצד דימום הון אנושי &nbsp;|&nbsp; 1.2 Silent Stagnation Crossover &nbsp;|&nbsp; 1.3 מכפיל המילואים &nbsp;|&nbsp; 1.4 eNPS False Positives &nbsp;|&nbsp; 1.5 מושגי יסוד: T/A/M</td></tr>
+    <tr><td><strong>חלק II</strong></td><td>תהליך האבחון בשבעה שלבים</td></tr>
+    <tr><td></td><td class="indent" style="color:var(--text-2); font-size:13px;">2.1-2.7 שלבי התהליך &nbsp;|&nbsp; 2.8 עץ החלטות אבחוני &nbsp;|&nbsp; 2.9 מודול שאלונים מאומתים</td></tr>
+    <tr><td><strong>חלק III</strong></td><td>הטקסונומיה הקלינית: חמש הפתולוגיות</td></tr>
+    <tr><td></td><td class="indent" style="color:var(--text-2); font-size:13px;">3.1 NOD &nbsp;|&nbsp; 3.2 ZSG &nbsp;|&nbsp; 3.3 OLD &nbsp;|&nbsp; 3.4 CLT &nbsp;|&nbsp; 3.5 CS &nbsp;|&nbsp; 3.6 Comorbidity &nbsp;|&nbsp; 3.7 אבחנה מבדלת</td></tr>
+    <tr><td><strong>חלק IV</strong></td><td>סחף ארכיטקטוני AI וריקבון הקשרי</td></tr>
+    <tr><td></td><td class="indent" style="color:var(--text-2); font-size:13px;">4.1 נתוני GitClear/DORA &nbsp;|&nbsp; 4.2 Half-Life of Contextual Memory &nbsp;|&nbsp; 4.3 לולאת ההגברה</td></tr>
+    <tr><td><strong>חלק V</strong></td><td>חוברות התערבות קליניות</td></tr>
+    <tr><td></td><td class="indent" style="color:var(--text-2); font-size:13px;">5.1 Just Culture &nbsp;|&nbsp; 5.2 Double-Loop Learning &nbsp;|&nbsp; 5.3 Nudge Management &nbsp;|&nbsp; 5.4 Tech Tourniquet &nbsp;|&nbsp; 5.5 RevOps/CoS &nbsp;|&nbsp; 5.6 DDD Workflow &nbsp;|&nbsp; 5.7 TTX &nbsp;|&nbsp; 5.8 מטריצת התערבות</td></tr>
+    <tr><td><strong>חלק VI</strong></td><td>כלי מדידה והערכה (נספחים)</td></tr>
+    <tr><td></td><td class="indent" style="color:var(--text-2); font-size:13px;">6.1 MBI &nbsp;|&nbsp; 6.2 Edmondson 7-Item &nbsp;|&nbsp; 6.3 RSQ &nbsp;|&nbsp; 6.4 T/A/M Scoring Sheet &nbsp;|&nbsp; 6.5 מילון מונחים</td></tr>
+    <tr><td><strong>חלק VII</strong></td><td>רמת ביטחון, כיול, וצעדים הבאים</td></tr>
+    <tr><td></td><td class="indent" style="color:var(--text-2); font-size:13px;">7.1 ניקוד POC &nbsp;|&nbsp; 7.2 פיילוטים נדרשים &nbsp;|&nbsp; 7.3 קריטריוני כניסה</td></tr>
+  </tbody>
+</table>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- PART I: INTRODUCTION & MACRO-PARADOX -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="part-break">
+  <div class="part-num">חלק I</div>
+  <h2>מבוא: הפרדוקס המאקרו-כלכלי</h2>
+  <p class="part-lead">ההייטק הישראלי 2024-2026 מציג פרדוקס שבו שיא M&A חי לצד קריסת הון אנושי. פרק זה מגדיר את המציאות האמפירית שממנה נגזרת המסגרת האבחונית.</p>
+</div>
+
+<!-- 1.1 -->
+<div class="chap">
+  <div class="chap-num">1.1</div>
+  <h3>הפרדוקס הישראלי: יציאות שיא לצד דימום הון אנושי</h3>
+</div>
+
+<p>
+  בשנת 2025 רשם ההייטק הישראלי שיא של <span class="metric">$70-80B</span> ביציאות M&A. עסקאות Wiz, CyberArk ו-Next Insurance הציבו את ישראל כמובילה גלובלית ביצירת ערך טכנולוגי. במקביל, כוח העבודה הצטמצם מ-<span class="metric">417,000</span> ל-<span class="metric">409,000</span> עובדים. <span class="metric">8,300</span> אנשי טכנולוגיה עזבו את המשק.
+</p>
+<p>
+  הפער בין המספרים מגדיר את האבחנה המרכזית: <strong>Silent Stagnation</strong>. ארגון שנראה פעיל מבחוץ, שמשלים עסקאות ומייצר כותרות, אך מתכלה מבפנים. שכבת ייצור הערך, השכבה שמייצרת את הקוד, מנהלת את הצוותים, שומרת על ההקשר הארכיטקטוני, נשחקת בקצב שאי-אפשר לזהות מסקרים סטנדרטיים.
+</p>
+
+<div class="stat-grid">
+  <div class="stat-cell"><div class="val">$70-80B</div><div class="lbl">יציאות M&A, 2025</div></div>
+  <div class="stat-cell"><div class="val">8,300</div><div class="lbl">בריחת מוחות מהסקטור</div></div>
+  <div class="stat-cell"><div class="val">83%</div><div class="lbl">מפתחים בשחיקה חמורה</div></div>
+  <div class="stat-cell"><div class="val">409K</div><div class="lbl">כוח עבודה (ירידה מ-417K)</div></div>
+</div>
+
+<p>
+  המשמעות הקלינית: כלי מדידה ארגוניים סטנדרטיים (סקרי שביעות רצון, eNPS, דוחות תרבות) לא מזהים את ה-Silent Stagnation. הם מודדים מה אנשים אומרים, לא מה קורה. DSM-Org נבנה כדי לגשר על הפער הזה: לתרגם תלונות עמומות ("התרבות בעייתית", "אנשים עוזבים") למדדים כמותיים על שלושה צירים מדידים.
+</p>
+
+<!-- 1.2 -->
+<div class="chap">
+  <div class="chap-num">1.2</div>
+  <h3>Silent Stagnation Crossover</h3>
+</div>
+
+<p>
+  ניתוח סנטימנט של שיח ארגוני פנימי חושף נקודת מפנה שהתרחשה באמצע 2023. מילות מפתח של "שחיקה" (burnout) ו"הישרדות" (survival) עקפו את "משימה" (mission) ו"חדשנות" (innovation) בשיח הפנימי. עד 2026, מילות ההישרדות מהוות <span class="metric">97.1%</span> מהשיח.
+</p>
+
+<div class="data-block accent-right">
+  <div class="db-overline">CROSSOVER INDEX</div>
+  <div class="db-value">97.1%</div>
+  <div class="db-desc">
+    נתח מילות "burnout/survival" בשיח ארגוני פנימי, 2026.
+    נקודת ה-Crossover: אמצע 2023.
+    מעבר מ-"mission/innovation" ל-"burnout/survival" כשפת ברירת המחדל הארגונית.
+  </div>
+</div>
+
+<p>
+  נקודת ה-Crossover אינה סתם מדד. היא סימן קליני. כמו שינוי בערכי דם שמסמן מעבר ממצב אקוטי לכרוני: ברגע שהשפה הארגונית עוברת מ"מה אנחנו בונים" ל"איך אנחנו שורדים", המערכת עברה סף. מכאן, כל פתולוגיה שמתוארת ב-DSM-Org פועלת על רקע של Silent Stagnation. היא לא ה-context. היא ה-substrate.
+</p>
+
+<!-- 1.3 -->
+<div class="chap">
+  <div class="chap-num">1.3</div>
+  <h3>מכפיל המילואים (The Miluim Multiplier)</h3>
+</div>
+
+<p>
+  <span class="metric">15-20%</span> מכוח העבודה בהייטק גויס לשירות מילואים. משרתים שירתו <span class="metric">320-350</span> ימים. <span class="metric">33%</span> מיוצאי "קפה בחזור" (תכנית שילוב חוזרים) הם בדרגות ניהול-ביניים ובכירים.
+</p>
+
+<p>
+  ההשפעה הקלינית כפולה. ראשית, <strong>עומס על הנשארים</strong>: צוות מצומצם סופג את אותו עומס עבודה ועומס התראות עם פחות אנשים. שנית, <strong>חיכוך שילוב מחדש (Reintegration Micro-Friction)</strong>: מנהל שחוזר אחרי חודשים של שירות חוזר לארגון שזז. הקשרים השתנו. החלטות התקבלו. תפקידים נמלאו באופן "זמני" שהפך קבוע. ההתאמה מחדש דורשת אנרגיה קוגניטיבית משני הכיוונים: מהחוזר ומהצוות שקלט.
+</p>
+
+<div class="clinical-note">
+  <div class="cn-label">הערה קלינית</div>
+  מכפיל המילואים פועל כ-<strong>amplifier</strong> לכל חמש הפתולוגיות. הוא לא פתולוגיה עצמאית, אלא גורם מערכתי שמחמיר כל מצב קיים. בתהליך האבחון, יש לסמן את מכפיל המילואים כ-contextual factor שמשפיע על חומרת כל אבחנה.
+</div>
+
+<!-- 1.4 -->
+<div class="chap">
+  <div class="chap-num">1.4</div>
+  <h3>eNPS False Positives: הבעיה התרבותית</h3>
+</div>
+
+<p>
+  Employee Net Promoter Score (eNPS) הוא הכלי הנפוץ ביותר למדידת שביעות רצון עובדים. בהקשר ישראלי, הוא מייצר False Positives באופן שיטתי.
+</p>
+
+<p>
+  המנגנון: תרבות צבאית סטואית מלמדת אנשים לדווח על מצבם כ"בסדר" גם כשזה לא בסדר. "ביטסט" (בסדר), "עמידה בלחץ", "לא מתלוננים" הם ערכים תרבותיים עמוקים. עובד ישראלי שמדווח על eNPS גבוה לא בהכרח שבע רצון. ייתכן שהוא מפעיל דפוס תרבותי אוטומטי של מינימיזציה.
+</p>
+
+<p>
+  משמעות אבחונית: אין להסתמך על eNPS כאינדיקטור עיקרי בתהליך DSM-Org. יש להצליב עם נתונים התנהגותיים (תחלופה, ימי מחלה, Cycle Time) ושאלונים מאומתים (MBI, Edmondson) שמודדים התנהגות, לא דיווח עצמי גנרי.
+</p>
+
+<!-- 1.5 -->
+<div class="chap">
+  <div class="chap-num">1.5</div>
+  <h3>מושגי יסוד: מערכת המדידה T/A/M</h3>
+</div>
+
+<p>
+  DSM-Org מודד כל פתולוגיה על שלושה צירים אורתוגונליים. כל ציר בסולם 1-5. ציון 5 מסמן פגיעה קריטית. הסכום המשוקלל (מקסימום 15) קובע חומרת כוללת וסדר עדיפויות להתערבות.
+</p>
+
+<table>
+  <thead>
+    <tr><th style="width:80px;">ציר</th><th>שם מלא</th><th>מה נמדד</th><th>אינדיקטורים נציגים</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="tam-inline t">T</span></td>
+      <td><strong>Time</strong></td>
+      <td>זמן אבוד, שיהוי החלטות, מחזורי עבודה</td>
+      <td>Decision Latency, Cycle Time, Handoff Count, Deployment Frequency, Lead Time for Changes</td>
+    </tr>
+    <tr>
+      <td><span class="tam-inline a">A</span></td>
+      <td><strong>Attention</strong></td>
+      <td>עומס קוגניטיבי, פיזור קשב, שחיקה</td>
+      <td>Context Switches/Day, Notification Load, MBI Score (Emotional Exhaustion), Focus Time %</td>
+    </tr>
+    <tr>
+      <td><span class="tam-inline m">M</span></td>
+      <td><strong>Money</strong></td>
+      <td>דליפת משאבים, עלות חיכוך, עלות אי-פעולה</td>
+      <td>Rework %, Attrition Cost, Revenue per Employee, Cost of Delay, Tech Debt Servicing Cost</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>כללי פרשנות</h4>
+
+<p>
+  <strong>סכום 6-8:</strong> פתולוגיה ברמת חומרה <em>קלה</em>. דורשת ניטור ו-Nudge. 
+  <strong>סכום 9-11:</strong> חומרה <em>בינונית</em>. דורשת התערבות מבנית מתוכננת. 
+  <strong>סכום 12-15:</strong> חומרה <em>חמורה</em>. דורשת Tech Tourniquet מיידי ואחריו שינוי ארכיטקטוני.
+</p>
+
+<p>
+  הצירים אינם עצמאיים לחלוטין. פגיעה בציר A (קשב) מובילה לפגיעה בציר T (החלטות נמשכות יותר זמן כש-executive function נפגע). פגיעה בציר T מובילה לפגיעה בציר M (עיכובים עולים כסף). אבל הציר שמציג את הציון הגבוה ביותר מסמן את נקודת ההתערבות הראשונית.
+</p>
+
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- PART II: THE 7-STAGE DIAGNOSTIC PROCESS -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="part-break">
+  <div class="part-num">חלק II</div>
+  <h2>תהליך האבחון בשבעה שלבים</h2>
+  <p class="part-lead">המסגרת שמתרגמת תלונות עמומות למדדים כמותיים על צירי T/A/M, ומשם לאבחנות ממוספרות עם פרוטוקולי התערבות.</p>
+</div>
+
+<div class="flow-step">
+  <div class="flow-num">01</div>
+  <div class="flow-body">
+    <h5>מיסגור ותיחום (Framing & Scoping)</h5>
+    <p>זיהוי מחזיק העניינים (COO / CFO / VP People). הגדרת הבעיה כפי שמנוסחת על ידו. תיחום יחידת האנליזה: צוות, מחלקה, או ארגון שלם. הגדרת ה-KPI הארגוני שאמור לזוז.</p>
+    <p>שלב זה אינו מאבחן. הוא מגדיר מה הנתונים צריכים לענות עליו. בלי תיחום, האבחון הופך לסקירה כללית שלא מובילה לשום פעולה.</p>
+    <div class="flow-output">OUTPUT → מסמך תיחום (Scope Document): בעיה + יחידה + KPI + timeline</div>
+  </div>
+</div>
+
+<div class="flow-step">
+  <div class="flow-num">02</div>
+  <div class="flow-body">
+    <h5>קו בסיס ומיון T/A/M (Baseline Data & Triage)</h5>
+    <p>איסוף שלוש שכבות נתונים: <strong>שכבת HR</strong> (תחלופה, ימי מחלה, ימי מילואים, eNPS), <strong>שכבת מערכת</strong> (DORA metrics, Cycle Time, Deployment Frequency, Hotfix Rate), ו<strong>שכבת שיח</strong> (סקרים קיימים, תלונות, Sentiment Analysis).</p>
+    <p>הנתונים מתורגמים לחתימת T/A/M ראשונית. השאלה: האם הדימום בעיקר בזמן, בקשב, או בכסף? לרוב, שילוב. המיון קובע איפה צוואר הבקבוק הראשי וקובע אילו שאלונים מופעלים בשלב הבא.</p>
+    <div class="flow-output">OUTPUT → T/A/M Triage Card: ציוני T/A/M ראשוניים + זיהוי ציר מוביל</div>
+  </div>
+</div>
+
+<div class="flow-step">
+  <div class="flow-num">03</div>
+  <div class="flow-body">
+    <h5>מודול שאלונים מאומתים (Validated Questionnaires Module)</h5>
+    <p>שלושה כלים מופעלים בהתאם לתוצאות המיון:</p>
+    <p>
+      <strong>MBI</strong> (Maslach Burnout Inventory): מופעל כאשר ציר A גבוה. מודד תשישות רגשית, דה-פרסונליזציה, ותחושת מוכשרות. שלוש תת-סקלות. ציון תשישות רגשית מעל 27 = שחיקה חמורה.
+    </p>
+    <p>
+      <strong>Edmondson 7-Item</strong> (Psychological Safety Survey): מופעל כאשר מזוהה חשד ל-ZSG או NOD. שבעה פריטים שמודדים נכונות לטעות, לשאול, ולחלוק דעות שונות. ציון ממוצע מתחת ל-3.5 (מתוך 7) = ביטחון פסיכולוגי נמוך.
+    </p>
+    <p>
+      <strong>RSQ</strong> (Resilience Scale Questionnaire): מופעל כאשר מזוהים סממנים של ספירלת הפסד. מודד יכולת התאוששות וגמישות אדפטיבית ברמה הארגונית.
+    </p>
+    <div class="flow-output">OUTPUT → Validated Scores: MBI subscales + Edmondson mean + RSQ index</div>
+  </div>
+</div>
+
+<div class="flow-step">
+  <div class="flow-num">04</div>
+  <div class="flow-body">
+    <h5>מיפוי לקטגוריות DSM-Org (Diagnostic Mapping)</h5>
+    <p>הנתונים המשולבים (כמותיים + שאלונים) ממופים לחמש קטגוריות הפתולוגיה. הבדיקה עוברת את הקריטריונים האבחוניים (חלק III) באופן שיטתי. עבור כל פתולוגיה נבדק: (א) האם הקריטריונים מתקיימים, (ב) מהי רמת החומרה (Specifier), (ג) האם קיימת comorbidity.</p>
+    <p>ארגון יכול לקבל מספר אבחנות. מיפוי Comorbidity מזהה את הפתולוגיה העיקרית (Primary) ואת הפתולוגיות המשניות. זיהוי דפוסי אינטראקציה קובע את סדר ההתערבות.</p>
+    <div class="flow-output">OUTPUT → Diagnostic Profile: Primary Dx + Comorbid Dx + Severity Specifiers</div>
+  </div>
+</div>
+
+<div class="flow-step">
+  <div class="flow-num">05</div>
+  <div class="flow-body">
+    <h5>סינתזה ודוח (Synthesis & Report)</h5>
+    <p>הדוח הקליני כולל: תמונת מצב T/A/M מספרית, מיפוי פתולוגיות עם specifiers, ניתוח שרשראות סיבתיות, זיהוי צוואר הבקבוק המרכזי, וחלונית התערבות מומלצת. הדוח נכתב בשפה שה-CFO יכול לקרוא: מספרים, לא תיאורים. כל קביעה נתמכת בנתון או בציון שאלון.</p>
+    <div class="flow-output">OUTPUT → DSM-Org Clinical Report (8-12 עמודים)</div>
+  </div>
+</div>
+
+<div class="flow-step">
+  <div class="flow-num">06</div>
+  <div class="flow-body">
+    <h5>חוברות התערבות (Intervention Playbooks)</h5>
+    <p>כל אבחנה נקשרת לחוברת התערבות ספציפית (מפורט בחלק V). סדר הפעולות: (1) Tech Tourniquet, חוסם עורקים ב-1-3 ימים. (2) שינוי מבני, 4-16 שבועות. (3) מנגנון משוב, שוטף. ההתערבות אינה גנרית. היא נגזרת מהאבחנה הספציפית ומה-Specifier.</p>
+    <div class="flow-output">OUTPUT → Intervention Plan: Tourniquet + Structural Change + Feedback Loop</div>
+  </div>
+</div>
+
+<div class="flow-step">
+  <div class="flow-num">07</div>
+  <div class="flow-body">
+    <h5>ניטור, משוב ולמידה (Monitoring, Feedback & Learning)</h5>
+    <p>מעקב רבעוני על מדדי T/A/M. השוואה לקו בסיס. שלב זה מפעיל Double-Loop Learning על תהליך האבחון עצמו: בדיקה האם ההתערבות עובדת (לולאה ראשונה), ובדיקה האם המודל האבחוני מדויק (לולאה שנייה). אם ההתערבות עובדת אבל לא בגלל הסיבה שחשבנו, יש לעדכן את המודל.</p>
+    <div class="flow-output">OUTPUT → Quarterly Review: Updated T/A/M + Assumption Audit + Model Calibration</div>
+  </div>
+</div>
+
+<hr class="sep">
+
+<!-- 2.8 -->
+<div class="chap">
+  <div class="chap-num">2.8</div>
+  <h3>עץ החלטות אבחוני (Diagnostic Decision Tree)</h3>
+</div>
+
+<p>
+  עץ ההחלטות מנחה את המאבחן משלב המיון (שלב 2) לזיהוי הפתולוגיה הראשית:
+</p>
+
+<div class="data-block accent-right-blue">
+  <div class="db-overline">DECISION TREE</div>
+  <div style="font-family:'Noto Sans Hebrew',sans-serif; font-size:14px; line-height:2;">
+    <strong>שאלה 1:</strong> האם ציר A הוא הגבוה ביותר?<br>
+    &nbsp;&nbsp;→ כן + MBI תשישות רגשית > 27 → חשד ל-<strong>CS</strong> (Chronic Stress)<br>
+    &nbsp;&nbsp;→ כן + MBI < 27 + Context Switches > 15/day → חשד ל-<strong>CLT</strong> (Cognitive Overload)<br>
+    <strong>שאלה 2:</strong> האם ציר M הוא הגבוה ביותר?<br>
+    &nbsp;&nbsp;→ כן + Edmondson < 3.5 → חשד ל-<strong>ZSG</strong> (Zero-Sum Game)<br>
+    &nbsp;&nbsp;→ כן + Hotfix Rate > 3x baseline → חשד ל-<strong>NOD</strong> (Normalization of Deviance)<br>
+    <strong>שאלה 3:</strong> האם אותם כשלים חוזרים > 3 פעמים ב-6 חודשים?<br>
+    &nbsp;&nbsp;→ כן + Retro Action Items חוזרים → חשד ל-<strong>OLD</strong> (Organizational Learning Disability)<br>
+    <strong>שאלה 4:</strong> האם יותר מפתולוגיה אחת מזוהה?<br>
+    &nbsp;&nbsp;→ כן → עבור ל-<strong>Comorbidity Mapping</strong> (סעיף 3.6)
+  </div>
+</div>
+
+<div class="caution-box">
+  <div class="cb-label">אזהרה אבחונית</div>
+  עץ ההחלטות הוא כלי מיון, לא כלי אבחון סופי. הוא מצמצם את מרחב החיפוש. האבחנה הסופית דורשת בדיקת קריטריונים מלאה (חלק III) עבור כל פתולוגיה שזוהתה כחשודה.
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- PART III: CLINICAL TAXONOMY -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="part-break">
+  <div class="part-num">חלק III</div>
+  <h2>הטקסונומיה הקלינית: חמש הפתולוגיות</h2>
+  <p class="part-lead">כל פתולוגיה מוצגת במבנה DSM: קריטריונים אבחוניים ממוספרים, specifiers לחומרה, מנגנון תאורטי, הקשר תרבותי, אבחנה מבדלת, comorbidity, מהלך ופרוגנוזה, ו-clinical vignettes.</p>
+</div>
+
+<!-- ─── 3.1 NOD ─── -->
+<div class="chap">
+  <div class="chap-num">3.1</div>
+  <h3>NOD: נורמליזציה של סטייה</h3>
+</div>
+
+<div class="dx-box">
+  <div class="dx-box-header">
+    <span class="dx-code">DSM-Org 1.1</span>
+    <span class="dx-name">נורמליזציה של סטייה (NOD)</span>
+  </div>
+  <div class="dx-box-body">
+
+    <div class="dx-criteria-label">A. קריטריון מרכזי (נדרש)</div>
+    <div class="dx-criterion">
+      <span class="letter">A1</span>
+      <span class="text">קיום דפוס חוזר שבו נהלים מתועדים (QA, Code Review, Security Protocols, Approval Gates) אינם מיושמים בפועל, ללא החלטה מתועדת לבטלם.</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">A2</span>
+      <span class="text">הסטייה מהנוהל אינה מדווחת כחריגה, אלא מתקבלת כ"ככה עובדים פה" (הנורמה הבלתי-כתובה עוקפת את הנורמה הכתובה).</span>
+    </div>
+
+    <div class="dx-criteria-label">B. קריטריונים תומכים (נדרשים לפחות 2 מתוך 4)</div>
+    <div class="dx-criterion">
+      <span class="letter">B1</span>
+      <span class="text">Hotfix Rate עלה ב-100% או יותר מעל קו הבסיס במהלך 6 חודשים, ללא שינוי מכוון בתהליכי פיתוח.</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">B2</span>
+      <span class="text">Copy-Paste Code חוצה 15% מסך השורות (בהתאם לממצאי GitClear של 18% בסקטור).</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">B3</span>
+      <span class="text">ירידה של 40% או יותר בפעילות Refactoring בהשוואה לתקופה מקבילה.</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">B4</span>
+      <span class="text">תיעוד של לפחות שלוש תקריות בשנה שבהן כשל ייוחס לאדם, אך חקירה חשפה שהנוהל עצמו לא היה ישים בתנאי השטח.</span>
+    </div>
+
+    <div class="dx-criteria-label">C. קריטריון שלילה</div>
+    <div class="dx-criterion">
+      <span class="letter">C1</span>
+      <span class="text">הסטייה אינה תוצאה של החלטה ניהולית מתועדת לשנות נוהל (שינוי מכוון אינו NOD).</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">C2</span>
+      <span class="text">הסטייה אינה מוגבלת לאירוע חד-פעמי בתנאים חריגים (NOD דורש דפוס חוזר).</span>
+    </div>
+
+    <div class="dx-criteria-label">D. חתימת T/A/M</div>
+    <div class="tam-strip">
+      <div class="tam-cell t"><div class="tam-label">TIME</div><div class="tam-val">4</div></div>
+      <div class="tam-cell a"><div class="tam-label">ATTENTION</div><div class="tam-val">3</div></div>
+      <div class="tam-cell m"><div class="tam-label">MONEY</div><div class="tam-val">5</div></div>
+      <div class="tam-cell total"><div class="tam-label">TOTAL</div><div class="tam-val">12</div></div>
+    </div>
+
+    <div class="dx-criteria-label">E. SEVERITY SPECIFIERS</div>
+    <div class="dx-severity">
+      <div class="dx-severity-cell mild">
+        <div class="sev-label">MILD</div>
+        סטייה מנוהל אחד מתוך שלוש שכבות הגנה (QA, Review, Security). תוצאות: עלייה ב-Hotfixes, אך לא קטסטרופלית. סה"כ T/A/M: 8-9.
+      </div>
+      <div class="dx-severity-cell moderate">
+        <div class="sev-label">MODERATE</div>
+        סטייה משתי שכבות הגנה. "סמוך" הפך לנורמת ברירת מחדל ברוב הצוותים. Copy-Paste > 15%. סה"כ T/A/M: 10-11.
+      </div>
+      <div class="dx-severity-cell severe">
+        <div class="sev-label">SEVERE</div>
+        סטייה משלוש שכבות הגנה. Hotfix Rate > x3 baseline. Refactoring ירד > 60%. סיכון לכשל קטסטרופלי (מחיקת DB, אובדן נתונים). סה"כ T/A/M: 12-15.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<h4>מנגנון תאורטי</h4>
+<p>
+  Diane Vaughan תיארה את הפנומנון בחקירת אסון ה-Challenger (1996): חריגה מהסטנדרט שחוזרת על עצמה ללא תוצאות שליליות מיידיות הופכת לנורמה הבלתי-כתובה. המנגנון מתחזק את עצמו: כל מופע של סטייה ללא תוצאה שלילית <em>מאמת</em> את הסטייה כבטוחה. רק כשמגיע כשל קטסטרופלי ("the normalization snaps"), הארגון מגלה שעבר סף מזמן.
+</p>
+<p>
+  המנגנון פועל בשלושה שלבים: (1) סטייה ראשונית ממניע לגיטימי ("לא היה זמן ל-QA בגלל deadline"), (2) היעדר תוצאה שלילית מיידית → חיזוק ("ראית? לא קרה כלום"), (3) הנורמליזציה: הסטייה הופכת ל-default, ומי שמבקש לעקוב אחרי הנוהל המקורי נתפס כמעכב.
+</p>
+
+<h4>הקשר תרבותי ישראלי</h4>
+<p>
+  תרבות ה-<strong>"סמוך" (Smokh)</strong> היא NOD מובנה. "יהיה בסדר" אינו אמירה של אופטימיות. זו התנהגות מערכתית של הסרת בקרות. ב-<strong>Flat Hierarchy</strong> ישראלי, שבו ג'וניור פונה ישירות ל-CTO, אין שומרי סף שיעצרו סטיות. הגמישות שהיא יתרון בזמני צמיחה מהירה הופכת לפגיעות בזמני לחץ.
+</p>
+<p>
+  מכפיל המילואים מחמיר: כשצוות מצומצם עובד תחת לחץ, ה-QA הוא הדבר הראשון שנופל. "אין לנו זמן עכשיו" הופך ל-"אין לנו QA". אף אחד לא החליט לבטל אותו.
+</p>
+
+<h4>חתימת T/A/M: ניתוח</h4>
+<p>
+  <span class="tam-inline t">T=4</span> גבוה: כל קיצור דרך היום הוא עיכוב מחר. QA שנעלם חוזר כ-Hotfixes דחופים. זמן שנחסך בפיתוח נשרף כפליים ב-debugging.
+</p>
+<p>
+  <span class="tam-inline a">A=3</span> בינוני: הסטייה עצמה לא דורשת קשב נוסף (היא "נורמלית"). אבל ה-Hotfixes שנובעים ממנה כן. וה-context switching בין פיתוח חדש לכיבוי שריפות כן.
+</p>
+<p>
+  <span class="tam-inline m">M=5</span> קריטי: עלות תיקון קוד שנבנה על גבי סטיות מצטברת אקספוננציאלית. כל שכבת Copy-Paste מגדילה את ה-surface area של חוב טכנולוגי.
+</p>
+
+<h4>מקרי בוחן</h4>
+
+<div class="case-block">
+  <div class="case-block-header">
+    <span class="case-label">Clinical Vignette 1.1</span>
+    <div class="case-tags"><span class="case-tag nod">NOD</span><span class="case-tag old">OLD</span></div>
+  </div>
+  <div class="case-block-body">
+    <strong>Replit AI: מחיקת בסיס נתונים</strong><br>
+    AI שמחק בסיס נתונים. לא כשל טכנולוגי. כשל NOD: הנורמליזציה של שימוש ב-AI ללא guardrails הפכה סיכון לנוהל. שכבות הגנה (backup verification, sandbox testing) לא הופעלו כי "עד עכשיו עבד". היעדר תוצאה שלילית קודמת אימת את הסטייה. כשהתוצאה הגיעה, היא הייתה קטסטרופלית. NOD Severe.
+  </div>
+</div>
+
+<div class="case-block">
+  <div class="case-block-header">
+    <span class="case-label">Clinical Vignette 1.2</span>
+    <div class="case-tags"><span class="case-tag nod">NOD</span></div>
+  </div>
+  <div class="case-block-body">
+    <strong>Humane AI Pin: $116M Firesale</strong><br>
+    מוצר שעבר gate אחרי gate ללא עצירה. הסטנדרט של "מוכן לשוק" הלך וירד. כל גרסה קצת פחות מספקת מהקודמת, ואף אחד לא הגדיר מחדש את קו הבסיס. NOD קלאסי: הסטייה מצטברת עד שהמוצר שמגיע לשוק רחוק מהמוצר שתוכנן, ואף אחד לא יכול להצביע על הרגע שבו ההחלטה נלקחה.
+  </div>
+</div>
+
+<div class="case-block">
+  <div class="case-block-header">
+    <span class="case-label">Clinical Vignette 1.3</span>
+    <div class="case-tags"><span class="case-tag nod">NOD</span></div>
+  </div>
+  <div class="case-block-body">
+    <strong>VW Cariad</strong><br>
+    מיליארדי יורו על פלטפורמת תוכנה. ארכיטקטורה שסטתה מהתכנון, שלב אחרי שלב. אף אחד לא הגדיר מחדש את קו הבסיס. כל סטייה "הגיונית" ברמה המקומית. מצטברת, הן יצרו מערכת שלא דומה לתכנון המקורי. NOD ברמת Enterprise.
+  </div>
+</div>
+
+<h4>מהלך ופרוגנוזה</h4>
+<p>
+  NOD מתפתח בהדרגה. שלב מוקדם (3-6 חודשים): סטיות מזדמנות, לרוב מוצדקות ("deadline", "לא קריטי"). שלב ביניים (6-18 חודשים): הסטייה הופכת לנורמה. מי שמבקש לעקוב אחרי הנוהל מקבל התנגדות. שלב מתקדם (18+ חודשים): הארגון אינו מודע לכך שהוא סוטה. הנוהל המקורי הפך למסמך מת. כשל קטסטרופלי הוא עניין של זמן.
+</p>
+<p>
+  <strong>פרוגנוזה ללא התערבות:</strong> עלייה מתמדת ב-Hotfix Rate, ירידה באיכות קוד, ואירוע קטסטרופלי (אובדן נתונים, breach, failure בייצור) שחושף את מלוא היקף הסטייה. <strong>פרוגנוזה עם התערבות:</strong> Just Culture + Nudge Management מצמצמים NOD תוך 8-16 שבועות ברמת Moderate. רמת Severe דורשת Tech Tourniquet מיידי.
+</p>
+
+<h4>אבחנה מבדלת</h4>
+<table>
+  <thead><tr><th>הבחנה מ-</th><th>כיצד להבדיל</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>OLD</strong></td>
+      <td>OLD = כשלים חוזרים <em>למרות</em> נסיון ללמוד. NOD = כשלים חוזרים כי <em>אף אחד לא שם לב</em> שיש כשל. ב-OLD יש Retros שלא עובדים. ב-NOD אין צורך ב-Retros כי "הכל בסדר".</td>
+    </tr>
+    <tr>
+      <td><strong>CLT</strong></td>
+      <td>CLT = עומס שמונע ביצוע נכון. NOD = ביצוע לא-נכון שלא נתפס כבעיה. ב-CLT אנשים <em>יודעים</em> שהם מדלגים. ב-NOD הם <em>לא יודעים</em>.</td>
+    </tr>
+    <tr>
+      <td><strong>שינוי מכוון בנוהל</strong></td>
+      <td>שינוי מכוון מתועד, מאושר, ומנומק. NOD לא מתועד, לא מאושר, ולא מנומק. קריטריון C1 שולל NOD אם קיים תיעוד.</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr class="sep">
+
+<!-- ─── 3.2 ZSG ─── -->
+<div class="chap">
+  <div class="chap-num">3.2</div>
+  <h3>ZSG: תרבות משחק סכום-אפס</h3>
+</div>
+
+<div class="dx-box">
+  <div class="dx-box-header">
+    <span class="dx-code">DSM-Org 2.1</span>
+    <span class="dx-name">תרבות משחק סכום-אפס (ZSG)</span>
+  </div>
+  <div class="dx-box-body">
+
+    <div class="dx-criteria-label">A. קריטריון מרכזי (נדרש)</div>
+    <div class="dx-criterion">
+      <span class="letter">A1</span>
+      <span class="text">דפוס מתועד של תחרות פנימית בין צוותים, מחלקות, או יחידים שגורמת להפסדי סתירה (Contradiction Loss): שכפול מאמצים, מידע שלא זורם, או החלטות שנפתחות מחדש בגלל מאבקי בעלות.</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">A2</span>
+      <span class="text">Edmondson Psychological Safety Score ממוצע < 3.5 (מתוך 7), OR ירידה של 20%+ בציון Edmondson בהשוואה לקו בסיס.</span>
+    </div>
+
+    <div class="dx-criteria-label">B. קריטריונים תומכים (נדרשים לפחות 2 מתוך 4)</div>
+    <div class="dx-criterion">
+      <span class="letter">B1</span>
+      <span class="text">זיהוי של לפחות שני צוותים שבונים פונקציונליות חופפת ללא תיאום (Duplication of Effort).</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">B2</span>
+      <span class="text">עלייה של 30%+ בכמות Escalations ל-C-Level בהשוואה לתקופה מקבילה.</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">B3</span>
+      <span class="text">תחלופת עובדים בצוותים שזוהו כ"מפסידים" ב-ZSG (צוותים שאיבדו budget, headcount, או visibility) גבוהה פי 2+ מממוצע הארגון.</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">B4</span>
+      <span class="text">קיום שיח פנימי (Slack, meetings) שבו "הצלחה של צוות אחר" מתוארת בטרמינולוגיה שלילית ("הם לקחו לנו", "הגנו על שלנו").</span>
+    </div>
+
+    <div class="dx-criteria-label">C. קריטריון שלילה</div>
+    <div class="dx-criterion">
+      <span class="letter">C1</span>
+      <span class="text">התחרות אינה תוצאה של מבנה תמריצים מכוון (בונוסים תחרותיים מובנים אינם ZSG. ZSG הוא תחרות שצמחה מתוך מבנה, לא תחרות שתוכננה).</span>
+    </div>
+
+    <div class="dx-criteria-label">D. חתימת T/A/M</div>
+    <div class="tam-strip">
+      <div class="tam-cell t"><div class="tam-label">TIME</div><div class="tam-val">3</div></div>
+      <div class="tam-cell a"><div class="tam-label">ATTENTION</div><div class="tam-val">3</div></div>
+      <div class="tam-cell m"><div class="tam-label">MONEY</div><div class="tam-val">5</div></div>
+      <div class="tam-cell total"><div class="tam-label">TOTAL</div><div class="tam-val">11</div></div>
+    </div>
+
+    <div class="dx-criteria-label">E. SEVERITY SPECIFIERS</div>
+    <div class="dx-severity">
+      <div class="dx-severity-cell mild">
+        <div class="sev-label">MILD</div>
+        תחרות מוגבלת ל-2-3 צוותים. Edmondson 3.0-3.5. שכפול מאמצים מזוהה אך ניתן לתיקון. סה"כ T/A/M: 8-9.
+      </div>
+      <div class="dx-severity-cell moderate">
+        <div class="sev-label">MODERATE</div>
+        סיילואים מוצקים בין מחלקות. "דוגרי" הפך לתרבות האשמה. Edmondson < 3.0. Escalations עלו 50%+. סה"כ T/A/M: 10-11.
+      </div>
+      <div class="dx-severity-cell severe">
+        <div class="sev-label">SEVERE</div>
+        חוזה פסיכולוגי שבור: פיטורים המוניים, סגירת R&D, קריסת אמון. תחלופה > 30% ביחידות מפסידות. Edmondson < 2.5. סה"כ T/A/M: 12-15.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<h4>מנגנון תאורטי</h4>
+<p>
+  ZSG מבוסס על תאוריית משחק סכום-אפס: הרווח שלי שווה להפסד שלך. בארגון, המנגנון פועל כשמשאבים נתפסים כקבועים (headcount, budget, C-Level attention). כל צוות שמקבל יותר = צוות אחר שמקבל פחות. התפיסה הזו מייצרת Contradiction Loss: אנרגיה ארגונית שנשרפת על תחרות פנימית במקום על יצירת ערך.
+</p>
+<p>
+  ב-ZSG מתקדם, המנגנון מזין את עצמו: צוותים שמרגישים מאוימים מסתגרים (silo), ההסתגרות מחזקת את התפיסה שצוותים אחרים הם איום, וכן הלאה. ספירלה שקשה לשבור בלי שינוי מבני.
+</p>
+
+<h4>הקשר תרבותי ישראלי</h4>
+<p>
+  תרבות ה-<strong>"דוגרי"</strong> היא חרב פיפיות. בצד החיובי: ישירות, ללא פוליטיקה, יכולת לומר את האמת. בצד השלילי: "דוגרי" שמתדרדר ל<strong>תרבות האשמה</strong>. כשהישירות הופכת לטוקסית, אנשים מפסיקים להעלות בעיות. לא כי הם לא אמיצים. כי הם יודעים שהתגובה תהיה "אז למה לא תיקנת?" ולא "מה אנחנו יכולים ללמוד מזה?"
+</p>
+<p>
+  ה-<strong>Flat Hierarchy</strong> מחמיר: בהיעדר שכבות ניהול ברורות, אין מנגנון ניתוב טבעי לקונפליקטים. הם מגיעים ישירות ל-C-Level, עומסים על Escalation path צר, ומייצרים Decision Latency.
+</p>
+
+<h4>מקרי בוחן</h4>
+
+<div class="case-block">
+  <div class="case-block-header">
+    <span class="case-label">Clinical Vignette 2.1</span>
+    <div class="case-tags"><span class="case-tag zsg">ZSG</span><span class="case-tag cs">CS</span></div>
+  </div>
+  <div class="case-block-body">
+    <strong>Playtika: 15% קיצוץ, 500 משרות</strong><br>
+    לא רק צמצום. שבירת חוזה פסיכולוגי. כשארגון חותך 500 משרות, המסר הסמוי לנשארים: "אתם הבאים". ZSG מתעצם: כולם מגנים על הטריטוריה, שיתוף פעולה יורד, אנשים שומרים מידע כ-leverage. הצוותים ש"שרדו" חווים Survivor Guilt ולחץ כרוני בו-זמנית. ZSG Severe + CS Comorbid.
+  </div>
+</div>
+
+<div class="case-block">
+  <div class="case-block-header">
+    <span class="case-label">Clinical Vignette 2.2</span>
+    <div class="case-tags"><span class="case-tag zsg">ZSG</span></div>
+  </div>
+  <div class="case-block-body">
+    <strong>Vimeo: סגירת R&D בישראל</strong><br>
+    ההחלטה נלקחה מרחוק, בלי שהצוות המקומי היה חלק מהשיח. ZSG ברמת Global: HQ מול Branch, עם ישראל כצד המפסיד. ידע מוסדי של שנים הלך לפח. לא כי הוא לא היה חשוב, אלא כי הוא לא היה גלוי למקבלי ההחלטות.
+  </div>
+</div>
+
+<div class="case-block">
+  <div class="case-block-header">
+    <span class="case-label">Clinical Vignette 2.3</span>
+    <div class="case-tags"><span class="case-tag zsg">ZSG</span></div>
+  </div>
+  <div class="case-block-body">
+    <strong>Verint, Firebolt, Remitly</strong><br>
+    דפוס זהה: חוזה פסיכולוגי שנשבר, אמון שמתפורר, שנים של ידע מוסדי שנעלם. בכל המקרים, הצוותים שנשארו חוו עלייה בתחלופה ב-quarter שלאחר הפיטורים. ZSG כ-secondary effect של קיצוץ.
+  </div>
+</div>
+
+<h4>מהלך ופרוגנוזה</h4>
+<p>
+  ZSG מתפתח לרוב סביב אירוע מפעיל: reorg, קיצוצים, שינוי אסטרטגיה, או שינוי ב-C-Level. שלב מוקדם: תחרות "בריאה" שנחווית כמוטיבציה. שלב ביניים: הסיילואים מתקשים. מידע נעצר. שלב מתקדם: חוזה פסיכולוגי שבור. אנשים עוזבים, ומי שנשאר מפעיל אסטרטגיית הישרדות.
+</p>
+<p>
+  <strong>פרוגנוזה ללא התערבות:</strong> ספירלת תחלופה הולכת וגדלה. הארגון מאבד את האנשים הטובים ראשונים (יש להם אופציות). <strong>פרוגנוזה עם התערבות:</strong> Just Culture + RevOps/CoS משנים את מבנה התמריצים ואת ערוצי התיאום. התוצאות מתחילות להראות אחרי 8-16 שבועות.
+</p>
+
+<h4>אבחנה מבדלת</h4>
+<table>
+  <thead><tr><th>הבחנה מ-</th><th>כיצד להבדיל</th></tr></thead>
+  <tbody>
+    <tr><td><strong>NOD</strong></td><td>ב-NOD הבעיה שקופה (אף אחד לא שם לב). ב-ZSG הבעיה גלויה (כולם יודעים על התחרות, אף אחד לא פותר).</td></tr>
+    <tr><td><strong>CS</strong></td><td>CS = שחיקה מלחץ. ZSG = שחיקה מקונפליקט. ב-CS אנשים עייפים. ב-ZSG אנשים כועסים. MBI מבדיל: ב-CS, תשישות רגשית דומיננטית. ב-ZSG, דה-פרסונליזציה דומיננטית.</td></tr>
+    <tr><td><strong>תחרות בריאה</strong></td><td>תחרות בריאה = סכום חיובי. צוות אחד זוכה, אחרים לומדים. ZSG = סכום אפס. צוות אחד זוכה, אחרים מפסידים. הבדיקה: האם "הפסד" של צוות גורם לאובדן משאבים ממשי?</td></tr>
+  </tbody>
+</table>
+
+<hr class="sep">
+
+<!-- ─── 3.3 OLD ─── -->
+<div class="chap">
+  <div class="chap-num">3.3</div>
+  <h3>OLD: מוגבלויות למידה ארגונית</h3>
+</div>
+
+<div class="dx-box">
+  <div class="dx-box-header">
+    <span class="dx-code">DSM-Org 3.1</span>
+    <span class="dx-name">מוגבלויות למידה ארגונית (OLD)</span>
+  </div>
+  <div class="dx-box-body">
+
+    <div class="dx-criteria-label">A. קריטריון מרכזי (נדרש)</div>
+    <div class="dx-criterion">
+      <span class="letter">A1</span>
+      <span class="text">הארגון חווה את אותם כשלים מהסוג זהה 3 פעמים או יותר ב-12 חודשים, למרות שבוצעו Retrospectives או Post-Mortems.</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">A2</span>
+      <span class="text">Action Items מ-Retros חוזרים: לפחות 40% מה-Action Items מופיעים ביותר מ-Retro אחד ללא סגירה.</span>
+    </div>
+
+    <div class="dx-criteria-label">B. קריטריונים תומכים (נדרשים לפחות 2 מתוך 4)</div>
+    <div class="dx-criterion">
+      <span class="letter">B1</span>
+      <span class="text">Conceptia Fixation: הגדרת הבעיה לא שונתה ב-12+ חודשים, למרות שהפתרון המוצע כשל מספר פעמים. ההנחה הבסיסית לא נבדקה.</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">B2</span>
+      <span class="text">תיעוד הפוך: יש תיעוד של מה קרה (Incident Reports), אבל אין תיעוד של מה למדנו (Lesson Learned Repository). או שהמאגר קיים אבל לא נגיש / לא מעודכן / לא נקרא.</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">B3</span>
+      <span class="text">עובדים חדשים חוזרים על טעויות ידועות בשלושת החודשים הראשונים, בשיעור של 50%+ מה-Onboarding Cohort.</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">B4</span>
+      <span class="text">Single-Loop Learning בלבד: Retros מייצרים "מה לתקן" אבל לא "איזו הנחה לעדכן". אין Assumption Updates.</span>
+    </div>
+
+    <div class="dx-criteria-label">C. קריטריון שלילה</div>
+    <div class="dx-criterion">
+      <span class="letter">C1</span>
+      <span class="text">הכשלים החוזרים אינם תוצאה של מחסור במשאבים שמונע יישום (אם הצוות יודע מה לעשות אך אין לו resources, זה לא OLD. זה Resource Constraint).</span>
+    </div>
+
+    <div class="dx-criteria-label">D. חתימת T/A/M</div>
+    <div class="tam-strip">
+      <div class="tam-cell t"><div class="tam-label">TIME</div><div class="tam-val">3</div></div>
+      <div class="tam-cell a"><div class="tam-label">ATTENTION</div><div class="tam-val">4</div></div>
+      <div class="tam-cell m"><div class="tam-label">MONEY</div><div class="tam-val">4</div></div>
+      <div class="tam-cell total"><div class="tam-label">TOTAL</div><div class="tam-val">11</div></div>
+    </div>
+
+    <div class="dx-criteria-label">E. SEVERITY SPECIFIERS</div>
+    <div class="dx-severity">
+      <div class="dx-severity-cell mild">
+        <div class="sev-label">MILD</div>
+        כשלים חוזרים ב-1-2 תחומים. Retros קיימים אך לא יעילים. סה"כ T/A/M: 8-9.
+      </div>
+      <div class="dx-severity-cell moderate">
+        <div class="sev-label">MODERATE</div>
+        Conceptia Fixation מאובחנת. אותן בעיות חוזרות cross-team. תיעוד קיים אך לא פעיל. סה"כ T/A/M: 10-11.
+      </div>
+      <div class="dx-severity-cell severe">
+        <div class="sev-label">SEVERE</div>
+        הארגון אינו מסוגל לזהות שהוא חוזר על אותן טעויות. Retros הפכו לטקס ללא משמעות. Zero Assumption Updates. סה"כ T/A/M: 12-15.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<h4>מנגנון תאורטי</h4>
+<p>
+  Peter Senge (The Fifth Discipline, 1990) הגדיר מוגבלויות למידה ארגונית. Chris Argyris הבדיל בין Single-Loop Learning (תיקון סימפטום) ל-Double-Loop Learning (בדיקת ההנחה שיצרה את הסימפטום). OLD = תקיעות ב-Single-Loop.
+</p>
+<p>
+  <strong>Conceptia Fixation</strong> היא המנגנון המרכזי: ההנחה שהבעיה מוגדרת נכון מונעת בחינה מחדש של ההגדרה. ארגון שמתקן אותם סימפטומים שוב ושוב בלי לשאול "למה הסימפטומים האלה חוזרים?" תקוע ב-OLD.
+</p>
+
+<h4>הקשר תרבותי ישראלי</h4>
+<p>
+  ה-Flat Hierarchy שמאפשר חדשנות מהירה מונע תיעוד מובנה. "אנחנו לא חברה ביורוקרטית" הפך ל"אנחנו לא חברה שלומדת". ידע נשמר בראשים, לא במערכות.
+</p>
+<p>
+  התרבות הצבאית מחזקת: "להמשיך הלאה" (Continue Mission) הוא ערך עליון. ב-Post Mortem ישראלי, הדגש על "מה עושים עכשיו" ולא על "מה ההנחה השגויה שהביאה אותנו לכאן". למידה חד-לולאית מובנית תרבותית.
+</p>
+
+<h4>מקרי בוחן</h4>
+
+<div class="case-block">
+  <div class="case-block-header">
+    <span class="case-label">Clinical Vignette 3.1</span>
+    <div class="case-tags"><span class="case-tag old">OLD</span></div>
+  </div>
+  <div class="case-block-body">
+    <strong>Plenty Unlimited: Chapter 11</strong><br>
+    טכנולוגיה שלא עבדה בקנה מידה. ההנחה ש"הטכנולוגיה תעבוד ב-scale" מעולם לא נבדקה מחדש. Conceptia Fixation קלאסית: הבעיה הוגדרה כ"engineering challenge" ולא כ"fundamental physics limitation". כל ה-Retros טיפלו בסימפטומים (yield נמוך, עלויות גבוהות) ולא בהנחה (הטכנולוגיה scalable).
+  </div>
+</div>
+
+<h4>אבחנה מבדלת</h4>
+<table>
+  <thead><tr><th>הבחנה מ-</th><th>כיצד להבדיל</th></tr></thead>
+  <tbody>
+    <tr><td><strong>NOD</strong></td><td>ב-NOD הארגון לא יודע שיש בעיה. ב-OLD הארגון <em>יודע</em> שיש בעיה, מנסה לפתור, ונכשל שוב ושוב. הסימפטום המבדיל: ב-OLD יש Retros. ב-NOD אין צורך ב-Retros.</td></tr>
+    <tr><td><strong>Resource Constraint</strong></td><td>אם הצוות יודע מה לעשות ואין לו resources, זה לא OLD. קריטריון C1 שולל.</td></tr>
+  </tbody>
+</table>
+
+<hr class="sep">
+
+<!-- ─── 3.4 CLT ─── -->
+<div class="chap">
+  <div class="chap-num">3.4</div>
+  <h3>CLT: עומס קוגניטיבי כרוני</h3>
+</div>
+
+<div class="dx-box">
+  <div class="dx-box-header">
+    <span class="dx-code">DSM-Org 4.1</span>
+    <span class="dx-name">עומס קוגניטיבי כרוני / עומס גירויים (CLT)</span>
+  </div>
+  <div class="dx-box-body">
+
+    <div class="dx-criteria-label">A. קריטריון מרכזי (נדרש)</div>
+    <div class="dx-criterion">
+      <span class="letter">A1</span>
+      <span class="text">מפתחים / עובדי ידע מדווחים על פחות מ-2 שעות Focus Time רצוף ביום עבודה ממוצע, OR Context Switches > 15 פעמים ביום.</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">A2</span>
+      <span class="text">מעל 42% מזמן מפתחים מוקדש ל-Tech Debt ו-Rework (בהתאם לנתוני סקטור).</span>
+    </div>
+
+    <div class="dx-criteria-label">B. קריטריונים תומכים (נדרשים לפחות 2 מתוך 4)</div>
+    <div class="dx-criterion">
+      <span class="letter">B1</span>
+      <span class="text">Notification Load: עובדים מקבלים > 50 התראות ביום ממקורות עבודה (Slack, Email, Jira, PagerDuty).</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">B2</span>
+      <span class="text">ממוצע ישיבות > 4 ישיבות ביום, OR > 15 שעות ישיבות בשבוע.</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">B3</span>
+      <span class="text">עלייה ב-Bug Rate שלא מוסברת על ידי שינויי code volume (יותר באגים לאותה כמות קוד = סימן לפיזור קשב).</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">B4</span>
+      <span class="text">ציפייה מובנית ל-availability 24/7: עובדים מגיבים להודעות עבודה מחוץ לשעות העבודה בשיעור > 70%.</span>
+    </div>
+
+    <div class="dx-criteria-label">C. קריטריון שלילה</div>
+    <div class="dx-criterion">
+      <span class="letter">C1</span>
+      <span class="text">העומס אינו תוצאה של מחסור כוח אדם זמני (launch period, incident response). CLT דורש דפוס כרוני (> 3 חודשים).</span>
+    </div>
+
+    <div class="dx-criteria-label">D. חתימת T/A/M</div>
+    <div class="tam-strip">
+      <div class="tam-cell t"><div class="tam-label">TIME</div><div class="tam-val">2</div></div>
+      <div class="tam-cell a"><div class="tam-label">ATTENTION</div><div class="tam-val">5</div></div>
+      <div class="tam-cell m"><div class="tam-label">MONEY</div><div class="tam-val">4</div></div>
+      <div class="tam-cell total"><div class="tam-label">TOTAL</div><div class="tam-val">11</div></div>
+    </div>
+
+    <div class="dx-criteria-label">E. SEVERITY SPECIFIERS</div>
+    <div class="dx-severity">
+      <div class="dx-severity-cell mild">
+        <div class="sev-label">MILD</div>
+        Focus Time 2-3 שעות/יום. Notifications 50-80/day. Bug Rate עלה 10-20%. סה"כ T/A/M: 8-9.
+      </div>
+      <div class="dx-severity-cell moderate">
+        <div class="sev-label">MODERATE</div>
+        Focus Time < 2 שעות/יום. Context Switches > 15/day. 42%+ זמן על Tech Debt. סה"כ T/A/M: 10-11.
+      </div>
+      <div class="dx-severity-cell severe">
+        <div class="sev-label">SEVERE</div>
+        Focus Time < 1 שעה/יום. Availability 24/7. 83% שחיקה (כסף הסקטור). MBI Emotional Exhaustion > 27. סה"כ T/A/M: 12-15.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<h4>מנגנון תאורטי</h4>
+<p>
+  Cognitive Load Theory (Sweller, 1988) מתאר שלושה סוגי עומס: Intrinsic (מורכבות המשימה), Extraneous (רעש סביבתי), ו-Germane (למידה). CLT ארגוני מתרחש כשעומס Extraneous (התראות, ישיבות, Context Switches) גודש את הקיבולת עד שאין מקום ל-Germane (למידה, חשיבה עמוקה, פתרון בעיות).
+</p>
+<p>
+  Gloria Mark (UC Irvine) מדדה: החלפת הקשר עולה 23 דקות להתאוששות. ב-15 החלפות הקשר ביום, נשרפות 5.75 שעות רק על "לחזור למקום". יום עבודה של 8 שעות מכיל 2.25 שעות של עבודה אמיתית. זה לא ביצועים נמוכים. זו ארכיטקטורת עבודה שבורה.
+</p>
+
+<h4>הקשר תרבותי ישראלי</h4>
+<p>
+  ציפייה ל-availability היא 24/7. WhatsApp groups של עבודה פעילים בלילות, בשבתות, בחגים. מכפיל המילואים מחמיר: צוותים מצומצמים סופגים את אותו עומס התראות עם פחות אנשים. 50 התראות שמתחלקות בין 5 אנשים = 10 לאדם. 50 התראות שמתחלקות בין 3 אנשים = 17 לאדם. השוליים עושים את ההבדל.
+</p>
+
+<h4>אבחנה מבדלת</h4>
+<table>
+  <thead><tr><th>הבחנה מ-</th><th>כיצד להבדיל</th></tr></thead>
+  <tbody>
+    <tr><td><strong>CS</strong></td><td>ב-CS המקור רגשי/קיומי. ב-CLT המקור ארכיטקטוני. ב-CS, Focus Time לא יעזור אם המקור הוא חרדה. ב-CLT, Focus Time ישחרר קיבולת מיידית.</td></tr>
+    <tr><td><strong>NOD</strong></td><td>ב-NOD אנשים מדלגים כי "זו הנורמה". ב-CLT אנשים מדלגים כי אין להם קיבולת. ההבדל: ב-CLT, אם תיתן זמן, אנשים <em>ירצו</em> לעשות QA. ב-NOD, לא ירצו.</td></tr>
+  </tbody>
+</table>
+
+<hr class="sep">
+
+<!-- ─── 3.5 CS ─── -->
+<div class="chap">
+  <div class="chap-num">3.5</div>
+  <h3>CS: ספירלות הפסד ולחץ כרוני</h3>
+</div>
+
+<div class="dx-box">
+  <div class="dx-box-header">
+    <span class="dx-code">DSM-Org 5.1</span>
+    <span class="dx-name">ספירלות הפסד ולחץ כרוני (CS)</span>
+  </div>
+  <div class="dx-box-body">
+
+    <div class="dx-criteria-label">A. קריטריון מרכזי (נדרש)</div>
+    <div class="dx-criterion">
+      <span class="letter">A1</span>
+      <span class="text">MBI Emotional Exhaustion subscale > 27, OR ציון MBI כולל מעל Cutoff קליני ב-2 מתוך 3 תת-סקלות.</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">A2</span>
+      <span class="text">RSQ (Resilience Scale) מראה ירידה של 20%+ בהשוואה לקו בסיס (אם קיים), OR ציון RSQ מתחת ל-Cutoff קליני.</span>
+    </div>
+
+    <div class="dx-criteria-label">B. קריטריונים תומכים (נדרשים לפחות 2 מתוך 5)</div>
+    <div class="dx-criterion">
+      <span class="letter">B1</span>
+      <span class="text">עלייה של 30%+ בימי מחלה בהשוואה לתקופה מקבילה (Pre-War baseline, אם קיים).</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">B2</span>
+      <span class="text">15-20% מכוח העבודה במילואים / יוצאי מילואים, עם 33%+ בדרגות ניהול-ביניים ובכירים.</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">B3</span>
+      <span class="text">Decision Latency עלה 50%+ (זמן ממוצע מקבלת מידע עד קבלת החלטה) ללא שינוי בנפח ההחלטות.</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">B4</span>
+      <span class="text">Presenteeism: עובדים נוכחים פיזית/דיגיטלית אך ביצועים ירדו 20%+ (נמדד ב-Velocity, Throughput, או Output Quality).</span>
+    </div>
+    <div class="dx-criterion">
+      <span class="letter">B5</span>
+      <span class="text">Rebound Effect: ביצועים לא חזרו לקו בסיס גם אחרי הסרת מקור לחץ ספציפי (חזרה ממילואים, סיום פרויקט דחוף).</span>
+    </div>
+
+    <div class="dx-criteria-label">C. קריטריון שלילה</div>
+    <div class="dx-criterion">
+      <span class="letter">C1</span>
+      <span class="text">הלחץ אינו אקוטי וזמני (launch week, incident response < 2 שבועות). CS דורש מינימום 3 חודשים של דפוס כרוני.</span>
+    </div>
+
+    <div class="dx-criteria-label">D. חתימת T/A/M</div>
+    <div class="tam-strip">
+      <div class="tam-cell t"><div class="tam-label">TIME</div><div class="tam-val">4</div></div>
+      <div class="tam-cell a"><div class="tam-label">ATTENTION</div><div class="tam-val">5</div></div>
+      <div class="tam-cell m"><div class="tam-label">MONEY</div><div class="tam-val">5</div></div>
+      <div class="tam-cell total"><div class="tam-label">TOTAL</div><div class="tam-val">14</div></div>
+    </div>
+
+    <div class="dx-criteria-label">E. SEVERITY SPECIFIERS</div>
+    <div class="dx-severity">
+      <div class="dx-severity-cell mild">
+        <div class="sev-label">MILD</div>
+        MBI Emotional Exhaustion 22-27. ירידת ביצועים 10-15%. Decision Latency עלה 25-50%. סה"כ T/A/M: 10-11.
+      </div>
+      <div class="dx-severity-cell moderate">
+        <div class="sev-label">MODERATE</div>
+        MBI > 27. Rebound Effect מתועד. Presenteeism ברור. 15%+ במילואים. ימי מחלה עלו 30%+. סה"כ T/A/M: 12-13.
+      </div>
+      <div class="dx-severity-cell severe">
+        <div class="sev-label">SEVERE</div>
+        MBI קריטי ב-3/3 תת-סקלות. 83% שחיקה (נתון סקטור). תחלופה > 20% שנתי. ספירלת הפסד פעילה: כל חודש גרוע מקודמו. סה"כ T/A/M: 14-15.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<h4>מנגנון תאורטי</h4>
+<p>
+  COR Theory (Hobfoll, 1989): אנשים וארגונים פועלים מתוך דחף לשמור על משאבים. הפסד כואב יותר מרווח מקביל (Loss Primacy). הפסדים יוצרים ספירלה (Loss Spiral): עובד שמאבד אנרגיה → מפסיד יכולת התמודדות → מפסיד ביצועים → מפסיד ביטחון תפקודי. הספירלה מאיצה את עצמה.
+</p>
+<p>
+  <strong>Rebound Effect:</strong> ארגון שנכנס לספירלת הפסד לא חוזר לקו הבסיס גם אחרי שהלחץ מוסר. נדרשת התערבות מבנית לשבירת הספירלה. זה כמו גומי שנמתח מעבר לנקודת האלסטיות: הוא לא חוזר לצורתו.
+</p>
+
+<h4>הקשר תרבותי ישראלי</h4>
+<p>
+  ישראל 2024-2026: מלחמה, מילואים, אי-ודאות קיומית. הלחץ הכרוני אינו ארגוני בלבד. הוא קיומי. Maslow hierarchy: כשביטחון בסיסי לא מובטח, יכולת השקעה בעבודה פוחתת. סקר eNPS לא יתפוס את זה כי הסטואיקיות הישראלית מסווה.
+</p>
+<p>
+  <strong>מנהיגות רגשית לקויה</strong> מחמירה. מנהלים שלא אומנו להחזיק מרחב רגשי מגיבים בשתי דרכים שגויות. הכחשה: "בואו נתמקד בעבודה" (= הבעיה לא קיימת). הצפה: "ספרו לי איך אתם מרגישים" ללא יכולת להחזיק את מה שנפתח (= הבעיה נפתחה ולא טופלה).
+</p>
+
+<div class="warning-box">
+  <div class="wb-label">הפתולוגיה הקטלנית ביותר</div>
+  CS מציג את ציון T/A/M המצטבר הגבוה ביותר (14/15). היא גם ה-amplifier: CS מזינה NOD (תחת לחץ, סטיות מתנרמלות מהר יותר), ZSG (תחרות פנימית עולה), OLD (יכולת למידה פוחתת), ו-CLT (קשב זמין קטן). CS היא לא פתולוגיה. היא <strong>מגביר מערכתי</strong>.
+</div>
+
+<h4>אבחנה מבדלת</h4>
+<table>
+  <thead><tr><th>הבחנה מ-</th><th>כיצד להבדיל</th></tr></thead>
+  <tbody>
+    <tr><td><strong>CLT</strong></td><td>CLT = עומס ארכיטקטוני. CS = עומס רגשי/קיומי. אם שינוי ארכיטקטורת עבודה (פחות ישיבות, פחות התראות) פותר, זה CLT. אם לא, זה CS.</td></tr>
+    <tr><td><strong>ZSG</strong></td><td>ZSG = שחיקה מקונפליקט. CS = שחיקה מהפסד. ב-ZSG אנשים כועסים. ב-CS אנשים תשושים. MBI: ב-ZSG, Depersonalization דומיננטית. ב-CS, Emotional Exhaustion דומיננטית.</td></tr>
+    <tr><td><strong>לחץ אקוטי רגיל</strong></td><td>Launch week, Incident Response < 2 שבועות = לחץ אקוטי נורמלי. CS דורש 3+ חודשים של דפוס כרוני + Rebound Effect.</td></tr>
+  </tbody>
+</table>
+
+<hr class="sep">
+
+<!-- 3.6 Comorbidity -->
+<div class="chap">
+  <div class="chap-num">3.6</div>
+  <h3>Comorbidity: דפוסי אינטראקציה בין פתולוגיות</h3>
+</div>
+
+<p>
+  ארגון מציג לעיתים רחוקות פתולוגיה אחת בלבד. דפוסי ה-comorbidity הנפוצים:
+</p>
+
+<table>
+  <thead>
+    <tr><th>צמד</th><th>מנגנון אינטראקציה</th><th>שכיחות</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>CS → NOD</strong></td>
+      <td>לחץ כרוני מוריד את הסף לנורמליזציה. סטיות שהיו נתפסות כבעיה ב"זמנים רגילים" מתקבלות כ"מה לעשות, מלחמה".</td>
+      <td>גבוהה מאוד</td>
+    </tr>
+    <tr>
+      <td><strong>NOD → OLD</strong></td>
+      <td>כשסטיות הופכות לנורמה, אין מה ללמוד. ה-Retro מודד לפי הנורמה החדשה (הסוטה), לא לפי הסטנדרט המקורי.</td>
+      <td>גבוהה</td>
+    </tr>
+    <tr>
+      <td><strong>ZSG → CS</strong></td>
+      <td>תחרות פנימית מייצרת לחץ כרוני. "מי שלא נלחם מפסיד" הופך למקור לחץ מתמיד.</td>
+      <td>גבוהה</td>
+    </tr>
+    <tr>
+      <td><strong>CLT → NOD</strong></td>
+      <td>עומס קוגניטיבי מוביל לדילוג על תהליכים. "אין לי קשב לזה עכשיו" הופך ל"אנחנו לא עושים את זה".</td>
+      <td>בינונית-גבוהה</td>
+    </tr>
+    <tr>
+      <td><strong>CS → CLT</strong></td>
+      <td>לחץ כרוני מצמצם קיבולת קוגניטיבית. אותו עומס גירויים שהיה ניתן לניהול ב"זמנים רגילים" הופך לבלתי-נסבל.</td>
+      <td>גבוהה</td>
+    </tr>
+    <tr>
+      <td><strong>ZSG → OLD</strong></td>
+      <td>תרבות האשמה מונעת למידה. אם דיווח על כשל גורם לעונש, אנשים לא מדווחים. אם לא מדווחים, לא לומדים.</td>
+      <td>בינונית-גבוהה</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="clinical-note">
+  <div class="cn-label">כלל קליני: כיוון הטיפול ב-Comorbidity</div>
+  כאשר מזוהות מספר פתולוגיות, סדר ההתערבות נקבע לפי שני קריטריונים:
+  (1) CS תמיד ראשון אם קיים (כי הוא amplifier שמחמיר הכל).
+  (2) בין שאר הפתולוגיות, טפל קודם בזו שמזינה את האחרות (upstream). לדוגמה: NOD → OLD = טפל ב-NOD קודם.
+</div>
+
+<!-- 3.7 Differential Diagnosis Summary -->
+<div class="chap">
+  <div class="chap-num">3.7</div>
+  <h3>טבלת אבחנה מבדלת מסכמת</h3>
+</div>
+
+<table>
+  <thead>
+    <tr><th>שאלת הבחנה</th><th>אם כן</th><th>אם לא</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>האם אנשים <em>יודעים</em> שהם סוטים מנוהל?</td>
+      <td>CLT (סוטים מעומס) או ZSG (סוטים מקונפליקט)</td>
+      <td><strong>NOD</strong> (הסטייה בלתי-נראית)</td>
+    </tr>
+    <tr>
+      <td>האם יש Retros שלא עובדים?</td>
+      <td><strong>OLD</strong> (Single-Loop)</td>
+      <td>NOD (אין צורך ב-Retros) או CLT (אין זמן ל-Retros)</td>
+    </tr>
+    <tr>
+      <td>האם MBI Emotional Exhaustion > 27?</td>
+      <td><strong>CS</strong> (ספירלת הפסד)</td>
+      <td>CLT (עומס ארכיטקטוני) או ZSG (קונפליקט)</td>
+    </tr>
+    <tr>
+      <td>האם Edmondson < 3.5?</td>
+      <td><strong>ZSG</strong> (ביטחון פסיכולוגי נמוך)</td>
+      <td>NOD או CLT (הבעיה לא בין-אישית)</td>
+    </tr>
+    <tr>
+      <td>האם Focus Time < 2 שעות/יום?</td>
+      <td><strong>CLT</strong> (ארכיטקטורת עבודה שבורה)</td>
+      <td>CS (המקור אינו ארכיטקטוני) או OLD (הזמן קיים, הלמידה לא)</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- PART IV: AI ARCHITECTURE DRIFT -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="part-break">
+  <div class="part-num">חלק IV</div>
+  <h2>סחף ארכיטקטוני AI וריקבון הקשרי</h2>
+  <p class="part-lead">AI לא יוצר פתולוגיות חדשות. הוא מגביר פתולוגיות קיימות. פרק זה מציג את הנתונים האמפיריים ואת מנגנון ההגברה.</p>
+</div>
+
+<div class="chap">
+  <div class="chap-num">4.1</div>
+  <h3>נתוני GitClear ו-DORA 2025</h3>
+</div>
+
+<p>
+  ניתוח של <span class="metric">211 מיליון שורות קוד</span> מספק תמונה כמותית:
+</p>
+
+<div class="stat-grid">
+  <div class="stat-cell"><div class="val">-60%</div><div class="lbl">ירידה ב-Refactoring</div></div>
+  <div class="stat-cell"><div class="val">18%</div><div class="lbl">Copy-Paste Code (עולה על Moved Code)</div></div>
+  <div class="stat-cell"><div class="val">x3.6</div><div class="lbl">Hotfix Rate: 14.2 → 51.4 / 1,000 commits</div></div>
+  <div class="stat-cell"><div class="val">30%+</div><div class="lbl">שחיקת מפתחים בכירים (Senior Dev Churn)</div></div>
+</div>
+
+<p>
+  המתאם: כאשר Senior Dev Churn חוצה 30%, Hotfix Rate משתלש. Refactoring יורד ב-60%. Copy-Paste עולה ל-18%, חוצה את Moved Code לראשונה. המשמעות: מפתחים מעתיקים קוד במקום להבין ולשפר אותו. NOD ברמת הקוד.
+</p>
+
+<div class="chap">
+  <div class="chap-num">4.2</div>
+  <h3>Half-Life of Contextual Memory</h3>
+</div>
+
+<div class="data-block accent-right">
+  <div class="db-overline">CRITICAL METRIC</div>
+  <div class="db-value">12 ימים</div>
+  <div class="db-desc">זמן מחצית-חיים של ידע ארכיטקטוני שתיקי (Tacit Knowledge) לאחר עזיבת מפתח בכיר.</div>
+</div>
+
+<p>
+  אחרי 12 ימים, 50% מהידע ההקשרי של הארכיטקט שעזב אינו זמין לצוות. אחרי 24 ימים, 75%. אחרי 36 ימים, 87.5%. הצוות חוזר לגלות מחדש החלטות ארכיטקטוניות שהתקבלו חודשים קודם. כל "גילוי מחדש" הוא בזבוז זמן ולפעמים מוביל להחלטה שונה, שיוצרת Architectural Drift.
+</p>
+
+<p>
+  בהקשר ישראלי, מכפיל המילואים הופך את ה-12 ימים לקריטי. מפתח בכיר שיוצא ל-60 ימים מילואים לא "עוזב", אבל ה-Half-Life אינו מבחין. הידע מתפורר באותו קצב. הוא חוזר לארגון שבנה הנחות חדשות בהיעדרו.
+</p>
+
+<div class="chap">
+  <div class="chap-num">4.3</div>
+  <h3>לולאת ההגברה: AI כ-Amplifier של חוב טכנולוגי</h3>
+</div>
+
+<p>
+  AI-Assisted Coding (Copilot, Claude, ChatGPT) מאיץ כתיבת קוד. מפתח ג'וניור עם AI מייצר קוד מהר יותר. אבל הקוד אינו מכיר את הארכיטקטורה. אינו יודע על Conventions. אינו מודע לחוב טכנולוגי קיים. התוצאה: יותר קוד, מהר יותר, עם יותר חוב טכנולוגי.
+</p>
+
+<p>
+  ה-<span class="metric">42%</span> מזמן מפתחים שמוקדש ל-Tech Debt הוא מדד נוכחי. עם AI שמייצר קוד ללא הקשר, הנתון הזה רק יעלה.
+</p>
+
+<div class="data-block accent-right-amber">
+  <div class="db-overline">AMPLIFICATION LOOP</div>
+  <div style="font-family:'Noto Sans Hebrew',sans-serif; font-size:14px; line-height:2;">
+    Senior Devs עוזבים / יוצאים למילואים →<br>
+    ידע הקשרי מתפורר (12-day Half-Life) →<br>
+    ג'וניורים משתמשים ב-AI כתחליף →<br>
+    AI מייצר קוד ללא הקשר ארכיטקטוני →<br>
+    חוב טכנולוגי עולה (42%+ זמן) →<br>
+    Hotfix Rate משתלש (14.2 → 51.4) →<br>
+    שחיקה עולה → Seniors עוזבים →<br>
+    <strong>ספירלה חוזרת</strong>
+  </div>
+</div>
+
+<p>
+  הלולאה מגבירה NOD (הסטנדרט הארכיטקטוני יורד ואף אחד לא שם לב), OLD (אין למידה ממבנה הקוד כי AI לא מלמד), ו-CLT (יותר Hotfixes = יותר Context Switches = פחות Focus Time).
+</p>
+
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- PART V: INTERVENTION PLAYBOOKS -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="part-break">
+  <div class="part-num">חלק V</div>
+  <h2>חוברות התערבות קליניות</h2>
+  <p class="part-lead">כל התערבות בנויה לפי העיקרון: חוסם עורקים (1-3 ימים) → שינוי מבני (4-16 שבועות) → מנגנון משוב (שוטף). לא עצות. ארכיטקטורה.</p>
+</div>
+
+<div class="rx-card">
+  <div class="rx-card-header">
+    <h4>5.1 Just Culture Algorithm</h4>
+    <div class="rx-meta"><span>TARGET: NOD, ZSG</span><span>AXIS: A, M</span><span>TIMELINE: 4-8 שבועות</span></div>
+  </div>
+  <div class="rx-card-body">
+    <p>Just Culture (Sidney Dekker) מפריד בין כשל מערכתי לרשלנות מכוונת. במקום "מי אשם?", שלוש שאלות שיטתיות:</p>
+    <div class="rx-protocol">
+      <div class="rp-label">PROTOCOL: JUST CULTURE 3-QUESTION TEST</div>
+      <strong>שאלה 1:</strong> האם היה נוהל ברור?<br>
+      <strong>שאלה 2:</strong> האם הנוהל היה ישים בתנאי השטח?<br>
+      <strong>שאלה 3:</strong> האם האדם סטה ביודעין ובכוונה?<br><br>
+      רק אם כן-כן-כן → אחריות אישית.<br>
+      בכל מקרה אחר → כשל מערכתי. הטיפול מבני, לא משמעתי.
+    </div>
+    <p>Just Culture שובר ZSG: כשאנשים יודעים שלא יואשמו על כשלים מערכתיים, הם מדווחים. כשמדווחים, אפשר ללמוד. כשלומדים, OLD נפתרת.</p>
+    <p><strong>מדד הצלחה:</strong> עלייה ב-Incident Reports ללא עלייה בתקריות = סימן שמדווחים יותר (חיובי). Edmondson Score עולה מעל 3.5 = ביטחון פסיכולוגי משתפר.</p>
+  </div>
+</div>
+
+<div class="rx-card">
+  <div class="rx-card-header">
+    <h4>5.2 Double-Loop Learning</h4>
+    <div class="rx-meta"><span>TARGET: OLD</span><span>AXIS: A, T</span><span>TIMELINE: שוטף</span></div>
+  </div>
+  <div class="rx-card-body">
+    <p>Argyris: Single-Loop = תקנו את הסימפטום. Double-Loop = בדקו את ההנחה שיצרה את הסימפטום.</p>
+    <div class="rx-protocol">
+      <div class="rp-label">PROTOCOL: RETRO DUAL OUTPUT</div>
+      כל Retrospective / Post-Mortem חייב לייצר שני תוצרים:<br>
+      <strong>1. Action Item</strong> (לולאה ראשונה): מה מתקנים.<br>
+      <strong>2. Assumption Update</strong> (לולאה שנייה): איזו הנחה מעדכנים.<br><br>
+      אם אין Assumption Update → ה-Retro לא הצליח.<br>
+      שאלת המפתח: "מה חשבנו שנכון ש-incident זה הוכיח שלא?"
+    </div>
+    <p><strong>מדד הצלחה:</strong> ירידה ב-Recurring Action Items (אותם Items שמופיעים ביותר מ-Retro אחד). יעד: < 20% חזרה (מול 40%+ baseline ב-OLD).</p>
+  </div>
+</div>
+
+<div class="rx-card">
+  <div class="rx-card-header">
+    <h4>5.3 Nudge Management</h4>
+    <div class="rx-meta"><span>TARGET: CLT, NOD</span><span>AXIS: A, T</span><span>TIMELINE: 2-4 שבועות</span></div>
+  </div>
+  <div class="rx-card-body">
+    <p>Thaler & Sunstein: שינוי התנהגות דרך עיצוב סביבת ההחלטה, לא דרך הוראה. במקום "תעשו QA", הפכו את ה-QA לנתיב הטבעי.</p>
+    <div class="rx-protocol">
+      <div class="rp-label">PROTOCOL: NUDGE TOOLKIT</div>
+      <strong>Default Settings:</strong> Code Review אוטומטית (opt-out, לא opt-in).<br>
+      <strong>Contextual Reminders:</strong> Bot שמזהה PR בלי tests ושואל "בכוונה?"<br>
+      <strong>Transparent Metrics:</strong> דשבורד צוותי עם Tech Debt Score בזמן אמת, ללא שיפוטיות.<br>
+      <strong>Architecture Guardrails:</strong> Linting rules שמונעים Copy-Paste מעל סף.
+    </div>
+    <p>העיקרון: אל תנסו לשנות אנשים. שנו את הסביבה שבה הם מקבלים החלטות. NOD מתחילה כשהנתיב של "לדלג" קל יותר מהנתיב של "לעשות נכון". Nudge הופך את הנתיב הנכון לנתיב הקל.</p>
+    <p><strong>מדד הצלחה:</strong> ירידה ב-Copy-Paste Code מתחת ל-12%. עלייה ב-Refactoring Activity. ירידה ב-Hotfix Rate.</p>
+  </div>
+</div>
+
+<div class="rx-card">
+  <div class="rx-card-header">
+    <h4>5.4 Tech Tourniquet: חוסם עורקים טכנולוגי</h4>
+    <div class="rx-meta"><span>TARGET: כל הפתולוגיות (FIRST RESPONSE)</span><span>AXIS: T, M</span><span>TIMELINE: 1-3 ימים</span></div>
+  </div>
+  <div class="rx-card-body">
+    <p>העיקרון המרכזי של COR-SYS: התערבות מינימלית שעוצרת דימום. לא פתרון מלא. פעולה שקונה זמן.</p>
+    <div class="rx-protocol">
+      <div class="rp-label">PROTOCOL: TOURNIQUET CRITERIA</div>
+      <strong>כלל 1:</strong> חייב להיבנות תוך 1-3 ימים. אם לוקח יותר = פרויקט, לא Tourniquet.<br>
+      <strong>כלל 2:</strong> פותר בעיה אחת. לא שתיים.<br>
+      <strong>כלל 3:</strong> מדד הצלחה חד: Decision Latency ירד? Handoffs ירדו? Context Switches ירדו?<br><br>
+      דוגמאות: דשבורד שמרכז מידע מ-7 מערכות (CLT). בוט שמנתב שאלות לאדם הנכון (Decision Latency). טופס אחד שמחליף 3 ישיבות (Handoffs).
+    </div>
+    <p><strong>מדד הצלחה:</strong> קיצור Decision Latency ו/או צמצום Handoffs תוך שבוע מיישום.</p>
+  </div>
+</div>
+
+<div class="rx-card">
+  <div class="rx-card-header">
+    <h4>5.5 ארכיטקטורת RevOps / CoS</h4>
+    <div class="rx-meta"><span>TARGET: ZSG, CLT</span><span>AXIS: T, A, M</span><span>TIMELINE: 8-16 שבועות</span></div>
+  </div>
+  <div class="rx-card-body">
+    <p>RevOps מאחד Sales, Marketing ו-CS תחת מדדים משותפים. CoS יוצר שכבת תיאום שמונעת Handoff Overload. בחברת 50-300 עובדים, הסיילואים עדיין לא בטון. חלונית ההתערבות פתוחה.</p>
+    <p><strong>מדד הצלחה:</strong> ירידה בכמות Handoffs/process. ירידה בכמות ישיבות להחלטה. עלייה ב-Response Time ללקוח.</p>
+  </div>
+</div>
+
+<div class="rx-card">
+  <div class="rx-card-header">
+    <h4>5.6 DDD Workflow Redesign</h4>
+    <div class="rx-meta"><span>TARGET: CLT, NOD</span><span>AXIS: T, A</span><span>TIMELINE: 4-8 שבועות</span></div>
+  </div>
+  <div class="rx-card-body">
+    <p>Domain-Driven Design: מבנה העבודה צריך לשקף את מבנה הדומיין, לא את מבנה הארגון. Value Stream Mapping של תהליך קריטי אחד. זיהוי כל Handoff. חיסול מה שניתן. אוטומציה של מה שנשאר.</p>
+    <p><strong>מדד הצלחה:</strong> ירידה ב-Handoff Count בתהליך שמופה. ירידה ב-Cycle Time.</p>
+  </div>
+</div>
+
+<div class="rx-card">
+  <div class="rx-card-header">
+    <h4>5.7 TTX: תרגילי שיהוי החלטות</h4>
+    <div class="rx-meta"><span>TARGET: OLD, CS</span><span>AXIS: T, A</span><span>TIMELINE: חד-פעמי (2-4 שעות), שוטף (רבעוני)</span></div>
+  </div>
+  <div class="rx-card-body">
+    <p>Tabletop Exercise: סימולציה שמודדת Decision Latency תחת לחץ. תרחיש ריאליסטי (עזיבת CTO, Data Breach, אובדן לקוח מפתח). הצוות הניהולי חייב להגיב בזמן אמת.</p>
+    <div class="rx-protocol">
+      <div class="rp-label">PROTOCOL: TTX MEASUREMENT</div>
+      <strong>מדד 1:</strong> זמן עד החלטה ראשונה (target: < 15 דקות).<br>
+      <strong>מדד 2:</strong> כמות מידע שנדרש לפני החלטה (target: < 3 שאלות).<br>
+      <strong>מדד 3:</strong> מי מחליט ומי מחכה (target: בעל סמכות מחליט, לא ועדה).<br>
+      <strong>מדד 4:</strong> הנחות סמויות שנחשפו (target: > 2 הנחות שהוזמו).
+    </div>
+    <p>TTX מטפל ב-CS דרך חשיפה מבוקרת ללחץ. מטפל ב-OLD דרך חשיפת הנחות סמויות.</p>
+  </div>
+</div>
+
+<hr class="sep">
+
+<div class="chap">
+  <div class="chap-num">5.8</div>
+  <h3>מטריצת התערבות לפי פתולוגיה</h3>
+</div>
+
+<table>
+  <thead>
+    <tr><th>התערבות</th><th>NOD</th><th>ZSG</th><th>OLD</th><th>CLT</th><th>CS</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Just Culture</td><td style="text-align:center;"><strong style="color:var(--red);">●●●</strong></td><td style="text-align:center;"><strong style="color:var(--red);">●●●</strong></td><td style="text-align:center;"><strong style="color:var(--amber);">●●</strong></td><td style="text-align:center;"><strong style="color:var(--green);">●</strong></td><td style="text-align:center;"><strong style="color:var(--amber);">●●</strong></td></tr>
+    <tr><td>Double-Loop Learning</td><td style="text-align:center;"><strong style="color:var(--amber);">●●</strong></td><td style="text-align:center;"><strong style="color:var(--green);">●</strong></td><td style="text-align:center;"><strong style="color:var(--red);">●●●</strong></td><td style="text-align:center;"><strong style="color:var(--green);">●</strong></td><td style="text-align:center;"><strong style="color:var(--amber);">●●</strong></td></tr>
+    <tr><td>Nudge Management</td><td style="text-align:center;"><strong style="color:var(--red);">●●●</strong></td><td style="text-align:center;"><strong style="color:var(--green);">●</strong></td><td style="text-align:center;"><strong style="color:var(--amber);">●●</strong></td><td style="text-align:center;"><strong style="color:var(--red);">●●●</strong></td><td style="text-align:center;"><strong style="color:var(--green);">●</strong></td></tr>
+    <tr><td>Tech Tourniquet</td><td style="text-align:center;"><strong style="color:var(--amber);">●●</strong></td><td style="text-align:center;"><strong style="color:var(--amber);">●●</strong></td><td style="text-align:center;"><strong style="color:var(--amber);">●●</strong></td><td style="text-align:center;"><strong style="color:var(--red);">●●●</strong></td><td style="text-align:center;"><strong style="color:var(--amber);">●●</strong></td></tr>
+    <tr><td>RevOps / CoS</td><td style="text-align:center;"><strong style="color:var(--green);">●</strong></td><td style="text-align:center;"><strong style="color:var(--red);">●●●</strong></td><td style="text-align:center;"><strong style="color:var(--amber);">●●</strong></td><td style="text-align:center;"><strong style="color:var(--red);">●●●</strong></td><td style="text-align:center;"><strong style="color:var(--green);">●</strong></td></tr>
+    <tr><td>DDD Workflow</td><td style="text-align:center;"><strong style="color:var(--amber);">●●</strong></td><td style="text-align:center;"><strong style="color:var(--amber);">●●</strong></td><td style="text-align:center;"><strong style="color:var(--green);">●</strong></td><td style="text-align:center;"><strong style="color:var(--red);">●●●</strong></td><td style="text-align:center;"><strong style="color:var(--green);">●</strong></td></tr>
+    <tr><td>TTX</td><td style="text-align:center;"><strong style="color:var(--green);">●</strong></td><td style="text-align:center;"><strong style="color:var(--amber);">●●</strong></td><td style="text-align:center;"><strong style="color:var(--red);">●●●</strong></td><td style="text-align:center;"><strong style="color:var(--green);">●</strong></td><td style="text-align:center;"><strong style="color:var(--red);">●●●</strong></td></tr>
+  </tbody>
+</table>
+
+<p style="font-size:13px; color:var(--text-3);">
+  <strong style="color:var(--red);">●●●</strong> = התערבות ראשית &nbsp;|&nbsp; <strong style="color:var(--amber);">●●</strong> = התערבות משנית &nbsp;|&nbsp; <strong style="color:var(--green);">●</strong> = השפעה עקיפה
+</p>
+
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- PART VI: ASSESSMENT INSTRUMENTS -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="part-break">
+  <div class="part-num">חלק VI</div>
+  <h2>כלי מדידה והערכה</h2>
+  <p class="part-lead">נספחים קליניים: תיאור הכלים המאומתים, T/A/M Scoring Sheet, ומילון מונחים מלא.</p>
+</div>
+
+<div class="chap">
+  <div class="chap-num">6.1</div>
+  <h3>MBI: Maslach Burnout Inventory</h3>
+</div>
+
+<table>
+  <thead><tr><th>תת-סקלה</th><th>מה מודד</th><th>פריטים</th><th>Cutoff קליני</th><th>ציר T/A/M</th></tr></thead>
+  <tbody>
+    <tr><td>Emotional Exhaustion</td><td>תשישות רגשית, תחושת ריקון</td><td>9</td><td>> 27</td><td><span class="tam-inline a">A</span></td></tr>
+    <tr><td>Depersonalization</td><td>ניתוק רגשי, ציניות כלפי עמיתים</td><td>5</td><td>> 13</td><td><span class="tam-inline a">A</span>, <span class="tam-inline m">M</span></td></tr>
+    <tr><td>Personal Accomplishment</td><td>תחושת מוכשרות ויעילות (סולם הפוך)</td><td>8</td><td>< 21</td><td><span class="tam-inline m">M</span></td></tr>
+  </tbody>
+</table>
+
+<div class="clinical-note">
+  <div class="cn-label">הערה קלינית: MBI בהקשר ישראלי</div>
+  MBI מאומת ב-cross-cultural research, אך בהקשר ישראלי יש לשים לב לסטואיקיות תרבותית שעלולה להוריד ציוני Emotional Exhaustion באופן מלאכותי. המלצה: להצליב MBI עם נתונים התנהגותיים (ימי מחלה, Velocity ירידה, Deployment Frequency ירידה).
+</div>
+
+<div class="chap">
+  <div class="chap-num">6.2</div>
+  <h3>Edmondson 7-Item Psychological Safety Survey</h3>
+</div>
+
+<p>
+  Amy Edmondson (1999). שבעה פריטים בסולם 1-7. ציון ממוצע. אינדיקטורים מרכזיים: "אם אני עושה טעות בצוות הזה, זה ייזקף לחובתי" (reversed), "חברי הצוות מרגישים בנוח לקחת סיכונים". Cutoff: < 3.5 = ביטחון פסיכולוגי נמוך. < 2.5 = קריטי.
+</p>
+
+<p>
+  שימוש ב-DSM-Org: כלי אבחוני ראשי ל-ZSG. ירידה של 20%+ מ-baseline = אינדיקטור לשינוי מערכתי, לא רק "צוות קשה".
+</p>
+
+<div class="chap">
+  <div class="chap-num">6.3</div>
+  <h3>RSQ: Resilience Scale Questionnaire</h3>
+</div>
+
+<p>
+  מודד חוסן ארגוני על שלושה ממדים: יכולת התאוששות, גמישות אדפטיבית, ושמירה על תפקוד תחת לחץ. שימוש ב-DSM-Org: כלי אבחוני ראשי ל-CS. ירידה של 20%+ מ-baseline = אינדיקטור לספירלת הפסד פעילה.
+</p>
+
+<div class="chap">
+  <div class="chap-num">6.4</div>
+  <h3>T/A/M Scoring Sheet</h3>
+</div>
+
+<table>
+  <thead>
+    <tr><th>ציר</th><th>ציון 1</th><th>ציון 2</th><th>ציון 3</th><th>ציון 4</th><th>ציון 5</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="tam-inline t">T</span></td>
+      <td>Decision Latency בנורמה</td>
+      <td>עיכובים מזדמנים</td>
+      <td>Decision Latency עלה 25-50%</td>
+      <td>Decision Latency עלה 50%+</td>
+      <td>שיתוק החלטות</td>
+    </tr>
+    <tr>
+      <td><span class="tam-inline a">A</span></td>
+      <td>Focus Time > 4 שעות/יום</td>
+      <td>Focus Time 3-4 שעות/יום</td>
+      <td>Focus Time 2-3 שעות/יום</td>
+      <td>Focus Time 1-2 שעות/יום</td>
+      <td>Focus Time < 1 שעה, MBI > 27</td>
+    </tr>
+    <tr>
+      <td><span class="tam-inline m">M</span></td>
+      <td>Rework < 10%</td>
+      <td>Rework 10-20%</td>
+      <td>Rework 20-30%, תחלופה עולה</td>
+      <td>Rework 30%+, Tech Debt > 40%</td>
+      <td>Attrition > 20%, Revenue/Employee יורד</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr class="sep">
+
+<div class="chap">
+  <div class="chap-num">6.5</div>
+  <h3>מילון מונחים</h3>
+</div>
+
+<table>
+  <thead><tr><th>מונח</th><th>הגדרה</th></tr></thead>
+  <tbody>
+    <tr><td><strong>T/A/M</strong></td><td>Time / Attention / Money. שלושת צירי המדידה של DSM-Org.</td></tr>
+    <tr><td><strong>צוואר בקבוק</strong></td><td>נקודת החנק שבה זרימה נעצרת.</td></tr>
+    <tr><td><strong>נתיב טבעי</strong></td><td>מסלול שכבר קיים בשטח לפני כל תכנון.</td></tr>
+    <tr><td><strong>נורמליזציה של סטייה</strong></td><td>חריגה שהפכה לנורמה ללא תיעוד.</td></tr>
+    <tr><td><strong>שיהוי החלטות</strong></td><td>Decision Latency. הזמן האבוד בין מידע לפעולה.</td></tr>
+    <tr><td><strong>חוסם עורקים טכנולוגי</strong></td><td>Tech Tourniquet. התערבות מינימלית שעוצרת דימום.</td></tr>
+    <tr><td><strong>ספירלת הפסד</strong></td><td>Loss Spiral. הפסד משאב מוביל להפסד משאב נוסף.</td></tr>
+    <tr><td><strong>Conceptia Fixation</strong></td><td>קיבעון על הגדרת בעיה שמונע בחינה מחדש.</td></tr>
+    <tr><td><strong>Single-Loop Learning</strong></td><td>תיקון סימפטום ללא בחינת ההנחה שגרמה לו.</td></tr>
+    <tr><td><strong>Double-Loop Learning</strong></td><td>בחינת ועדכון ההנחה שגרמה לכשל.</td></tr>
+    <tr><td><strong>Just Culture</strong></td><td>מסגרת שמפרידה בין כשל מערכתי לרשלנות מכוונת.</td></tr>
+    <tr><td><strong>Silent Stagnation</strong></td><td>ארגון שנראה פעיל מבחוץ אך מתכלה מבפנים.</td></tr>
+    <tr><td><strong>Half-Life of Contextual Memory</strong></td><td>12 ימים. זמן התפוררות ידע שתיקי לאחר עזיבת מפתח בכיר.</td></tr>
+    <tr><td><strong>eNPS False Positive</strong></td><td>ציון שביעות רצון מטעה הנובע מסטואיקיות תרבותית.</td></tr>
+    <tr><td><strong>Rebound Effect</strong></td><td>חוסר חזרה לקו בסיס גם לאחר הסרת מקור הלחץ.</td></tr>
+    <tr><td><strong>COR Theory</strong></td><td>Conservation of Resources. הפסד כואב יותר מרווח מקביל.</td></tr>
+    <tr><td><strong>Contradiction Loss</strong></td><td>אנרגיה ארגונית שנשרפת על תחרות פנימית במקום יצירת ערך.</td></tr>
+    <tr><td><strong>Miluim Multiplier</strong></td><td>מכפיל המילואים. גורם הקשרי ישראלי שמגביר כל פתולוגיה.</td></tr>
+    <tr><td><strong>Architectural Drift</strong></td><td>סטייה הדרגתית מתכנון ארכיטקטוני מקורי.</td></tr>
+    <tr><td><strong>Presenteeism</strong></td><td>נוכחות פיזית/דיגיטלית ללא תפקוד מלא.</td></tr>
+  </tbody>
+</table>
+
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- PART VII: CONFIDENCE & NEXT STEPS -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="part-break">
+  <div class="part-num">חלק VII</div>
+  <h2>רמת ביטחון, כיול, וצעדים הבאים</h2>
+  <p class="part-lead">מודל אבחוני ללא כיול שדה הוא תאוריה, לא כלי. פרק זה מגדיר את רמת הביטחון ואת הצעדים הנדרשים.</p>
+</div>
+
+<div class="chap">
+  <div class="chap-num">7.1</div>
+  <h3>ניקוד ביטחון POC</h3>
+</div>
+
+<h4>ביטחון תאורטי: גבוה</h4>
+<div class="conf-bar">
+  <div class="conf-track"><div class="conf-fill high" style="width:90%;"></div></div>
+  <div class="conf-val" style="color:var(--green);">HIGH</div>
+</div>
+<p>
+  מבוסס על: COR Theory (Hobfoll), Normalization of Deviance (Vaughan), Organizational Learning (Senge, Argyris), Cognitive Load Theory (Sweller), Just Culture (Dekker), Nudge Theory (Thaler & Sunstein), Psychological Safety (Edmondson). כל קטגוריה פתולוגית מעוגנת בתאוריה מאומתת עם שנים של מחקר אמפירי. חתימות T/A/M נגזרות מהמנגנונים התאורטיים.
+</p>
+
+<h4>מדידה ומיפוי: בינוני-גבוה</h4>
+<div class="conf-bar">
+  <div class="conf-track"><div class="conf-fill med"></div></div>
+  <div class="conf-val" style="color:var(--amber);">MOD-HIGH</div>
+</div>
+<p>
+  כלי המדידה (MBI, Edmondson, RSQ) מאומתים cross-culturally. נתוני GitClear/DORA מבוססים על 211M LOC. הפער: ספי T/A/M לא כויילו על ארגונים ישראליים בודדים. הציונים מבוססים על ניתוח תאורטי + נתוני מאקרו, לא מדידה ישירה.
+</p>
+
+<h4>ביטחון POC כולל</h4>
+<div class="conf-bar">
+  <div class="conf-track"><div class="conf-fill" style="width:75%; background:var(--red);"></div></div>
+  <div class="conf-val" style="color:var(--red);">0.70-0.80</div>
+</div>
+<p>
+  גבוה מספיק כדי להצדיק פיילוט. לא גבוה מספיק כדי לפרוס ללא כיול. <strong>הצעד הבא הוא מחייב, לא מומלץ.</strong>
+</p>
+
+<hr class="sep">
+
+<div class="chap">
+  <div class="chap-num">7.2</div>
+  <h3>פיילוטים נדרשים: 2-3 ארגונים</h3>
+</div>
+
+<div class="warning-box">
+  <div class="wb-label">צעד מחייב</div>
+  ביצוע 2-3 פיילוטים עם ארגונים אמיתיים לכיול אמפירי של ספי T/A/M. בלי פיילוט, המודל נשאר תאורטי. אין לפרוס ללא כיול.
+</div>
+
+<table>
+  <thead><tr><th>פיילוט</th><th>סוג ארגון</th><th>פוקוס</th><th>מדד הצלחה</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>1</strong></td>
+      <td>Cybersecurity, 80-150 FTE</td>
+      <td>NOD + CLT (צוותי פיתוח תחת לחץ)</td>
+      <td>ירידה ב-Hotfix Rate, ירידה ב-Decision Latency</td>
+    </tr>
+    <tr>
+      <td><strong>2</strong></td>
+      <td>Fintech, 150-300 FTE</td>
+      <td>ZSG + CS (סיילואים + מילואים)</td>
+      <td>עלייה ב-Edmondson, ירידה ב-Handoffs</td>
+    </tr>
+    <tr>
+      <td><strong>3</strong></td>
+      <td>Healthtech, 50-100 FTE</td>
+      <td>OLD + CS (למידה + שחיקה)</td>
+      <td>ירידה ב-MBI, עלייה ב-Assumption Updates/Retro</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="chap">
+  <div class="chap-num">7.3</div>
+  <h3>קריטריוני כניסה לפיילוט</h3>
+</div>
+
+<p>שלושה תנאים מחייבים:</p>
+
+<div class="data-block accent-right-green">
+  <div class="db-overline">ENTRY CRITERIA</div>
+  <div style="font-family:'Noto Sans Hebrew',sans-serif; font-size:14px; line-height:2.2;">
+    <strong>1. נגישות לנתונים:</strong> גישה לנתוני HR ומערכת (לא רק סקרים).<br>
+    <strong>2. מחויבות C-Level:</strong> מחויבות לתהליך מלא (אבחון + התערבות + מעקב). לא רק "אבחון".<br>
+    <strong>3. קו בסיס:</strong> נכונות למדוד לפני ואחרי. ללא קו בסיס, אי-אפשר להוכיח שום דבר.
+  </div>
+</div>
+
+<p>
+  ארגון שלא עומד בשלושת התנאים לא נכנס לפיילוט. לא כי הוא "לא מוכן". כי בלי הנתונים, אי-אפשר לכייל. ובלי כיול, אי-אפשר להוכיח.
+</p>
+
+<p>
+  היעד: להגיע לביטחון כולל של <span class="metric">0.85+</span> לפני פריסה רחבה. זה דורש 2-3 פיילוטים מלאים שעוברים את כל 7 השלבים.
+</p>
+
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- FOOTER -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="doc-footer">
+  <span>DSM-Org v1.0 | COR-SYS</span>
+  <span>מהדורה 2026 | כל הנתונים מ-Data Feed מאומת</span>
+</div>
+
+</div>
+</body>
+</html>
