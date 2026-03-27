@@ -22,6 +22,7 @@ import type { RecommendationResult } from '@/types/database'
 import type { DsmDiagnosticSnapshot } from '@/types/database'
 import type { DSMDiagnosis } from '@/lib/dsm-engine'
 import { buildGoldenQuestions } from '@/lib/dsm-policy-engine'
+import { calculateEdgeOfChaos } from '@/lib/resilience-formula'
 import {
   avg,
   SUCCESS_ENTROPY_DELTA,
@@ -120,6 +121,8 @@ function buildColdStartResult(
     avg_j_quotient_recovered: null,
     daily_loss_estimate: dailyLoss,
     avg_lambda: null,
+    avg_eoc_score: null,
+    recommendation_boldness: 'balanced',
   }
 }
 
@@ -176,11 +179,22 @@ export function getRecommendations(input: RecommendationInput): RecommendationOu
       avg_j_quotient_recovered: avg(cases.map((c) => c.j_quotient_recovered)),
       daily_loss_estimate: dailyLoss,
       avg_lambda: avg(cases.map((c) => c.lambda_eigenvalue)),
+      avg_eoc_score: avg(cases.map((c) => (c.lambda_eigenvalue != null ? calculateEdgeOfChaos(c.lambda_eigenvalue) : null))),
+      recommendation_boldness:
+        (avg(cases.map((c) => (c.lambda_eigenvalue != null ? calculateEdgeOfChaos(c.lambda_eigenvalue) : null))) ?? 0) > 0.75
+          ? 'bold'
+          : (avg(cases.map((c) => (c.lambda_eigenvalue != null ? calculateEdgeOfChaos(c.lambda_eigenvalue) : null))) ?? 0) > 0.45
+            ? 'balanced'
+            : 'safe',
     })
   }
 
   // ── Sort by Wilson score DESC ────────────────────────────────────────────────
-  results.sort((a, b) => b.wilson_score - a.wilson_score)
+  results.sort(
+    (a, b) =>
+      (b.wilson_score + (b.avg_eoc_score ?? 0) * 0.08) -
+      (a.wilson_score + (a.avg_eoc_score ?? 0) * 0.08)
+  )
 
   return { recommendations: results, cold_start: false }
 }

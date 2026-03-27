@@ -309,7 +309,7 @@ export default function CalculatorPage() {
             sublabel="Distorted Reciprocity — חשיבה אפס-סכומית, אגירת משאבים"
             heuristicLabel={DR_HEURISTICS(drScore)}
             value={drScore} onChange={setDrScore} min={0} max={10}
-            colorFn={(v) => v > 5.5 ? 'text-red-400' : v > 2.5 ? 'text-yellow-400' : 'text-emerald-400'}
+            colorFn={(v) => v > 5.5 ? 'text-intent-danger' : v > 2.5 ? 'text-intent-warning' : 'text-intent-success'}
           />
           <ResearchBadge pathologyCode="DR" />
 
@@ -318,7 +318,7 @@ export default function CalculatorPage() {
             sublabel="Normalization of Deviance — קיצורי דרך, לחץ ייצור גובר על נהלים"
             heuristicLabel={ND_HEURISTICS(ndScore)}
             value={ndScore} onChange={setNdScore} min={0} max={10}
-            colorFn={(v) => v > 5.5 ? 'text-red-400' : v > 2.5 ? 'text-yellow-400' : 'text-emerald-400'}
+            colorFn={(v) => v > 5.5 ? 'text-intent-danger' : v > 2.5 ? 'text-intent-warning' : 'text-intent-success'}
           />
           <ResearchBadge pathologyCode="ND" />
 
@@ -327,7 +327,7 @@ export default function CalculatorPage() {
             sublabel="Unrepresentative Calibration — חוסר בטחון פסיכולוגי, למידה חד-לולאתית"
             heuristicLabel={UC_HEURISTICS(ucScore)}
             value={ucScore} onChange={setUcScore} min={0} max={10}
-            colorFn={(v) => v > 5.5 ? 'text-red-400' : v > 2.5 ? 'text-yellow-400' : 'text-emerald-400'}
+            colorFn={(v) => v > 5.5 ? 'text-intent-danger' : v > 2.5 ? 'text-intent-warning' : 'text-intent-success'}
           />
           <ResearchBadge pathologyCode="UC" />
         </div>
@@ -350,7 +350,7 @@ export default function CalculatorPage() {
                   : 'Decision Latency נמוך — מתחת ל-5h/שבוע (under_5)'
             }
             value={hoursPerWeek} onChange={setHoursPerWeek} min={1} max={40}
-            colorFn={(v) => v > 15 ? 'text-red-400' : v >= 5 ? 'text-yellow-400' : 'text-emerald-400'}
+            colorFn={(v) => v > 15 ? 'text-intent-danger' : v >= 5 ? 'text-intent-warning' : 'text-intent-success'}
           />
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-2">שכר חודשי ממוצע למנהל (₪)</label>

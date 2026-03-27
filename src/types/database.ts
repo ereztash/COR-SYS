@@ -16,6 +16,13 @@ export interface Client {
   decision_latency_hours: number | null
   engagement_start: string | null
   notes: string | null
+  bounded_contexts?: Record<string, unknown>[] | null
+  contradiction_loss?: number | null
+  current_j_quotient?: number | null
+  semantic_drift_kl?: number | null
+  edge_of_chaos_score?: number | null
+  runaway_loop_detected?: boolean | null
+  agent_notes?: string | null
   created_at: string
   updated_at: string
 }
@@ -108,6 +115,128 @@ export interface ClientDiagnostic {
   dsm_summary: ClientDiagnosticSummary
 }
 
+export interface TriggerRuleRow {
+  id: string
+  if_condition: string
+  then_action: string
+  severity: 'high' | 'medium'
+  is_active: boolean
+  updated_at: string
+}
+
+export interface InterventionEvidenceProfileRow {
+  intervention_tag: string
+  evidence_level: 'high' | 'contextual' | 'gap'
+  citations: string[]
+  evidence_note: string
+  updated_at: string
+}
+
+export interface GateReviewRow {
+  id: 'gate-1' | 'gate-2' | 'gate-3' | 'gate-4'
+  week: 2 | 4 | 8 | 12
+  title_he: string
+  pass_criteria: string[]
+  is_active: boolean
+  updated_at: string
+}
+
+export interface GateRunRow {
+  run_id: string
+  gate_id: GateReviewRow['id']
+  client_id: string
+  status: 'pending' | 'passed' | 'failed'
+  notes: string | null
+  evaluated_at: string
+}
+
+export interface AgentJobRow {
+  job_id: string
+  job_type: 'gamma-monitor' | 'feedback-eval' | 'network-refresh' | 'delta-refresh'
+  client_id: string | null
+  org_id: string | null
+  payload: Record<string, unknown>
+  status: 'pending' | 'claimed' | 'completed' | 'failed' | 'awaiting_approval'
+  approval_required: boolean
+  approved_at: string | null
+  not_before: string | null
+  started_at: string | null
+  finished_at: string | null
+  attempts: number
+  max_attempts: number
+  last_error: string | null
+  result: Record<string, unknown> | null
+  job_key: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface AgentChangeRequestRow {
+  request_id: string
+  agent_name: 'alpha' | 'beta' | 'gamma' | 'delta'
+  client_id: string
+  change_type: string
+  payload: Record<string, unknown>
+  status: 'pending' | 'approved' | 'rejected'
+  requested_at: string
+  reviewed_at: string | null
+}
+
+export interface OrgNetworkRow {
+  id: string
+  client_id: string
+  node_id: string
+  node_type: 'team' | 'leader' | 'system' | 'workflow' | 'hub'
+  adjacency: Record<string, unknown>
+  node_label: string | null
+  metadata: Record<string, unknown> | null
+  created_at: string
+  updated_at: string
+}
+
+export interface OrgNetworkMetricRow {
+  metric_id: string
+  client_id: string
+  density: number | null
+  diameter: number | null
+  clustering_coefficient: number | null
+  betweenness_centrality: Record<string, number> | null
+  computed_at: string
+}
+
+export interface FeedbackEventRow {
+  event_id: string
+  client_id: string
+  snapshot_id: string | null
+  intervention_id: string | null
+  event_type: 'negative-feedback' | 'positive-feedback' | 'runaway-detected' | 'phase-transition'
+  loop_type: 'negative' | 'positive' | 'runaway' | null
+  payload: Record<string, unknown>
+  created_at: string
+}
+
+export interface FeedbackActionRow {
+  action_id: string
+  event_id: string
+  action_type: 'alert' | 'recommendation' | 'job-enqueue' | 'approval-request'
+  status: 'pending' | 'completed' | 'failed'
+  result: Record<string, unknown> | null
+  processed_at: string | null
+}
+
+export interface AgentMemoryRow {
+  memory_id: string
+  agent_name: 'alpha' | 'beta' | 'gamma' | 'delta'
+  subject_type: 'client' | 'snapshot' | 'plan'
+  subject_id: string
+  input_hash: string
+  result: Record<string, unknown>
+  confidence: number | null
+  expires_at: string
+  created_at: string
+  updated_at: string
+}
+
 // ---------------------------------------------------------------------------
 // CBR Layer Types — Phase 1 Data Layer
 // Source: supabase-migration-cbr.sql + cbr-execution-roadmap.md
@@ -128,6 +257,9 @@ export interface OrganizationContext {
   industry_sector: string
   employee_size_band: EmployeeSizeBand
   culture_archetype: string | null
+  kappa?: number | null
+  kappa_source?: string | null
+  kappa_updated_at?: string | null
   created_at: string
 }
 
@@ -149,6 +281,8 @@ export interface DsmDiagnosticSnapshot {
   severity_profile: SeverityProfileCbr
   bottleneck_text: string | null
   feature_vector: number[] | null   // VECTOR(1536) — stored as float array
+  emergence_signal?: 'continuous' | 'discontinuous' | null
+  edge_of_chaos_score?: number | null
 }
 
 export interface InterventionAndFeedback {
@@ -168,6 +302,9 @@ export interface InterventionAndFeedback {
   // Mathematical model outputs
   learning_gain: number | null      // LG = 0.571×(-ΔDR) + 0.429×(ΔPSI)
   lambda_eigenvalue: number | null  // λ = 1 + κ×LG
+  dynamic_kappa?: number | null
+  edge_of_chaos_score?: number | null
+  feedback_loop_type?: 'negative' | 'positive' | 'runaway' | null
   success_label: number | null      // FLOAT (not boolean) — continuous metric
   created_at: string
 }
@@ -195,6 +332,8 @@ export interface RecommendationResult {
   avg_j_quotient_recovered: number | null
   daily_loss_estimate: number | null  // J-Quotient / 30 — for loss framing
   avg_lambda: number | null          // expected λ eigenvalue
+  avg_eoc_score?: number | null
+  recommendation_boldness?: 'safe' | 'balanced' | 'bold'
 }
 
 // Insert helpers
@@ -203,6 +342,9 @@ export interface OrganizationContextInsert {
   industry_sector: string
   employee_size_band: EmployeeSizeBand
   culture_archetype?: string | null
+  kappa?: number | null
+  kappa_source?: string | null
+  kappa_updated_at?: string | null
 }
 
 export interface DsmDiagnosticSnapshotInsert {
@@ -218,6 +360,8 @@ export interface DsmDiagnosticSnapshotInsert {
   severity_profile: SeverityProfileCbr
   bottleneck_text?: string | null
   feature_vector?: number[] | null
+  emergence_signal?: 'continuous' | 'discontinuous' | null
+  edge_of_chaos_score?: number | null
 }
 
 export interface InterventionAndFeedbackInsert {
@@ -233,6 +377,9 @@ export interface InterventionAndFeedbackInsert {
   delta_dr?: number | null
   learning_gain?: number | null
   lambda_eigenvalue?: number | null
+  dynamic_kappa?: number | null
+  edge_of_chaos_score?: number | null
+  feedback_loop_type?: 'negative' | 'positive' | 'runaway' | null
   success_label?: number | null
 }
 
@@ -348,6 +495,72 @@ export interface Database {
         Row: InterventionAndFeedback
         Insert: InterventionAndFeedbackInsert
         Update: Partial<InterventionAndFeedbackInsert>
+        Relationships: []
+      }
+      trigger_rules: {
+        Row: TriggerRuleRow
+        Insert: Omit<TriggerRuleRow, 'updated_at'>
+        Update: Partial<Omit<TriggerRuleRow, 'updated_at'>>
+        Relationships: []
+      }
+      intervention_evidence_profiles: {
+        Row: InterventionEvidenceProfileRow
+        Insert: Omit<InterventionEvidenceProfileRow, 'updated_at'>
+        Update: Partial<Omit<InterventionEvidenceProfileRow, 'updated_at'>>
+        Relationships: []
+      }
+      gate_reviews: {
+        Row: GateReviewRow
+        Insert: Omit<GateReviewRow, 'updated_at'>
+        Update: Partial<Omit<GateReviewRow, 'updated_at'>>
+        Relationships: []
+      }
+      gate_runs: {
+        Row: GateRunRow
+        Insert: Omit<GateRunRow, 'run_id' | 'evaluated_at'>
+        Update: Partial<Omit<GateRunRow, 'run_id' | 'evaluated_at'>>
+        Relationships: []
+      }
+      agent_jobs: {
+        Row: AgentJobRow
+        Insert: Omit<AgentJobRow, 'job_id' | 'created_at' | 'updated_at' | 'started_at' | 'finished_at' | 'approved_at' | 'last_error' | 'result'>
+        Update: Partial<Omit<AgentJobRow, 'job_id' | 'created_at' | 'updated_at'>>
+        Relationships: []
+      }
+      agent_change_requests: {
+        Row: AgentChangeRequestRow
+        Insert: Omit<AgentChangeRequestRow, 'request_id' | 'requested_at' | 'reviewed_at'>
+        Update: Partial<Omit<AgentChangeRequestRow, 'request_id' | 'requested_at'>>
+        Relationships: []
+      }
+      org_network: {
+        Row: OrgNetworkRow
+        Insert: Omit<OrgNetworkRow, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<OrgNetworkRow, 'id' | 'created_at' | 'updated_at'>>
+        Relationships: []
+      }
+      org_network_metrics: {
+        Row: OrgNetworkMetricRow
+        Insert: Omit<OrgNetworkMetricRow, 'metric_id' | 'computed_at'>
+        Update: Partial<Omit<OrgNetworkMetricRow, 'metric_id' | 'computed_at'>>
+        Relationships: []
+      }
+      feedback_events: {
+        Row: FeedbackEventRow
+        Insert: Omit<FeedbackEventRow, 'event_id' | 'created_at'>
+        Update: Partial<Omit<FeedbackEventRow, 'event_id' | 'created_at'>>
+        Relationships: []
+      }
+      feedback_actions: {
+        Row: FeedbackActionRow
+        Insert: Omit<FeedbackActionRow, 'action_id' | 'processed_at'>
+        Update: Partial<Omit<FeedbackActionRow, 'action_id'>>
+        Relationships: []
+      }
+      agent_memories: {
+        Row: AgentMemoryRow
+        Insert: Omit<AgentMemoryRow, 'memory_id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<AgentMemoryRow, 'memory_id' | 'created_at' | 'updated_at'>>
         Relationships: []
       }
     }

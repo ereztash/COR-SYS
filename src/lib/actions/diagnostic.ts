@@ -13,6 +13,7 @@ import { isValidUuid } from '@/lib/validation'
 import type { ActionPlanItem } from '@/lib/diagnostic/action-plan'
 import type { PathologyProfile } from '@/lib/diagnostic/pathology-kb'
 import { PROFILE_LABELS } from '@/lib/diagnostic/action-plan'
+import type { Sprint, Task } from '@/types/database'
 
 interface CreateDiagnosticSprintInput {
   clientId: string
@@ -38,22 +39,19 @@ export async function createDiagnosticSprintAction(
   const profileLabel = PROFILE_LABELS[input.profile] ?? input.profile
   const sprintTitle = `ספרינט אבחון — ${profileLabel} | ${input.dominantAxis} ↑`
   const goal = `DR ${input.dr.toFixed(1)} · ND ${input.nd.toFixed(1)} · UC ${input.uc.toFixed(1)} — ${input.interventions.map(i => i.title_he).join(' / ')}`
+  const sprintPayload: Pick<Sprint, 'client_id' | 'sprint_number' | 'title' | 'start_date' | 'end_date' | 'status' | 'goal'> = {
+    client_id: input.clientId,
+    sprint_number: input.sprintNumber,
+    title: sprintTitle,
+    start_date: today,
+    end_date: end14,
+    status: 'active',
+    goal,
+  }
 
   const { data: sprint, error: sprintErr } = await supabase
     .from('sprints')
-    // Supabase typing for inserts is currently too generic in this project.
-    // This payload matches the DB schema, so we intentionally ignore TS here.
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    .insert({
-      client_id: input.clientId,
-      sprint_number: input.sprintNumber,
-      title: sprintTitle,
-      start_date: today,
-      end_date: end14,
-      status: 'active',
-      goal,
-    })
+    .insert(sprintPayload as never)
     .select('id')
     .single()
 
@@ -64,7 +62,8 @@ export async function createDiagnosticSprintAction(
   const sprintId = (sprint as { id: string }).id
 
   // Create 3 tasks from interventions
-  const tasks = input.interventions.map((item, i) => ({
+  const tasks: Pick<Task, 'sprint_id' | 'client_id' | 'title' | 'description' | 'status' | 'priority' | 'estimated_hours' | 'due_date' | 'tags' | 'completed_at'>[] =
+    input.interventions.map((item, i) => ({
     sprint_id: sprintId,
     client_id: input.clientId,
     title: item.title_he,
@@ -77,9 +76,7 @@ export async function createDiagnosticSprintAction(
     completed_at: null,
   }))
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore Supabase types
-  const { error: tasksErr } = await supabase.from('tasks').insert(tasks)
+  const { error: tasksErr } = await supabase.from('tasks').insert(tasks as never)
 
   if (tasksErr) {
     return { ok: false, error: tasksErr.message }

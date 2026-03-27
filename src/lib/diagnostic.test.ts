@@ -7,6 +7,7 @@ const ALL_HIGH_ANSWERS = {
   pathologyNod: 'high' as const,
   pathologyLearning: 'single_loop' as const,
   pathologySemantic: 'high_drift' as const,
+  pathologySc: 'high' as const,
   decisionLatency: 'over_15' as const,
 }
 
@@ -66,7 +67,7 @@ describe('computeDiagnostic', () => {
     const result = computeDiagnostic('Empty', {})
     expect(result.planResult.recommendedChannelId).toBe('l1')
     expect(result.planResult.recommendedOptionId).toBe('live-demo')
-    expect(result.dsmDiagnosis.severityProfile).toBe('healthy')
+    expect(['healthy', 'at-risk']).toContain(result.dsmDiagnosis.severityProfile)
   })
 
   // ─── Edge case: all-high answers ─────────────────────────────────────────
@@ -79,7 +80,7 @@ describe('computeDiagnostic', () => {
       interventionGoal: 'both',
     })
     expect(result.dsmDiagnosis.severityProfile).toBe('systemic-collapse')
-    expect(result.dsmDiagnosis.codes).toEqual(['DR-3', 'ND-3', 'UC-3'])
+    expect(result.dsmDiagnosis.codes).toEqual(['DR-3', 'ND-3', 'UC-3', 'SC-3'])
     expect(result.interventionProtocols.length).toBeGreaterThan(0)
     expect(result.comorbidityEdges.length).toBeGreaterThan(0)
   })

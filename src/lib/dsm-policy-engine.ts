@@ -110,6 +110,28 @@ export const BENCHMARK_CONTEXTS: BenchmarkContext[] = [
     cohortNote: 'Semantic drift גבוה + תרבות האשמה; Floridi Ontological Friction > threshold',
     referenceTools: ['Edmondson PSYCH-SAFE scale', 'McKinsey OHI — Innovation & Learning'],
   },
+  // SC benchmarks
+  {
+    pathologyCode: 'SC',
+    scoreRange: [0, 2.5],
+    percentileEstimate: 'top 25% — בהירות מבנית גבוהה',
+    cohortNote: 'RACI ברור, תהליכי ליבה מתועדים, ו-decision rights מוגדרים',
+    referenceTools: ['RACI Audit', 'Gartner Org Design Maturity'],
+  },
+  {
+    pathologyCode: 'SC',
+    scoreRange: [2.5, 5.5],
+    percentileEstimate: 'percentile 35–65 — עמימות מבנית בינונית',
+    cohortNote: 'מבנה חלקי עם חיכוכי handoff ושטחים אפורים בין יחידות',
+    referenceTools: ['Operating Model Health Check', 'Process Documentation Audit'],
+  },
+  {
+    pathologyCode: 'SC',
+    scoreRange: [5.5, 10],
+    percentileEstimate: 'bottom 25% — כשל מבני חמור',
+    cohortNote: 'חוסר בהירות סמכותית ותהליכית שמייצר עיכוב החלטות ונורמליזציית מעקפים',
+    referenceTools: ['RACI Heatmap', 'Decision Rights Assessment'],
+  },
 ]
 
 export function getBenchmarkForScore(code: PathologyCode, score: number): BenchmarkContext | undefined {
@@ -163,8 +185,10 @@ export const RESEARCH_MODULES: ResearchModule[] = [
     empiricalEvidence: 'Edmondson (1999): α=.82, r=.35 עם team learning; Munn et al. (2023): PS mediates 40% of safety outcomes',
     pathologyMapping: ['UC'],
     calibratableParams: [
-      { name: 'ucLearningWeight', currentValue: 0.6, description: 'משקל רכיב הלמידה בחישוב UC (vs. semantic)' },
-      { name: 'ucSemanticWeight', currentValue: 0.4, description: 'משקל רכיב הסמנטיקה בחישוב UC' },
+      { name: 'ucLearningWeight', currentValue: 0.4, description: 'משקל רכיב הלמידה בחישוב UC' },
+      { name: 'ucSemanticWeight', currentValue: 0.25, description: 'משקל רכיב הסמנטיקה בחישוב UC' },
+      { name: 'ucPsiWeight', currentValue: 0.2, description: 'משקל בטחון פסיכולוגי מנורמל (PSI normalized)' },
+      { name: 'ucAdaptiveWeight', currentValue: 0.15, description: 'משקל יכולת הסתגלות קדימה (UC-Forward)' },
       { name: 'singleLoopHighDriftFloor', currentValue: 7, description: 'ציון מינימלי ל-UC כשיש גם single_loop וגם high_drift' },
     ],
   },
@@ -199,13 +223,40 @@ export const RESEARCH_MODULES: ResearchModule[] = [
     id: 'network-comorbidity',
     name: 'Network Effects / Comorbidity',
     theoreticalBasis: 'Borgatti et al. (2009) Network Analysis in the Social Sciences; Borsboom (2017) Network Theory of Mental Disorders',
-    measuredConstruct: 'קשרי גומלין בין פתולוגיות: DR↔ND, DR↔UC, ND↔UC',
+    measuredConstruct: 'קשרי גומלין בין פתולוגיות: DR↔ND, DR↔UC, ND↔UC, SC↔DR, SC↔ND, SC↔UC',
     dependentVariable: 'totalEntropyScore — סכום אנטרופיה מערכתי',
-    empiricalEvidence: 'COR-SYS N=10,000: DR↔ND r=.19, DR↔UC r=−.27, ND↔UC r=.28; Network model best AIC vs. factor model',
-    pathologyMapping: ['DR', 'ND', 'UC'],
+    empiricalEvidence: 'COR-SYS N=10,000: DR↔ND r=.19, DR↔UC r=−.27, ND↔UC r=.28, SC↔DR r=.32, SC↔ND r=.24, SC↔UC r=.18',
+    pathologyMapping: ['DR', 'ND', 'UC', 'SC'],
     calibratableParams: [
-      { name: 'systemicCollapseEntropyThreshold', currentValue: 22, description: 'סף totalEntropyScore לקריסה מערכתית' },
+      { name: 'systemicCollapseEntropyThreshold', currentValue: 29, description: 'סף totalEntropyScore לקריסה מערכתית' },
       { name: 'comorbidityActiveLevel', currentValue: 2, description: 'רמת חומרה מינימלית לקשר קומורבידיות פעיל' },
+    ],
+  },
+  {
+    id: 'greiner-moderator',
+    name: 'Greiner Stage Moderator',
+    theoreticalBasis: 'Greiner (1972) Evolution and Revolution as Organizations Grow',
+    measuredConstruct: 'שלב משבר צמיחה שממתן את ספי החומרה לפי ציר מבני/תהליכי',
+    dependentVariable: 'axis-specific severity thresholds (SC/ND/UC)',
+    empiricalEvidence: 'Phase 3/4/5 crises correlate with control, red-tape, and renewal bottlenecks in growth-stage firms',
+    pathologyMapping: ['SC', 'ND', 'UC'],
+    calibratableParams: [
+      { name: 'phase3ScThresholdDelta', currentValue: -1.0, description: 'הנמכת סף SC ב-Phase 3' },
+      { name: 'phase4NdThresholdDelta', currentValue: -1.0, description: 'הנמכת סף ND ב-Phase 4' },
+      { name: 'phase5UcThresholdDelta', currentValue: -1.0, description: 'הנמכת סף UC ב-Phase 5' },
+    ],
+  },
+  {
+    id: 'engagement-proxy',
+    name: 'Engagement Outcome Proxy',
+    theoreticalBasis: 'Kahn (1990), Maslach & Leiter (2016), JD-R model',
+    measuredConstruct: 'רמת אנרגיה ומחוברות ניהולית כמדד תוצאה (לא פתולוגיה)',
+    dependentVariable: 'validation consistency מול totalEntropyScore',
+    empiricalEvidence: 'Engagement erosion is typically downstream outcome of structural/cultural pathology clusters',
+    pathologyMapping: ['DR', 'ND', 'UC', 'SC'],
+    calibratableParams: [
+      { name: 'engagementAlertThreshold', currentValue: 'burnout', description: 'רמת סיכון שמפעילה התראה לבדיקת עומק' },
+      { name: 'anomalyGapThreshold', currentValue: 3, description: 'פער בין אנטרופיה גבוהה לדיווח מחוברות גבוהה' },
     ],
   },
 ]
@@ -325,6 +376,9 @@ function buildActiveComorbidities(diagnosis: DSMDiagnosis): string[] {
   if (scoreMap['DR'].level >= 2 && scoreMap['ND'].level >= 2) active.push('DR→ND (לחץ ייצור מנרמל סטיות)')
   if (scoreMap['DR'].level >= 2 && scoreMap['UC'].level >= 2) active.push('DR→UC (תחרות פוגעת בבטחון פסיכולוגי)')
   if (scoreMap['ND'].level >= 2 && scoreMap['UC'].level >= 2) active.push('ND→UC (נורמליזציה מבטלת trigger ללמידה)')
+  if (scoreMap['SC']?.level >= 2 && scoreMap['DR'].level >= 2) active.push('SC→DR (עמימות מבנית מייצרת חיכוך סמכותי)')
+  if (scoreMap['SC']?.level >= 2 && scoreMap['ND'].level >= 2) active.push('SC→ND (חוסר מבנה מנרמל מעקפים)')
+  if (scoreMap['SC']?.level >= 2 && scoreMap['UC'].level >= 2) active.push('SC→UC (עמימות מחלישה כיול ולמידה)')
   return active
 }
 

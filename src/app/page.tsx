@@ -18,7 +18,7 @@ export default async function DashboardPage() {
           <div className="flex items-center gap-3 mb-1">
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-black">C</div>
             <h1 className="text-4xl font-black text-white tracking-tight">COR-SYS</h1>
-            <span className="bg-blue-600/20 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase mr-2">Deep-Grid v2.2</span>
+            <span className="status-badge status-info px-3 py-1 mr-2">Deep-Grid v2.2</span>
           </div>
           <p className="text-slate-400 font-medium text-sm mt-2">מערכת הפעלה אונטולוגית: הנדסת חוסן, צמצום אנטרופיה ומקסום ROI</p>
         </div>
@@ -58,14 +58,14 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
 
         {/* Decision Latency */}
-        <div className="bento-card col-span-1 p-6 bg-gradient-to-br from-red-950/60 to-slate-900 flex flex-col justify-center items-center text-center">
+        <div className="bento-card col-span-1 p-6 panel-dr flex flex-col justify-center items-center text-center">
           <span className="text-3xl mb-2">🕐</span>
           <h2 className="text-sm font-bold text-slate-300 mb-1">Decision Latency Tax</h2>
           <div className="text-6xl font-black text-white font-mono my-1">
-            {data.totalLatency.toFixed(0)}<span className="text-2xl text-red-400">h</span>
+            {data.totalLatency.toFixed(0)}<span className="text-2xl axis-dr">h</span>
           </div>
-          <p className="text-xs text-red-300/80 font-bold uppercase tracking-widest mb-3">בשבוע, סה"כ</p>
-          <Link href="/clients" className="text-xs text-red-400 border border-red-500/30 px-3 py-1.5 rounded-lg hover:bg-red-500/10 transition-colors">
+          <p className="text-xs text-intent-danger font-bold uppercase tracking-widest mb-3">בשבוע, סה"כ</p>
+          <Link href="/clients" className="text-xs axis-dr border border-red-500/30 px-3 py-1.5 rounded-lg hover:bg-red-500/10 transition-colors">
             עדכן לפי לקוח ←
           </Link>
         </div>

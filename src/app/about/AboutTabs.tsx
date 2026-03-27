@@ -119,7 +119,7 @@ export function AboutTabs() {
 function TabIdentity() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
-      <section className="bento-card col-span-1 md:col-span-2 p-5 md:p-6 border-t-4 border-t-purple-500">
+      <section className="bento-card col-span-1 md:col-span-2 p-5 md:p-6 border-t-4 border-t-indigo-500">
         <div className="flex flex-col sm:flex-row gap-6 items-start">
           <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-2xl font-black text-white shrink-0 shadow-lg">
             א.ט
@@ -134,7 +134,7 @@ function TabIdentity() {
             <div className="flex gap-2 mt-2 flex-wrap">
               <span className="bg-purple-500/20 text-purple-300 text-[10px] px-2 py-0.5 rounded-full font-bold border border-purple-500/20">מכללת תל חי</span>
               <span className="bg-blue-500/20 text-blue-300 text-[10px] px-2 py-0.5 rounded-full font-bold border border-blue-500/20">Genesis Logic Core</span>
-              <span className="bg-emerald-500/20 text-emerald-300 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-500/20">ATAOV Framework</span>
+              <span className="status-badge status-success text-[10px] px-2 py-0.5">ATAOV Framework</span>
             </div>
             <div className="grid grid-cols-3 gap-3 mt-4">
               <div className="bg-slate-800/60 border border-slate-700 rounded-lg p-3 text-center">
@@ -237,12 +237,12 @@ function TabProblem() {
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
       <section className="bento-card col-span-1 p-6 md:p-8 border-t-4 border-t-red-500 max-h-[420px] overflow-y-auto">
         <h2 className="text-xl font-bold text-white mb-4" style={{ fontFamily: 'Heebo, sans-serif' }}>
-          הדימום הקוגניטיבי <span className="text-red-400 font-light">| Pathologies</span>
+          הדימום הקוגניטיבי <span className="text-intent-danger font-light">| Pathologies</span>
         </h2>
         <div className="space-y-3">
           <Accordion
             id="t2-nod"
-            title={<span className="font-bold text-sm text-red-400">⚠ 1. נורמליזציית סטייה</span>}
+            title={<span className="font-bold text-sm text-intent-danger">⚠ 1. נורמליזציית סטייה</span>}
             className="border-red-900/30 bg-red-950/10"
           >
             <strong>(Normalization of Deviance - NOD)</strong><br />
@@ -267,16 +267,16 @@ function TabProblem() {
         </div>
       </section>
 
-      <section className="bento-card col-span-1 p-6 md:p-8 bg-gradient-to-br from-red-950/60 to-slate-900 flex flex-col justify-center items-center text-center">
+      <section className="bento-card col-span-1 p-6 md:p-8 panel-dr flex flex-col justify-center items-center text-center">
         <span className="text-4xl mb-2">🕐</span>
         <h2 className="text-lg font-bold text-slate-300 mb-1">Decision Latency Tax</h2>
         <div className="text-6xl md:text-7xl font-black text-white font-mono my-1 tracking-tighter">
-          23<span className="text-3xl text-red-400">h</span>
+          23<span className="text-3xl axis-dr">h</span>
         </div>
         <p className="text-xs text-red-300/80 font-bold uppercase tracking-widest mb-4">בשבוע, למנהל בכיר</p>
         <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-xl text-sm text-slate-300 leading-relaxed">
           זמן המבוזבז על פגישות סנכרון ותיאום בשל חוסר ודאות.
-          <span className="block mt-2 border-t border-red-500/30 pt-2 text-red-400 font-bold">הנתון הקריטי מהמחקר:</span>
+          <span className="block mt-2 border-t border-red-500/30 pt-2 text-intent-danger font-bold">הנתון הקריטי מהמחקר:</span>
           עיכוב של מעל 5 שעות בקבלת החלטה מרסק הסתברות הצלחה מ-<strong className="text-white text-lg">58%</strong> ל-<strong className="text-white text-lg">18%</strong>.
         </div>
       </section>

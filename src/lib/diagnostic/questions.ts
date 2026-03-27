@@ -1,16 +1,16 @@
 /**
  * COR-SYS Diagnostic Questionnaire
  *
- * 9 open-ended questions covering DR / ND / UC axes.
+ * 15 open-ended questions covering DR / ND / UC / SC axes.
  * Designed for practitioner use during intake session.
  * Language: Hebrew (Hebrish where needed for professional terms).
  *
  * Each question has:
- *   — axis: which DR/ND/UC dimension it primarily targets
+ *   — axis: which DR/ND/UC/SC dimension it primarily targets
  *   — probe: optional follow-up hint shown to the practitioner
  */
 
-export type DiagnosticAxis = 'DR' | 'ND' | 'UC'
+export type DiagnosticAxis = 'DR' | 'ND' | 'UC' | 'SC'
 
 export interface DiagnosticQuestion {
   id: string
@@ -38,6 +38,12 @@ export const DIAGNOSTIC_QUESTIONS: DiagnosticQuestion[] = [
     axis: 'DR',
     question_he: 'איזו בעיה ידועה קיימת בארגון יותר מ-3 חודשים מבלי שהוכרעה? מה עצר את ההכרעה?',
     probe_he: 'הבעיות שכולם יודעים עליהן אבל אף אחד לא פותר הן ה-signature של DR גבוה.',
+  },
+  {
+    id: 'dr_4',
+    axis: 'DR',
+    question_he: 'כאשר מנהלי ביניים רוצים לקבל החלטה משמעותית, האם הם באמת יכולים להחליט או שהכל חוזר תמיד ל-CEO/COO?',
+    probe_he: 'זהו DR-8 (Leadership Cascade): בדוק אם delegation אמיתי קיים או רק על הנייר.',
   },
 
   // ── ND: Normalization of Deviance ─────────────────────────────────────────
@@ -78,6 +84,37 @@ export const DIAGNOSTIC_QUESTIONS: DiagnosticQuestion[] = [
     axis: 'UC',
     question_he: 'מי יודע איך הארגון עובד מקצה לקצה — מוצר, קוד, לקוחות? מה קורה כשאותו אדם נעדר?',
     probe_he: 'תלות באדם מפתח אחד עם ידע לא מתועד = UC קריטי. "מכפיל מילואים" ישראלי.',
+  },
+  {
+    id: 'uc_4',
+    axis: 'UC',
+    question_he: 'כשעובד מזהה בעיה מהותית, האם יש ערוץ דיווח שעובד בפועל ומוביל לטיפול, או שהדיווח נבלע?',
+    probe_he: 'UC-9: Voice Infrastructure. הבדל בין "יש טופס" לבין "נוצר תיקון אמיתי".',
+  },
+  {
+    id: 'uc_5',
+    axis: 'UC',
+    question_he: 'בשינוי שוק משמעותי אחרון, תוך כמה זמן הארגון עדכן תוכניות, תעדוף ומשאבים?',
+    probe_he: 'UC-Forward: הסתגלות קדימה. איטיות כרונית מעידה על כשל אדפטיבי.',
+  },
+  // ── SC: Structural Clarity ────────────────────────────────────────────────
+  {
+    id: 'sc_1',
+    axis: 'SC',
+    question_he: 'אחרי החלטה אסטרטגית חדשה, איך היא מתורגמת בפועל למשימות עם בעלים ודד-ליינים?',
+    probe_he: 'SC-5: Strategy-Execution Link. בדוק אם קיימת cascade שיטתית עד רמת הצוות.',
+  },
+  {
+    id: 'sc_2',
+    axis: 'SC',
+    question_he: 'איפה גבולות האחריות (RACI) הכי מטושטשים כיום, ומה המחיר של זה ביום-יום?',
+    probe_he: 'SC-RACI: אם יש "שני אחראים", בפועל אין אחראי אחד.',
+  },
+  {
+    id: 'sc_3',
+    axis: 'SC',
+    question_he: 'איזה תהליך קריטי עדיין חי "בעל פה" ולא מתועד כך שמחליף יכול להפעיל אותו עצמאית?',
+    probe_he: 'SC-Process/Knowledge: בדוק תלות ידע סמוי וחד-נקודתי.',
   },
 ]
 

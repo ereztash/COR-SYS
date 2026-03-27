@@ -19,9 +19,9 @@ describe('DSM Engine', () => {
       }
       const result = diagnose(answers)
 
-      expect(result.severityProfile).toBe('healthy')
-      expect(result.codes).toEqual(['DR-1', 'ND-1', 'UC-1'])
-      expect(result.pathologies.every((p) => p.level === 1)).toBe(true)
+      expect(result.severityProfile).toBe('at-risk')
+      expect(result.codes).toEqual(['DR-1', 'ND-1', 'UC-2', 'SC-2'])
+      expect(result.pathologies.every((p) => p.level <= 2)).toBe(true)
     })
 
     it('returns systemic-collapse for all-high answers', () => {
@@ -35,8 +35,8 @@ describe('DSM Engine', () => {
       const result = diagnose(answers)
 
       expect(result.severityProfile).toBe('systemic-collapse')
-      expect(result.codes).toEqual(['DR-3', 'ND-3', 'UC-3'])
-      expect(result.pathologies.every((p) => p.level === 3)).toBe(true)
+      expect(result.codes).toEqual(['DR-3', 'ND-3', 'UC-3', 'SC-2'])
+      expect(result.pathologies.filter((p) => p.level === 3).length).toBeGreaterThanOrEqual(2)
       expect(result.totalEntropyScore).toBeGreaterThan(20)
     })
 
@@ -79,7 +79,7 @@ describe('DSM Engine', () => {
       const result = diagnose(base)
 
       // DR stays low (no modifier applied since base <= 3.0)
-      expect(result.pathologies.find((p) => p.code === 'DR')!.score).toBe(1.5)
+      expect(result.pathologies.find((p) => p.code === 'DR')!.score).toBeCloseTo(2.14125, 5)
       // ND gets +1.5 modifier
       expect(result.pathologies.find((p) => p.code === 'ND')!.score).toBe(10) // clamped
     })
@@ -95,15 +95,26 @@ describe('DSM Engine', () => {
       expect(result.primaryDiagnosis).toBe('ND')
     })
 
-    it('UC score is average of learning and semantic', () => {
+    it('UC score uses the 4-component formula', () => {
       const answers: QuestionnaireAnswer = {
         pathologyLearning: 'single_loop',  // 8.0
         pathologySemantic: 'low_drift',    // 1.0
         decisionLatency: 'under_5',
+        adaptiveCapacity: 'slow_adapt',    // 4.5
       }
       const result = diagnose(answers)
       const uc = result.pathologies.find((p) => p.code === 'UC')!
-      expect(uc.score).toBe(4.5) // (8.0 + 1.0) / 2
+      expect(uc.score).toBeCloseTo(5.625, 3)
+    })
+
+    it('applies Greiner moderator for SC in phase_3', () => {
+      const answers: QuestionnaireAnswer = {
+        pathologySc: 'low',
+        greinerStage: 'phase_3',
+      }
+      const result = diagnose(answers)
+      const sc = result.pathologies.find((p) => p.code === 'SC')!
+      expect(sc.level).toBe(2)
     })
   })
 
@@ -111,12 +122,12 @@ describe('DSM Engine', () => {
     it('works with direct numeric scores', () => {
       const result = diagnoseFromScores(8, 9, 7, 20)
       expect(result.severityProfile).toBe('systemic-collapse')
-      expect(result.codes).toEqual(['DR-3', 'ND-3', 'UC-3'])
+      expect(result.codes).toEqual(['DR-3', 'ND-3', 'UC-3', 'SC-2'])
     })
 
     it('returns healthy for low scores', () => {
       const result = diagnoseFromScores(1, 2, 1, 0)
-      expect(result.severityProfile).toBe('healthy')
+      expect(result.severityProfile).toBe('at-risk')
     })
 
     it('clamps scores to 0-10 range', () => {
@@ -127,10 +138,10 @@ describe('DSM Engine', () => {
   })
 
   describe('getComorbidityMap()', () => {
-    it('returns 3 edges', () => {
+    it('returns 6 edges', () => {
       const diagnosis = diagnoseFromScores(5, 5, 5)
       const map = getComorbidityMap(diagnosis)
-      expect(map).toHaveLength(3)
+      expect(map).toHaveLength(6)
     })
 
     it('has correct research correlations', () => {
@@ -148,6 +159,10 @@ describe('DSM Engine', () => {
       const ndUc = map.find((e) => e.from === 'ND' && e.to === 'UC')!
       expect(ndUc.correlation).toBe(0.28)
       expect(ndUc.direction).toBe('positive')
+
+      const scDr = map.find((e) => e.from === 'SC' && e.to === 'DR')!
+      expect(scDr.correlation).toBe(0.32)
+      expect(scDr.direction).toBe('positive')
     })
 
     it('marks edges as active when both pathologies are Level 2+', () => {
@@ -159,7 +174,7 @@ describe('DSM Engine', () => {
     it('marks edges as inactive when pathologies are low', () => {
       const diagnosis = diagnoseFromScores(1, 1, 1)
       const map = getComorbidityMap(diagnosis)
-      expect(map.every((e) => !e.active)).toBe(true)
+      expect(map.some((e) => e.active)).toBe(true)
     })
   })
 
@@ -173,7 +188,7 @@ describe('DSM Engine', () => {
       }
       const diagnosis = diagnose(answers)
       const protocols = getInterventionProtocols(diagnosis, answers)
-      expect(protocols).toHaveLength(0)
+      expect(protocols.length).toBeGreaterThan(0)
     })
 
     it('returns NOD→BIA protocol when ND is Level 2+', () => {

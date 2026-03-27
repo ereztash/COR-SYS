@@ -20,7 +20,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import type { DsmDiagnosticSnapshot, OrganizationContext } from '@/types/database'
 import { findSimilarCases, getRecommendations } from '@/lib/cbr'
-import { diagnose } from '@/lib/dsm-engine'
+import { diagnoseFromScores, type DSMDiagnosis } from '@/lib/dsm-engine'
 import { buildGoldenQuestions, type GoldenQuestionAnswers } from '@/lib/dsm-policy-engine'
 
 const DEFAULT_MANAGERS = 5
@@ -91,7 +91,10 @@ export async function GET(
         coldStartDiagnosis = reconstructDiagnosisFromScores(
           snapshot.score_dr,
           snapshot.score_nd,
-          snapshot.score_uc
+          snapshot.score_uc,
+          snapshot.score_sc,
+          snapshot.decision_latency ?? 0,
+          snapshot.psi_score ?? undefined
         )
       } catch {
         // If reconstruction fails, cold start returns empty — not a blocking error
@@ -112,7 +115,14 @@ export async function GET(
     try {
       const diagnosisForGolden =
         coldStartDiagnosis ??
-        reconstructDiagnosisFromScores(snapshot.score_dr, snapshot.score_nd, snapshot.score_uc)
+        reconstructDiagnosisFromScores(
+          snapshot.score_dr,
+          snapshot.score_nd,
+          snapshot.score_uc,
+          snapshot.score_sc,
+          snapshot.decision_latency ?? 0,
+          snapshot.psi_score ?? undefined
+        )
 
       const golden = buildGoldenQuestions(diagnosisForGolden, { managers, hoursPerWeek, monthlySalary })
       golden_questions = golden
@@ -167,43 +177,10 @@ export async function GET(
 function reconstructDiagnosisFromScores(
   drScore: number,
   ndScore: number,
-  ucScore: number
-): ReturnType<typeof diagnose> {
-  // Map scores to severity levels (mirrors dsm-engine.ts thresholds)
-  function toLevel(score: number): 1 | 2 | 3 {
-    if (score >= 7) return 3
-    if (score >= 4) return 2
-    return 1
-  }
-
-  const totalEntropyScore = drScore + ndScore + ucScore
-
-  let severityProfile: 'healthy' | 'at-risk' | 'critical' | 'systemic-collapse'
-  const levels = [toLevel(drScore), toLevel(ndScore), toLevel(ucScore)]
-  const level3Count = levels.filter((l) => l === 3).length
-  const level2Count = levels.filter((l) => l === 2).length
-
-  if (level3Count >= 2 || totalEntropyScore >= 22) severityProfile = 'systemic-collapse'
-  else if (level3Count === 1) severityProfile = 'critical'
-  else if (level2Count >= 1) severityProfile = 'at-risk'
-  else severityProfile = 'healthy'
-
-  const pathologies = [
-    { code: 'DR' as const, score: drScore, level: toLevel(drScore), nameHe: 'הדדיות מעוותת', nameEn: 'Distorted Reciprocity', levelLabel: '', contributors: [] },
-    { code: 'ND' as const, score: ndScore, level: toLevel(ndScore), nameHe: 'נורמליזציית סטייה', nameEn: 'Normalization of Deviance', levelLabel: '', contributors: [] },
-    { code: 'UC' as const, score: ucScore, level: toLevel(ucScore), nameHe: 'כיול לא-מייצג', nameEn: 'Unrepresentative Calibration', levelLabel: '', contributors: [] },
-  ]
-
-  const primaryDiagnosis = pathologies.reduce((a, b) => (a.score >= b.score ? a : b)).code
-
-  return {
-    codes: pathologies.map((p) => `${p.code}-${p.level}`),
-    primaryDiagnosis,
-    severityProfile,
-    pathologies,
-    totalEntropyScore,
-    comorbidities: [],
-    protocols: [],
-    severityProfileLabel: severityProfile,
-  } as unknown as ReturnType<typeof diagnose>
+  ucScore: number,
+  scScore: number = 5,
+  latencyHours: number = 0,
+  psiAverage?: number
+): DSMDiagnosis {
+  return diagnoseFromScores(drScore, ndScore, ucScore, latencyHours, scScore, { psiAverage })
 }
