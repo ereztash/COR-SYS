@@ -147,7 +147,7 @@ async function findSimilarCasesByScore(
     .select('intervention_id, snapshot_id, actual_cta, delta_entropy, delta_j_quotient, learning_gain, lambda_eigenvalue')
     .not('followup_date', 'is', null)
     .limit(50)
-  const interventions = (intRaw ?? []) as unknown as InterventionRow[]
+  const interventions = (intRaw ?? []) as InterventionRow[]
 
   if (intErr || interventions.length === 0) {
     console.warn('[CBR/kl] no completed interventions found:', intErr?.message)
@@ -160,7 +160,7 @@ async function findSimilarCasesByScore(
     .from('dsm_diagnostic_snapshots')
     .select('snapshot_id, score_dr, score_nd, score_uc, psi_score, severity_profile, org_id')
     .in('snapshot_id', snapshotIds)
-  const snapshots = (snapRaw ?? []) as unknown as SnapshotScoreRow[]
+  const snapshots = (snapRaw ?? []) as SnapshotScoreRow[]
 
   if (snapErr || snapshots.length === 0) {
     console.warn('[CBR/kl] failed to fetch snapshot scores:', snapErr?.message)
@@ -173,7 +173,7 @@ async function findSimilarCasesByScore(
     .from('organizations_context')
     .select('org_id, industry_sector')
     .in('org_id', orgIds)
-  const orgs = (orgRaw ?? []) as unknown as OrgRow[]
+  const orgs = (orgRaw ?? []) as OrgRow[]
 
   const orgMap = new Map(orgs.map((o) => [o.org_id, o.industry_sector]))
   const snapMap = new Map(snapshots.map((s) => [s.snapshot_id, s]))

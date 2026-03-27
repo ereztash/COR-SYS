@@ -27,6 +27,7 @@ import type { PathologyProfile, PathologyType } from './pathology-kb'
 
 export type InterventionHorizon = '14d' | '30d' | '90d'
 export type InterventionPriority = 1 | 2 | 3
+export type EvidenceLevel = 'high' | 'contextual' | 'gap'
 
 export interface TamImpact {
   t: 1 | 2 | 3   // how strongly this intervention reduces Time cost (1=low, 3=high)
@@ -78,6 +79,61 @@ export interface ActionPlanItem {
   _ius?: IUSScore            // populated by computeIUS(); absent on raw items
   applicable_profiles: PathologyProfile[]
   target_pathologies: PathologyType[]
+  evidence?: InterventionEvidence
+  kpi_stack?: InterventionKpiStack
+}
+
+export interface InterventionEvidence {
+  level: EvidenceLevel
+  citations: string[]
+  evidence_note: string
+}
+
+export interface KpiMetric {
+  name: string
+  horizon: '1-2w' | '4-12w'
+}
+
+export interface InterventionKpiStack {
+  leading: KpiMetric[]
+  lagging: KpiMetric[]
+  baseline: string
+  cadence: string
+  target_range: string
+}
+
+export interface TriggerRule {
+  id: string
+  if_condition: string
+  then_action: string
+  severity: 'high' | 'medium'
+}
+
+export interface GateReview {
+  id: 'gate-1' | 'gate-2' | 'gate-3' | 'gate-4'
+  week: 2 | 4 | 8 | 12
+  title_he: string
+  pass_criteria: string[]
+}
+
+export interface TriggerEvaluationInput {
+  profile: PathologyProfile
+  dominantAxis: DiagnosticAxis
+  scores: { dr: number; nd: number; uc: number; sc?: number }
+  pathologyType?: PathologyType
+}
+
+export interface EvidenceProfileRow {
+  intervention_tag: string
+  evidence_level: EvidenceLevel
+  citations: string[]
+  evidence_note: string
+}
+
+export interface DiagnosticRuntimeConfig {
+  triggerRules?: TriggerRule[]
+  evidenceProfiles?: EvidenceProfileRow[]
+  gateReviews?: GateReview[]
 }
 
 // ─── DR Interventions (Decision Latency) ─────────────────────────────────────
@@ -217,6 +273,53 @@ const UC_INTERVENTIONS: ActionPlanItem[] = [
     tam_impact: { t: 2, a: 2, m: 3 },
     iam: 3, aim: 3, fim: 4, impact: 3,
     applicable_profiles: ['at-risk', 'critical', 'systemic-collapse'],
+    target_pathologies: ['OLD', 'CS'],
+  },
+]
+
+// ─── SC Interventions (Structural Clarity) ───────────────────────────────────
+
+const SC_INTERVENTIONS: ActionPlanItem[] = [
+  {
+    priority: 1,
+    horizon: '14d',
+    axis: 'SC',
+    title_he: 'ביקורת RACI מהירה ל-5 תהליכי ליבה',
+    what_he: 'למפות Responsible/Accountable/Consulted/Informed עבור 5 תהליכים קריטיים ולסגור כפילויות או חורים בבעלות.',
+    why_he: 'חוסר בהירות בבעלות יוצר צווארי בקבוק, הסלמות, ועבודת-כפילות.',
+    metric_he: '100% מ-5 התהליכים עם Responsible ו-Accountable ברורים תוך 14 יום',
+    tag: 'RACI Audit',
+    tam_impact: { t: 3, a: 2, m: 2 },
+    iam: 5, aim: 4, fim: 5, impact: 4,
+    applicable_profiles: ['at-risk', 'critical', 'systemic-collapse'],
+    target_pathologies: ['OLD', 'CLT'],
+  },
+  {
+    priority: 2,
+    horizon: '30d',
+    axis: 'SC',
+    title_he: 'מנגנון Strategy Cascade דו-שבועי',
+    what_he: 'לתרגם כל החלטה אסטרטגית ליעדים תפעוליים, בעלי תפקידים, ודד-ליינים, ולבדוק סטטוס כל שבועיים.',
+    why_he: 'ללא Cascade, אסטרטגיה נשארת מצגת ולא הופכת לביצוע.',
+    metric_he: '≥80% מההחלטות האסטרטגיות מקבלות owner + deadline + KPI תוך 30 יום',
+    tag: 'Strategy Cascade',
+    tam_impact: { t: 2, a: 2, m: 3 },
+    iam: 4, aim: 3, fim: 4, impact: 4,
+    applicable_profiles: ['at-risk', 'critical', 'systemic-collapse'],
+    target_pathologies: ['OLD', 'ZSG'],
+  },
+  {
+    priority: 3,
+    horizon: '90d',
+    axis: 'SC',
+    title_he: 'ארכיטקטורת החלטות ארגונית',
+    what_he: 'לבנות Decision Rights Catalog: מי מחליט מה, לפי איזה מידע, ובאיזה SLA, כולל מנגנון חריגות.',
+    why_he: 'פרוטוקול החלטות קבוע מפחית תלות בדמויות בודדות ומונע bottleneck מערכתי.',
+    metric_he: 'ירידה ≥35% בזמני הסלמה + ירידה ≥30% בהחלטות שחוזרות לפתיחה',
+    tag: 'Decision Protocol',
+    tam_impact: { t: 3, a: 2, m: 3 },
+    iam: 4, aim: 2, fim: 3, impact: 5,
+    applicable_profiles: ['critical', 'systemic-collapse'],
     target_pathologies: ['OLD', 'CS'],
   },
 ]
@@ -377,6 +480,83 @@ const PATHOLOGY_BANKS: Record<PathologyType, ActionPlanItem[]> = {
   CS:  CS_INTERVENTIONS,
 }
 
+export const OPERATIONAL_TRIGGER_RULES: TriggerRule[] = [
+  {
+    id: 'tr-hotfix-spike',
+    if_condition: 'IF Hotfix Frequency עולה ב-25% מעל baseline חודשי',
+    then_action: 'THEN הפעל NOD protocol: Near-miss triage + Just Culture + debt allocation',
+    severity: 'high',
+  },
+  {
+    id: 'tr-aim-low',
+    if_condition: 'IF AIM < 3.0 לפני rollout',
+    then_action: 'THEN הקפא rollout ובצע friction mapping לפני פריסה',
+    severity: 'high',
+  },
+  {
+    id: 'tr-near-miss-zero',
+    if_condition: 'IF near-miss reporting = 0 לאורך רבעון',
+    then_action: 'THEN הפעל ZSG reboot: no-blame reporting + safety activation',
+    severity: 'high',
+  },
+  {
+    id: 'tr-daci-latency',
+    if_condition: 'IF decision latency > 48h בפרויקטי ליבה',
+    then_action: 'THEN הפעל DACI tightening עם Driver/Approver יחיד',
+    severity: 'high',
+  },
+  {
+    id: 'tr-fim-low',
+    if_condition: 'IF FIM < 2.5 עקב מחסור תשתיתי',
+    then_action: 'THEN העבר קיבולת מיידית ל-Platform/Enablement לפני התערבות עומק',
+    severity: 'medium',
+  },
+  {
+    id: 'tr-cs-freeze',
+    if_condition: 'IF systemic stress (CS amplifier) מזוהה',
+    then_action: 'THEN הפעל Systemic Friction Halt ו-stop new change initiatives',
+    severity: 'high',
+  },
+]
+
+export const MANDATORY_COMORBIDITY_SEQUENCES: Array<{
+  id: 'clt-before-cs' | 'zsg-before-old' | 'sc-before-nod'
+  when: string
+  first: PathologyType | 'SC'
+  then: PathologyType
+}> = [
+  { id: 'clt-before-cs', when: 'CS amplifier + high UC', first: 'CLT', then: 'CS' },
+  { id: 'zsg-before-old', when: 'OLD with low psychological safety', first: 'ZSG', then: 'OLD' },
+  { id: 'sc-before-nod', when: 'NOD with high structural ambiguity', first: 'SC', then: 'NOD' },
+]
+
+export const DEFAULT_GATE_REVIEWS: GateReview[] = [
+  {
+    id: 'gate-1',
+    week: 2,
+    title_he: 'Gate 1 — ייצוב עומס וקיצור שיהוי',
+    pass_criteria: ['Decision latency <= 48h בפרויקטי ליבה', '>=80% שמירה על guarded blocks'],
+  },
+  {
+    id: 'gate-2',
+    week: 4,
+    title_he: 'Gate 2 — פתיחות ודיווח בטוח',
+    pass_criteria: ['Near-miss עולה מאפס ל-flow פעיל', 'No-blame response נשמר ללא סנקציות דיווח'],
+  },
+  {
+    id: 'gate-3',
+    week: 8,
+    title_he: 'Gate 3 — עקירת סטיות ולמידה כפולה',
+    pass_criteria: ['>=40% ירידה ב-hotfixes', 'AARs כוללים שינוי הנחות (double-loop)'],
+  },
+  {
+    id: 'gate-4',
+    week: 12,
+    title_he: 'Gate 4 — קיבוע חוסן ומניעת ריבאונד',
+    pass_criteria: ['שיפור OHI/health יציב', 'Change fatigue נשארת בטווח נסבל'],
+  },
+]
+
 // ─── IUS Engine ───────────────────────────────────────────────────────────────
 
 const HORIZON_DAYS: Record<InterventionHorizon, number> = {
@@ -458,22 +638,25 @@ export function computeIUS(
 export function buildActionPlan(
   dominantAxis: DiagnosticAxis,
   profile: PathologyProfile,
-  scores: { dr: number; nd: number; uc: number },
+  scores: { dr: number; nd: number; uc: number; sc?: number },
   pathologyType?: PathologyType,
   csAmplifier?: boolean,
-  envelope?: ConstraintEnvelope
+  envelope?: ConstraintEnvelope,
+  runtimeConfig?: Pick<DiagnosticRuntimeConfig, 'evidenceProfiles'>
 ): ActionPlanItem[] {
   const byAxis: Record<DiagnosticAxis, ActionPlanItem[]> = {
     DR: DR_INTERVENTIONS,
     ND: ND_INTERVENTIONS,
     UC: UC_INTERVENTIONS,
+    SC: SC_INTERVENTIONS,
   }
 
   // ── Step 1: Assemble candidate pool ──────────────────────────────────────
   let candidates: ActionPlanItem[]
 
   if (csAmplifier) {
-    candidates = CS_INTERVENTIONS
+    const cltFirst = (scores.uc >= 6 || scores.dr >= 6) ? CLT_INTERVENTIONS : []
+    candidates = [...cltFirst, ...CS_INTERVENTIONS]
   } else if (pathologyType && pathologyType !== 'CS') {
     const bank = PATHOLOGY_BANKS[pathologyType]
     // augment with secondary-axis items for diversity
@@ -481,15 +664,22 @@ export function buildActionPlan(
       ['DR', scores.dr],
       ['ND', scores.nd],
       ['UC', scores.uc],
+      ['SC', scores.sc ?? 0],
     ]
     axisScores.sort((a, b) => b[1] - a[1])
     const secondAxis = axisScores.find(([a]) => a !== dominantAxis)?.[0] ?? dominantAxis
-    candidates = [...bank, ...byAxis[secondAxis]]
+    const scBeforeNod = pathologyType === 'NOD' && (scores.sc ?? 0) >= 6
+    const primary = scBeforeNod ? byAxis.SC : bank
+    candidates = [...primary, ...bank, ...byAxis[secondAxis]]
+    if (pathologyType === 'OLD' && scores.nd >= 5) {
+      candidates = [...ZSG_INTERVENTIONS, ...candidates]
+    }
   } else {
     const axisScores: [DiagnosticAxis, number][] = [
       ['DR', scores.dr],
       ['ND', scores.nd],
       ['UC', scores.uc],
+      ['SC', scores.sc ?? 0],
     ]
     axisScores.sort((a, b) => b[1] - a[1])
     const secondAxis = axisScores.find(([a]) => a !== dominantAxis)?.[0] ?? dominantAxis
@@ -512,7 +702,12 @@ export function buildActionPlan(
       const ius = computeIUS(item, envelope)
       if (ius === null) continue  // fails constraint and cannot be MVC-revised
 
-      scored.push({ ...item, _ius: ius })
+      scored.push({
+        ...item,
+        _ius: ius,
+        evidence: inferEvidence(item, runtimeConfig?.evidenceProfiles),
+        kpi_stack: buildKpiStack(item),
+      })
     }
 
     // ── Step 4: Rank by IUS score descending ─────────────────────────────
@@ -528,27 +723,124 @@ export function buildActionPlan(
   for (const item of profileFiltered) {
     if (seen.has(item.title_he)) continue
     seen.add(item.title_he)
-    result.push(item)
+    result.push({
+      ...item,
+      evidence: inferEvidence(item, runtimeConfig?.evidenceProfiles),
+      kpi_stack: buildKpiStack(item),
+    })
     if (result.length === 3) break
   }
   return result
 }
 
+function inferEvidence(item: ActionPlanItem, profiles?: EvidenceProfileRow[]): InterventionEvidence {
+  const override = profiles?.find((p) => p.intervention_tag === item.tag)
+  if (override) {
+    return {
+      level: override.evidence_level,
+      citations: override.citations,
+      evidence_note: override.evidence_note,
+    }
+  }
+  if (item.tag.includes('Just Culture') || item.tag.includes('Psychological Safety')) {
+    return {
+      level: 'high',
+      citations: ['Edmondson (1999)', 'ECRI Just Culture'],
+      evidence_note: 'Validated implementation outcomes and safety effects in high-risk settings.',
+    }
+  }
+  if (item.tag.includes('Double-Loop') || item.tag.includes('Cognitive Load') || item.tag.includes('DACI')) {
+    return {
+      level: 'contextual',
+      citations: ['Argyris Double-Loop', 'Team Topologies', 'Decision frameworks'],
+      evidence_note: 'Strong contextual evidence; requires local baseline calibration.',
+    }
+  }
+  return {
+    level: 'gap',
+    citations: ['Local baseline required'],
+    evidence_note: 'Needs controlled local validation before broad rollout.',
+  }
+}
+
+function buildKpiStack(item: ActionPlanItem): InterventionKpiStack {
+  return {
+    leading: [
+      { name: item.metric_he, horizon: '1-2w' },
+      { name: 'AIM/IAM pulse', horizon: '1-2w' },
+      { name: 'Decision/Execution friction signal', horizon: '1-2w' },
+    ],
+    lagging: [
+      { name: 'Defect/Hotfix trend', horizon: '4-12w' },
+      { name: 'Throughput and cycle stability', horizon: '4-12w' },
+      { name: 'Retention / burnout markers', horizon: '4-12w' },
+    ],
+    baseline: '30-day historical baseline before intervention',
+    cadence: item.horizon === '14d' ? 'Weekly' : item.horizon === '30d' ? 'Bi-weekly' : 'Every 14 days + monthly board review',
+    target_range: item.horizon === '14d' ? 'Early stabilization within 2 weeks' : item.horizon === '30d' ? '>=20-40% trend improvement by week 4-6' : 'Sustained improvement without rebound by week 12',
+  }
+}
+
+export function evaluateTriggerRules(input: TriggerEvaluationInput): TriggerRule[] {
+  return evaluateTriggerRulesWithConfig(input, OPERATIONAL_TRIGGER_RULES)
+}
+
+export function evaluateTriggerRulesWithConfig(
+  input: TriggerEvaluationInput,
+  rules: TriggerRule[]
+): TriggerRule[] {
+  const out: TriggerRule[] = []
+  const byId = new Map(rules.map((r) => [r.id, r]))
+  if (input.scores.dr >= 6 || input.dominantAxis === 'DR') {
+    const r = byId.get('tr-daci-latency')
+    if (r) out.push(r)
+  }
+  if (input.scores.nd >= 6 || input.pathologyType === 'NOD') {
+    const r = byId.get('tr-hotfix-spike')
+    if (r) out.push(r)
+  }
+  if (input.pathologyType === 'ZSG' || input.profile === 'critical' || input.profile === 'systemic-collapse') {
+    const r = byId.get('tr-near-miss-zero')
+    if (r) out.push(r)
+  }
+  if (input.pathologyType === 'CS' || (input.scores.dr >= 6 && input.scores.nd >= 6 && input.scores.uc >= 6)) {
+    const r = byId.get('tr-cs-freeze')
+    if (r) out.push(r)
+  }
+  if (input.profile === 'at-risk') {
+    const r = byId.get('tr-aim-low')
+    if (r) out.push(r)
+  }
+  return Array.from(new Map(out.map((r) => [r.id, r])).values())
+}
+
+export function build90DayGateReviews(): GateReview[] {
+  return DEFAULT_GATE_REVIEWS
+}
+
+export function build90DayGateReviewsWithConfig(gates?: GateReview[]): GateReview[] {
+  return gates && gates.length > 0 ? gates : DEFAULT_GATE_REVIEWS
+}
+
 /**
- * Derives dominant axis from DR/ND/UC scores.
+ * Derives dominant axis from DR/ND/UC/SC scores.
  */
-export function getDominantAxis(scores: { dr: number; nd: number; uc: number }): DiagnosticAxis {
-  const { dr, nd, uc } = scores
-  if (dr >= nd && dr >= uc) return 'DR'
-  if (nd >= dr && nd >= uc) return 'ND'
-  return 'UC'
+export function getDominantAxis(scores: { dr: number; nd: number; uc: number; sc?: number }): DiagnosticAxis {
+  const axisScores: Array<[DiagnosticAxis, number]> = [
+    ['DR', scores.dr],
+    ['ND', scores.nd],
+    ['UC', scores.uc],
+    ['SC', scores.sc ?? 0],
+  ]
+  axisScores.sort((a, b) => b[1] - a[1])
+  return axisScores[0][0]
 }
 
 /**
  * Derives severity profile from slider scores (fast-path triage, no embedding).
  */
-export function profileFromScores(scores: { dr: number; nd: number; uc: number }): PathologyProfile {
-  const max = Math.max(scores.dr, scores.nd, scores.uc)
+export function profileFromScores(scores: { dr: number; nd: number; uc: number; sc?: number }): PathologyProfile {
+  const max = Math.max(scores.dr, scores.nd, scores.uc, scores.sc ?? 0)
   if (max < 2.5) return 'healthy'
   if (max < 5)   return 'at-risk'
   if (max < 7.5) return 'critical'

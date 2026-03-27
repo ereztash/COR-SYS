@@ -167,7 +167,7 @@ function ColdStartCard({ fallback }: { fallback?: PolicyFallback }) {
           </p>
           <p className="text-xs text-slate-400 mb-2">{fallback.rationale}</p>
           {fallback.timeToActMonths === 0 ? (
-            <span className="text-xs font-bold text-red-400">פעולה מיידית נדרשת</span>
+            <span className="text-xs font-bold text-intent-danger">פעולה מיידית נדרשת</span>
           ) : (
             <span className="text-xs text-slate-500">טווח פעולה: {fallback.timeToActMonths} חודשים</span>
           )}
@@ -194,8 +194,15 @@ function RecommendationCard({
 }) {
   const isTopRanked = rank === 0
   const insight = buildInsightSentence(rec, rank, dailyLoss)
+  const boldnessTone =
+    rec.recommendation_boldness === 'bold'
+      ? 'text-intent-danger'
+      : rec.recommendation_boldness === 'balanced'
+        ? 'text-intent-warning'
+        : 'text-intent-success'
+
   return (
-    <div className={`bg-slate-800/60 rounded-xl p-4 ${isTopRanked ? 'ring-1 ring-emerald-700' : ''}`}>
+    <div className={`bg-slate-800/60 rounded-xl p-4 ${isTopRanked ? 'ring-1 ring-slate-600' : ''}`}>
       <div className="flex items-start justify-between gap-2 mb-3">
         <div>
           <p className="text-sm font-black text-white">
@@ -205,13 +212,20 @@ function RecommendationCard({
             {rec.supporting_cases} מקרים דומים
           </p>
         </div>
-        <ConfidenceBadge level={rec.confidence_level} />
+        <div className="flex flex-col items-end gap-1">
+          <ConfidenceBadge level={rec.confidence_level} />
+          {rec.recommendation_boldness && (
+            <span className={`text-[10px] font-bold ${boldnessTone}`}>
+              {rec.recommendation_boldness.toUpperCase()}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Insight sentence */}
       <p className={`text-xs leading-relaxed mb-3 px-3 py-2 rounded-lg ${
         isTopRanked
-          ? 'bg-emerald-950/40 text-emerald-200 border border-emerald-800/30'
+          ? 'bg-slate-900/50 text-slate-100 border border-slate-600/40'
           : 'bg-slate-700/40 text-slate-300 border border-slate-700/30'
       }`}>
         {insight}
@@ -228,6 +242,11 @@ function RecommendationCard({
         <div>
           <p className="text-xs text-slate-500">Trajectory</p>
           <p className="text-sm font-bold text-slate-300">{lambdaLabel(rec.avg_lambda)}</p>
+          {rec.avg_eoc_score != null && (
+            <p className="text-xs text-slate-500">
+              EoC: {rec.avg_eoc_score.toFixed(2)} · {rec.recommendation_boldness ?? 'balanced'}
+            </p>
+          )}
           {rec.avg_j_quotient_recovered != null && (
             <p className="text-xs text-slate-600">
               J שוחזר: {(rec.avg_j_quotient_recovered * 100).toFixed(1)}%
@@ -247,6 +266,14 @@ function RecommendationCard({
         </ul>
       </div>
 
+      {isTopRanked && (
+        <div className="rounded-lg border border-slate-700/50 bg-slate-900/40 px-3 py-2 mb-2">
+          <p className="text-[11px] text-slate-300">
+            חלון פעולה: {rec.avg_eoc_score != null && rec.avg_eoc_score >= 0.75 ? 'רגיש לשינוי — מומלץ מהלך נועז ומבוקר' : 'דרוש מהלך מדורג עם מדידת follow-up מהירה'}
+          </p>
+        </div>
+      )}
+
       {onOverride && (
         <button
           onClick={onOverride}
@@ -264,9 +291,9 @@ function RecommendationCard({
 function GoldenQuestionsGrid({ golden }: { golden: GoldenQuestionAnswers }) {
   const urgency = golden.economicImpact.urgencySignal
   const urgencyMap: Record<typeof urgency, { border: string; text: string; bg: string }> = {
-    critical: { border: 'border-red-500/30', text: 'text-red-200', bg: 'bg-red-950/40' },
-    elevated: { border: 'border-yellow-500/30', text: 'text-yellow-200', bg: 'bg-yellow-950/30' },
-    moderate: { border: 'border-emerald-500/30', text: 'text-emerald-200', bg: 'bg-emerald-950/30' },
+    critical: { border: 'border-slate-600/40', text: 'text-intent-danger', bg: 'bg-slate-900/40' },
+    elevated: { border: 'border-slate-600/40', text: 'text-intent-warning', bg: 'bg-slate-900/40' },
+    moderate: { border: 'border-slate-600/40', text: 'text-intent-success', bg: 'bg-slate-900/40' },
   }
   const u = urgencyMap[urgency]
 
@@ -326,7 +353,7 @@ function GoldenQuestionsGrid({ golden }: { golden: GoldenQuestionAnswers }) {
         <p className="mt-3 text-xs text-slate-200 leading-relaxed">{golden.economicImpact.jInterpretationHe}</p>
       </div>
 
-      <div className="bento-card p-4 border-t-4 border-emerald-700 md:col-span-2">
+      <div className="bento-card p-4 border-t-4 border-slate-600 md:col-span-2">
         <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-2">מהלך התערבות מומלץ</p>
         <p className="text-sm text-white font-bold mb-2">
           {golden.recommendedAction.ctaLabelHe}
@@ -404,9 +431,9 @@ export function RecommendationPanel({
 
   if (error) {
     return (
-      <div className="bento-card p-6 border-t-4 border-red-700">
+      <div className="bento-card p-6 border-t-4 border-slate-600">
         <p className="text-xs font-bold text-slate-500 uppercase mb-2">המלצת התערבות</p>
-        <p className="text-sm text-red-400">{error}</p>
+        <p className="text-sm text-intent-danger">{error}</p>
       </div>
     )
   }
@@ -419,7 +446,7 @@ export function RecommendationPanel({
     (data.golden_questions ? data.golden_questions.economicImpact.weeklyWasteILS / 7 : null)
 
   return (
-    <div className="bento-card p-6 border-t-4 border-emerald-700">
+    <div className="bento-card p-6 border-t-4 border-slate-600">
       <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
         <p className="type-meta">המלצת התערבות CBR</p>
         <div className="flex items-center gap-2">
@@ -443,12 +470,12 @@ export function RecommendationPanel({
 
       {/* Loss frame header */}
       {dailyLoss != null && dailyLoss > 0 && (
-        <div className="bg-red-950/40 border border-red-900/60 rounded-xl px-4 py-3 mb-4">
-          <p className="type-meta text-red-300 mb-0.5">עלות אי-פעולה</p>
-          <p className="text-xl font-black text-red-300 type-kpi">
+        <div className="panel-dr rounded-xl px-4 py-3 mb-4">
+          <p className="type-meta text-intent-danger mb-0.5">עלות אי-פעולה</p>
+          <p className="text-xl font-black text-intent-danger type-kpi">
             ₪{Math.round(dailyLoss).toLocaleString('he-IL')}/יום
           </p>
-          <p className="text-xs text-red-400 mt-0.5 type-kpi">
+          <p className="text-xs text-intent-danger mt-0.5 type-kpi">
             ₪{Math.round(dailyLoss * 30).toLocaleString('he-IL')}/חודש
           </p>
         </div>

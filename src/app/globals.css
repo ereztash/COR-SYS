@@ -200,6 +200,7 @@ h1, h2, h3, h4, h5, h6 {
 .axis-dr { color: #fca5a5; }
 .axis-nd { color: #fde68a; }
 .axis-uc { color: #c7d2fe; }
+.axis-sc { color: #a5b4fc; }
 
 .panel-dr {
   background: color-mix(in srgb, var(--color-danger) 12%, transparent);
@@ -214,6 +215,11 @@ h1, h2, h3, h4, h5, h6 {
 .panel-uc {
   background: color-mix(in srgb, var(--color-info) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--color-info) 34%, transparent);
+}
+
+.panel-sc {
+  background: color-mix(in srgb, #818cf8 12%, transparent);
+  border: 1px solid color-mix(in srgb, #818cf8 34%, transparent);
 }
 
 .surface-strong {

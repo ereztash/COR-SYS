@@ -6,6 +6,11 @@ interface IncomingUxEvent {
   ts: number
   data?: Record<string, string | number | boolean>
 }
+interface UxMetricsEventInsert {
+  event_name: string
+  event_ts: string
+  event_data: Record<string, string | number | boolean>
+}
 
 export async function POST(req: Request) {
   try {
@@ -15,16 +20,15 @@ export async function POST(req: Request) {
     }
 
     const supabase = await createClient()
-
-    // Table is created via supabase-migration-ux-metrics.sql.
-    // Keep runtime resilient if migration not applied yet.
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const { error } = await supabase.from('ux_metrics_events').insert({
+    const payload: UxMetricsEventInsert = {
       event_name: body.name,
       event_ts: new Date(body.ts).toISOString(),
       event_data: body.data ?? {},
-    })
+    }
+
+    // Table is created via supabase-migration-ux-metrics.sql.
+    // Keep runtime resilient if migration not applied yet.
+    const { error } = await supabase.from('ux_metrics_events').insert(payload as never)
 
     if (error) {
       // Do not fail UX if telemetry table is absent / RLS denied.

@@ -74,10 +74,14 @@ export type Trajectory = 'growth' | 'stable' | 'decay' | 'bifurcation'
 export interface ResilienceOutput {
   /** LG = 0.571×(-ΔDR) + 0.429×(ΔPSI) */
   learning_gain: number
+  /** κ used in the final λ calculation (dynamic when not explicitly provided). */
+  kappa: number
   /** κ × LG — used for critical threshold check */
   kappa_lg: number
   /** λ = 1 + κ×LG — system eigenvalue */
   lambda: number
+  /** Edge of Chaos = 1 - |λ - 1|, clamped to [0,1] */
+  edge_of_chaos: number
   /** Trajectory classification based on λ */
   trajectory: Trajectory
   /** True when κ×LG ≤ -0.15 (maladaptive regime, structural change required) */
@@ -109,6 +113,20 @@ export function calculateEigenvalue(kappa: number, learning_gain: number): numbe
 }
 
 /**
+ * Dynamic κ tuned by the current λ regime.
+ * κ = 0.3 + 0.5 * (1 - min(1, |λ|))
+ *
+ * We derive λ from a provisional pass when κ was not explicitly supplied.
+ */
+export function calculateDynamicKappa(lambdaSignal: number): number {
+  return 0.3 + 0.5 * (1 - Math.min(1, Math.abs(lambdaSignal)))
+}
+
+export function calculateEdgeOfChaos(lambda: number): number {
+  return Math.max(0, Math.min(1, 1 - Math.abs(lambda - 1)))
+}
+
+/**
  * Classify organizational trajectory from eigenvalue λ.
  */
 export function classifyTrajectory(lambda: number): Trajectory {
@@ -123,15 +141,19 @@ export function classifyTrajectory(lambda: number): Trajectory {
  * Returns all metrics needed for CBR success_label and Recommendation Panel display.
  */
 export function analyzeResilience(input: ResilienceInput): ResilienceOutput {
-  const kappa = input.kappa ?? DEFAULT_KAPPA
   const learning_gain = calculateLearningGain(input.delta_dr, input.delta_psi)
+  const provisionalLambda = calculateEigenvalue(input.kappa ?? DEFAULT_KAPPA, learning_gain)
+  const kappa = input.kappa ?? calculateDynamicKappa(provisionalLambda)
   const kappa_lg = kappa * learning_gain
   const lambda = calculateEigenvalue(kappa, learning_gain)
+  const edge_of_chaos = calculateEdgeOfChaos(lambda)
 
   return {
     learning_gain,
+    kappa,
     kappa_lg,
     lambda,
+    edge_of_chaos,
     trajectory: classifyTrajectory(lambda),
     is_critical: kappa_lg <= CRITICAL_THRESHOLD,
     daily_loss: input.j_quotient != null ? input.j_quotient / 30 : null,

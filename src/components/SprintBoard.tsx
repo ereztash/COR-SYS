@@ -14,10 +14,10 @@ const COLUMNS: { key: Task['status']; label: string; color: string; dot: string 
 ]
 
 const PRIORITY_COLORS: Record<string, string> = {
-  critical: 'bg-red-500/20 text-red-300',
-  high: 'bg-orange-500/20 text-orange-300',
-  medium: 'bg-yellow-500/20 text-yellow-300',
-  low: 'bg-slate-500/20 text-slate-400',
+  critical: 'status-danger',
+  high: 'status-warning',
+  medium: 'status-info',
+  low: 'border border-slate-700 text-slate-400',
 }
 const PRIORITY_LABELS: Record<string, string> = {
   critical: 'קריטי', high: 'גבוה', medium: 'בינוני', low: 'נמוך'
@@ -162,7 +162,7 @@ function TaskCard({ task, onEdit, onDelete, onMove }: {
       )}
 
       <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-        <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${PRIORITY_COLORS[task.priority]}`}>
+        <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${task.priority === 'low' ? '' : 'status-badge'} ${PRIORITY_COLORS[task.priority]}`}>
           {PRIORITY_LABELS[task.priority]}
         </span>
         {task.estimated_hours && (

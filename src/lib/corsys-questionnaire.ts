@@ -41,6 +41,12 @@ export type PsiRating = '1' | '2' | '3' | '4' | '5' | '6' | '7'
 export type DecisionLatency = 'over_15' | '5_to_15' | 'under_5'
 export type InterventionGoal = 'reduce_latency' | 'reduce_entropy' | 'both' | 'audit_only'
 export type UrgencyLevel = 'high' | 'medium' | 'low'
+export type GreinerStage = 'phase_1_2' | 'phase_3' | 'phase_4' | 'phase_5'
+export type AdaptiveCapacity = 'rigid' | 'slow_adapt' | 'agile'
+export type VoiceInfrastructure = 'no_channel' | 'unused_channel' | 'effective_channel'
+export type LeadershipCascade = 'micromanage' | 'partial_delegation' | 'full_delegation'
+export type StrategyExecution = 'no_cascade' | 'partial_cascade' | 'full_cascade'
+export type EngagementProxy = 'burnout' | 'mixed' | 'high'
 
 // ─── Main interface ───────────────────────────────────────────────────────────
 
@@ -61,6 +67,12 @@ export interface QuestionnaireAnswer {
   decisionLatency?: DecisionLatency
   interventionGoal?: InterventionGoal
   urgencyLevel?: UrgencyLevel
+  greinerStage?: GreinerStage
+  adaptiveCapacity?: AdaptiveCapacity
+  voiceInfrastructure?: VoiceInfrastructure
+  leadershipCascade?: LeadershipCascade
+  strategyExecution?: StrategyExecution
+  engagementProxy?: EngagementProxy
 
   // Block 4 — Edmondson PSI (7-item Psychological Safety Index)
   // Scale: 1=Strongly Disagree, 7=Strongly Agree
@@ -327,6 +339,79 @@ export const QUESTIONNAIRE_STEPS = [
           { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' },
           { value: '4', label: '4' }, { value: '5', label: '5' }, { value: '6', label: '6' },
           { value: '7', label: '7' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'moderators',
+    title: 'Moderators והערכת הסתגלות',
+    fields: [
+      {
+        key: 'greinerStage',
+        label: 'מהו אתגר הצמיחה הניהולי הדומיננטי כרגע בארגון?',
+        type: 'select' as const,
+        required: false,
+        options: [
+          { value: 'phase_1_2', label: 'מייסדים עדיין מנהלים ישירות — חסר delegation מבני (Greiner 1-2)' },
+          { value: 'phase_3', label: 'חוסר שליטה בין יחידות — כל מחלקה מושכת לכיוון אחר (Greiner 3)' },
+          { value: 'phase_4', label: 'עודף ביורוקרטיה — שינוי דורש יותר מדי אישורים (Greiner 4)' },
+          { value: 'phase_5', label: 'הצמיחה נבלמת — נדרשת הסתגלות וחדשנות ארגונית (Greiner 5)' },
+        ],
+      },
+      {
+        key: 'adaptiveCapacity',
+        label: 'כאשר מתרחש שינוי משמעותי בשוק, מה מאפיין את תגובת הארגון?',
+        type: 'select' as const,
+        required: false,
+        options: [
+          { value: 'rigid', label: 'ממשיכים כרגיל; שינוי נתפס כהפרעה ולא כהזדמנות' },
+          { value: 'slow_adapt', label: 'מגיבים, אך באיחור משמעותי ובמאמץ חריג' },
+          { value: 'agile', label: 'מסתגלים מהר; יש מנגנון קבוע לסריקה ותגובה' },
+        ],
+      },
+      {
+        key: 'voiceInfrastructure',
+        label: 'כאשר עובד מזהה בעיה, עד כמה קיימת תשתית דיווח אפקטיבית?',
+        type: 'select' as const,
+        required: false,
+        options: [
+          { value: 'no_channel', label: 'אין ערוץ ברור או שדיווחים נבלעים ללא תגובה' },
+          { value: 'unused_channel', label: 'יש ערוצים אך כמעט לא משתמשים בהם בפועל' },
+          { value: 'effective_channel', label: 'יש ערוץ חי, הדיווחים נקלטים ומטופלים בזמן סביר' },
+        ],
+      },
+      {
+        key: 'leadershipCascade',
+        label: 'כיצד היית מתאר את הדינמיקה בין הנהלה בכירה למנהלי ביניים?',
+        type: 'select' as const,
+        required: false,
+        options: [
+          { value: 'micromanage', label: 'מיקרו-ניהול או היעדר הובלה; סמכות לא יורדת לשטח' },
+          { value: 'partial_delegation', label: 'יש delegation חלקי, אך החלטות חוזרות ל-C-level' },
+          { value: 'full_delegation', label: 'סמכות ברורה ושרשרת החלטה יציבה לכל דרג' },
+        ],
+      },
+      {
+        key: 'strategyExecution',
+        label: 'מה קורה אחרי החלטה אסטרטגית חדשה?',
+        type: 'select' as const,
+        required: false,
+        options: [
+          { value: 'no_cascade', label: 'אין תרגום לביצוע; רוב הארגון לא מבין מה השתנה' },
+          { value: 'partial_cascade', label: 'יש תרגום חלקי אך ללא אחריות ודדליינים ברורים' },
+          { value: 'full_cascade', label: 'תהליך סדור: יעד → אחריות → KPI → מעקב ביצוע' },
+        ],
+      },
+      {
+        key: 'engagementProxy',
+        label: 'איך היית מתאר את רמת האנרגיה והמוטיבציה של צוות ההנהלה בחודש האחרון?',
+        type: 'select' as const,
+        required: false,
+        options: [
+          { value: 'burnout', label: 'שחיקה ניכרת — הישרדות במקום הובלה' },
+          { value: 'mixed', label: 'תנודתיות גבוהה — ימים טובים לצד דעיכה ניכרת' },
+          { value: 'high', label: 'אנרגיה גבוהה — יוזמה, מחויבות וביצוע עקבי' },
         ],
       },
     ],

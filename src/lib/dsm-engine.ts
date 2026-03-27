@@ -10,7 +10,7 @@
  * Psychometrics: α DR=.872, ND=.881, UC=.893
  */
 
-import type { QuestionnaireAnswer } from './corsys-questionnaire'
+import { computePsiFromAnswers, type QuestionnaireAnswer } from './corsys-questionnaire'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -87,6 +87,18 @@ const CORRELATIONS: { from: PathologyCode; to: PathologyCode; r: number; mechani
     from: 'ND', to: 'UC', r: 0.28,
     mechanism: 'נורמליזציית סטיות פוגעת ביכולת הלמידה מטעויות — כשסטיות נתפסות כנורמליות, אין trigger ללמידה',
   },
+  {
+    from: 'SC', to: 'DR', r: 0.32,
+    mechanism: 'עמימות מבנית מייצרת ואקום סמכותי שמגביר מאבקי בעלות ותחרות פנימית',
+  },
+  {
+    from: 'SC', to: 'ND', r: 0.24,
+    mechanism: 'כאשר מבנה ותהליכים אינם ברורים, מעקפים הופכים לברירת מחדל תפעולית',
+  },
+  {
+    from: 'SC', to: 'UC', r: 0.18,
+    mechanism: 'חוסר בהירות מבנית מחליש sensemaking ופוגע ביכולת כיול ולמידה מערכתית',
+  },
 ]
 
 // ─── Scoring Logic ───────────────────────────────────────────────────────────
@@ -113,6 +125,30 @@ const UC_SEMANTIC_SCORES: Record<string, number> = {
   high_drift: 8.0,
   medium_drift: 4.5,
   low_drift: 1.0,
+}
+
+const ADAPTIVE_SCORES: Record<string, number> = {
+  rigid: 8.0,
+  slow_adapt: 4.5,
+  agile: 1.0,
+}
+
+const VOICE_SCORES: Record<string, number> = {
+  no_channel: 8.0,
+  unused_channel: 4.5,
+  effective_channel: 1.0,
+}
+
+const LEADERSHIP_SCORES: Record<string, number> = {
+  micromanage: 8.0,
+  partial_delegation: 4.5,
+  full_delegation: 1.5,
+}
+
+const STRATEGY_EXEC_SCORES: Record<string, number> = {
+  no_cascade: 8.0,
+  partial_cascade: 4.5,
+  full_cascade: 1.5,
 }
 
 /** SC — Structural Clarity Deficit (Reductionist-Logical dimension, Phase 4) */
@@ -142,6 +178,24 @@ function scoreToLevel(score: number): SeverityLevel {
   return 3
 }
 
+function scoreToLevelWithThreshold(score: number, level2Threshold: number): SeverityLevel {
+  if (score <= level2Threshold) return 1
+  if (score <= 5.5) return 2
+  return 3
+}
+
+function getGreinerLevel2Threshold(axis: PathologyCode, greinerStage?: QuestionnaireAnswer['greinerStage']): number {
+  if (greinerStage === 'phase_3' && axis === 'SC') return 1.5
+  if (greinerStage === 'phase_4' && axis === 'ND') return 1.5
+  if (greinerStage === 'phase_5' && axis === 'UC') return 1.5
+  return 2.5
+}
+
+function computePsiNormalized(answers: QuestionnaireAnswer): number {
+  const psiAverage = computePsiFromAnswers(answers) ?? 3.5
+  return ((8 - psiAverage) / 6) * 10
+}
+
 function clampScore(score: number): number {
   return Math.max(0, Math.min(10, score))
 }
@@ -168,32 +222,49 @@ export function diagnose(answers: QuestionnaireAnswer): DSMDiagnosis {
   const ndContributors = ['pathologyNod']
   if (latencyMod > 0 && ndBase > 3.0) ndContributors.push('decisionLatency')
 
-  // UC score (weighted combination of learning + semantic)
+  // UC score (weighted combination of learning + semantic + PSI + adaptive)
   const ucLearning = UC_LEARNING_SCORES[answers.pathologyLearning ?? 'double_loop'] ?? 1.0
   const ucSemantic = UC_SEMANTIC_SCORES[answers.pathologySemantic ?? 'low_drift'] ?? 1.0
-  const ucBase = 0.6 * ucLearning + 0.4 * ucSemantic
+  const psiNorm = computePsiNormalized(answers)
+  const adaptive = ADAPTIVE_SCORES[answers.adaptiveCapacity ?? 'slow_adapt'] ?? 4.5
+  const voice = VOICE_SCORES[answers.voiceInfrastructure ?? 'unused_channel'] ?? 4.5
+  const ucBase = 0.4 * ucLearning + 0.25 * ucSemantic + 0.2 * psiNorm + 0.15 * adaptive
   let ucScore = clampScore((ucBase + (ucBase > 3.0 ? latencyMod : 0)) * latencyFactor)
 
   // אם גם למידה single_loop וגם סחיפה סמנטית גבוהה — UC תמיד ברמת 3
   if (answers.pathologyLearning === 'single_loop' && answers.pathologySemantic === 'high_drift') {
     ucScore = Math.max(ucScore, 7)
   }
-  const ucContributors = ['pathologyLearning', 'pathologySemantic']
+  const ucContributors = ['pathologyLearning', 'pathologySemantic', 'psi', 'adaptiveCapacity']
+  if (voice >= 7) ucContributors.push('voiceInfrastructure')
   if (latencyMod > 0 && ucBase > 3.0) ucContributors.push('decisionLatency')
 
   // SC score — Structural Clarity Deficit (Reductionist-Logical dimension)
-  const scBase = SC_SCORES[answers.pathologySc ?? 'medium'] ?? 5.0
+  const scCore = SC_SCORES[answers.pathologySc ?? 'medium'] ?? 5.0
+  const scStrategy = STRATEGY_EXEC_SCORES[answers.strategyExecution ?? 'partial_cascade'] ?? 4.5
+  const scBase = 0.75 * scCore + 0.25 * scStrategy
   const scScore = clampScore(scBase)
-  const scContributors = ['pathologySc']
+  const scContributors = ['pathologySc', 'strategyExecution']
+
+  // DR-8 leadership cascade as a DR sub-dimension (lightly weighted).
+  const leadership = LEADERSHIP_SCORES[answers.leadershipCascade ?? 'partial_delegation'] ?? 4.5
+  const drAdjustedScore = clampScore(0.85 * drScore + 0.15 * leadership)
+  if (answers.leadershipCascade) drContributors.push('leadershipCascade')
+
+  const greinerStage = answers.greinerStage
+  const drLevel = scoreToLevelWithThreshold(drAdjustedScore, getGreinerLevel2Threshold('DR', greinerStage))
+  const ndLevel = scoreToLevelWithThreshold(ndScore, getGreinerLevel2Threshold('ND', greinerStage))
+  const ucLevel = scoreToLevelWithThreshold(ucScore, getGreinerLevel2Threshold('UC', greinerStage))
+  const scLevel = scoreToLevelWithThreshold(scScore, getGreinerLevel2Threshold('SC', greinerStage))
 
   const pathologies: PathologySeverity[] = [
     {
       code: 'DR',
       nameHe: PATHOLOGY_NAMES.DR.he,
       nameEn: PATHOLOGY_NAMES.DR.en,
-      score: drScore,
-      level: scoreToLevel(drScore),
-      levelLabel: LEVEL_LABELS[scoreToLevel(drScore)],
+      score: drAdjustedScore,
+      level: drLevel,
+      levelLabel: LEVEL_LABELS[drLevel],
       contributors: drContributors,
     },
     {
@@ -201,8 +272,8 @@ export function diagnose(answers: QuestionnaireAnswer): DSMDiagnosis {
       nameHe: PATHOLOGY_NAMES.ND.he,
       nameEn: PATHOLOGY_NAMES.ND.en,
       score: ndScore,
-      level: scoreToLevel(ndScore),
-      levelLabel: LEVEL_LABELS[scoreToLevel(ndScore)],
+      level: ndLevel,
+      levelLabel: LEVEL_LABELS[ndLevel],
       contributors: ndContributors,
     },
     {
@@ -210,8 +281,8 @@ export function diagnose(answers: QuestionnaireAnswer): DSMDiagnosis {
       nameHe: PATHOLOGY_NAMES.UC.he,
       nameEn: PATHOLOGY_NAMES.UC.en,
       score: ucScore,
-      level: scoreToLevel(ucScore),
-      levelLabel: LEVEL_LABELS[scoreToLevel(ucScore)],
+      level: ucLevel,
+      levelLabel: LEVEL_LABELS[ucLevel],
       contributors: ucContributors,
     },
     {
@@ -219,8 +290,8 @@ export function diagnose(answers: QuestionnaireAnswer): DSMDiagnosis {
       nameHe: PATHOLOGY_NAMES.SC.he,
       nameEn: PATHOLOGY_NAMES.SC.en,
       score: scScore,
-      level: scoreToLevel(scScore),
-      levelLabel: LEVEL_LABELS[scoreToLevel(scScore)],
+      level: scLevel,
+      levelLabel: LEVEL_LABELS[scLevel],
       contributors: scContributors,
     },
   ]
@@ -228,7 +299,7 @@ export function diagnose(answers: QuestionnaireAnswer): DSMDiagnosis {
   const codes = pathologies.map((p) => `${p.code}-${p.level}`)
   const primary = pathologies.reduce((max, p) => (p.score > max.score ? p : max)).code
   const severityProfile = computeSeverityProfile(pathologies)
-  const totalEntropyScore = drScore + ndScore + ucScore + scScore
+  const totalEntropyScore = drAdjustedScore + ndScore + ucScore + scScore
 
   return { codes, primaryDiagnosis: primary, severityProfile, pathologies, totalEntropyScore }
 }
@@ -242,35 +313,48 @@ export function diagnoseFromScores(
   ndScore: number,
   ucScore: number,
   latencyHours: number = 0,
-  scScore: number = 5.0
+  scScore: number = 5.0,
+  options?: {
+    psiAverage?: number
+    adaptiveCapacity?: QuestionnaireAnswer['adaptiveCapacity']
+    greinerStage?: QuestionnaireAnswer['greinerStage']
+  }
 ): DSMDiagnosis {
   const latencyMod = latencyHours > 15 ? 1.5 : latencyHours >= 5 ? 0.5 : 0
   const latencyFactor = computeLatencyFactorFromModifier(latencyMod)
 
-  const dr = clampScore((drScore + (drScore > 3.0 ? latencyMod : 0)) * latencyFactor)
+  const drBase = clampScore((drScore + (drScore > 3.0 ? latencyMod : 0)) * latencyFactor)
   const nd = clampScore((ndScore + (ndScore > 3.0 ? latencyMod : 0)) * latencyFactor)
-  const uc = clampScore((ucScore + (ucScore > 3.0 ? latencyMod : 0)) * latencyFactor)
+  const adaptive = ADAPTIVE_SCORES[options?.adaptiveCapacity ?? 'slow_adapt'] ?? 4.5
+  const psiNorm = options?.psiAverage != null ? ((8 - options.psiAverage) / 6) * 10 : 7.5
+  const uc = clampScore((0.65 * ucScore + 0.2 * psiNorm + 0.15 * adaptive + (ucScore > 3.0 ? latencyMod : 0)) * latencyFactor)
   const sc = clampScore(scScore) // SC not affected by latency — structural, not behavioral
+  const dr = clampScore(0.85 * drBase + 0.15 * 4.5)
+
+  const drLevel = scoreToLevelWithThreshold(dr, getGreinerLevel2Threshold('DR', options?.greinerStage))
+  const ndLevel = scoreToLevelWithThreshold(nd, getGreinerLevel2Threshold('ND', options?.greinerStage))
+  const ucLevel = scoreToLevelWithThreshold(uc, getGreinerLevel2Threshold('UC', options?.greinerStage))
+  const scLevel = scoreToLevelWithThreshold(sc, getGreinerLevel2Threshold('SC', options?.greinerStage))
 
   const pathologies: PathologySeverity[] = [
     {
       code: 'DR', nameHe: PATHOLOGY_NAMES.DR.he, nameEn: PATHOLOGY_NAMES.DR.en,
-      score: dr, level: scoreToLevel(dr), levelLabel: LEVEL_LABELS[scoreToLevel(dr)],
+      score: dr, level: drLevel, levelLabel: LEVEL_LABELS[drLevel],
       contributors: ['direct-input'],
     },
     {
       code: 'ND', nameHe: PATHOLOGY_NAMES.ND.he, nameEn: PATHOLOGY_NAMES.ND.en,
-      score: nd, level: scoreToLevel(nd), levelLabel: LEVEL_LABELS[scoreToLevel(nd)],
+      score: nd, level: ndLevel, levelLabel: LEVEL_LABELS[ndLevel],
       contributors: ['direct-input'],
     },
     {
       code: 'UC', nameHe: PATHOLOGY_NAMES.UC.he, nameEn: PATHOLOGY_NAMES.UC.en,
-      score: uc, level: scoreToLevel(uc), levelLabel: LEVEL_LABELS[scoreToLevel(uc)],
+      score: uc, level: ucLevel, levelLabel: LEVEL_LABELS[ucLevel],
       contributors: ['direct-input'],
     },
     {
       code: 'SC', nameHe: PATHOLOGY_NAMES.SC.he, nameEn: PATHOLOGY_NAMES.SC.en,
-      score: sc, level: scoreToLevel(sc), levelLabel: LEVEL_LABELS[scoreToLevel(sc)],
+      score: sc, level: scLevel, levelLabel: LEVEL_LABELS[scLevel],
       contributors: ['direct-input'],
     },
   ]

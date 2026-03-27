@@ -46,17 +46,17 @@ interface Props {
 
 // ─── Severity config ──────────────────────────────────────────────────────────
 
-const SEVERITY_CONFIG: Record<string, { accent: string; dot: string; bg: string; border: string }> = {
-  'healthy':           { accent: '#34d399', dot: 'bg-emerald-400', bg: 'bg-emerald-950/30', border: 'border-emerald-500/25' },
-  'at-risk':           { accent: '#fbbf24', dot: 'bg-yellow-400',  bg: 'bg-yellow-950/30',  border: 'border-yellow-500/25'  },
-  'critical':          { accent: '#fb923c', dot: 'bg-orange-400',  bg: 'bg-orange-950/30',  border: 'border-orange-500/25'  },
-  'systemic-collapse': { accent: '#f43f5e', dot: 'bg-red-400',     bg: 'bg-red-950/40',     border: 'border-red-500/30'     },
+const SEVERITY_CONFIG: Record<string, { accentClass: string; dotClass: string; bg: string; border: string }> = {
+  'healthy':           { accentClass: 'text-intent-success', dotClass: 'status-success', bg: 'bg-slate-900/30', border: 'border-slate-700/40' },
+  'at-risk':           { accentClass: 'text-intent-warning', dotClass: 'status-warning', bg: 'bg-slate-900/30', border: 'border-slate-700/40' },
+  'critical':          { accentClass: 'text-intent-danger', dotClass: 'status-danger', bg: 'bg-slate-900/30', border: 'border-slate-700/40' },
+  'systemic-collapse': { accentClass: 'text-intent-danger', dotClass: 'status-danger', bg: 'bg-slate-900/40', border: 'border-slate-700/50' },
 }
 
 const URGENCY_CONFIG: Record<string, { text: string; bg: string; border: string }> = {
-  critical: { text: 'text-red-300',    bg: 'bg-red-950/50',    border: 'border-red-500/30'    },
-  elevated: { text: 'text-yellow-300', bg: 'bg-yellow-950/40', border: 'border-yellow-500/25' },
-  moderate: { text: 'text-emerald-300',bg: 'bg-emerald-950/30',border: 'border-emerald-500/20'},
+  critical: { text: 'text-intent-danger', bg: 'bg-slate-900/40', border: 'border-slate-700/50' },
+  elevated: { text: 'text-intent-warning', bg: 'bg-slate-900/40', border: 'border-slate-700/40' },
+  moderate: { text: 'text-intent-success', bg: 'bg-slate-900/40', border: 'border-slate-700/40' },
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -68,12 +68,9 @@ export function DecisionSpine({ data, className = '' }: Props) {
   return (
     <div
       className={`rounded-2xl border p-4 sm:p-5 ${sev.bg} ${sev.border} ${className}`}
-      style={{ borderTopWidth: '3px', borderTopColor: sev.accent }}
+      style={{ borderTopWidth: '3px' }}
     >
-      <p
-        className="type-meta mb-3"
-        style={{ color: sev.accent }}
-      >
+      <p className={`type-meta mb-3 ${sev.accentClass}`}>
         מצב · השפעה · פעולה
       </p>
 
@@ -82,10 +79,10 @@ export function DecisionSpine({ data, className = '' }: Props) {
         {/* Block 1 — מצב */}
         <div className="space-y-1">
           <div className="flex items-center gap-2 mb-1">
-            <span className={`inline-block w-2 h-2 rounded-full ${sev.dot} animate-pulse`} />
+            <span className={`inline-block w-2 h-2 rounded-full ${sev.dotClass} animate-pulse`} />
             <span className="type-meta text-slate-400">מצב</span>
           </div>
-          <p className="type-h2" style={{ color: sev.accent }}>
+          <p className={`type-h2 ${sev.accentClass}`}>
             {data.severityLabel}
             {data.primaryPathology ? ` · ${data.primaryPathology} ↑` : ''}
           </p>
@@ -142,8 +139,7 @@ export function DecisionSpine({ data, className = '' }: Props) {
           )}
           <Link
             href={data.ctaHref}
-            className="inline-block mt-1 text-xs font-bold px-4 py-1.5 rounded-xl text-white transition-all"
-            style={{ background: sev.accent + '22', border: `1px solid ${sev.accent}40`, color: sev.accent }}
+            className="inline-block mt-1 text-xs font-bold px-4 py-1.5 rounded-xl cta-primary transition-all"
           >
             בצע עכשיו →
           </Link>

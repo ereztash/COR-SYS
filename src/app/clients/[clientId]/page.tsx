@@ -5,6 +5,7 @@ import { formatDate, formatCurrency } from '@/lib/utils'
 import { Badge } from '@/components/ui/Badge'
 import { SendAssessmentLink } from './SendAssessmentLink'
 import { CBRSection } from './CBRSection'
+import { AgentInsightsPanel } from './AgentInsightsPanel'
 import { DecisionSpine } from '@/components/ui/DecisionSpine'
 import { buildDecisionSpineData } from '@/lib/decision-spine-builder'
 import { PATHOLOGY_PROTOCOL_MAP } from '@/lib/diagnostic/action-plan'
@@ -214,6 +215,12 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
           </div>
         ) : null
       })()}
+
+      {plan?.id && (
+        <div className="px-6 pb-4 max-w-6xl mx-auto">
+          <AgentInsightsPanel planId={plan.id} />
+        </div>
+      )}
 
       {/* ── DSM Raw Scores (compact, below spine) ────────────────────────── */}
       {snapshot && (

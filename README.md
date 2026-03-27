@@ -77,6 +77,10 @@ LG = 0.571 × (−ΔDR) + 0.429 × (ΔPSI)
 
 Trajectory: `growth` (λ>1) / `stable` (λ≈1) / `decay` (0<λ<1) / `bifurcation` (λ≤0)
 
+Dynamic runtime extensions:
+- `kappa` can be computed dynamically when not explicitly provided.
+- `EoC` (Edge of Chaos) is exposed as `1 - |λ - 1|` (clamped to `[0,1]`) for intervention boldness/ranking signals.
+
 ### CBR Pipeline — `src/lib/cbr/`
 
 Implements Aamodt & Plaza (1994) Retrieve–Reuse–Revise–Retain:
@@ -103,8 +107,20 @@ Contextual header (Anthropic Contextual Retrieval pattern, −49% retrieval fail
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/api/cbr/similar/[snapshotId]` | GET | Returns Top-K similar historical cases. Param: `top_k` (default 5). Returns `cold_start: true` when no matching cases exist. Requires `OPENAI_API_KEY`. |
-| `/api/plans/[clientId]/pdf` | GET | Generates a PDF plan report (diagnosis + intervention protocols + recommendations) using `@react-pdf/renderer`. |
+| `/api/cbr/similar/[snapshotId]` | GET | Returns Top-K similar historical cases. Param: `top_k` (default 5). Returns `cold_start: true` when no matching cases exist. |
+| `/api/cbr/recommend/[snapshotId]` | GET | Full CBR pipeline: retrieval, Wilson-scored recommendations, cold-start fallback, and telemetry event. |
+| `/api/cbr/metrics` | GET | Live CBR quality and coverage metrics (follow-up coverage, LG coverage, PSI fill-rate, CTA breakdown). |
+| `/api/cbr/eval` | GET | Retrieval harness evaluation on synthetic golden set (MRR, Hit@K, failure rate). |
+| `/api/diagnostic/analyze` | POST | Embedding-assisted diagnostic analysis (profile/type inference + ranked matches). |
+| `/api/diagnostic/config` | GET | Runtime diagnostic config from DB (trigger rules, evidence profiles, gate reviews). |
+| `/api/diagnostic/pdf` | POST | Generates a diagnostic PDF by invoking Python (`scripts/generate_diagnostic_pdf.py`). |
+| `/api/ux-metrics/event` | POST | Non-blocking UX telemetry ingestion endpoint. |
+| `/api/plans/[clientId]/pdf` | GET | Generates a plan PDF report (diagnosis + intervention protocols + recommendations) with `@react-pdf/renderer`. |
+| `/api/agents/alpha/analyze` | POST | Alpha agent analysis: bounded contexts, contradiction loss, and optional persistence (`use_cache`, `ttl_minutes`). |
+| `/api/agents/beta/simulate` | POST | Beta Monte Carlo simulation (ROI/risk percentiles) from recommendations and similar cases (`use_cache`, `ttl_minutes`). |
+| `/api/agents/gamma/metrics` | GET | Gamma entropy metrics (KL drift, J, loop classification, emergence), optional persistence (`persist=1`). |
+| `/api/agents/delta/recommendation/[planId]` | GET | Delta explainability payload (reasoning trace, simulation evidence, Socratic prompts). |
+| `/api/agents/cron/process` | POST | Hybrid cron processor that claims/executes due `agent_jobs` and updates job outcomes. |
 
 ---
 
@@ -140,8 +156,50 @@ Contextual header (Anthropic Contextual Retrieval pattern, −49% retrieval fail
 | `organizations_context` | CBR: org metadata (industry_sector, employee_size_band, culture_archetype) |
 | `dsm_diagnostic_snapshots` | CBR: historical DSM snapshots + `VECTOR(1536)` feature embeddings |
 | `interventions_and_feedback` | CBR: intervention outcomes, consultant overrides, delta metrics, learning_gain, λ eigenvalue |
+| `trigger_rules` | Diagnostic runtime IF-THEN trigger rules (DB-managed). |
+| `intervention_evidence_profiles` | Evidence certainty + notes per intervention tag (DB-managed). |
+| `gate_reviews` | 90-day gate definitions (week/title/pass criteria). |
+| `gate_runs` | Per-client gate execution outcomes (pending/passed/failed). |
+| `agent_jobs` | Hybrid cron queue for autonomous agent runs (claim/retry/status/outcome). |
+| `agent_change_requests` | Human oversight layer for high-impact agent mutations (approve/reject flow). |
+| `org_network` | Organizational graph nodes and adjacency data (hubs/silos/team topology). |
+| `org_network_metrics` | Computed graph metrics (density, diameter, clustering, betweenness). |
+| `feedback_events` | Emergence/loop events emitted by Gamma (negative/positive/runaway/phase-transition). |
+| `feedback_actions` | Follow-up actions generated from feedback events (alerts/recommendations/jobs). |
+| `agent_memories` | Persisted per-agent cache keyed by input hash + TTL to avoid recomputation. |
 
 **RPC:** `get_similar_cases_with_stats(query_embedding, target_industry, target_severity, max_dli, match_limit)`
+
+---
+
+## Migration Order (Supabase)
+
+Run migrations in this order for a clean setup:
+
+1. `supabase-schema.sql`
+2. `supabase-migration-client-plans.sql`
+3. `supabase-migration-client-assessments.sql`
+4. `supabase-migration-client-diagnostics.sql`
+5. `supabase-migration-cbr.sql`
+6. `supabase-migration-cbr-calibration.sql`
+7. `migration-add-score-sc.sql`
+8. `supabase-migration-ux-metrics.sql`
+9. `supabase-migration-rls.sql`
+10. `supabase-migration-rls-authenticated.sql`
+11. `supabase-migration-diagnostic-config.sql`
+12. `supabase-migration-diagnostic-evidence-seed.sql`
+13. `supabase-migration-agents-runtime.sql`
+14. `supabase-migration-org-network.sql`
+15. `supabase-migration-emergence-feedback.sql`
+16. `supabase-migration-agent-memory.sql`
+
+Optional seed: `seed-cbr-cases.sql`
+
+**Important:** enable `pgvector` first:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS vector;
+```
 
 ---
 
@@ -185,7 +243,36 @@ npm run test
 npm run build
 ```
 
-**Supabase prerequisite:** Enable the `pgvector` extension in your Supabase project dashboard before running CBR migrations.
+### Diagnostic PDF prerequisites (Python)
+
+`/api/diagnostic/pdf` invokes `scripts/generate_diagnostic_pdf.py`, which requires Python 3 and:
+
+```bash
+pip install reportlab python-bidi
+```
+
+If your font paths differ from Linux defaults, adjust font constants inside `scripts/generate_diagnostic_pdf.py`.
+
+**Supabase prerequisite:** enable `pgvector` in your Supabase project dashboard before running CBR migrations.
+
+### Agent Memory Cache (optional but recommended)
+
+All `/api/agents/*` endpoints support persisted cache reads/writes:
+
+- `use_cache=0` disables cache for a single request (forces recompute).
+- `ttl_minutes=<number>` overrides cache TTL for that request.
+
+Examples:
+
+```bash
+# Force fresh Gamma computation + persistence, skip cache
+curl "http://localhost:3000/api/agents/gamma/metrics?clientId=<CLIENT_ID>&persist=1&use_cache=0"
+
+# Use cache with custom TTL for Beta simulation
+curl -X POST "http://localhost:3000/api/agents/beta/simulate?ttl_minutes=90" \
+  -H "Content-Type: application/json" \
+  -d '{"snapshotId":"<SNAPSHOT_ID>"}'
+```
 
 ---
 
@@ -208,10 +295,11 @@ npm run build
 
 | Phase | Description | Status |
 |-------|-------------|--------|
-| Phase 0 | Auth + Row Level Security | Planned |
+| Phase 0 | Auth + Row Level Security | Done |
 | Phase 1 | CBR data layer, DB migration, resilience formula, Edmondson PSI questionnaire | Done |
-| Phase 2 | Embedding service, similarity search, CBR API endpoint | Done |
-| Phase 3 | Recommendation engine, loss-framed UI, consultant override form, follow-up page, Bayesian calibration | In progress |
+| Phase 2 | Embedding service, similarity search, CBR API endpoints | Done |
+| Phase 3 | Recommendation engine, loss-framed UI, override flow, follow-up loop, Bayesian Tier-2 calibration | Done |
+| Phase 4 | Diagnostic wizard hardening (IUS scoring, constraint envelope, PDF export, telemetry polish) | In progress |
 
 ---
 

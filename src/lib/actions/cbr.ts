@@ -18,6 +18,7 @@ import { revalidatePath } from 'next/cache'
 import type { InterventionAndFeedbackInsert } from '@/types/database'
 import { analyzeResilience, normalizeLearningGain } from '@/lib/resilience-formula'
 import { updatePriorFromFollowup } from '@/lib/cbr/calibration'
+import { classifyFeedbackLoop } from '@/lib/agents/feedback-loop'
 
 // ─── saveIntervention ────────────────────────────────────────────────────────
 
@@ -95,6 +96,11 @@ export async function saveFollowup(
   })
 
   const success_label = normalizeLearningGain(resilience.learning_gain)
+  const feedback_loop_type = classifyFeedbackLoop({
+    learning_gain: resilience.learning_gain,
+    delta_entropy: payload.delta_entropy ?? null,
+    delta_j_quotient: payload.delta_j_quotient ?? null,
+  })
 
   const update: Partial<InterventionAndFeedbackInsert> = {
     followup_date: new Date().toISOString(),
@@ -104,6 +110,9 @@ export async function saveFollowup(
     delta_entropy: payload.delta_entropy ?? null,
     learning_gain: resilience.learning_gain,
     lambda_eigenvalue: resilience.lambda,
+    dynamic_kappa: resilience.kappa,
+    edge_of_chaos_score: resilience.edge_of_chaos,
+    feedback_loop_type,
     success_label,
   }
 
@@ -123,6 +132,21 @@ export async function saveFollowup(
       console.warn('[CBR] Tier 2 prior update failed (non-blocking):', e)
     })
   }
+
+  // @ts-expect-error Supabase SSR generic infers insert as never for new JSONB-backed tables
+  await supabase.from('agent_jobs').insert({
+    job_type: 'gamma-monitor',
+    client_id: payload.clientId,
+    org_id: null,
+    payload: {
+      intervention_id: payload.intervention_id,
+      source: 'saveFollowup',
+    },
+    status: 'pending',
+    approval_required: false,
+    max_attempts: 3,
+    job_key: `gamma:${payload.intervention_id}`,
+  })
 
   revalidatePath(`/clients/${payload.clientId}`)
   revalidatePath(`/clients/${payload.clientId}/followup`)

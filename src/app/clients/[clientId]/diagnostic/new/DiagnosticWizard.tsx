@@ -7,6 +7,10 @@ import { DIAGNOSTIC_QUESTIONS } from '@/lib/diagnostic/questions'
 import { buildEmbeddingText } from '@/lib/diagnostic/questions'
 import {
   buildActionPlan,
+  build90DayGateReviews,
+  build90DayGateReviewsWithConfig,
+  evaluateTriggerRules,
+  evaluateTriggerRulesWithConfig,
   getDominantAxis,
   profileFromScores,
   PROFILE_LABELS,
@@ -20,6 +24,7 @@ import type { DiagnosticAxis } from '@/lib/diagnostic/questions'
 import type { PathologyProfile, PathologyType } from '@/lib/diagnostic/pathology-kb'
 import { axisToPathologyType, detectCsAmplifier } from '@/lib/diagnostic/pathology-kb'
 import type { ActionPlanItem, ConstraintEnvelope } from '@/lib/diagnostic/action-plan'
+import type { DiagnosticRuntimeConfig } from '@/lib/diagnostic/action-plan'
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 
@@ -27,29 +32,38 @@ const AXIS_CONFIG = {
   DR: {
     label: 'Decision Latency',
     label_he: 'עיכוב קבלת החלטות',
-    color: 'text-red-400',
+    color: 'axis-dr',
     trackColor: 'bg-red-500',
     borderColor: 'border-red-500/40',
-    bgColor: 'bg-red-500/10',
+    bgColor: 'panel-dr',
     thumbColor: '#ef4444',
   },
   ND: {
     label: 'Normalization of Deviance',
     label_he: 'נרמול סטיות',
-    color: 'text-yellow-400',
+    color: 'axis-nd',
     trackColor: 'bg-yellow-500',
     borderColor: 'border-yellow-500/40',
-    bgColor: 'bg-yellow-500/10',
+    bgColor: 'panel-nd',
     thumbColor: '#eab308',
   },
   UC: {
     label: 'Calibration',
     label_he: 'כיול ריאלי',
-    color: 'text-indigo-400',
+    color: 'axis-uc',
     trackColor: 'bg-indigo-500',
     borderColor: 'border-indigo-500/40',
-    bgColor: 'bg-indigo-500/10',
+    bgColor: 'panel-uc',
     thumbColor: '#6366f1',
+  },
+  SC: {
+    label: 'Structural Clarity',
+    label_he: 'בהירות מבנית',
+    color: 'axis-sc',
+    trackColor: 'bg-indigo-500',
+    borderColor: 'border-indigo-500/40',
+    bgColor: 'panel-sc',
+    thumbColor: '#818cf8',
   },
 } as const
 
@@ -87,6 +101,7 @@ const QUICK_CHIPS: Record<DiagnosticAxis, string[]> = {
   DR: ['החלטות נתקעות שבועות', 'הכל עולה ל-CEO', 'ישיבות ללא פלט', 'אי-בהירות על מי מחליט'],
   ND: ['כולם יודעים, אף אחד לא עוצר', 'QA הפך להמלצה', 'כיסוי לפני תיקון', 'post-mortem לא מיושם'],
   UC: ['רק X יודע איך זה עובד', 'roadmap לא ריאלי', 'מילואים ריקנו צוות', 'onboarding שבועות'],
+  SC: ['תפקידים חופפים', 'אין בעלות ברורה', 'תהליך לא מתועד', 'אסטרטגיה לא יורדת לביצוע'],
 }
 
 // ─── Draft persistence ────────────────────────────────────────────────────────
@@ -137,7 +152,7 @@ function clearDraft(clientId: string) {
 
 type WizardStage = 'triage' | 'questions' | 'analyzing' | 'result'
 
-interface TriageScores { dr: number; nd: number; uc: number }
+interface TriageScores { dr: number; nd: number; uc: number; sc: number }
 
 interface Props {
   clientId: string
@@ -145,7 +160,6 @@ interface Props {
   sprintCount: number
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
   const router = useRouter()
   const [, startTransition] = useTransition()
@@ -154,7 +168,10 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
   const [stage, setStage] = useState<WizardStage>('triage')
 
   // Triage
-  const [scores, setScores] = useState<TriageScores>({ dr: 3, nd: 3, uc: 3 })
+  const [scores, setScores] = useState<TriageScores>({ dr: 3, nd: 3, uc: 3, sc: 3 })
+  const [greinerStage, setGreinerStage] = useState<'phase_1_2' | 'phase_3' | 'phase_4' | 'phase_5'>('phase_1_2')
+  const [adaptiveCapacity, setAdaptiveCapacity] = useState<'rigid' | 'slow_adapt' | 'agile'>('slow_adapt')
+  const [voiceInfrastructure, setVoiceInfrastructure] = useState<'no_channel' | 'unused_channel' | 'effective_channel'>('unused_channel')
   const liveProfile = profileFromScores(scores)
   const liveAxis = getDominantAxis(scores)
 
@@ -175,6 +192,8 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
   const [finalTam, setFinalTam] = useState<{ t: number; a: number; m: number } | null>(null)
   const [finalConfidence, setFinalConfidence] = useState<number | null>(null)
   const [plan, setPlan] = useState<ActionPlanItem[]>([])
+  const [triggerRules, setTriggerRules] = useState<ReturnType<typeof evaluateTriggerRules>>([])
+  const [runtimeConfig, setRuntimeConfig] = useState<DiagnosticRuntimeConfig | null>(null)
 
   // Sprint creation
   const [creatingSprintId, setCreatingSprintId] = useState(false)
@@ -201,6 +220,18 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
     }
   }, [clientId])
 
+  useEffect(() => {
+    fetch('/api/diagnostic/config')
+      .then(async (res) => {
+        if (!res.ok) throw new Error('config unavailable')
+        return (await res.json()) as DiagnosticRuntimeConfig
+      })
+      .then((cfg) => setRuntimeConfig(cfg))
+      .catch(() => {
+        // Graceful fallback to in-code defaults
+      })
+  }, [])
+
   // ── Draft: auto-save with debounce ────────────────────────────────────────
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -221,6 +252,22 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
   // Targeted questions = only questions for dominant axis
   const targetedQuestions = DIAGNOSTIC_QUESTIONS.filter(q => q.axis === liveAxis)
 
+  const ucBreakdown = {
+    learning: Math.max(0, Math.min(10, scores.uc)),
+    semantic: Math.max(0, Math.min(10, scores.uc * 0.9)),
+    psi: voiceInfrastructure === 'effective_channel' ? 2.5 : voiceInfrastructure === 'unused_channel' ? 5.5 : 8.0,
+    adaptive: adaptiveCapacity === 'agile' ? 2.0 : adaptiveCapacity === 'slow_adapt' ? 5.0 : 8.0,
+  }
+
+  const greinerBadge =
+    greinerStage === 'phase_3'
+      ? 'Greiner Phase 3: SC threshold lowered'
+      : greinerStage === 'phase_4'
+        ? 'Greiner Phase 4: ND threshold lowered'
+        : greinerStage === 'phase_5'
+          ? 'Greiner Phase 5: UC threshold lowered'
+          : null
+
   // ── Triage handlers ──────────────────────────────────────────────────────
 
   function handleSlider(axis: keyof TriageScores, value: number) {
@@ -233,7 +280,12 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
     const csAmp = detectCsAmplifier(scores)
     const pType = axisToPathologyType(axis, scores)
     const envelope: ConstraintEnvelope = { t_max: tMax, r_max: rMax }
-    const interventions = buildActionPlan(axis, profile, scores, pType, csAmp, envelope)
+    const interventions = buildActionPlan(axis, profile, scores, pType, csAmp, envelope, {
+      evidenceProfiles: runtimeConfig?.evidenceProfiles,
+    })
+    const triggers = runtimeConfig?.triggerRules
+      ? evaluateTriggerRulesWithConfig({ profile, dominantAxis: axis, scores, pathologyType: pType }, runtimeConfig.triggerRules)
+      : evaluateTriggerRules({ profile, dominantAxis: axis, scores, pathologyType: pType })
     setFinalScores(scores)
     setFinalProfile(profile)
     setFinalPathologyType(pType)
@@ -241,6 +293,7 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
     setFinalTam(null)
     setFinalConfidence(null)
     setPlan(interventions)
+    setTriggerRules(triggers)
     clearDraft(clientId)
     setStage('result')
   }
@@ -300,17 +353,23 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
       const data: DiagnosticAnalysisResult = await res.json()
       const embeddedScores = data.topMatch.inferredScores
       // Blend: embedding 60%, slider 40%
-      const blended = {
+      const blended: TriageScores = {
         dr: embeddedScores.dr * 0.6 + scores.dr * 0.4,
         nd: embeddedScores.nd * 0.6 + scores.nd * 0.4,
         uc: embeddedScores.uc * 0.6 + scores.uc * 0.4,
+        sc: scores.sc,
       }
       const profile = data.topMatch.profile
       const axis = getDominantAxis(blended)
       const pType = data.topType.type
       const csAmp = data.csAmplifier
       const envelope: ConstraintEnvelope = { t_max: tMax, r_max: rMax }
-      const interventions = buildActionPlan(axis, profile, blended, pType, csAmp, envelope)
+      const interventions = buildActionPlan(axis, profile, blended, pType, csAmp, envelope, {
+        evidenceProfiles: runtimeConfig?.evidenceProfiles,
+      })
+      const triggers = runtimeConfig?.triggerRules
+        ? evaluateTriggerRulesWithConfig({ profile, dominantAxis: axis, scores: blended, pathologyType: pType }, runtimeConfig.triggerRules)
+        : evaluateTriggerRules({ profile, dominantAxis: axis, scores: blended, pathologyType: pType })
       setFinalScores(blended)
       setFinalProfile(profile)
       setFinalPathologyType(pType)
@@ -318,6 +377,7 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
       setFinalTam(data.topType.tam)
       setFinalConfidence(Math.round(data.topMatch.similarity * 100))
       setPlan(interventions)
+      setTriggerRules(triggers)
       clearDraft(clientId)
       setStage('result')
     } catch (e) {
@@ -423,6 +483,9 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
     const axis = getDominantAxis(finalScores)
     const axisConf = AXIS_CONFIG[axis]
     const protocol = finalPathologyType ? PATHOLOGY_PROTOCOL_MAP[finalPathologyType] : null
+    const gates = runtimeConfig?.gateReviews
+      ? build90DayGateReviewsWithConfig(runtimeConfig.gateReviews)
+      : build90DayGateReviews()
 
     return (
       <div className="space-y-4 animate-fade-up delay-0">
@@ -466,8 +529,8 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
             </div>
           )}
 
-          <div className="flex gap-4 mt-3">
-            {(['DR', 'ND', 'UC'] as const).map(a => (
+          <div className="flex gap-4 mt-3 flex-wrap">
+            {(['DR', 'ND', 'UC', 'SC'] as const).map(a => (
               <div key={a} className="text-center">
                 <p className={`text-xs font-bold ${AXIS_CONFIG[a].color}`}>{a}</p>
                 <p className="text-lg font-black text-white font-mono">{finalScores[a.toLowerCase() as keyof TriageScores].toFixed(1)}</p>
@@ -477,6 +540,33 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
               <p className="text-xs text-slate-500">ציר דומיננטי</p>
               <p className={`text-sm font-bold ${axisConf.color}`}>{axis} · {axisConf.label_he}</p>
             </div>
+          </div>
+
+          <div className="mt-3 pt-3 border-t border-slate-700/50">
+            <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-2">UC Breakdown</p>
+            <div className="grid grid-cols-2 gap-2">
+              {([
+                ['Learning', ucBreakdown.learning],
+                ['Semantic', ucBreakdown.semantic],
+                ['PSI', ucBreakdown.psi],
+                ['Adaptive', ucBreakdown.adaptive],
+              ] as const).map(([label, value]) => (
+                <div key={label} className="rounded-lg bg-slate-900/70 border border-slate-700/50 p-2">
+                  <div className="flex items-center justify-between text-[10px] text-slate-400">
+                    <span>{label}</span>
+                    <span className="font-mono">{value.toFixed(1)}</span>
+                  </div>
+                  <div className="mt-1 h-1.5 rounded-full bg-slate-700">
+                    <div className="h-1.5 rounded-full bg-indigo-500" style={{ width: `${Math.min(100, value * 10)}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            {greinerBadge && (
+              <div className="mt-2">
+                <span className="status-badge status-warning">{greinerBadge}</span>
+              </div>
+            )}
           </div>
 
           {/* T/A/M cost signature */}
@@ -570,6 +660,28 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
                     <p className="text-xs text-slate-300">{item.metric_he}</p>
                   </div>
                 </div>
+                {item.evidence && (
+                  <div className="mt-2 rounded-lg border border-slate-700/40 bg-slate-900/40 p-2">
+                    <p className="text-[10px] text-slate-500 uppercase tracking-wider">
+                      Evidence · {item.evidence.level}
+                    </p>
+                    <p className="text-[11px] text-slate-300">{item.evidence.evidence_note}</p>
+                  </div>
+                )}
+                {item.kpi_stack && (
+                  <div className="mt-2 rounded-lg border border-slate-700/40 bg-slate-900/40 p-2">
+                    <p className="text-[10px] text-slate-500 uppercase tracking-wider">KPI Stack</p>
+                    <p className="text-[11px] text-slate-300">
+                      Leading: {item.kpi_stack.leading.map((m) => m.name).join(' · ')}
+                    </p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      Lagging: {item.kpi_stack.lagging.map((m) => m.name).join(' · ')}
+                    </p>
+                    <p className="text-[10px] text-slate-500 mt-0.5">
+                      Baseline: {item.kpi_stack.baseline} | Cadence: {item.kpi_stack.cadence}
+                    </p>
+                  </div>
+                )}
               </div>
             )
           })}
@@ -591,6 +703,36 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
             ))}
           </div>
         )}
+
+        {/* Trigger rules */}
+        {triggerRules.length > 0 && (
+          <div className="rounded-xl border border-slate-700/60 bg-slate-900/40 p-3 space-y-2">
+            <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">
+              Trigger Rules פעילים
+            </p>
+            {triggerRules.map((rule) => (
+              <div key={rule.id} className="rounded-lg border border-slate-700/60 bg-slate-950/40 p-2">
+                <p className="text-[11px] text-slate-200 font-semibold">{rule.if_condition}</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">{rule.then_action}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* 90-day gates */}
+        <div className="rounded-xl border border-slate-700/60 bg-slate-900/40 p-3 space-y-2">
+          <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">
+            90-Day Gate Reviews
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {gates.map((gate) => (
+              <div key={gate.id} className="rounded-lg border border-slate-700/60 bg-slate-950/40 p-2">
+                <p className="text-[11px] text-white font-semibold">שבוע {gate.week} · {gate.title_he}</p>
+                <p className="text-[10px] text-slate-400 mt-0.5">{gate.pass_criteria.join(' | ')}</p>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* CTAs */}
         <div className="flex gap-3 pt-1">
@@ -722,7 +864,7 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
             <span className="font-bold">טיוטה שוחזרה</span> — המשך מהמקום שעצרת
           </p>
           <button
-            onClick={() => { clearDraft(clientId); setScores({ dr: 3, nd: 3, uc: 3 }); setAnswers({}); setCurrentQ(0); setDraftRestored(false) }}
+            onClick={() => { clearDraft(clientId); setScores({ dr: 3, nd: 3, uc: 3, sc: 3 }); setAnswers({}); setCurrentQ(0); setDraftRestored(false) }}
             className="text-[10px] text-indigo-500 hover:text-indigo-300 transition-colors whitespace-nowrap"
           >
             נקה טיוטה
@@ -732,7 +874,7 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
 
       {/* Sliders */}
       <div className="space-y-4">
-        {(['DR', 'ND', 'UC'] as const).map(axis => {
+        {(['DR', 'ND', 'UC', 'SC'] as const).map(axis => {
           const conf = AXIS_CONFIG[axis]
           const val = scores[axis.toLowerCase() as keyof TriageScores]
           const isDominant = axis === liveAxis
@@ -812,6 +954,42 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
           </span>
           <span className="text-slate-700"> · לפי שעת עבודה אחת לעובד לשבוע</span>
         </p>
+      </div>
+
+      {/* Greiner / UC moderators */}
+      <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-4 space-y-3">
+        <p className="text-[10px] text-slate-500 uppercase tracking-widest">Greiner + UC Moderators</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <select
+            value={greinerStage}
+            onChange={(e) => setGreinerStage(e.target.value as typeof greinerStage)}
+            className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200"
+          >
+            <option value="phase_1_2">Greiner 1-2 (Leadership/Autonomy)</option>
+            <option value="phase_3">Greiner 3 (Control crisis)</option>
+            <option value="phase_4">Greiner 4 (Red tape)</option>
+            <option value="phase_5">Greiner 5 (Renewal)</option>
+          </select>
+          <select
+            value={adaptiveCapacity}
+            onChange={(e) => setAdaptiveCapacity(e.target.value as typeof adaptiveCapacity)}
+            className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200"
+          >
+            <option value="rigid">Adaptive: Rigid</option>
+            <option value="slow_adapt">Adaptive: Slow</option>
+            <option value="agile">Adaptive: Agile</option>
+          </select>
+          <select
+            value={voiceInfrastructure}
+            onChange={(e) => setVoiceInfrastructure(e.target.value as typeof voiceInfrastructure)}
+            className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200"
+          >
+            <option value="no_channel">Voice: No channel</option>
+            <option value="unused_channel">Voice: Unused channel</option>
+            <option value="effective_channel">Voice: Effective channel</option>
+          </select>
+        </div>
+        {greinerBadge && <p className="text-[10px] text-amber-300">{greinerBadge}</p>}
       </div>
 
       {/* Constraint Envelope */}
