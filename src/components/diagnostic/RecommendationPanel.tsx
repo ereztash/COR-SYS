@@ -14,8 +14,9 @@
  * Loss framing: Kahneman & Tversky (1991) — "עלות אי-פעולה" in header
  */
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { RecommendationResult } from '@/types/database'
+import type { GoldenQuestionAnswers } from '@/lib/dsm-policy-engine'
 import { classifyTrajectory } from '@/lib/resilience-formula'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -30,7 +31,9 @@ interface PolicyFallback {
 interface RecommendApiResponse {
   snapshot_id: string
   cold_start: boolean
+  similarity_method?: string
   recommendations: RecommendationResult[]
+  golden_questions?: GoldenQuestionAnswers
   policy_fallback?: PolicyFallback
 }
 
@@ -42,16 +45,18 @@ interface Props {
   monthlySalary?: number
   /** Called when the consultant clicks "Override" on a recommendation */
   onOverride?: (interventionType: string, recommendedCta: string) => void
+  /** Called when top recommendation is available for direct execution UX */
+  onPrimaryReady?: (interventionType: string) => void
 }
 
 // ─── Confidence Badge ─────────────────────────────────────────────────────────
 
 function ConfidenceBadge({ level }: { level: RecommendationResult['confidence_level'] }) {
   const styles: Record<typeof level, string> = {
-    high: 'bg-emerald-900/50 text-emerald-300 border border-emerald-700',
-    medium: 'bg-yellow-900/50 text-yellow-300 border border-yellow-700',
-    low: 'bg-red-900/50 text-red-300 border border-red-700',
-    insufficient: 'bg-slate-700/50 text-slate-400 border border-slate-600',
+    high: 'status-success',
+    medium: 'status-warning',
+    low: 'status-danger',
+    insufficient: 'status-info',
   }
   const labels: Record<typeof level, string> = {
     high: 'אמינות גבוהה',
@@ -60,7 +65,7 @@ function ConfidenceBadge({ level }: { level: RecommendationResult['confidence_le
     insufficient: 'נתונים לא מספיקים',
   }
   return (
-    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${styles[level]}`}>
+    <span className={`status-badge ${styles[level]}`}>
       {labels[level]}
     </span>
   )
@@ -88,11 +93,51 @@ function lambdaLabel(lambda: number | null): string {
   return `λ=${lambda.toFixed(2)} → ${labels[trajectory]}`
 }
 
+// ─── Insight Sentence ─────────────────────────────────────────────────────────
+// Generates a 1-sentence "So What / Now What" summary from recommendation data.
+
+function buildInsightSentence(rec: RecommendationResult, rank: number, dailyLoss: number | null): string {
+  const successPct = Math.round(rec.success_rate * 100)
+  const cta = CTA_LABELS[rec.intervention_type] ?? rec.intervention_type
+  const trajectory = rec.avg_lambda != null ? classifyTrajectory(rec.avg_lambda) : null
+
+  // Insufficient data → guide toward more data collection
+  if (rec.confidence_level === 'insufficient' || rec.supporting_cases < 2) {
+    return `רק ${rec.supporting_cases} מקרה דומה — הדיוק ישתפר לאחר מדידת follow-up נוספת. ממשיך עם כלל מדיניות.`
+  }
+
+  // Low confidence → caution
+  if (rec.confidence_level === 'low') {
+    return `${successPct}% הצלחה על ${rec.supporting_cases} מקרים — אמינות נמוכה. שקול לאסוף עוד נתוני follow-up לפני ביצוע.`
+  }
+
+  // Build trajectory phrase
+  const trajectoryPhrase = trajectory === 'growth'
+    ? 'ארגונים עם פרופיל דומה הראו שיפור מתמשך'
+    : trajectory === 'decay'
+      ? 'הנתיב הנוכחי מראה ירידה — פעולה דחופה'
+      : trajectory === 'bifurcation'
+        ? 'מצב אי-יציבות — ההתערבות קריטית לייצוב'
+        : 'מסלול יציב עם פוטנציאל שיפור'
+
+  // Build loss phrase
+  const lossPhrase = dailyLoss != null && dailyLoss > 0 && rank === 0
+    ? ` כל יום ללא פעולה = ₪${Math.round(dailyLoss).toLocaleString('he-IL')} אבוד.`
+    : ''
+
+  return `${cta}: ${successPct}% הצלחה על ${rec.supporting_cases} מקרים דומים — ${trajectoryPhrase}.${lossPhrase}`
+}
+
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
 function Skeleton() {
   return (
-    <div className="bento-card p-6 space-y-4 animate-pulse">
+    <div
+      className="bento-card p-6 space-y-4 animate-pulse"
+      role="status"
+      aria-busy="true"
+      aria-label="טוען המלצות"
+    >
       <div className="h-4 bg-slate-700 rounded w-1/3" />
       <div className="h-20 bg-slate-700/50 rounded" />
       <div className="h-20 bg-slate-700/50 rounded" />
@@ -138,14 +183,17 @@ function RecommendationCard({
   rec,
   rank,
   dailyLoss,
+  similarityMethod,
   onOverride,
 }: {
   rec: RecommendationResult
   rank: number
   dailyLoss: number | null
+  similarityMethod?: string
   onOverride?: () => void
 }) {
   const isTopRanked = rank === 0
+  const insight = buildInsightSentence(rec, rank, dailyLoss)
   return (
     <div className={`bg-slate-800/60 rounded-xl p-4 ${isTopRanked ? 'ring-1 ring-emerald-700' : ''}`}>
       <div className="flex items-start justify-between gap-2 mb-3">
@@ -159,6 +207,15 @@ function RecommendationCard({
         </div>
         <ConfidenceBadge level={rec.confidence_level} />
       </div>
+
+      {/* Insight sentence */}
+      <p className={`text-xs leading-relaxed mb-3 px-3 py-2 rounded-lg ${
+        isTopRanked
+          ? 'bg-emerald-950/40 text-emerald-200 border border-emerald-800/30'
+          : 'bg-slate-700/40 text-slate-300 border border-slate-700/30'
+      }`}>
+        {insight}
+      </p>
 
       <div className="grid grid-cols-2 gap-3 mb-3">
         <div>
@@ -179,6 +236,17 @@ function RecommendationCard({
         </div>
       </div>
 
+      {/* Why this recommendation (trust + auditability) */}
+      <div className="rounded-lg bg-slate-900/45 border border-slate-700/60 px-3 py-2 mb-2">
+        <p className="type-meta mb-1">למה זו ההמלצה</p>
+        <ul className="text-[11px] text-slate-300 space-y-0.5 leading-relaxed">
+          <li>• {(rec.success_rate * 100).toFixed(0)}% הצלחה על {rec.supporting_cases} מקרים דומים.</li>
+          <li>• אמינות סטטיסטית (Wilson): {rec.wilson_score.toFixed(2)}.</li>
+          {similarityMethod ? <li>• שיטת דמיון: {similarityMethod}.</li> : null}
+          <li>• מסלול תוצאה: {lambdaLabel(rec.avg_lambda)}.</li>
+        </ul>
+      </div>
+
       {onOverride && (
         <button
           onClick={onOverride}
@@ -191,6 +259,89 @@ function RecommendationCard({
   )
 }
 
+// ─── Golden Questions (structured decision insights) ─────────────────────
+
+function GoldenQuestionsGrid({ golden }: { golden: GoldenQuestionAnswers }) {
+  const urgency = golden.economicImpact.urgencySignal
+  const urgencyMap: Record<typeof urgency, { border: string; text: string; bg: string }> = {
+    critical: { border: 'border-red-500/30', text: 'text-red-200', bg: 'bg-red-950/40' },
+    elevated: { border: 'border-yellow-500/30', text: 'text-yellow-200', bg: 'bg-yellow-950/30' },
+    moderate: { border: 'border-emerald-500/30', text: 'text-emerald-200', bg: 'bg-emerald-950/30' },
+  }
+  const u = urgencyMap[urgency]
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+      <div className="bento-card p-4 border-t-4 border-slate-600">
+        <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-2">מצב ה-DSM</p>
+        <p className="text-sm text-white font-bold mb-2">
+          {golden.systemState.profile}
+          {' · '}
+          {golden.systemState.primaryPathology}
+        </p>
+        <p className="text-xs text-slate-300 leading-relaxed">{golden.systemState.narrativeHe}</p>
+        <p className="mt-3 text-[10px] text-slate-600 font-mono">
+          קודים: {golden.systemState.codes.join(', ')}
+        </p>
+      </div>
+
+      <div className="bento-card p-4 border-t-4 border-slate-600">
+        <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-2">צוואר בקבוק</p>
+        <p className="text-sm text-white font-bold mb-2">
+          {golden.bottleneck.pathologyCode} · רמה {golden.bottleneck.level}
+        </p>
+        <p className="text-xs text-slate-300 leading-relaxed">{golden.bottleneck.bottleneckNarrativeHe}</p>
+        <p className="mt-3 text-[10px] text-slate-600">
+          קשרים פעילים: {golden.bottleneck.activeComorbidities.length > 0 ? golden.bottleneck.activeComorbidities.join('; ') : '—'}
+        </p>
+      </div>
+
+      <div className={`md:col-span-2 bento-card p-4 border-t-4 ${u.border} ${u.bg}`}>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-[10px] text-slate-200 uppercase tracking-widest mb-2">השפעה כלכלית</p>
+            <p className={`text-sm font-bold ${u.text}`}>
+              דחיפות: {golden.economicImpact.urgencySignal}
+            </p>
+          </div>
+          <span className={`text-xs font-bold px-3 py-1 rounded-full border ${u.border} ${u.text}`}>
+            J={golden.economicImpact.jQuotient.toFixed(2)}
+          </span>
+        </div>
+
+        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <p className="text-[10px] text-slate-300 uppercase tracking-widest">שבועית</p>
+            <p className="text-sm font-black text-white">
+              ₪{Math.round(golden.economicImpact.weeklyWasteILS).toLocaleString('he-IL')}
+            </p>
+          </div>
+          <div>
+            <p className="text-[10px] text-slate-300 uppercase tracking-widest">שנתית</p>
+            <p className="text-sm font-black text-white">
+              ₪{Math.round(golden.economicImpact.annualWasteILS).toLocaleString('he-IL')}
+            </p>
+          </div>
+        </div>
+        <p className="mt-3 text-xs text-slate-200 leading-relaxed">{golden.economicImpact.jInterpretationHe}</p>
+      </div>
+
+      <div className="bento-card p-4 border-t-4 border-emerald-700 md:col-span-2">
+        <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-2">מהלך התערבות מומלץ</p>
+        <p className="text-sm text-white font-bold mb-2">
+          {golden.recommendedAction.ctaLabelHe}
+        </p>
+        <p className="text-xs text-slate-300 mb-2">
+          {golden.recommendedAction.timeToActMonths === 0
+            ? 'פעולה מיידית נדרשת'
+            : `טווח פעולה: ${golden.recommendedAction.timeToActMonths} חודשים`}
+        </p>
+        <p className="text-xs text-slate-400 leading-relaxed">{golden.recommendedAction.rationale}</p>
+      </div>
+    </div>
+  )
+}
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function RecommendationPanel({
@@ -199,10 +350,12 @@ export function RecommendationPanel({
   hoursPerWeek,
   monthlySalary,
   onOverride,
+  onPrimaryReady,
 }: Props) {
   const [data, setData] = useState<RecommendApiResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const primaryNotifiedRef = useRef<string | null>(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -239,6 +392,14 @@ export function RecommendationPanel({
     return () => controller.abort()
   }, [snapshotId, managers, hoursPerWeek, monthlySalary])
 
+  const topIntervention = data?.recommendations?.[0]?.intervention_type
+  useEffect(() => {
+    if (!topIntervention || !onPrimaryReady) return
+    if (primaryNotifiedRef.current === topIntervention) return
+    primaryNotifiedRef.current = topIntervention
+    onPrimaryReady(topIntervention)
+  }, [topIntervention, onPrimaryReady])
+
   if (loading) return <Skeleton />
 
   if (error) {
@@ -253,35 +414,49 @@ export function RecommendationPanel({
   if (!data) return null
 
   const topRec = data.recommendations[0]
-  const dailyLoss = topRec?.daily_loss_estimate ?? null
+  const dailyLoss =
+    topRec?.daily_loss_estimate ??
+    (data.golden_questions ? data.golden_questions.economicImpact.weeklyWasteILS / 7 : null)
 
   return (
     <div className="bento-card p-6 border-t-4 border-emerald-700">
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-xs font-bold text-slate-500 uppercase">המלצת התערבות CBR</p>
-        {data.cold_start && (
-          <span className="text-xs font-bold px-3 py-1 rounded-full bg-slate-700/50 text-slate-400 border border-slate-600">
-            מבוסס מדיניות
-          </span>
-        )}
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+        <p className="type-meta">המלצת התערבות CBR</p>
+        <div className="flex items-center gap-2">
+          {/* Method badge — Trust UX */}
+          {data.similarity_method && !data.cold_start && (
+            <span className="status-badge status-info type-kpi normal-case">
+              {data.similarity_method}
+            </span>
+          )}
+          {data.cold_start ? (
+            <span className="status-badge border border-slate-600 text-slate-300 bg-slate-800/70">
+              מבוסס מדיניות
+            </span>
+          ) : (
+            <span className="status-badge status-success">
+              CBR · {data.recommendations.length} המלצות
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Loss frame header */}
       {dailyLoss != null && dailyLoss > 0 && (
         <div className="bg-red-950/40 border border-red-900/60 rounded-xl px-4 py-3 mb-4">
-          <p className="text-xs font-bold text-red-400 uppercase mb-0.5">עלות אי-פעולה</p>
-          <p className="text-xl font-black text-red-300">
+          <p className="type-meta text-red-300 mb-0.5">עלות אי-פעולה</p>
+          <p className="text-xl font-black text-red-300 type-kpi">
             ₪{Math.round(dailyLoss).toLocaleString('he-IL')}/יום
           </p>
-          <p className="text-xs text-red-500 mt-0.5">
+          <p className="text-xs text-red-400 mt-0.5 type-kpi">
             ₪{Math.round(dailyLoss * 30).toLocaleString('he-IL')}/חודש
           </p>
         </div>
       )}
 
-      {data.cold_start ? (
-        <ColdStartCard fallback={data.policy_fallback} />
-      ) : (
+      {data.golden_questions && <GoldenQuestionsGrid golden={data.golden_questions} />}
+
+      {data.recommendations.length > 0 && (
         <div className="space-y-3">
           {data.recommendations.map((rec, i) => (
             <RecommendationCard
@@ -289,6 +464,7 @@ export function RecommendationPanel({
               rec={rec}
               rank={i}
               dailyLoss={dailyLoss}
+              similarityMethod={data.similarity_method}
               onOverride={
                 onOverride
                   ? () => onOverride(rec.intervention_type, data.recommendations[0]?.intervention_type ?? rec.intervention_type)
@@ -297,6 +473,10 @@ export function RecommendationPanel({
             />
           ))}
         </div>
+      )}
+
+      {data.cold_start && data.recommendations.length === 0 && (
+        <ColdStartCard fallback={data.policy_fallback} />
       )}
     </div>
   )

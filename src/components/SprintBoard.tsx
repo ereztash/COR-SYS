@@ -1,6 +1,7 @@
 'use client'
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { moveTaskAction, deleteTaskAction } from '@/lib/actions/tasks'
 import { TaskForm } from '@/components/forms/TaskForm'
 import type { Task } from '@/types/database'
@@ -35,20 +36,37 @@ export function SprintBoard({ sprintId, clientId, initialTasks }: SprintBoardPro
   const [editTask, setEditTask] = useState<Task | null>(null)
   const [, startTransition] = useTransition()
 
+  const STATUS_LABELS: Record<Task['status'], string> = {
+    todo: 'לביצוע', in_progress: 'בביצוע', blocked: 'חסום', done: 'הושלם'
+  }
+
   async function moveTask(taskId: string, newStatus: Task['status']) {
+    const task = tasks.find(t => t.id === taskId)
     setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: newStatus } : t))
-    await moveTaskAction(taskId, newStatus, clientId, sprintId)
+    const result = await moveTaskAction(taskId, newStatus, clientId, sprintId)
+    if (!result.ok) {
+      setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: task?.status ?? newStatus } : t))
+      toast.error('שגיאה בעדכון משימה')
+    } else {
+      toast.success(`הועבר ל${STATUS_LABELS[newStatus]}`)
+    }
   }
 
   async function deleteTask(taskId: string) {
     if (!confirm('למחוק משימה זו?')) return
     setTasks(prev => prev.filter(t => t.id !== taskId))
-    await deleteTaskAction(taskId, clientId, sprintId)
+    const result = await deleteTaskAction(taskId, clientId, sprintId)
+    if (!result.ok) {
+      toast.error('שגיאה במחיקה')
+    } else {
+      toast.success('משימה נמחקה')
+    }
   }
 
   function refresh() {
     setShowForm(null)
     setEditTask(null)
+    toast.success('משימה נשמרה')
     startTransition(() => router.refresh())
   }
 

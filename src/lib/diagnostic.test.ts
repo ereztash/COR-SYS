@@ -19,8 +19,8 @@ describe('computeDiagnostic', () => {
       pathologySemantic: 'medium_drift',
       decisionLatency: '5_to_15',
       urgencyLevel: 'medium',
-      companySize: '50_to_200',
-      interventionGoal: 'full_transformation',
+      companySize: '50_150',
+      interventionGoal: 'both',
     })
 
     expect(result).toBeDefined()
@@ -74,9 +74,9 @@ describe('computeDiagnostic', () => {
   it('all-high answers: systemic-collapse, comorbidity edges, and protocols', () => {
     const result = computeDiagnostic('Crisis Corp', {
       ...ALL_HIGH_ANSWERS,
-      urgencyLevel: 'crisis',
-      companySize: 'over_1000',
-      interventionGoal: 'full_transformation',
+      urgencyLevel: 'high',
+      companySize: 'over_300',
+      interventionGoal: 'both',
     })
     expect(result.dsmDiagnosis.severityProfile).toBe('systemic-collapse')
     expect(result.dsmDiagnosis.codes).toEqual(['DR-3', 'ND-3', 'UC-3'])
@@ -89,9 +89,9 @@ describe('computeDiagnostic', () => {
   it('does not throw for partial answers (only ICP fields)', () => {
     expect(() =>
       computeDiagnostic('Partial', {
-        companySize: '50_to_200',
+        companySize: '50_150',
         urgencyLevel: 'high',
-        interventionGoal: 'process_fix',
+        interventionGoal: 'reduce_latency',
       })
     ).not.toThrow()
   })

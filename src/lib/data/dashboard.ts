@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import type { Client, Sprint, Task, Financial, ClientDiagnosticSummary } from '@/types/database'
+import type { Client, Sprint, ClientDiagnosticSummary } from '@/types/database'
 
 export type DashboardData = {
   clients: Client[]
@@ -72,17 +72,18 @@ export function computePortfolioAnalytics(diagnostics: { client_id: string; crea
 
 export async function getDashboardData(): Promise<DashboardData> {
   const supabase = await createClient()
-  const [clientsRes, sprintsRes, tasksRes, financialsRes, diagnosticsRes] = await Promise.all([
-    supabase.from('clients').select('*').order('created_at', { ascending: false }),
-    supabase.from('sprints').select('*, clients(name, company)').order('created_at', { ascending: false }),
-    supabase.from('tasks').select('*').neq('status', 'done'),
+  const [clientsRes, sprintsRes, tasksCountRes, financialsRes, diagnosticsRes] = await Promise.all([
+    // Fetch only dashboard-needed columns to reduce payload and parse cost.
+    supabase.from('clients').select('id, name, company, status, decision_latency_hours, created_at').order('created_at', { ascending: false }),
+    supabase.from('sprints').select('id, title, client_id, status, end_date, created_at, clients(name, company)').order('created_at', { ascending: false }),
+    supabase.from('tasks').select('id', { count: 'exact', head: true }).neq('status', 'done'),
     supabase.from('financials').select('revenue, period_month').order('period_month', { ascending: false }),
     supabase.from('client_diagnostics').select('client_id, created_at, dsm_summary').order('created_at', { ascending: false }),
   ])
 
   if (clientsRes.error) console.error('[data/dashboard] clients', clientsRes.error.message)
   if (sprintsRes.error) console.error('[data/dashboard] sprints', sprintsRes.error.message)
-  if (tasksRes.error) console.error('[data/dashboard] tasks', tasksRes.error.message)
+  if (tasksCountRes.error) console.error('[data/dashboard] tasks', tasksCountRes.error.message)
   if (financialsRes.error) console.error('[data/dashboard] financials', financialsRes.error.message)
   if (diagnosticsRes.error) console.error('[data/dashboard] diagnostics', diagnosticsRes.error.message)
 
@@ -90,13 +91,13 @@ export async function getDashboardData(): Promise<DashboardData> {
 
   const clients = (clientsRes.data ?? []) as Client[]
   const sprints = (sprintsRes.data ?? []) as (Sprint & { clients: { name: string; company: string | null } | null })[]
-  const tasks = (tasksRes.data ?? []) as Task[]
+  const tasksCount = tasksCountRes.count ?? 0
   const financials = financialsRes.data ?? []
 
   const activeClients = clients.filter((c: Client) => c.status === 'active' || c.status === 'volunteer')
   const totalLatency = activeClients.reduce((sum: number, c: Client) => sum + (c.decision_latency_hours ?? 0), 0)
   const activeSprints = sprints.filter((s: Sprint & { status: string }) => s.status === 'active')
-  const openTasks = tasks.length
+  const openTasks = tasksCount
 
   const now = new Date()
   const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`

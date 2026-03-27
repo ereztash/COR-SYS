@@ -10,26 +10,102 @@ const TABS = [
   { id: 'conversion', label: 'מסחור', sub: 'Conversion', icon: '🟡' },
 ] as const
 
+const TAB_TAKEAWAYS: Record<(typeof TABS)[number]['id'], { focus: string; bullets: string[] }> = {
+  identity: {
+    focus: 'Trust',
+    bullets: [
+      'השילוב המבדל: עבודה סוציאלית (טראומה) + הנדסת אלגוריתמים.',
+      'הבטחה תפעולית: זיהוי Decision Latency Tax והפחתה תוך 14 יום.',
+      'עוגן אמינות: מחקר, אתיקה ויישום פרקטי בשטח הישראלי.',
+    ],
+  },
+  problem: {
+    focus: 'Urgency',
+    bullets: [
+      'שלוש פתולוגיות ליבה: DR / ND / UC פוגעות בקצב החלטה.',
+      'עלות העיכוב מתורגמת ישירות לירידת הסתברות הצלחה.',
+      'היעד הוא מעבר מכיבוי שריפות לניהול החלטות שיטתי.',
+    ],
+  },
+  solution: {
+    focus: 'Differentiation',
+    bullets: [
+      'המוצר עובד כ-Decision Operating System ולא ככלי דוחות בלבד.',
+      'הצלבה בין אבחון, המלצה, ביצוע ופולו-אפ באותה זרימה.',
+      'ערך מרכזי: מעבר מהמלצה כללית לתוכנית פעולה מדידה.',
+    ],
+  },
+  conversion: {
+    focus: 'Conversion',
+    bullets: [
+      'מסלול הכנסה משלב Sprint + Retainer + Webinar.',
+      'המסרים ממופים ל-ROI ול-Cost of Delay בצורה ישירה.',
+      'הלקוח מקבל הצעת ערך מבוססת מדדים ולא תמחור שעות.',
+    ],
+  },
+}
+
+function TabTakeaways({ tabId }: { tabId: (typeof TABS)[number]['id'] }) {
+  const data = TAB_TAKEAWAYS[tabId]
+  return (
+    <section className="surface-strong rounded-xl p-3 mb-4">
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <p className="type-meta">תובנות מפתח</p>
+        <span className="status-badge status-info">{data.focus}</span>
+      </div>
+      <div className="space-y-1.5">
+        {data.bullets.map((bullet) => (
+          <p key={bullet} className="text-xs text-slate-300">
+            • {bullet}
+          </p>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 export function AboutTabs() {
   const [active, setActive] = useState<(typeof TABS)[number]['id']>('identity')
+  const [readingMode, setReadingMode] = useState<'focused' | 'full'>('focused')
 
   return (
-    <div className="max-w-[1400px] mx-auto p-4 md:p-6">
-      <nav className="flex flex-wrap gap-2 mb-6 p-2 rounded-xl bg-slate-800/50 border border-slate-700/50">
+    <div className={`max-w-[1280px] mx-auto p-4 md:p-5 dense-copy ${readingMode === 'focused' ? 'focused-density' : ''}`}>
+      <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
+        <p className="type-meta">מצב קריאה</p>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setReadingMode('focused')}
+            className={`status-badge px-3 py-1.5 ${readingMode === 'focused' ? 'status-success' : 'border border-slate-700 text-slate-300'}`}
+          >
+            ממוקד
+          </button>
+          <button
+            type="button"
+            onClick={() => setReadingMode('full')}
+            className={`status-badge px-3 py-1.5 ${readingMode === 'full' ? 'status-info' : 'border border-slate-700 text-slate-300'}`}
+          >
+            מלא
+          </button>
+        </div>
+      </div>
+      <nav className="sticky top-3 z-10 flex flex-wrap gap-2 mb-6 p-2 rounded-xl surface-strong backdrop-blur-md">
         {TABS.map((t) => (
           <button
             key={t.id}
             onClick={() => setActive(t.id)}
-            className={`px-4 py-2.5 rounded-lg text-sm font-bold transition-all ${
-              active === t.id ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+            className={`px-4 py-2.5 rounded-lg text-sm font-bold transition-all motion-card ${
+              active === t.id ? 'cta-primary text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-slate-700/40'
             }`}
           >
             <span className="mr-1.5">{t.icon}</span>
             {t.label}
-            <span className="mr-1.5 text-[10px] opacity-80 hidden sm:inline">| {t.sub}</span>
+            <span className="mr-1.5 type-meta opacity-80 hidden sm:inline normal-case">| {t.sub}</span>
           </button>
         ))}
       </nav>
+
+      <TabTakeaways tabId={active} />
 
       {active === 'identity' && <TabIdentity />}
       {active === 'problem' && <TabProblem />}
@@ -42,8 +118,8 @@ export function AboutTabs() {
 // ---- TAB 1: זהות ----
 function TabIdentity() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-      <section className="bento-card col-span-1 md:col-span-2 p-6 md:p-8 border-t-4 border-t-purple-500">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+      <section className="bento-card col-span-1 md:col-span-2 p-5 md:p-6 border-t-4 border-t-purple-500">
         <div className="flex flex-col sm:flex-row gap-6 items-start">
           <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-2xl font-black text-white shrink-0 shadow-lg">
             א.ט
@@ -103,7 +179,7 @@ function TabIdentity() {
         </div>
       </section>
 
-      <section className="bento-card col-span-1 md:col-span-2 p-6 md:p-8 border-t-4 border-t-blue-500 flex flex-col">
+      <section className="bento-card col-span-1 md:col-span-2 p-5 md:p-6 border-t-4 border-t-blue-500 flex flex-col">
         <h2 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Heebo, sans-serif' }}>
           העדשה הכפולה וסיר הלחץ <span className="text-blue-400 font-light">| Identity</span>
         </h2>
@@ -543,13 +619,31 @@ function TabConversion() {
 
       <section className="bento-card col-span-1 md:col-span-2 p-6 md:p-8 border-b-4 border-b-orange-500">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-white" style={{ fontFamily: 'Heebo, sans-serif' }}>The 10-Day Webinar Blitz</h2>
+          <h2 className="type-h1 text-white">The 10-Day Webinar Blitz</h2>
           <div className="flex gap-2">
-            <span className="bg-orange-500/20 text-orange-400 text-[10px] px-2 py-1 rounded font-bold uppercase">Tactical Campaign</span>
-            <span className="bg-blue-500/20 text-blue-400 text-[10px] px-2 py-1 rounded font-bold uppercase">B2B Optimized</span>
+            <span className="status-badge status-warning">Tactical Campaign</span>
+            <span className="status-badge status-info">B2B Optimized</span>
           </div>
         </div>
-        <p className="text-[10px] text-slate-400 mb-4">מערך וובינר מבוסס מחקר B2B אופטימלי – &quot;ארכיטקטורת החוסן&quot;. מתודולוגיה שנבנתה מניתוח מעמיק של מה עובד בוובינרים בשוק הישראלי.</p>
+        <p className="type-body text-slate-300 mb-4">מערך וובינר מבוסס מחקר B2B אופטימלי – &quot;ארכיטקטורת החוסן&quot;. מתודולוגיה שנבנתה מניתוח מעמיק של מה עובד בוובינרים בשוק הישראלי.</p>
+        <div className="flex flex-wrap gap-2 mb-4">
+          <a
+            href="/lecture-script-resilience-architecture.md"
+            target="_blank"
+            rel="noreferrer"
+            className="status-badge status-success px-3 py-1.5"
+          >
+            תסריט הרצאה (גרסה סופית)
+          </a>
+          <a
+            href="https://org-fortify.lovable.app"
+            target="_blank"
+            rel="noreferrer"
+            className="status-badge status-info px-3 py-1.5"
+          >
+            מחשבון ROI חי
+          </a>
+        </div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-center">
           {BLITZ_DAYS.map((b) => (
             <div
@@ -566,8 +660,8 @@ function TabConversion() {
       <section className="bento-card col-span-1 md:col-span-2 xl:col-span-4 p-6 md:p-8 bg-slate-900/80 border border-slate-800">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="w-full md:w-1/2 md:border-l md:border-slate-800 md:pl-6 flex flex-col justify-center">
-            <h2 className="text-lg font-bold text-white mb-4" style={{ fontFamily: 'Heebo, sans-serif' }}>📊 תחזית P&L (שנה 1)</h2>
-            <div className="space-y-3 font-mono text-xs">
+            <h2 className="type-h2 text-white mb-4">📊 תחזית P&amp;L (שנה 1)</h2>
+            <div className="space-y-3 text-xs type-kpi">
               <div className="flex justify-between text-slate-400 border-b border-slate-800 pb-1"><span>12 ספרינטים (50K ממוצע)</span><span className="text-slate-200">600K ₪</span></div>
               <div className="flex justify-between text-slate-400 border-b border-slate-800 pb-1"><span>5 לקוחות Retainer פעילים</span><span className="text-slate-200">240K ₪</span></div>
               <div className="flex justify-between text-slate-400 border-b border-slate-800 pb-1"><span>סדנאות + וובינרים</span><span className="text-slate-200">60K ₪</span></div>
@@ -576,7 +670,7 @@ function TabConversion() {
             <p className="text-[9px] text-slate-500 mt-4 leading-tight bg-slate-800/50 p-2 rounded">* מודל שמרני (ספרינט אחד/חודש). פוטנציאל ב-2 ספרינטים/חודש: <strong className="text-emerald-500">1.2M+ ₪</strong> ללא עליה משמעותית בהוצאות.</p>
           </div>
           <div className="w-full md:w-1/2 flex flex-col justify-center">
-            <h2 className="text-lg font-bold text-white mb-6" style={{ fontFamily: 'Heebo, sans-serif' }}>🗺 מפת דרכים (Roadmap)</h2>
+            <h2 className="type-h2 text-white mb-6">🗺 מפת דרכים (Roadmap)</h2>
             <div className="flex justify-between items-start relative">
               {ROADMAP.map((r) => (
                 <div key={r.q} className="relative z-10 text-center flex-1">

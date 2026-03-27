@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>COR-SYS Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Heebo:wght@400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent: #fb923c;
+      --accent2: #6366f1;
+    }
+    body {
+      font-family: 'Assistant', sans-serif;
+      background: #060d1f;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* ── Nav tabs ── */
+    .tab-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: rgba(6,13,31,0.95); backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; gap: 0; padding: 0 24px;
+    }
+    .tab-bar .logo {
+      font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 1rem;
+      color: #fff; margin-left: 24px; display: flex; align-items: center; gap: 10px;
+    }
+    .tab-bar .logo .dot {
+      width: 32px; height: 32px; border-radius: 10px;
+      background: linear-gradient(135deg,#6366f1,#818cf8);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; font-weight: 900; color: #fff;
+    }
+    .tab {
+      padding: 14px 20px; font-size: .85rem; font-weight: 600;
+      color: #64748b; cursor: pointer; border-bottom: 2px solid transparent;
+      transition: all .2s; white-space: nowrap;
+    }
+    .tab.active { color: #e2e8f0; border-bottom-color: #6366f1; }
+    .tab:hover:not(.active) { color: #94a3b8; }
+
+    .page { display: none; padding-top: 53px; }
+    .page.active { display: block; }
+
+    /* ── Animations ── */
+    @keyframes pulse-ring {
+      0%   { transform: scale(0.95); opacity: 0.9; }
+      70%  { transform: scale(1.6);  opacity: 0; }
+      100% { transform: scale(1.6);  opacity: 0; }
+    }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-up { animation: fade-up .6s ease forwards; }
+
+    /* ── Grid texture ── */
+    .grid-texture {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    /* ── Glass card ── */
+    .glass-card {
+      background: rgba(12,20,40,0.65);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 1.5rem;
+    }
+
+    /* ═══════════════════════════════════════
+       PAGE 1 — RESULTS (client-facing)
+    ═══════════════════════════════════════ */
+
+    .results-hero {
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg,rgba(136,19,55,0.55) 0%,rgba(6,13,31,0.97) 58%);
+    }
+    .results-hero::after {
+      content:''; position:absolute; bottom:0; left:0; right:0; height:6rem;
+      background: linear-gradient(to bottom,transparent,#060d1f); pointer-events:none;
+    }
+    .hero-inner {
+      position: relative; z-index: 1; max-width: 900px; margin: 0 auto;
+      padding: 56px 24px 64px; display: grid; grid-template-columns: 3fr 2fr;
+      gap: 32px; align-items: center;
+    }
+    @media(max-width:640px){ .hero-inner{grid-template-columns:1fr; padding:36px 20px 48px;} }
+
+    .live-dot {
+      display: inline-flex; align-items: center; gap: 10px; margin-bottom: 20px;
+    }
+    .pulse-wrap { position:relative; display:flex; width:12px; height:12px; }
+    .pulse-ring {
+      position:absolute; inset:0; border-radius:50%;
+      animation: pulse-ring 2s cubic-bezier(.455,.03,.515,.955) infinite;
+    }
+    .pulse-core { position:relative; border-radius:50%; width:12px; height:12px; }
+    .live-label {
+      font-size:11px; font-weight:700; letter-spacing:.15em; text-transform:uppercase;
+    }
+
+    .hero-title {
+      font-family:'Heebo',sans-serif; font-weight:900;
+      font-size: clamp(2rem,5vw,3rem); color:#fff; line-height:1.15; margin-bottom:16px;
+    }
+    .hero-sub { color:#94a3b8; font-size:.95rem; line-height:1.65; margin-bottom:28px; max-width:440px; }
+    .severity-badge {
+      display:inline-flex; align-items:center; gap:10px;
+      padding:10px 20px; border-radius:1rem; font-weight:700; border:1px solid;
+    }
+    .entropy-row { display:flex; align-items:center; gap:12px; margin-top:20px; }
+    .entropy-label { font-size:11px; color:#475569; font-family:monospace; }
+    .entropy-dots { display:flex; gap:4px; }
+    .entropy-dot {
+      width:20px; height:20px; border-radius:50%; border:1px solid rgba(255,255,255,0.1);
+      background:rgba(255,255,255,0.04);
+    }
+    .entropy-dot.on { border-color:var(--accent); background:var(--accent); box-shadow:0 0 6px var(--accent); }
+    .entropy-val { font-size:12px; font-weight:700; color:var(--accent); }
+
+    /* ── Radar SVG wrapper ── */
+    .radar-wrap { display:flex; align-items:center; justify-content:center; }
+    .radar-wrap svg { width:100%; max-width:260px; direction:ltr; }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size:11px; font-weight:700; color:#475569; text-transform:uppercase;
+      letter-spacing:.12em; margin-bottom:16px;
+    }
+
+    /* ── 4-card grid ── */
+    .pathology-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    @media(max-width:640px){ .pathology-grid{grid-template-columns:repeat(2,1fr);} }
+    .pathology-card {
+      border-radius:1.25rem; padding:20px; border:1px solid; position:relative; overflow:hidden;
+    }
+    .pathology-card .top-bar {
+      position:absolute; top:0; left:0; height:2px; border-radius:1.25rem 1.25rem 0 0;
+    }
+    .p-code { font-size:1.6rem; font-weight:900; font-family:monospace; }
+    .p-score {
+      font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px;
+    }
+    .p-name-he { font-size:.75rem; font-weight:600; color:#e2e8f0; margin-top:12px; line-height:1.3; }
+    .p-name-en { font-size:10px; color:#475569; margin-top:2px; margin-bottom:12px; }
+    .p-bar-bg { width:100%; height:4px; border-radius:999px; background:rgba(255,255,255,0.05); }
+    .p-bar { height:4px; border-radius:999px; }
+    .p-level { font-size:10px; margin-top:6px; }
+
+    /* ── Narrative card ── */
+    .narrative-card {
+      border-radius:1.25rem; padding:28px;
+      background:rgba(12,20,40,0.6); position:relative; overflow:hidden;
+      border:1px solid rgba(255,255,255,0.05); border-right:4px solid var(--accent);
+    }
+    .narrative-card .side-glow {
+      position:absolute; top:0; right:0; width:160px; height:100%; pointer-events:none;
+    }
+    .narrative-tag {
+      font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.12em;
+      color:var(--accent); margin-bottom:12px;
+    }
+    .narrative-text { color:#cbd5e1; line-height:1.7; font-size:.95rem; }
+
+    /* ── Service card ── */
+    .service-card {
+      border-radius:1.5rem; padding:32px;
+      background:linear-gradient(135deg,rgba(99,102,241,0.13) 0%,rgba(6,13,31,0.96) 60%);
+      border:1px solid rgba(99,102,241,0.28); position:relative; overflow:hidden;
+    }
+    .service-card .shimmer {
+      position:absolute; top:0; left:0; right:0; height:1px;
+      background:linear-gradient(90deg,transparent,rgba(99,102,241,0.6),transparent);
+    }
+    .service-tag { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#818cf8; margin-bottom:8px; }
+    .service-name { font-family:'Heebo',sans-serif; font-weight:900; font-size:1.5rem; color:#fff; margin-bottom:8px; }
+    .service-desc { color:#94a3b8; font-size:.875rem; line-height:1.6; max-width:480px; }
+    .service-cta { color:#34d399; font-size:.875rem; font-weight:500; margin-top:16px; }
+    .service-price { font-family:'Heebo',sans-serif; font-weight:900; font-size:2.25rem; color:#fff; }
+    .service-price-sub { font-size:11px; color:#475569; font-family:monospace; margin-top:4px; }
+
+    /* ── Results footer ── */
+    .results-footer { border-top:1px solid rgba(255,255,255,0.05); padding:32px 0 16px; text-align:center; }
+    .results-footer p { font-family:monospace; font-size:10px; color:#1e293b; margin-top:6px; }
+
+    .body-wrap { max-width:900px; margin:0 auto; padding:48px 24px; display:flex; flex-direction:column; gap:32px; }
+
+    /* ═══════════════════════════════════════
+       PAGE 2 — CLIENT DETAIL (consultant)
+    ═══════════════════════════════════════ */
+    .client-header {
+      position:relative; overflow:hidden;
+      background:linear-gradient(135deg,rgba(136,19,55,0.45) 0%,rgba(6,13,31,0.97) 55%);
+      padding:40px 24px 56px;
+    }
+    .client-header .grid-overlay { position:absolute; inset:0; }
+    .client-header::after {
+      content:''; position:absolute; bottom:0; left:0; right:0; height:5rem;
+      background:linear-gradient(to bottom,transparent,#060d1f); pointer-events:none;
+    }
+    .client-header-inner { position:relative; z-index:1; max-width:1100px; margin:0 auto; }
+    .breadcrumb { font-size:12px; color:#475569; margin-bottom:20px; font-family:monospace; }
+    .breadcrumb span { color:#64748b; }
+    .client-meta { display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+    .client-name { font-family:'Heebo',sans-serif; font-weight:900; font-size:2rem; color:#fff; }
+    .client-sub { color:#64748b; font-size:.875rem; margin-top:4px; }
+    .header-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .btn-ghost {
+      padding:8px 16px; border-radius:.75rem; border:1px solid rgba(255,255,255,0.1);
+      background:rgba(255,255,255,0.04); color:#94a3b8; font-size:.8rem; font-weight:600; cursor:pointer;
+    }
+    .btn-primary {
+      padding:8px 16px; border-radius:.75rem;
+      background:linear-gradient(135deg,#6366f1,#818cf8); color:#fff; font-size:.8rem; font-weight:700;
+      border:none; cursor:pointer;
+    }
+
+    /* DSM banner */
+    .dsm-banner {
+      margin-top:24px; border-radius:1rem; padding:16px 20px;
+      background:rgba(12,20,40,0.7); border:1px solid rgba(255,255,255,0.07);
+      display:flex; align-items:center; gap:24px; flex-wrap:wrap;
+    }
+    .dsm-banner-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#475569; font-family:monospace; }
+    .dsm-scores { display:flex; gap:16px; flex-wrap:wrap; align-items:center; }
+    .dsm-score-item { display:flex; align-items:center; gap:6px; }
+    .dsm-code { font-family:monospace; font-size:10px; font-weight:700; color:#64748b; }
+    .dsm-val { font-size:1.1rem; font-weight:900; font-family:'Heebo',sans-serif; }
+    .dsm-bar-wrap { width:40px; height:3px; background:rgba(255,255,255,0.06); border-radius:999px; }
+    .dsm-bar { height:3px; border-radius:999px; }
+    .dsm-total {
+      margin-right:auto; padding-right:20px; border-right:1px solid rgba(255,255,255,0.08);
+      display:flex; flex-direction:column; gap:2px;
+    }
+    .dsm-total-val { font-family:'Heebo',sans-serif; font-weight:900; font-size:1.5rem; color:#fb923c; }
+    .dsm-total-label { font-size:10px; color:#475569; font-family:monospace; }
+
+    /* Loss KPI */
+    .loss-strip {
+      margin-top:12px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    }
+    .loss-badge {
+      display:inline-flex; align-items:center; gap:8px; padding:8px 16px; border-radius:.75rem;
+      background:rgba(251,146,60,0.1); border:1px solid rgba(251,146,60,0.25); color:#fb923c;
+      font-size:.85rem; font-weight:700;
+    }
+    .loss-sub { font-size:11px; color:#475569; font-family:monospace; }
+
+    /* Main grid */
+    .client-body { max-width:1100px; margin:0 auto; padding:40px 24px; display:grid; grid-template-columns:1fr 340px; gap:24px; }
+    @media(max-width:768px){ .client-body{grid-template-columns:1fr;} }
+    .client-main { display:flex; flex-direction:column; gap:20px; }
+    .client-sidebar { display:flex; flex-direction:column; gap:16px; }
+
+    /* KPI row */
+    .kpi-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    @media(max-width:520px){ .kpi-row{grid-template-columns:1fr 1fr;} }
+    .kpi-card {
+      border-radius:1.25rem; padding:20px; border:1px solid rgba(255,255,255,0.06);
+      background:rgba(12,20,40,0.7); position:relative; overflow:hidden;
+    }
+    .kpi-card .kpi-top-bar { position:absolute; top:0; left:0; right:0; height:2px; }
+    .kpi-label { font-size:10px; color:#475569; text-transform:uppercase; letter-spacing:.1em; font-family:monospace; margin-bottom:8px; }
+    .kpi-value { font-family:'Heebo',sans-serif; font-weight:900; font-size:1.6rem; color:#fff; }
+    .kpi-sub { font-size:11px; color:#64748b; margin-top:4px; }
+
+    /* Sprints section */
+    .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+    .section-title { font-size:13px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.1em; }
+    .sprint-card {
+      border-radius:1.25rem; padding:20px; border:1px solid rgba(255,255,255,0.06);
+      background:rgba(12,20,40,0.6); margin-bottom:12px;
+    }
+    .sprint-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px; }
+    .sprint-name { font-weight:700; color:#e2e8f0; font-size:.9rem; }
+    .sprint-dates { font-size:11px; color:#475569; margin-top:2px; font-family:monospace; }
+    .sprint-badge {
+      font-size:10px; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap;
+    }
+    .sprint-bar-bg { width:100%; height:5px; border-radius:999px; background:rgba(255,255,255,0.06); margin-bottom:6px; }
+    .sprint-bar { height:5px; border-radius:999px; }
+    .sprint-pct { font-size:11px; color:#64748b; font-family:monospace; }
+    .sprint-tasks { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+    .task-pill {
+      font-size:10px; padding:3px 10px; border-radius:999px; border:1px solid rgba(255,255,255,0.08);
+      background:rgba(255,255,255,0.04); color:#64748b; display:flex; align-items:center; gap:4px;
+    }
+    .task-pill.done { color:#34d399; border-color:rgba(52,211,153,0.2); background:rgba(52,211,153,0.06); }
+
+    /* Sidebar cards */
+    .sidebar-card {
+      border-radius:1.25rem; padding:20px; border:1px solid rgba(255,255,255,0.06);
+      background:rgba(12,20,40,0.7);
+    }
+    .sidebar-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:#475569; margin-bottom:14px; }
+    .info-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+    .info-key { font-size:.8rem; color:#64748b; }
+    .info-val { font-size:.8rem; font-weight:600; color:#e2e8f0; }
+    .formula-box {
+      border-radius:.75rem; padding:14px; background:rgba(99,102,241,0.07);
+      border:1px solid rgba(99,102,241,0.15); font-family:monospace; font-size:11px; color:#818cf8;
+      line-height:1.8; text-align:center; margin-top:12px;
+    }
+
+    /* Results page top bar (separate from tab bar) */
+    .results-topbar {
+      position:sticky; top:53px; z-index:40; padding:14px 24px;
+      display:flex; align-items:center; justify-content:space-between;
+      background:rgba(6,13,31,0.85); backdrop-filter:blur(20px);
+      border-bottom:1px solid rgba(255,255,255,0.05);
+    }
+    .results-topbar .brand { display:flex; align-items:center; gap:10px; }
+    .brand-dot {
+      width:36px; height:36px; border-radius:12px; flex-shrink:0;
+      background:linear-gradient(135deg,#6366f1,#818cf8);
+      display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900;
+    }
+    .brand-name { font-family:'Heebo',sans-serif; font-weight:900; font-size:1.1rem; color:#fff; }
+    .brand-ver { font-size:10px; color:#334155; font-family:monospace; }
+    .topbar-formula { font-size:10px; color:#334155; font-family:monospace; display:flex; align-items:center; gap:8px; }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:#0f172a; }
+    ::-webkit-scrollbar-thumb { background:#334155; border-radius:4px; }
+  </style>
+</head>
+<body>
+
+<!-- Tab bar -->
+<nav class="tab-bar">
+  <div class="logo">
+    <div class="dot">C</div>
+    COR-SYS
+  </div>
+  <div class="tab active" onclick="show('results')">תוצאות אבחון</div>
+  <div class="tab" onclick="show('client')">דף לקוח</div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE 1 — RESULTS (client-facing)
+════════════════════════════════════════════════ -->
+<div id="page-results" class="page active">
+
+  <!-- Sticky topbar inside page -->
+  <div class="results-topbar">
+    <div class="brand">
+      <div class="brand-dot">C</div>
+      <div>
+        <div class="brand-name">COR-SYS</div>
+        <div class="brand-ver">Deep-Grid v2.2</div>
+      </div>
+    </div>
+    <div class="topbar-formula">
+      <span>J(t) = C(t) / E(t)</span>
+      <span style="color:#1e293b">·</span>
+      <span>DSM Organizational Assessment</span>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <section class="results-hero">
+    <div class="absolute inset-0 grid-texture" style="position:absolute;inset:0;"></div>
+    <div class="hero-inner">
+      <!-- Left: text -->
+      <div class="animate-fade-up">
+        <div class="live-dot">
+          <div class="pulse-wrap">
+            <div class="pulse-ring" style="background:#fb923c;"></div>
+            <div class="pulse-core" style="background:#fb923c;"></div>
+          </div>
+          <span class="live-label" style="color:#fb923c;">אבחון DSM ארגוני &nbsp;·&nbsp; 19 במרץ 2026</span>
+        </div>
+
+        <h1 class="hero-title">טקנולוג'י ויז'ן בע"מ</h1>
+        <p class="hero-sub">
+          זוהתה עמימות בינאישית גבוהה (DR=8.1) בשילוב עם סטייה נורמטיבית ותפקידים לא מוגדרים —
+          מיקום ארגוני ב-Critical Zone מחייב התערבות מבנית מיידית.
+        </p>
+
+        <div class="severity-badge" style="background:rgba(251,146,60,0.08);border-color:rgba(251,146,60,0.3);color:#fb923c;">
+          <span style="font-size:1.2rem;">⬡</span>
+          <span>קריטי — כישלון מערכתי קרוב</span>
+        </div>
+
+        <div class="entropy-row">
+          <span class="entropy-label">אנטרופיה ארגונית</span>
+          <div class="entropy-dots">
+            <div class="entropy-dot on" style="--accent:#fb923c;"></div>
+            <div class="entropy-dot on" style="--accent:#fb923c;"></div>
+            <div class="entropy-dot on" style="--accent:#fb923c;"></div>
+            <div class="entropy-dot"></div>
+          </div>
+          <span class="entropy-val">3/4</span>
+        </div>
+      </div>
+
+      <!-- Right: radar -->
+      <div class="radar-wrap">
+        <svg viewBox="0 0 260 260" aria-hidden="true" style="direction:ltr;">
+          <defs>
+            <radialGradient id="rg1" cx="50%" cy="50%" r="50%">
+              <stop offset="0%"   stop-color="#fb923c" stop-opacity="0.12"/>
+              <stop offset="100%" stop-color="#fb923c" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- ambient glow -->
+          <circle cx="130" cy="130" r="114" fill="url(#rg1)"/>
+          <!-- grid rings (diamond shape for 4 axes at 0/90/180/270) -->
+          <polygon points="130,34 226,130 130,226 34,130" fill="none" stroke="rgba(148,163,184,0.09)" stroke-width="1"/>
+          <polygon points="130,58 202,130 130,202 58,130" fill="none" stroke="rgba(148,163,184,0.09)" stroke-width="1"/>
+          <polygon points="130,82 178,130 130,178 82,130" fill="none" stroke="rgba(148,163,184,0.09)" stroke-width="1"/>
+          <polygon points="130,106 154,130 130,154 106,130" fill="none" stroke="rgba(148,163,184,0.09)" stroke-width="1"/>
+          <!-- axes -->
+          <line x1="130" y1="130" x2="130" y2="34"  stroke="rgba(148,163,184,0.13)" stroke-width="1"/>
+          <line x1="130" y1="130" x2="226" y2="130" stroke="rgba(148,163,184,0.13)" stroke-width="1"/>
+          <line x1="130" y1="130" x2="130" y2="226" stroke="rgba(148,163,184,0.13)" stroke-width="1"/>
+          <line x1="130" y1="130" x2="34"  y2="130" stroke="rgba(148,163,184,0.13)" stroke-width="1"/>
+          <!-- Score polygon: DR=8.1 (top), UC=5.5 (right), ND=7.2 (bottom), SC=6.8 (left) -->
+          <!-- DR top:  r=8.1/10*96=77.8 → (130, 130-77.8)=(130,52.2) -->
+          <!-- UC right: r=5.5/10*96=52.8 → (130+52.8,130)=(182.8,130) -->
+          <!-- ND bottom: r=7.2/10*96=69.1 → (130,130+69.1)=(130,199.1) -->
+          <!-- SC left: r=6.8/10*96=65.3 → (130-65.3,130)=(64.7,130) -->
+          <polygon
+            points="130,52.2 182.8,130 130,199.1 64.7,130"
+            fill="rgba(251,146,60,0.13)"
+            stroke="#fb923c"
+            stroke-width="2.5"
+            stroke-linejoin="round"
+            style="filter:drop-shadow(0 0 10px rgba(251,146,60,0.33));"
+          />
+          <!-- dots -->
+          <circle cx="130"   cy="52.2"  r="5" fill="#fb923c" style="filter:drop-shadow(0 0 5px #fb923c)"/>
+          <circle cx="182.8" cy="130"   r="5" fill="#fbbf24" style="filter:drop-shadow(0 0 5px #fbbf24)"/>
+          <circle cx="130"   cy="199.1" r="5" fill="#fb923c" style="filter:drop-shadow(0 0 5px #fb923c)"/>
+          <circle cx="64.7"  cy="130"   r="5" fill="#fb923c" style="filter:drop-shadow(0 0 5px #fb923c)"/>
+          <!-- labels -->
+          <text x="130" y="22"  text-anchor="middle" fill="#f87171" font-size="10" font-weight="bold" font-family="monospace">DR</text>
+          <text x="130" y="32"  text-anchor="middle" fill="rgba(148,163,184,0.6)" font-size="8.5">8.1</text>
+          <text x="248" y="126" text-anchor="middle" fill="#fbbf24" font-size="10" font-weight="bold" font-family="monospace">UC</text>
+          <text x="248" y="136" text-anchor="middle" fill="rgba(148,163,184,0.6)" font-size="8.5">5.5</text>
+          <text x="130" y="224" text-anchor="middle" fill="#f87171" font-size="10" font-weight="bold" font-family="monospace">ND</text>
+          <text x="130" y="234" text-anchor="middle" fill="rgba(148,163,184,0.6)" font-size="8.5">7.2</text>
+          <text x="12"  y="126" text-anchor="middle" fill="#f87171" font-size="10" font-weight="bold" font-family="monospace">SC</text>
+          <text x="12"  y="136" text-anchor="middle" fill="rgba(148,163,184,0.6)" font-size="8.5">6.8</text>
+          <!-- center -->
+          <text x="130" y="135" text-anchor="middle" fill="rgba(148,163,184,0.2)" font-size="9">4D</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Body -->
+  <div class="body-wrap">
+
+    <!-- Pathology grid -->
+    <section>
+      <p class="section-label">פרופיל פתולוגיות — 4 ממדים MECE</p>
+      <div class="pathology-grid">
+
+        <!-- DR -->
+        <div class="pathology-card" style="background:linear-gradient(135deg,rgba(244,63,94,0.06),rgba(6,13,31,0.92) 70%);border-color:rgba(244,63,94,0.15);">
+          <div class="top-bar" style="width:81%;background:#f43f5e;opacity:0.7;"></div>
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;">
+            <code class="p-code" style="color:#f43f5e;">DR</code>
+            <span class="p-score" style="background:rgba(244,63,94,0.15);color:#f43f5e;">8.1</span>
+          </div>
+          <p class="p-name-he">עמימות בינאישית</p>
+          <p class="p-name-en">Dependency-Reciprocity</p>
+          <div class="p-bar-bg"><div class="p-bar" style="width:81%;background:linear-gradient(90deg,rgba(244,63,94,0.7),#f43f5e);"></div></div>
+          <p class="p-level" style="color:rgba(244,63,94,0.6);">גבוהה — קריטי</p>
+        </div>
+
+        <!-- ND -->
+        <div class="pathology-card" style="background:linear-gradient(135deg,rgba(244,63,94,0.05),rgba(6,13,31,0.92) 70%);border-color:rgba(244,63,94,0.12);">
+          <div class="top-bar" style="width:72%;background:#f43f5e;opacity:0.7;"></div>
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;">
+            <code class="p-code" style="color:#f43f5e;">ND</code>
+            <span class="p-score" style="background:rgba(244,63,94,0.15);color:#f43f5e;">7.2</span>
+          </div>
+          <p class="p-name-he">סטייה נורמטיבית</p>
+          <p class="p-name-en">Normative Deviation</p>
+          <div class="p-bar-bg"><div class="p-bar" style="width:72%;background:linear-gradient(90deg,rgba(244,63,94,0.7),#f43f5e);"></div></div>
+          <p class="p-level" style="color:rgba(244,63,94,0.6);">גבוהה — קריטי</p>
+        </div>
+
+        <!-- SC -->
+        <div class="pathology-card" style="background:linear-gradient(135deg,rgba(251,191,36,0.05),rgba(6,13,31,0.92) 70%);border-color:rgba(251,191,36,0.12);">
+          <div class="top-bar" style="width:68%;background:#fbbf24;opacity:0.7;"></div>
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;">
+            <code class="p-code" style="color:#fbbf24;">SC</code>
+            <span class="p-score" style="background:rgba(251,191,36,0.15);color:#fbbf24;">6.8</span>
+          </div>
+          <p class="p-name-he">עמימות מבנית</p>
+          <p class="p-name-en">Structural Clarity Deficit</p>
+          <div class="p-bar-bg"><div class="p-bar" style="width:68%;background:linear-gradient(90deg,rgba(251,191,36,0.7),#fbbf24);"></div></div>
+          <p class="p-level" style="color:rgba(251,191,36,0.6);">בינונית-גבוהה</p>
+        </div>
+
+        <!-- UC -->
+        <div class="pathology-card" style="background:linear-gradient(135deg,rgba(251,191,36,0.04),rgba(6,13,31,0.92) 70%);border-color:rgba(251,191,36,0.1);">
+          <div class="top-bar" style="width:55%;background:#fbbf24;opacity:0.7;"></div>
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;">
+            <code class="p-code" style="color:#fbbf24;">UC</code>
+            <span class="p-score" style="background:rgba(251,191,36,0.15);color:#fbbf24;">5.5</span>
+          </div>
+          <p class="p-name-he">כיול לא מדויק</p>
+          <p class="p-name-en">Uncertainty Calibration</p>
+          <div class="p-bar-bg"><div class="p-bar" style="width:55%;background:linear-gradient(90deg,rgba(251,191,36,0.7),#fbbf24);"></div></div>
+          <p class="p-level" style="color:rgba(251,191,36,0.6);">בינונית</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Narrative -->
+    <div class="narrative-card" style="--accent:#fb923c;">
+      <div class="side-glow" style="background:linear-gradient(270deg,rgba(251,146,60,0.06),transparent);"></div>
+      <p class="narrative-tag">ניתוח אבחוני</p>
+      <p class="narrative-text">
+        הארגון מציג קו-מורבידיות חריפה בין עמימות בינאישית (DR=8.1) לסטייה נורמטיבית (ND=7.2) —
+        שני כוחות המזינים זה את זה בלולאת משוב שלילית. תוספת עמימות מבנית (SC=6.8) מוסיפה שכבת
+        כשל שלישית: גם כשהאנשים רוצים לשתף פעולה, אין להם מפה ארגונית ברורה לעשות זאת.
+        מחקרי Edmondson (1999) מראים ש-DR גבוה ב-18+ חודשים ללא התערבות מוביל לירידה של 34%
+        בביצועים. הגיע הזמן לפעולה.
+      </p>
+    </div>
+
+    <!-- Service recommendation -->
+    <div class="service-card">
+      <div class="shimmer"></div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;">
+        <div style="flex:1;">
+          <p class="service-tag">המלצת שירות</p>
+          <h3 class="service-name">תכנית שינוי ארגוני מלאה</h3>
+          <p class="service-desc">ליווי 6 חודשים: מיפוי מלא, עיצוב מחדש של תהליכים, קביעת תפקידים, אימון מנהלים, ומדידת ROI רציפה.</p>
+          <p class="service-cta">↑ ארגונות בפרופיל דומה השיגו ירידה של 62% באנטרופיה תוך 90 יום עם תכנית זו.</p>
+        </div>
+        <div style="flex-shrink:0;text-align:center;">
+          <div class="service-price">₪18,000</div>
+          <div class="service-price-sub">לחודש</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="results-footer">
+      <p style="color:#334155;font-size:11px;">COR-SYS · Deep-Grid v2.2 · DSM Organizational Diagnostic Engine</p>
+      <p>J(t) = C(t)/E(t) &nbsp;·&nbsp; LG = 0.571(−ΔDR) + 0.429(ΔPSI) &nbsp;·&nbsp; λ = 1 + κ×LG</p>
+      <p>Kahneman & Tversky (1991) · Edmondson (1999) · Argyris (1977) · Vaughan (1996)</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE 2 — CLIENT DETAIL (consultant)
+════════════════════════════════════════════════ -->
+<div id="page-client" class="page">
+
+  <!-- Header -->
+  <div class="client-header">
+    <div class="grid-texture grid-overlay"></div>
+    <div class="client-header-inner">
+      <div class="breadcrumb">לקוחות <span>›</span> טקנולוג'י ויז'ן בע"מ</div>
+      <div class="client-meta">
+        <div>
+          <div class="live-dot" style="margin-bottom:8px;">
+            <div class="pulse-wrap">
+              <div class="pulse-ring" style="background:#fb923c;"></div>
+              <div class="pulse-core" style="background:#fb923c;"></div>
+            </div>
+            <span style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#fb923c;">סטטוס פעיל</span>
+          </div>
+          <div class="client-name">טקנולוג'י ויז'ן בע"מ</div>
+          <div class="client-sub">תעשיית טכנולוגיה · 85 עובדים · לקוח מ-ינואר 2026</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn-ghost">✏️ עריכה</button>
+          <button class="btn-ghost">📋 שאלון</button>
+          <button class="btn-primary">+ ספרינט חדש</button>
+        </div>
+      </div>
+
+      <!-- DSM Banner -->
+      <div class="dsm-banner">
+        <div class="dsm-total">
+          <div class="dsm-total-val">27.6</div>
+          <div class="dsm-total-label">אנטרופיה כוללת / 40</div>
+        </div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#475569;font-family:monospace;">DSM 4D</div>
+        <div class="dsm-scores">
+          <div class="dsm-score-item">
+            <div class="dsm-code">DR</div>
+            <div class="dsm-val" style="color:#f43f5e;">8.1</div>
+            <div class="dsm-bar-wrap"><div class="dsm-bar" style="width:81%;background:#f43f5e;"></div></div>
+          </div>
+          <div class="dsm-score-item">
+            <div class="dsm-code">ND</div>
+            <div class="dsm-val" style="color:#f43f5e;">7.2</div>
+            <div class="dsm-bar-wrap"><div class="dsm-bar" style="width:72%;background:#f43f5e;"></div></div>
+          </div>
+          <div class="dsm-score-item">
+            <div class="dsm-code">UC</div>
+            <div class="dsm-val" style="color:#fbbf24;">5.5</div>
+            <div class="dsm-bar-wrap"><div class="dsm-bar" style="width:55%;background:#fbbf24;"></div></div>
+          </div>
+          <div class="dsm-score-item">
+            <div class="dsm-code">SC</div>
+            <div class="dsm-val" style="color:#fb923c;">6.8</div>
+            <div class="dsm-bar-wrap"><div class="dsm-bar" style="width:68%;background:#fb923c;"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loss KPI -->
+      <div class="loss-strip">
+        <div class="loss-badge">
+          ⚠ הפסד יומי משוער: ₪4,200/יום
+        </div>
+        <span class="loss-sub">מחיר אי-ההחלטה · 38 שעות השהיה × ₪770/שעה ÷ 7</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Body grid -->
+  <div class="client-body">
+
+    <!-- Main -->
+    <div class="client-main">
+
+      <!-- KPI row -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-top-bar" style="background:#f43f5e;opacity:0.6;"></div>
+          <div class="kpi-label">אנטרופיה</div>
+          <div class="kpi-value" style="color:#f43f5e;">27.6</div>
+          <div class="kpi-sub">קריטי — מעל 29 קריסה</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top-bar" style="background:#6366f1;opacity:0.6;"></div>
+          <div class="kpi-label">ספרינטים</div>
+          <div class="kpi-value">3</div>
+          <div class="kpi-sub">2 פעילים · 1 הושלם</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top-bar" style="background:#34d399;opacity:0.6;"></div>
+          <div class="kpi-label">LG ← ΔDR</div>
+          <div class="kpi-value" style="color:#34d399;">+0.43</div>
+          <div class="kpi-sub">שיפור מהחודש הקודם</div>
+        </div>
+      </div>
+
+      <!-- Sprints -->
+      <section>
+        <div class="section-header">
+          <span class="section-title">ספרינטים</span>
+          <button class="btn-ghost" style="font-size:.75rem;padding:6px 12px;">כל הספרינטים</button>
+        </div>
+
+        <!-- Sprint 1 -->
+        <div class="sprint-card">
+          <div class="sprint-header">
+            <div>
+              <div class="sprint-name">מיפוי תפקידים ואחריות</div>
+              <div class="sprint-dates">01/02/2026 → 28/02/2026</div>
+            </div>
+            <span class="sprint-badge" style="background:rgba(52,211,153,0.1);color:#34d399;border:1px solid rgba(52,211,153,0.2);">הושלם ✓</span>
+          </div>
+          <div class="sprint-bar-bg">
+            <div class="sprint-bar" style="width:100%;background:linear-gradient(90deg,#059669,#34d399);"></div>
+          </div>
+          <div class="sprint-pct">100% · 8/8 משימות</div>
+          <div class="sprint-tasks">
+            <span class="task-pill done">✓ ראיונות עובדים</span>
+            <span class="task-pill done">✓ מפת תפקידים</span>
+            <span class="task-pill done">✓ RACI matrix</span>
+          </div>
+        </div>
+
+        <!-- Sprint 2 -->
+        <div class="sprint-card">
+          <div class="sprint-header">
+            <div>
+              <div class="sprint-name">תכנית התערבות DR — שלב א</div>
+              <div class="sprint-dates">01/03/2026 → 31/03/2026</div>
+            </div>
+            <span class="sprint-badge" style="background:rgba(99,102,241,0.1);color:#818cf8;border:1px solid rgba(99,102,241,0.2);">פעיל</span>
+          </div>
+          <div class="sprint-bar-bg">
+            <div class="sprint-bar" style="width:55%;background:linear-gradient(90deg,#4338ca,#6366f1);"></div>
+          </div>
+          <div class="sprint-pct">55% · 5/9 משימות</div>
+          <div class="sprint-tasks">
+            <span class="task-pill done">✓ סדנת גילוי</span>
+            <span class="task-pill done">✓ מפגשי 1:1</span>
+            <span class="task-pill">⏳ פרוטוקול תקשורת</span>
+            <span class="task-pill">⏳ מעקב DR</span>
+          </div>
+        </div>
+
+        <!-- Sprint 3 -->
+        <div class="sprint-card">
+          <div class="sprint-header">
+            <div>
+              <div class="sprint-name">עיצוב מבנה ארגוני (SC)</div>
+              <div class="sprint-dates">01/04/2026 → 30/04/2026</div>
+            </div>
+            <span class="sprint-badge" style="background:rgba(100,116,139,0.1);color:#64748b;border:1px solid rgba(100,116,139,0.2);">מתוכנן</span>
+          </div>
+          <div class="sprint-bar-bg">
+            <div class="sprint-bar" style="width:0%;background:#6366f1;"></div>
+          </div>
+          <div class="sprint-pct">0% · 0/7 משימות</div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="client-sidebar">
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">פרטי לקוח</div>
+        <div class="info-row"><span class="info-key">מגזר</span><span class="info-val">טכנולוגיה</span></div>
+        <div class="info-row"><span class="info-key">גודל</span><span class="info-val">85 עובדים</span></div>
+        <div class="info-row"><span class="info-key">שירות</span><span class="info-val">תכנית שינוי מלאה</span></div>
+        <div class="info-row"><span class="info-key">תקציב</span><span class="info-val">₪18,000/חודש</span></div>
+        <div class="info-row"><span class="info-key">אחראי</span><span class="info-val">מנכ"ל + HR</span></div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">פורמולת מעקב</div>
+        <div class="formula-box">
+          ΔDR · ΔPSI · λ<br>
+          = 1 + κ × LG<br>
+          <span style="color:#475569;font-size:10px;">LG = 0.571(−ΔDR) + 0.429(ΔPSI)</span>
+        </div>
+        <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px;">
+          <div class="info-row">
+            <span class="info-key" style="font-family:monospace;">ΔDR</span>
+            <span class="info-val" style="color:#34d399;">−0.9 ↓</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key" style="font-family:monospace;">ΔPSI</span>
+            <span class="info-val" style="color:#34d399;">+0.12 ↑</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key" style="font-family:monospace;">LG</span>
+            <span class="info-val" style="color:#818cf8;">0.43</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">CBR — מקרים דומים</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="padding:10px;border-radius:.75rem;background:rgba(99,102,241,0.07);border:1px solid rgba(99,102,241,0.15);">
+            <div style="font-size:.8rem;font-weight:600;color:#e2e8f0;margin-bottom:2px;">SaaS — 90 עובדים</div>
+            <div style="font-size:10px;color:#475569;font-family:monospace;">דמיון: 91.3% · DR=8.4,ND=7.1</div>
+            <div style="font-size:10px;color:#34d399;margin-top:4px;">↓ 58% אנטרופיה בתוך 4 חודשים</div>
+          </div>
+          <div style="padding:10px;border-radius:.75rem;background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.1);">
+            <div style="font-size:.8rem;font-weight:600;color:#e2e8f0;margin-bottom:2px;">פינטק — 70 עובדים</div>
+            <div style="font-size:10px;color:#475569;font-family:monospace;">דמיון: 87.6% · DR=7.9,SC=6.5</div>
+            <div style="font-size:10px;color:#34d399;margin-top:4px;">↓ 44% אנטרופיה בתוך 3 חודשים</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function show(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    event.target.classList.add('active');
+  }
+</script>
+</body>
+</html>

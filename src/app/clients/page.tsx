@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { formatDate } from '@/lib/utils'
 import { Badge } from '@/components/ui/Badge'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 30
 
 export default async function ClientsPage() {
   const clients = await getClients()

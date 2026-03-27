@@ -14,11 +14,17 @@ export type { SimilaritySearchInput, RankedCase } from './similarity'
 export { getRecommendations } from './recommend'
 export type { RecommendationInput, RecommendationOutput } from './recommend'
 
-export { bayesianUpdate, calibrate, batchCalibrate, computeOverrideSignals } from './calibration'
-export type { CalibrationInput, CalibrationResult, OverrideSignal } from './calibration'
+export { bayesianUpdate, calibrate, batchCalibrate, computeOverrideSignals, loadPrior, persistPrior, updatePriorFromFollowup } from './calibration'
+export type { CalibrationInput, CalibrationResult, OverrideSignal, CalibrationPriorRow } from './calibration'
 
 export { computeTrajectory } from './trajectory'
 export type { TrajectoryPrediction } from './trajectory'
+
+export { computeSotaMetrics, SOTA_TARGETS } from './metrics'
+export type { SotaMetrics, CtaMetrics } from './metrics'
+
+export { evaluateRetrieval, buildSyntheticGoldenSet, RETRIEVAL_SOTA_TARGETS } from './retrieval-harness'
+export type { GoldenQuery, RetrievalEvalResult, HarnessReport } from './retrieval-harness'
 
 // Re-export resilience formula for convenience
 export {
