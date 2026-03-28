@@ -72,3 +72,9 @@
 **Upsell:**  
 - Land & Expand — שכפול הספרינט למחלקות נוספות  
 - Resilience Retainer — תחזוקה רבעונית, TTX דינמי, בדיקת דופק, מניעת אנטרופיה חוזרת  
+
+---
+
+## מסגרת שווי והכנסות
+
+טבלת תרחישים (ARR, ספרינטים, מרווח) ומכפילים שמרניים: [`valuation-framework.md`](./valuation-framework.md).

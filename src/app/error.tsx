@@ -24,6 +24,11 @@ export default function GlobalError({
         <p className="text-sm text-slate-400 leading-relaxed">
           אירעה שגיאה בלתי צפויה. אפשר לנסות שוב או לחזור לדף הראשי.
         </p>
+        {process.env.NODE_ENV === 'development' && error.message && (
+          <p className="text-xs text-amber-200/90 font-mono text-right break-all px-2" dir="ltr">
+            {error.message}
+          </p>
+        )}
         {error.digest && (
           <p className="text-[10px] text-slate-600 font-mono">
             ref: {error.digest}

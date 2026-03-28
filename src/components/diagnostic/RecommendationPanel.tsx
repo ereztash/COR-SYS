@@ -20,6 +20,8 @@ import type { GoldenQuestionAnswers } from '@/lib/dsm-policy-engine'
 import { classifyTrajectory } from '@/lib/resilience-formula'
 import { ModeBlurb } from '@/components/ui/ModeBlurb'
 import { logUxEvent } from '@/lib/ux-metrics'
+import { getStrongestCases } from '@/lib/calibration-cases'
+import { OSINT_DISCLAIMER_SHORT } from '@/lib/osint-display-policy'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -162,6 +164,8 @@ function Skeleton() {
 // ─── Cold Start Notice ────────────────────────────────────────────────────────
 
 function ColdStartCard({ fallback }: { fallback?: PolicyFallback }) {
+  const topCases = getStrongestCases().slice(0, 3)
+
   return (
     <div className="bento-card p-6 border-t-4 border-slate-600">
       <div className="flex items-center justify-between mb-4">
@@ -175,7 +179,7 @@ function ColdStartCard({ fallback }: { fallback?: PolicyFallback }) {
         הדיוק ישתפר ככל שתצטברו מקרים עם follow-up.
       </p>
       {fallback && (
-        <div className="bg-slate-800/60 rounded-xl p-4">
+        <div className="bg-slate-800/60 rounded-xl p-4 mb-4">
           <p className="text-base font-black text-white mb-1">
             {CTA_LABELS[fallback.ctaType] ?? fallback.ctaType}
           </p>
@@ -185,6 +189,22 @@ function ColdStartCard({ fallback }: { fallback?: PolicyFallback }) {
           ) : (
             <span className="text-xs text-slate-500">טווח פעולה: {fallback.timeToActMonths} חודשים</span>
           )}
+        </div>
+      )}
+
+      {topCases.length > 0 && (
+        <div className="rounded-xl border border-slate-700/50 bg-slate-900/35 px-4 py-3">
+          <p className="type-meta mb-2">למה מדידה חוזרת חשובה — דוגמאות ציבוריות</p>
+          <div className="space-y-2">
+            {topCases.map((c) => (
+              <div key={c.id} className="flex items-start gap-2 text-[11px] text-slate-300">
+                <span className="text-slate-500 shrink-0">{c.company}</span>
+                <span className="text-slate-600">—</span>
+                <span>{c.kpis[0]} שימש כנקודת בקרה חוזרת לאורך {c.period}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-[10px] text-slate-600 mt-2 italic">{OSINT_DISCLAIMER_SHORT}</p>
         </div>
       )}
     </div>

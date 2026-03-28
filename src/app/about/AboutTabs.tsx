@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { Accordion } from '@/components/ui/Accordion'
+import { getStrongestCases, type CalibrationCase } from '@/lib/calibration-cases'
+import { OSINT_DISCLAIMER_SHORT } from '@/lib/osint-display-policy'
 
 const TABS = [
   { id: 'identity', label: 'זהות', sub: 'Trust', icon: '🟣' },
@@ -380,6 +382,83 @@ const COMPETITORS = [
   { name: 'יועצי AI/אוטומציה מקומיים', tag: 'Tech Only', color: 'text-cyan-400', desc: 'מתמקדים בטכנולוגיה בלבד – חסרים את העדשה הקלינית. לא מזהים טראומה ארגונית, NOD או סחיפה סמנטית. פותרים סימפטומים, לא שורשים.' },
 ] as const
 
+function CaseSummaryCard({ c }: { c: CalibrationCase }) {
+  const primarySource = c.sources[0]
+  const axes = Object.entries(c.frameworkFit.before)
+    .filter(([, v]) => v.length > 0)
+    .map(([k]) => {
+      const labels: Record<string, string> = {
+        decision_load: 'עומס החלטות',
+        cross_functional_friction: 'חיכוך בין-פונקציוני',
+        semantic_drift: 'סחיפה סמנטית',
+        systemic_resilience: 'חוסן מערכתי',
+      }
+      return labels[k] ?? k
+    })
+
+  return (
+    <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/30">
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <div>
+          <p className="text-sm font-bold text-white">{c.company}</p>
+          <p className="text-[10px] text-slate-500">{c.period} · {c.industry} · {c.country}</p>
+        </div>
+        <div className="flex flex-wrap gap-1 justify-end">
+          {axes.map((axis) => (
+            <span key={axis} className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-700/50 text-slate-400 border border-slate-700/40">
+              {axis}
+            </span>
+          ))}
+        </div>
+      </div>
+      <p className="text-[11px] text-slate-300 leading-relaxed mb-2">{c.crisis}</p>
+      <p className="text-[10px] text-slate-500">
+        <span className="text-slate-400">בקרה:</span> {c.kpis[0]}
+      </p>
+      {primarySource && (
+        <a
+          href={primarySource.url}
+          target="_blank"
+          rel="noreferrer"
+          className="text-[10px] text-indigo-400 hover:text-indigo-300 transition-colors mt-1 inline-block"
+        >
+          מקור: {primarySource.label} ↗
+        </a>
+      )}
+    </div>
+  )
+}
+
+function FieldGroundingSection() {
+  const cases = getStrongestCases().slice(0, 4)
+  if (cases.length === 0) return null
+
+  return (
+    <section className="bento-card col-span-1 md:col-span-2 xl:col-span-4 p-6 md:p-8 border-t-4 border-t-sky-500">
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <h2 className="text-xl font-bold text-white" style={{ fontFamily: 'Heebo, sans-serif' }}>
+            ביסוס שדה — דפוסים ציבוריים <span className="text-sky-400 font-light">| Calibration</span>
+          </h2>
+          <p className="text-xs text-slate-400 mt-1">
+            מקרים ציבוריים שבהם הדפוסים שהמסגרת מתארת (עומס החלטות, חיכוך, סחיפה, חוסן) זוהו בדיעבד.
+            הניסוח הוא &quot;מתאים לדפוס&quot; — לא הוכחה סיבתית.
+          </p>
+        </div>
+        <span className="bg-sky-500/20 text-sky-300 text-[10px] px-2 py-1 rounded-full font-bold border border-sky-500/30 shrink-0">
+          {cases.length} מקרים
+        </span>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+        {cases.map((c) => (
+          <CaseSummaryCard key={c.id} c={c} />
+        ))}
+      </div>
+      <p className="text-[10px] text-slate-600 italic">{OSINT_DISCLAIMER_SHORT}</p>
+    </section>
+  )
+}
+
 function TabSolution() {
   return (
     <>
@@ -517,6 +596,8 @@ function TabSolution() {
           </div>
         </div>
       </section>
+
+      <FieldGroundingSection />
 
       <section className="bento-card col-span-1 md:col-span-2 p-6 md:p-8 border-t-4 border-slate-600">
         <div className="flex justify-between items-center mb-4">
