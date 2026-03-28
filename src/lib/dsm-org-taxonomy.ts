@@ -9,16 +9,17 @@ import type { PathologyCode } from './dsm-engine'
 
 // ─── Extended Pathology Codes ────────────────────────────────────────────────
 
-export type ExtendedPathologyCode = PathologyCode | 'ZSG' | 'CLT' | 'OLD'
+export type ExtendedPathologyCode = PathologyCode | 'ZSG' | 'CLT' | 'OLD' | 'PSG'
 
 export const EXTENDED_PATHOLOGY_NAMES: Record<ExtendedPathologyCode, { he: string; en: string }> = {
   DR: { he: 'הדדיות מעוותת', en: 'Distorted Reciprocity' },
   ND: { he: 'נורמליזציית סטייה', en: 'Normalization of Deviance' },
   UC: { he: 'כיול לא-מייצג', en: 'Unrepresentative Calibration' },
   SC: { he: 'עמימות מבנית', en: 'Structural Clarity Deficit' },
-  ZSG: { he: 'ריצפת בטיחות אפסית', en: 'Zero Safety Ground' },
+  ZSG: { he: 'תרבות משחק סכום-אפס', en: 'Zero-Sum Game Culture' },
   CLT: { he: 'מלכודת עומס קוגניטיבי', en: 'Cognitive Load Trap' },
   OLD: { he: 'גירעון למידה ארגוני', en: 'Organizational Learning Deficit' },
+  PSG: { he: 'גירעון בטיחות פסיכולוגי', en: 'Psychological Safety Gap' },
 }
 
 // ─── T/A/M Canonical Signatures ──────────────────────────────────────────────
@@ -34,9 +35,10 @@ export const TAM_SIGNATURES: Record<ExtendedPathologyCode, TAMSignature> = {
   ND: { T: 4, A: 3, M: 5 },
   UC: { T: 3, A: 4, M: 3 },
   SC: { T: 5, A: 3, M: 4 },
-  ZSG: { T: 2, A: 5, M: 3 },
+  ZSG: { T: 3, A: 3, M: 5 },
   CLT: { T: 2, A: 5, M: 4 },
-  OLD: { T: 3, A: 4, M: 3 },
+  OLD: { T: 3, A: 4, M: 4 },
+  PSG: { T: 2, A: 5, M: 3 },
 }
 
 // ─── DSM-Org 7 Parts ─────────────────────────────────────────────────────────
@@ -114,11 +116,11 @@ export const DSM_ORG_PARTS: DsmOrgPart[] = [
     description: 'כשלים ביכולת הארגון לנהל זרימת מידע חופשית ולהציף טעויות ללא פחד',
     subTopics: [
       {
-        id: 'zsg',
-        nameHe: 'ריצפת בטיחות אפסית (ZSG)',
-        nameEn: 'Zero Safety Ground',
-        description: 'קריסת "אזור הלמידה" ומעבר ל"אזור החרדה" עקב ניהול מבוסס-ענישה',
-        relatedPathologies: ['ZSG', 'UC'],
+        id: 'psg',
+        nameHe: 'גירעון בטיחות פסיכולוגי (PSG)',
+        nameEn: 'Psychological Safety Gap',
+        description: 'קריסת "אזור הלמידה" ומעבר ל"אזור החרדה" עקב ניהול מבוסס-ענישה. חסימת Near-Miss ודיווח כנה.',
+        relatedPathologies: ['PSG', 'ZSG', 'UC'],
         diagnosticQuestions: [
           'האם עובדים מדווחים על כמעט-תקלות (Near-Miss) ללא פחד מסנקציות?',
           'מה הפער בין הצהרות ההנהלה לנכונות בפועל להציף טעויות?',
@@ -131,7 +133,7 @@ export const DSM_ORG_PARTS: DsmOrgPart[] = [
         nameHe: 'רעילות הדוגרי',
         nameEn: 'Dugri Toxicity',
         description: 'שימוש בישירות כמסווה לאלימות מילולית ותרבות של האשמה',
-        relatedPathologies: ['ZSG', 'DR'],
+        relatedPathologies: ['PSG', 'ZSG', 'DR'],
         diagnosticQuestions: [
           'האם "ישירות" בפגישות הנהלה ירדה לפסים אישיים?',
           'מה שיעור האינטראקציות המילוליות הבלתי-מקצועיות בצוותים?',
@@ -319,7 +321,7 @@ export const DSM_ORG_PARTS: DsmOrgPart[] = [
         nameHe: 'היררכיה סיבתית',
         nameEn: 'Burke-Litwin Causal Model',
         description: 'הבחנה בין מחוללי שינוי טרנספורמטיביים לטרנזקציוניים',
-        relatedPathologies: ['DR', 'SC', 'ZSG'],
+        relatedPathologies: ['DR', 'SC', 'PSG'],
         diagnosticQuestions: [
           'האם הכשל הוא ברמת התרבות/חזון (טרנספורמטיבי) או ברמת התהליכים (טרנזקציוני)?',
           'האם שינוי במנהיגות יפתור את הבעיה, או שדרוש שינוי מבני?',
@@ -331,10 +333,10 @@ export const DSM_ORG_PARTS: DsmOrgPart[] = [
         id: 'sequencing-logic',
         nameHe: 'כללי סיקוונסינג',
         nameEn: 'Comorbidity Sequencing Logic',
-        description: 'חוקים: ZSG לפני OLD, CLT לפני SC, ביטחון פסיכולוגי קודם ללמידה',
-        relatedPathologies: ['ZSG', 'OLD', 'CLT', 'SC'],
+        description: 'חוקים: PSG לפני OLD, CLT לפני SC, ביטחון פסיכולוגי קודם ללמידה',
+        relatedPathologies: ['PSG', 'OLD', 'CLT', 'SC'],
         diagnosticQuestions: [
-          'האם ניסיון לדרוש למידה (OLD) נכשל כי אין ביטחון פסיכולוגי (ZSG)?',
+          'האם ניסיון לדרוש למידה (OLD) נכשל כי אין ביטחון פסיכולוגי (PSG)?',
           'האם שינוי מבני (SC) נחסם בגלל עומס קוגניטיבי (CLT)?',
           'מהו סדר הפעולות הנכון על פי היררכיית הסיבתיות?',
         ],
@@ -353,7 +355,7 @@ export const DSM_ORG_PARTS: DsmOrgPart[] = [
         nameHe: 'תרבות צודקת ותחקיר מוקיר',
         nameEn: 'Just Culture & Appreciative Inquiry',
         description: 'רשת מוגנת להודאה בטעויות — ECRI + למידה מהצלחות',
-        relatedPathologies: ['ZSG', 'OLD'],
+        relatedPathologies: ['PSG', 'ZSG', 'OLD'],
         diagnosticQuestions: [
           'האם קיים מנגנון הבחנה בין טעות אנוש, התנהגות מסוכנת, ופזיזות?',
           'האם ישנו פורום Triage לדיווחי Near-Miss?',
@@ -436,15 +438,15 @@ export const RED_FLAGS: RedFlag[] = [
     nameEn: 'False Positive eNPS Scores',
     description: 'סקרים מראים "הכל בסדר" אך פלטפורמות אנונימיות חושפות סטגנציה שקטה',
     symptomExample: 'eNPS גבוה בעוד ב-Blind/Reddit שיח על "מצב הישרדות"',
-    relatedPathologies: ['DR', 'ZSG'],
+    relatedPathologies: ['DR', 'PSG'],
   },
   {
     id: 5, severity: 'medium',
     nameHe: 'היעדר דיווחי Near-Miss',
     nameEn: 'Zero Near-Miss Reports',
-    description: 'צוותים "נטולי בעיות" — סימן לביטחון פסיכולוגי אפסי (ZSG)',
+    description: 'צוותים "נטולי בעיות" — סימן לגירעון בטיחות פסיכולוגי (PSG)',
     symptomExample: 'אפס דיווחי כמעט-תקלה — העובדים מפחדים מענישה',
-    relatedPathologies: ['ZSG', 'ND'],
+    relatedPathologies: ['PSG', 'ND'],
   },
   {
     id: 6, severity: 'medium',
@@ -452,7 +454,7 @@ export const RED_FLAGS: RedFlag[] = [
     nameEn: 'Single-Loop & Blame-Based AAR',
     description: 'פוסט-מורטם = "מי פישל?" במקום שאלות יסוד',
     symptomExample: 'AAR מסתיים בהאשמות הדדיות ותיקוני טלאי',
-    relatedPathologies: ['OLD', 'ZSG'],
+    relatedPathologies: ['OLD', 'PSG'],
   },
   {
     id: 7, severity: 'medium',
@@ -501,11 +503,11 @@ export interface SequencingRule {
 
 export const SEQUENCING_RULES: SequencingRule[] = [
   {
-    id: 'zsg-before-old',
-    condition: 'IF ZSG ≥ 2 AND OLD ≥ 2',
-    prerequisite: 'ZSG',
+    id: 'psg-before-old',
+    condition: 'IF PSG ≥ 2 AND OLD ≥ 2',
+    prerequisite: 'PSG',
     blocked: 'OLD',
-    rationale: 'אי אפשר לדרוש למידה מטעויות (OLD) כשהעובדים מפחדים להודות בטעויות (ZSG). יש לבנות ביטחון פסיכולוגי קודם.',
+    rationale: 'אי אפשר לדרוש למידה מטעויות (OLD) כשהעובדים מפחדים להודות בטעויות (PSG). יש לבנות ביטחון פסיכולוגי קודם.',
     severity: 'mandatory',
   },
   {
@@ -517,11 +519,11 @@ export const SEQUENCING_RULES: SequencingRule[] = [
     severity: 'mandatory',
   },
   {
-    id: 'zsg-before-nd',
-    condition: 'IF ZSG ≥ 2 AND ND ≥ 2',
-    prerequisite: 'ZSG',
+    id: 'psg-before-nd',
+    condition: 'IF PSG ≥ 2 AND ND ≥ 2',
+    prerequisite: 'PSG',
     blocked: 'ND',
-    rationale: 'פתרון נרמול סטיות (ND) דורש דיווח כנה. ללא ZSG — העובדים ימשיכו להסתיר מעקפים.',
+    rationale: 'פתרון נרמול סטיות (ND) דורש דיווח כנה. ללא ביטחון פסיכולוגי (PSG) — העובדים ימשיכו להסתיר מעקפים.',
     severity: 'mandatory',
   },
   {
@@ -590,7 +592,7 @@ export const EXTENDED_INTERVENTIONS: ExtendedIntervention[] = [
     id: 'just-culture-protocol',
     nameHe: 'פרוטוקול תרבות צודקת (ECRI)',
     nameEn: 'Just Culture Protocol',
-    triggerPathologies: ['ZSG', 'OLD'],
+    triggerPathologies: ['PSG', 'ZSG', 'OLD'],
     horizon: 'חודשים 1-3',
     steps: [
       'הכשרת מנהלים להבחנה: טעות אנוש / התנהגות מסוכנת / פזיזות',
@@ -635,7 +637,7 @@ export const EXTENDED_INTERVENTIONS: ExtendedIntervention[] = [
     id: 'cascade-halt',
     nameHe: 'פרוטוקול עצירת קסקדה',
     nameEn: 'Cascade State Halt Protocol',
-    triggerPathologies: ['DR', 'ND', 'UC', 'SC', 'ZSG', 'CLT', 'OLD'],
+    triggerPathologies: ['DR', 'ND', 'UC', 'SC', 'ZSG', 'CLT', 'OLD', 'PSG'],
     horizon: 'מיידי (0-7 ימים)',
     steps: [
       'עצירת כל היוזמות הארגוניות (Organizational Halt)',
