@@ -11,7 +11,9 @@ import {
   type DsmPathologyEntry,
   type InterventionPlaybook,
 } from '@/lib/diagnostic/dsm-org-model'
-import { PATHOLOGY_PROTOCOL_MAP } from '@/lib/diagnostic/action-plan'
+import { PATHOLOGY_PROTOCOL_MAP, MANDATORY_COMORBIDITY_SEQUENCES } from '@/lib/diagnostic/action-plan'
+import { DSM_ORG_PARTS, SEQUENCING_RULES } from '@/lib/dsm-org-taxonomy'
+import { DSM_CONTENT_INDEX } from '@/lib/diagnostic/dsm-content-index'
 import { logUxEvent } from '@/lib/ux-metrics'
 
 // ─── Nav sections ─────────────────────────────────────────────────────────────
@@ -21,8 +23,10 @@ const NAV_SECTIONS = [
   { id: 'process',       label: 'II. תהליך אבחון' },
   { id: 'taxonomy',      label: 'III. טקסונומיה קלינית' },
   { id: 'comorbidity',   label: 'III.6 Comorbidity' },
+  { id: 'sequencing',    label: 'IV. חוקי סיקוונסינג' },
   { id: 'interventions', label: 'V. חוברות התערבות' },
   { id: 'instruments',   label: 'VI. כלי מדידה' },
+  { id: 'dsm7x21',       label: 'VII. DSM 7×21' },
 ]
 
 // ─── Severity badge ───────────────────────────────────────────────────────────
@@ -652,6 +656,54 @@ export function DsmOrgViewer() {
                   <InterventionCard key={p.id} playbook={p} />
                 ))}
               </div>
+
+              {/* IUS Framework Reference */}
+              <div className="bento-card p-4 md:p-5 mt-5 border-t-4 border-t-indigo-500">
+                <p className="type-meta mb-1">V.8 — מנוע IUS</p>
+                <h3 className="type-h2 text-white mb-3">מנגנון דירוג התערבויות (IUS Score &amp; Constraint Envelope)</h3>
+                <p className="text-xs text-slate-400 leading-relaxed mb-4">כל התערבות מקבלת ציון IUS (0–100) המשקלל ארבעה ממדים. ציון IUS גבוה יותר = עדיפות גבוהה יותר. אם ההתערבות חורגת מ&quot;מעטפת האילוצים&quot; (תקציב/זמן/עייפות), נבדקת גרסת MVC מצומצמת.</p>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+                  {[
+                    { code: 'IAM', label: 'הלימות', desc: 'האם ההתערבות מתאימה לפתולוגיה?', weight: '25%', color: 'text-emerald-300' },
+                    { code: 'AIM', label: 'מקובלות', desc: 'האם העובדים יקבלו את השינוי?', weight: '20%', color: 'text-amber-300' },
+                    { code: 'FIM', label: 'היתכנות', desc: 'האם ישים תפעולית ותקציבית?', weight: '20%', color: 'text-blue-300' },
+                    { code: 'Impact', label: 'אימפקט', desc: 'גודל ההשפעה הצפוי', weight: '35%', color: 'text-red-300' },
+                  ].map(d => (
+                    <div key={d.code} className="surface-strong rounded-xl p-3 text-center">
+                      <p className={`type-kpi text-lg font-black mb-1 ${d.color}`}>{d.code}</p>
+                      <p className="text-[10px] text-slate-200 font-medium mb-0.5">{d.label}</p>
+                      <p className="text-[9px] text-slate-400">{d.desc}</p>
+                      <p className="type-meta mt-1 text-slate-500">משקל: {d.weight}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="rounded-xl panel-nd px-4 py-3">
+                    <p className="type-meta text-amber-300 mb-1">Constraint Envelope</p>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      <strong className="text-white">T-constraint:</strong> אם אופק ההתערבות חורג מתקציב הזמן → חריגה.<br />
+                      <strong className="text-white">R-constraint:</strong> אם AIM נמוך מסף עייפות השינוי → חריגה.<br />
+                      אם חריגה + IAM ≥ 4 → גרסת <strong className="text-emerald-300">MVC</strong> (Minimum Viable Change) מיושמת עם קנס 10 נק&apos;.
+                    </p>
+                  </div>
+                  <div className="rounded-xl panel-uc px-4 py-3">
+                    <p className="type-meta text-indigo-300 mb-1">MVC — שינוי מינימלי חיוני</p>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      כשהתערבות מלאה לא אפשרית, המערכת מצמצמת אוטומטית:<br />
+                      • <strong className="text-white">T-violation:</strong> רק רכיב ה-Tourniquet הישיר.<br />
+                      • <strong className="text-white">R-violation:</strong> פיילוט עם קבוצה מוכנה אחת.<br />
+                      • <strong className="text-white">שניהם:</strong> צוות-פיילוט אחד בלבד, ללא שינוי מלא עד אישור תוצאות.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-3 rounded-xl panel-dr px-4 py-3">
+                  <p className="type-meta text-red-300 mb-1">דורש כיול (POC 0.70–0.80)</p>
+                  <p className="text-xs text-slate-300">ציוני AIM/IAM/FIM הנוכחיים מבוססים על ספרות + הערכות מומחה. נדרש כיול שדה על 2–3 ארגוני פיילוט לפני פריסה מלאה.</p>
+                </div>
+              </div>
             </section>
 
             {/* Section VI: Assessment Instruments */}
@@ -777,6 +829,110 @@ export function DsmOrgViewer() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </section>
+
+            {/* Section IV: Sequencing Rules */}
+            <section id="section-sequencing" className="smooth-section">
+              <div className="bento-card p-5 md:p-6 border-t-4 border-t-red-500">
+                <p className="type-meta mb-1">חלק IV</p>
+                <h2 className="type-h1 text-white mb-2">חוקי סיקוונסינג וקומורבידיות</h2>
+                <p className="type-body text-slate-400 mb-5">חוקים דטרמיניסטיים המגדירים איזו פתולוגיה יש לטפל ראשונה. הפרה של חוקים אלו מובילה לנזק יאטרוגני (נזק מהטיפול עצמו).</p>
+
+                <div className="space-y-3 mb-5">
+                  {SEQUENCING_RULES.map(rule => (
+                    <div key={rule.id} className={`rounded-xl p-4 border ${rule.severity === 'mandatory' ? 'border-red-500/60 panel-dr' : 'border-amber-500/40 panel-nd'}`}>
+                      <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+                        <span className={`status-badge ${rule.severity === 'mandatory' ? 'status-danger' : 'status-warning'}`}>
+                          {rule.severity === 'mandatory' ? 'חובה' : 'מומלץ'}
+                        </span>
+                        <code className="text-xs text-slate-400 font-mono">{rule.condition}</code>
+                      </div>
+                      <div className="flex items-center gap-2 mb-2 text-sm">
+                        <span className="status-badge status-info">{rule.prerequisite}</span>
+                        <span className="text-slate-500">→ לפני →</span>
+                        <span className="status-badge status-warning">{rule.blocked}</span>
+                      </div>
+                      <p className="text-xs text-slate-300 leading-relaxed">{rule.rationale}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="rounded-xl panel-nd px-4 py-3 mb-4">
+                  <p className="type-meta text-amber-300 mb-1">חוקי תעדוף מודל ה-DSM-Org</p>
+                  <div className="space-y-2">
+                    {MANDATORY_COMORBIDITY_SEQUENCES.map(seq => (
+                      <div key={seq.id} className="flex items-center gap-2 text-xs text-slate-300">
+                        <span className="status-badge status-info">{seq.first}</span>
+                        <span className="text-slate-500">→</span>
+                        <span className="status-badge status-warning">{seq.then}</span>
+                        <span className="text-slate-500">|</span>
+                        <span>{seq.when}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="rounded-xl panel-dr px-4 py-3">
+                  <p className="type-meta text-red-300 mb-1">אזהרה קלינית</p>
+                  <p className="text-xs text-slate-300">כל ניסיון לפתור NOD בארגון ללא ביטחון פסיכולוגי (PSG) ייכשל — העובדים ימשיכו להסתיר סטיות. יש לבנות PSG קודם. באופן דומה, שינוי מבני (SC) נחסם כשעומס קוגניטיבי (CLT) גבוה.</p>
+                </div>
+              </div>
+            </section>
+
+            {/* Section VII: DSM 7×21 Overview */}
+            <section id="section-dsm7x21" className="smooth-section">
+              <div className="mb-4">
+                <p className="type-meta mb-1">חלק VII</p>
+                <h2 className="type-h1 text-white">DSM-Org 7×21 — מפת תוכן מלאה</h2>
+                <p className="type-body text-slate-400 mt-1">שבעה חלקים, 21 תתי-נושאים — כל אחד מקושר לפתולוגיות, צירי אבחון, וחוברות התערבות.</p>
+              </div>
+              <div className="space-y-6">
+                {DSM_ORG_PARTS.map(part => (
+                  <div key={part.part} className="bento-card p-4 md:p-5 border-t-4 border-t-slate-500">
+                    <div className="flex items-start justify-between gap-3 mb-3 flex-wrap">
+                      <div>
+                        <p className="type-meta mb-0.5">Part {part.part}</p>
+                        <h3 className="type-h2 text-white">{part.nameHe}</h3>
+                        <p className="text-xs text-slate-400">{part.nameEn}</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-slate-300 mb-4">{part.description}</p>
+                    <div className="space-y-3">
+                      {part.subTopics.map(sub => {
+                        const link = DSM_CONTENT_INDEX.find(l => l.subtopicId === sub.id)
+                        return (
+                          <div key={sub.id} className="surface-strong rounded-xl p-3">
+                            <div className="flex items-start justify-between gap-2 mb-2 flex-wrap">
+                              <div>
+                                <p className="text-sm font-bold text-slate-200">{sub.nameHe}</p>
+                                <p className="text-[10px] text-slate-500">{sub.nameEn}</p>
+                              </div>
+                              {link && (
+                                <div className="flex gap-1 flex-wrap">
+                                  {link.pathologyTypes.map(pt => (
+                                    <a key={pt} href={`#pathology-${pt}`} className="status-badge status-info text-[9px]">{pt}</a>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                            <p className="text-xs text-slate-400 leading-relaxed mb-2">{sub.description}</p>
+                            {link && link.tags.length > 0 && (
+                              <div className="flex gap-1 flex-wrap">
+                                {link.tags.slice(0, 4).map(tag => (
+                                  <span key={tag} className="text-[9px] text-slate-500 bg-slate-800/50 rounded px-1.5 py-0.5">{tag}</span>
+                                ))}
+                              </div>
+                            )}
+                            {link && link.playbookIds.length > 0 && (
+                              <p className="text-[10px] text-emerald-400 mt-1.5">התערבויות: {link.playbookIds.join(', ')}</p>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                ))}
               </div>
             </section>
 
