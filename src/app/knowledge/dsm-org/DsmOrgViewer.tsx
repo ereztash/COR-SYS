@@ -656,6 +656,54 @@ export function DsmOrgViewer() {
                   <InterventionCard key={p.id} playbook={p} />
                 ))}
               </div>
+
+              {/* IUS Framework Reference */}
+              <div className="bento-card p-4 md:p-5 mt-5 border-t-4 border-t-indigo-500">
+                <p className="type-meta mb-1">V.8 — מנוע IUS</p>
+                <h3 className="type-h2 text-white mb-3">מנגנון דירוג התערבויות (IUS Score &amp; Constraint Envelope)</h3>
+                <p className="text-xs text-slate-400 leading-relaxed mb-4">כל התערבות מקבלת ציון IUS (0–100) המשקלל ארבעה ממדים. ציון IUS גבוה יותר = עדיפות גבוהה יותר. אם ההתערבות חורגת מ&quot;מעטפת האילוצים&quot; (תקציב/זמן/עייפות), נבדקת גרסת MVC מצומצמת.</p>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+                  {[
+                    { code: 'IAM', label: 'הלימות', desc: 'האם ההתערבות מתאימה לפתולוגיה?', weight: '25%', color: 'text-emerald-300' },
+                    { code: 'AIM', label: 'מקובלות', desc: 'האם העובדים יקבלו את השינוי?', weight: '20%', color: 'text-amber-300' },
+                    { code: 'FIM', label: 'היתכנות', desc: 'האם ישים תפעולית ותקציבית?', weight: '20%', color: 'text-blue-300' },
+                    { code: 'Impact', label: 'אימפקט', desc: 'גודל ההשפעה הצפוי', weight: '35%', color: 'text-red-300' },
+                  ].map(d => (
+                    <div key={d.code} className="surface-strong rounded-xl p-3 text-center">
+                      <p className={`type-kpi text-lg font-black mb-1 ${d.color}`}>{d.code}</p>
+                      <p className="text-[10px] text-slate-200 font-medium mb-0.5">{d.label}</p>
+                      <p className="text-[9px] text-slate-400">{d.desc}</p>
+                      <p className="type-meta mt-1 text-slate-500">משקל: {d.weight}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="rounded-xl panel-nd px-4 py-3">
+                    <p className="type-meta text-amber-300 mb-1">Constraint Envelope</p>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      <strong className="text-white">T-constraint:</strong> אם אופק ההתערבות חורג מתקציב הזמן → חריגה.<br />
+                      <strong className="text-white">R-constraint:</strong> אם AIM נמוך מסף עייפות השינוי → חריגה.<br />
+                      אם חריגה + IAM ≥ 4 → גרסת <strong className="text-emerald-300">MVC</strong> (Minimum Viable Change) מיושמת עם קנס 10 נק&apos;.
+                    </p>
+                  </div>
+                  <div className="rounded-xl panel-uc px-4 py-3">
+                    <p className="type-meta text-indigo-300 mb-1">MVC — שינוי מינימלי חיוני</p>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      כשהתערבות מלאה לא אפשרית, המערכת מצמצמת אוטומטית:<br />
+                      • <strong className="text-white">T-violation:</strong> רק רכיב ה-Tourniquet הישיר.<br />
+                      • <strong className="text-white">R-violation:</strong> פיילוט עם קבוצה מוכנה אחת.<br />
+                      • <strong className="text-white">שניהם:</strong> צוות-פיילוט אחד בלבד, ללא שינוי מלא עד אישור תוצאות.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-3 rounded-xl panel-dr px-4 py-3">
+                  <p className="type-meta text-red-300 mb-1">דורש כיול (POC 0.70–0.80)</p>
+                  <p className="text-xs text-slate-300">ציוני AIM/IAM/FIM הנוכחיים מבוססים על ספרות + הערכות מומחה. נדרש כיול שדה על 2–3 ארגוני פיילוט לפני פריסה מלאה.</p>
+                </div>
+              </div>
             </section>
 
             {/* Section VI: Assessment Instruments */}
