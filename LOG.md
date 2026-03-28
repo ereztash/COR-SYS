@@ -121,3 +121,8 @@ const { data, error } = await rpc('function_name', { ...args })
 - E2E test: API reached OpenAI but got 429 (quota) — key configured, billing needed
 - **Friction:** MCP DML read-only (tried 2 tools), seed vectors NULL breaks HNSW, build not run after Phase 2
 - **Key lesson:** Run `npm run build` after EVERY phase. Supabase MCP cannot do DML — plan for manual SQL Editor steps.
+
+### 2026-03-28 — Valuation framework doc
+- Added `docs/valuation-framework.md` (ARR / ספרינטים / ריטיינר / מרווח / מכפילים שמרניים)
+- Linked from `docs/icp-and-sales.md`
+- `npm test` (110) + `npm run build` — exit 0
