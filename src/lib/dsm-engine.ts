@@ -6,11 +6,13 @@
  *
  * Based on: integrated-model.md (N=10,000 simulation)
  * Pathologies: DR (Distorted Reciprocity), ND (Normalization of Deviance), UC (Unrepresentative Calibration)
+ * Extended (v2): ZSG (Zero Safety Ground), CLT (Cognitive Load Trap), OLD (Organizational Learning Deficit)
  * Correlations: DR↔ND r=.19, DR↔UC r=-.27, ND↔UC r=.28
  * Psychometrics: α DR=.872, ND=.881, UC=.893
  */
 
 import { computePsiFromAnswers, type QuestionnaireAnswer } from './corsys-questionnaire'
+import { TAM_SIGNATURES, type TAMSignature, type ExtendedPathologyCode, SEQUENCING_RULES } from './dsm-org-taxonomy'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -34,6 +36,25 @@ export interface DSMDiagnosis {
   severityProfile: SeverityProfile
   pathologies: PathologySeverity[]
   totalEntropyScore: number           // 0–40 (סכום ציוני חומרה — 4 ממדים)
+  tamSignature?: TAMSignature         // T/A/M cost vector for this diagnosis
+  cascadeState?: CascadeStateInfo     // Cascade State detection (v2)
+  sequencingViolations?: SequencingViolation[] // Active sequencing rule violations
+}
+
+export interface CascadeStateInfo {
+  isActive: boolean
+  concurrentSevereCount: number       // Number of pathologies at level 3
+  triggerDescription: string
+  haltRequired: boolean
+}
+
+export interface SequencingViolation {
+  ruleId: string
+  condition: string
+  prerequisite: string
+  blocked: string
+  rationale: string
+  severity: 'mandatory' | 'recommended'
 }
 
 export interface ComorbidityEdge {
@@ -566,4 +587,101 @@ export const LEVEL_COLORS: Record<SeverityLevel, { text: string; bg: string; bar
   1: { text: 'text-emerald-400', bg: 'bg-emerald-500', bar: 'bg-emerald-500' },
   2: { text: 'text-yellow-400', bg: 'bg-yellow-400', bar: 'bg-yellow-400' },
   3: { text: 'text-red-400', bg: 'bg-red-500', bar: 'bg-red-500' },
+}
+
+// ─── T/A/M Signature Computation ─────────────────────────────────────────────
+
+/**
+ * Compute the T/A/M cost vector for a diagnosis.
+ * Weighted average of canonical pathology signatures by severity score.
+ */
+export function computeTAMSignature(diagnosis: DSMDiagnosis): TAMSignature {
+  let totalWeight = 0
+  let wT = 0, wA = 0, wM = 0
+
+  for (const p of diagnosis.pathologies) {
+    if (p.level < 2) continue // only count moderate+ pathologies
+    const sig = TAM_SIGNATURES[p.code as ExtendedPathologyCode]
+    if (!sig) continue
+    const weight = p.score
+    wT += sig.T * weight
+    wA += sig.A * weight
+    wM += sig.M * weight
+    totalWeight += weight
+  }
+
+  if (totalWeight === 0) return { T: 1, A: 1, M: 1 }
+  return {
+    T: Math.min(5, Math.round((wT / totalWeight) * 10) / 10),
+    A: Math.min(5, Math.round((wA / totalWeight) * 10) / 10),
+    M: Math.min(5, Math.round((wM / totalWeight) * 10) / 10),
+  }
+}
+
+// ─── Cascade State Detection ─────────────────────────────────────────────────
+
+/**
+ * Detect Cascade State (CS) — systemic cross-pathology failure.
+ * Triggers when 3+ pathologies at severity 3 with high entropy.
+ */
+export function detectCascadeState(diagnosis: DSMDiagnosis): CascadeStateInfo {
+  const severeCount = diagnosis.pathologies.filter(p => p.level === 3).length
+  const isActive = severeCount >= 3 || (severeCount >= 2 && diagnosis.totalEntropyScore >= 32)
+
+  return {
+    isActive,
+    concurrentSevereCount: severeCount,
+    triggerDescription: isActive
+      ? `מצב קסקדה: ${severeCount} פתולוגיות ברמת חומרה 3 עם אנטרופיה ${diagnosis.totalEntropyScore.toFixed(1)}. נדרשת עצירת כל היוזמות (Halt).`
+      : 'לא זוהה מצב קסקדה.',
+    haltRequired: isActive,
+  }
+}
+
+// ─── Sequencing Violation Detection ──────────────────────────────────────────
+
+/**
+ * Check if any comorbidity sequencing rules are being violated.
+ * Returns list of violations where prerequisite pathology is not resolved.
+ */
+export function detectSequencingViolations(diagnosis: DSMDiagnosis): SequencingViolation[] {
+  const scoreMap = Object.fromEntries(
+    diagnosis.pathologies.map(p => [p.code, p])
+  ) as Record<PathologyCode, PathologySeverity>
+
+  const violations: SequencingViolation[] = []
+
+  for (const rule of SEQUENCING_RULES) {
+    const prereqPath = scoreMap[rule.prerequisite as PathologyCode]
+    const blockedPath = scoreMap[rule.blocked as PathologyCode]
+    if (!prereqPath || !blockedPath) continue
+
+    // Violation: both are elevated but prerequisite is not addressed first
+    if (prereqPath.level >= 2 && blockedPath.level >= 2) {
+      violations.push({
+        ruleId: rule.id,
+        condition: rule.condition,
+        prerequisite: rule.prerequisite,
+        blocked: rule.blocked,
+        rationale: rule.rationale,
+        severity: rule.severity,
+      })
+    }
+  }
+
+  return violations
+}
+
+/**
+ * Enhanced diagnosis with T/A/M, Cascade State and Sequencing.
+ * Wraps the base diagnose() function with v2 extensions.
+ */
+export function diagnoseEnhanced(answers: QuestionnaireAnswer): DSMDiagnosis {
+  const baseDiagnosis = diagnose(answers)
+  return {
+    ...baseDiagnosis,
+    tamSignature: computeTAMSignature(baseDiagnosis),
+    cascadeState: detectCascadeState(baseDiagnosis),
+    sequencingViolations: detectSequencingViolations(baseDiagnosis),
+  }
 }
