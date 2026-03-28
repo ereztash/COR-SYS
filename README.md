@@ -107,7 +107,7 @@ Contextual header (Anthropic Contextual Retrieval pattern, −49% retrieval fail
 
 ## API Routes
 
-Most JSON API routes below require a logged-in Supabase session (the auth middleware exempts /api/*).
+Most JSON API routes below require a logged-in Supabase session (the auth proxy in `src/proxy.ts` exempts /api/*).
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|

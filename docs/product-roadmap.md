@@ -22,16 +22,16 @@
 
 ### P0-1 · Authentication + Protected Routes
 
-**מה:** Login/logout + middleware שמגן על כל הנתיבים. כרגע כל אחד עם ה-URL יכול לראות ולשנות כל נתון.
+**מה:** Login/logout + proxy (`src/proxy.ts`) שמגן על כל הנתיבים. כרגע כל אחד עם ה-URL יכול לראות ולשנות כל נתון.
 
 **גישת מימוש:**
 1. **Supabase Email Auth** — הכי מהיר למימוש, מובנה ב-`@supabase/ssr` שכבר מותקן
 2. `src/app/login/page.tsx` — טופס email + password, server action שקורא `supabase.auth.signInWithPassword()`
-3. `src/middleware.ts` — `createServerClient` בודק session, מפנה ל-`/login` אם אין. מגן על כל נתיבים פרט ל-`/login`
+3. `src/proxy.ts` — `createServerClient` בודק session, מפנה ל-`/login` אם אין. מגן על כל נתיבים פרט ל-`/login` (Next.js 16: convention של proxy במקום middleware)
 4. Logout כפתור ב-sidebar → `supabase.auth.signOut()`
 5. אין צורך ב-multi-tenant עדיין — user אחד (אתה), RLS כרגע מותרת לכולם
 
-**קבצים שייגעו:** `src/middleware.ts` (חדש), `src/app/login/page.tsx` (חדש), `src/lib/supabase/server.ts` (עדכון), `src/app/layout.tsx` (הוסף logout)
+**קבצים שייגעו:** `src/proxy.ts` (חדש), `src/app/login/page.tsx` (חדש), `src/lib/supabase/server.ts` (עדכון), `src/app/layout.tsx` (הוסף logout)
 
 **⏱ זמן Claude Code: 25–35 דקות**
 
@@ -100,7 +100,7 @@
 3. Pricing: 3 tiers (L1 Free Assessment → L2 Sprint 40-80K → L2 Retainer 5-15K/mo)
 4. CTA ראשי: "קבל אבחון ← " → `/assess/demo` (demo token עם placeholder answers לראות כיצד נראית תוצאה)
 
-**קבצים שייגעו:** `src/app/home/page.tsx` (חדש), `src/middleware.ts` (עדכון routing), `src/app/layout.tsx` (conditional sidebar)
+**קבצים שייגעו:** `src/app/home/page.tsx` (חדש), `src/proxy.ts` (עדכון routing), `src/app/layout.tsx` (conditional sidebar)
 
 **⏱ זמן Claude Code: 50–70 דקות**
 

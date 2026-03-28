@@ -26,7 +26,7 @@
 |---|--------|--------|
 | 1 | **השלמת `.env.example`** — להוסיף `NEXT_PUBLIC_APP_URL`, `RESEND_API_KEY`, `RESEND_FROM`, `RESEND_TO` כדי שכל מפתח ידוע למפתחים חדשים. | נמוכה |
 | 2 | **התראת Build** — Next.js מתריע על `outputFileTracingRoot` (מנעול/ lockfiles). אם יש lockfile גם בתיקיית האב — להגדיר `outputFileTracingRoot` ב־`next.config.ts` או להסיר lockfile מיותר. | נמוכה |
-| 3 | **Middleware** — Next 16 מסמן את קובץ ה־middleware כ־deprecated וממליץ על "proxy". כרגע הקוד עובד; עדכון כשהדוקומנטציה תתייצב. | נמוכה |
+| 3 | **Proxy (לשעבר middleware)** — Next 16: הפרויקט משתמש ב־`src/proxy.ts` + `export function proxy`; אין `middleware.ts`. | נמוכה — טופל |
 
 ## 4. סיכום
 

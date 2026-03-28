@@ -53,7 +53,7 @@
 - **מתי יהיה:** כשנצליח **למקם את זה כמוצר עובד**. עד אז — אין landing נפרד.
 - **עד אז:** routing מינימלי — כניסה מאומתת (Google) לארגון; self-serve ולינקים בלי דף שיווקי.
 
-ההחלטות האלה יקבעו: Auth = Supabase + Google provider; middleware מפנה ל־login אם אין session; אין `/home` ציבורי כרגע.
+ההחלטות האלה יקבעו: Auth = Supabase + Google provider; `src/proxy.ts` מפנה ל־login אם אין session; אין `/home` ציבורי כרגע.
 
 ---
 

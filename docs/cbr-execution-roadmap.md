@@ -29,7 +29,7 @@ P0 (Auth+RLS) ──→ Phase 1 (Data) ──→ Phase 2 (Retrieval) ──→ P
 > **חייב להסתיים לפני Phase 1**
 
 ### P0-1: Authentication + Protected Routes
-- `src/middleware.ts` (חדש)
+- `src/proxy.ts` (חדש; Next.js 16 — לשעבר `middleware.ts`)
 - `src/app/login/page.tsx` (חדש)
 - `src/lib/supabase/server.ts` (עדכון)
 - **⏱ ~30 דקות**
