@@ -1,5 +1,33 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Client, Sprint, ClientDiagnosticSummary } from '@/types/database'
+import type { SeverityProfile } from '@/lib/dsm-engine'
+
+/** Postgres `date` / JSON can surface as unexpected shapes — never throw from dashboard aggregates. */
+function periodMonthKey(value: unknown): string {
+  if (value == null) return ''
+  if (typeof value === 'string') return value
+  if (value instanceof Date) return value.toISOString().slice(0, 10)
+  return String(value)
+}
+
+function parseDiagnosticSummary(raw: unknown): ClientDiagnosticSummary | null {
+  if (raw == null || typeof raw !== 'object') return null
+  const o = raw as Record<string, unknown>
+  const dr = Number(o.drScore ?? o.dr_score)
+  const nd = Number(o.ndScore ?? o.nd_score)
+  const uc = Number(o.ucScore ?? o.uc_score)
+  const entropy = Number(o.entropyScore ?? o.entropy_score)
+  const sp = o.severityProfile ?? o.severity_profile
+  if (!Number.isFinite(dr) || !Number.isFinite(nd) || !Number.isFinite(uc)) return null
+  if (typeof sp !== 'string' || !sp) return null
+  return {
+    drScore: dr,
+    ndScore: nd,
+    ucScore: uc,
+    severityProfile: sp as SeverityProfile,
+    entropyScore: Number.isFinite(entropy) ? entropy : 0,
+  }
+}
 
 export type DashboardData = {
   clients: Client[]
@@ -23,16 +51,19 @@ export type PortfolioAnalytics = {
   totalClientsWithDiagnostics: number
 }
 
-export function computePortfolioAnalytics(diagnostics: { client_id: string; created_at: string; dsm_summary: ClientDiagnosticSummary }[]): PortfolioAnalytics | null {
+export function computePortfolioAnalytics(diagnostics: { client_id: string; created_at: string; dsm_summary: unknown }[]): PortfolioAnalytics | null {
   if (diagnostics.length === 0) return null
   const byClient = new Map<string, { created_at: string; dsm_summary: ClientDiagnosticSummary }>()
   for (const d of diagnostics) {
+    const summary = parseDiagnosticSummary(d.dsm_summary)
+    if (!summary) continue
     const existing = byClient.get(d.client_id)
     if (!existing || d.created_at > existing.created_at) {
-      byClient.set(d.client_id, { created_at: d.created_at, dsm_summary: d.dsm_summary })
+      byClient.set(d.client_id, { created_at: d.created_at, dsm_summary: summary })
     }
   }
   const latest = Array.from(byClient.values()).map((v) => v.dsm_summary)
+  if (latest.length === 0) return null
   const byProfile = { healthy: 0, atRisk: 0, critical: 0, systemicCollapse: 0 }
   const profileKeyMap: Record<string, keyof typeof byProfile> = {
     healthy: 'healthy',
@@ -87,7 +118,7 @@ export async function getDashboardData(): Promise<DashboardData> {
   if (financialsRes.error) console.error('[data/dashboard] financials', financialsRes.error.message)
   if (diagnosticsRes.error) console.error('[data/dashboard] diagnostics', diagnosticsRes.error.message)
 
-  const diagnostics = diagnosticsRes.error ? [] : (diagnosticsRes.data ?? []) as { client_id: string; created_at: string; dsm_summary: ClientDiagnosticSummary }[]
+  const diagnostics = diagnosticsRes.error ? [] : (diagnosticsRes.data ?? []) as { client_id: string; created_at: string; dsm_summary: unknown }[]
 
   const clients = (clientsRes.data ?? []) as Client[]
   const sprints = (sprintsRes.data ?? []) as (Sprint & { clients: { name: string; company: string | null } | null })[]
@@ -102,11 +133,16 @@ export async function getDashboardData(): Promise<DashboardData> {
   const now = new Date()
   const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
   const revenueThisMonth = financials
-    .filter((f: { period_month: string }) => f.period_month.startsWith(thisMonth))
+    .filter((f: { period_month: unknown }) => periodMonthKey(f.period_month).startsWith(thisMonth))
     .reduce((sum: number, f: { revenue: number }) => sum + (f.revenue ?? 0), 0)
   const totalRevenue = financials.reduce((sum: number, f: { revenue: number }) => sum + (f.revenue ?? 0), 0)
 
-  const portfolioAnalytics = computePortfolioAnalytics(diagnostics)
+  let portfolioAnalytics: PortfolioAnalytics | null = null
+  try {
+    portfolioAnalytics = computePortfolioAnalytics(diagnostics)
+  } catch (e) {
+    console.error('[data/dashboard] portfolioAnalytics', e)
+  }
 
   return {
     clients,

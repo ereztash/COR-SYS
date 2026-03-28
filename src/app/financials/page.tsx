@@ -20,7 +20,10 @@ export default async function FinancialsPage() {
   const now = new Date()
   const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
   const revenueThisMonth = financials
-    .filter(f => f.period_month.startsWith(thisMonth))
+    .filter((f) => {
+      const key = f.period_month == null ? '' : typeof f.period_month === 'string' ? f.period_month : String(f.period_month)
+      return key.startsWith(thisMonth)
+    })
     .reduce((s, f) => s + (f.revenue ?? 0), 0)
 
   return (

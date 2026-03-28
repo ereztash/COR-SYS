@@ -30,12 +30,11 @@ export async function middleware(request: NextRequest) {
     },
   })
 
-  await supabase.auth.getUser()
   const {
-    data: { session },
-  } = await supabase.auth.getSession()
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  if (!session && !isPublicPath(request.nextUrl.pathname)) {
+  if (!user && !isPublicPath(request.nextUrl.pathname)) {
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
