@@ -1,4 +1,4 @@
-﻿import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import type { User } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
 
@@ -15,7 +15,7 @@ export type RequireUserFail = {
 
 export type RequireUserResult = RequireUserOk | RequireUserFail
 
-/** Enforce Supabase session for App Router API routes (middleware exempts /api). */
+/** Enforce Supabase session for App Router API routes (proxy exempts /api). */
 export async function requireUser(): Promise<RequireUserResult> {
   const supabase = await createClient()
   const {
