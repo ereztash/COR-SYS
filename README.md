@@ -13,13 +13,16 @@ The guarantee: *for every hour of engagement — the organization saves at least
 
 ---
 
-## The Three Pathologies
+## Axis pathologies (questionnaire → scores)
 
 | Code | Name | Theoretical Basis |
 |------|------|-------------------|
 | **DR** | Distorted Reciprocity | Różycka-Tran BZSG scale (N=10,000) — internal competition destroying cross-departmental collaboration |
 | **ND** | Normalization of Deviance | Vaughan (1996) Challenger — 5-stage procedural drift toward systemic failure |
 | **UC** | Unrepresentative Calibration | Edmondson (1999) Psychological Safety + Floridi (2014) Ontological Friction |
+| **SC** | Structural clarity (decision rights / ownership) | Complements DR/ND/UC — ambiguity in who decides and owns outcomes |
+
+**DSM-Org organizational types** (synthesis from axis scores + questionnaire): `NOD`, `ZSG_SAFETY`, `ZSG_CULTURE`, `OLD`, `CLT`, `CS` (plus optional CS “amplifier” flag). Legacy snapshots may still contain `ZSG`; the engine normalizes to the split variants where needed.
 
 Severity profiles: `healthy` → `at-risk` → `critical` → `systemic-collapse`
 
@@ -27,7 +30,7 @@ Severity profiles: `healthy` → `at-risk` → `critical` → `systemic-collapse
 
 ## What It Does
 
-1. **Diagnose** — structured questionnaire (ICP + pathologies + metrics + Edmondson PSI) produces DR/ND/UC scores (0–10 each) and a severity profile
+1. **Diagnose** — structured questionnaire (ICP + pathologies + metrics + Edmondson PSI) produces DR/ND/UC/**SC** scores (0–10 each) and a severity profile
 2. **Benchmark** — compares scores against McKinsey OHI (N=1,500), CultureAmp (N=6,000), and Qualtrics cohorts
 3. **Retrieve** — finds the most similar historical intervention cases via embedding-based CBR search (pgvector HNSW)
 4. **Recommend** — ranks interventions with Wilson-score confidence, daily loss framing (₪/day), and eigenvalue trajectory
@@ -54,7 +57,17 @@ Severity profiles: `healthy` → `at-risk` → `critical` → `systemic-collapse
 ## Core Engines
 
 ### DSM Engine — `src/lib/dsm-engine.ts`
-Maps questionnaire answers to DR/ND/UC pathology codes and severity levels (1–3). Computes comorbidity edges (DR↔ND, DR↔UC, ND↔UC) and outputs structured intervention protocols. Based on N=10,000 simulation model.
+Maps questionnaire answers to **DR / ND / UC / SC** pathology codes and severity levels (1–3). Computes comorbidity edges and outputs structured **long-horizon** intervention protocols (multi-month “building phase” blocks). Based on N=10,000 simulation model.
+
+### Unified treatment pipeline — `src/lib/diagnostic/unified-pipeline.ts` + `src/lib/diagnostic.ts`
+
+Single CDSS path for **plan page, assess results, PDF, wizard, and live calculator**: `computeDiagnostic()` calls `runUnifiedTreatmentPipelineFromDiagnosis()`, which ranks **short-horizon** `ActionPlanItem[]` via IUS scoring, constraint envelope, comorbidity sequencing rules, and attaches metadata (narrative, triggers, gate reviews, sequencing alerts). Long-horizon protocols from `getInterventionProtocols()` are exposed as `unifiedTreatmentPlan.longHorizonProtocols`.
+
+- **Shadow / regression:** set `UNIFIED_PIPELINE_SHADOW=true` to log a server-side diff between legacy protocol ids and unified intervention ids (no UI change).
+- **Persistence:** when a plan is saved (`savePlanFromQuestionnaire`), a **`unified_action_plan_snapshot`** object is merged into `client_business_plans.questionnaire_response` for stable replays and PDFs for older clients (see `UnifiedActionPlanSnapshot` in `src/types/database.ts`).
+
+### DSM-Org synthesis — `src/lib/diagnostic/dsm-synthesis.ts`
+Maps axis scores (+ optional answers) to primary organizational pathology type and CS amplifier, shared by the unified pipeline and fast triage UIs.
 
 ### DSM Policy Engine — `src/lib/dsm-policy-engine.ts`
 Decision support layer above the DSM engine. Transforms a diagnosis into:
@@ -119,7 +132,7 @@ Most JSON API routes below require a logged-in Supabase session (the auth proxy 
 | `/api/diagnostic/config` | GET | Runtime diagnostic config from DB (trigger rules, evidence profiles, gate reviews). |
 | `/api/diagnostic/pdf` | POST | Generates a diagnostic PDF by invoking Python (`scripts/generate_diagnostic_pdf.py`). |
 | `/api/ux-metrics/event` | POST | Non-blocking UX telemetry ingestion endpoint. |
-| `/api/plans/[clientId]/pdf` | GET | Generates a plan PDF report (diagnosis + intervention protocols + recommendations) with `@react-pdf/renderer`. |
+| `/api/plans/[clientId]/pdf` | GET | Generates a plan PDF report (diagnosis + unified treatment plan items + long-horizon protocols + recommendations) with `@react-pdf/renderer`. |
 | `/api/agents/alpha/analyze` | POST | Alpha agent analysis: bounded contexts, contradiction loss, and optional persistence (`use_cache`, `ttl_minutes`). |
 | `/api/agents/beta/simulate` | POST | Beta Monte Carlo simulation (ROI/risk percentiles) from recommendations and similar cases (`use_cache`, `ttl_minutes`). |
 | `/api/agents/gamma/metrics` | GET | Gamma entropy metrics (KL drift, J, loop classification, emergence), optional persistence (`persist=1`). |
@@ -156,7 +169,7 @@ Most JSON API routes below require a logged-in Supabase session (the auth proxy 
 | `financials` | Revenue, invoicing, payment tracking per client per month |
 | `client_assessments` | Assessment tokens + JSONB responses (external stakeholder flow) |
 | `client_diagnostics` | DSM diagnosis history per client (answers + dsm_summary JSONB) |
-| `client_business_plans` | Plan records — questionnaire_response, recommended channel/option, next steps |
+| `client_business_plans` | Plan records — `questionnaire_response` (answers + optional `unified_action_plan_snapshot`), recommended channel/option, next steps |
 | `organizations_context` | CBR: org metadata (industry_sector, employee_size_band, culture_archetype) |
 | `dsm_diagnostic_snapshots` | CBR: historical DSM snapshots + `VECTOR(1536)` feature embeddings |
 | `interventions_and_feedback` | CBR: intervention outcomes, consultant overrides, delta metrics, learning_gain, λ eigenvalue |
@@ -223,6 +236,9 @@ OPENAI_API_KEY=sk-...
 RESEND_API_KEY=
 RESEND_FROM=COR-SYS <onboarding@resend.dev>
 RESEND_TO=
+
+# Optional — log legacy vs unified intervention ids on the server (computeDiagnostic)
+# UNIFIED_PIPELINE_SHADOW=true
 ```
 
 ---
@@ -304,7 +320,7 @@ curl -X POST "http://localhost:3000/api/agents/beta/simulate?ttl_minutes=90" \
 | Phase 1 | CBR data layer, DB migration, resilience formula, Edmondson PSI questionnaire | Done |
 | Phase 2 | Embedding service, similarity search, CBR API endpoints | Done |
 | Phase 3 | Recommendation engine, loss-framed UI, override flow, follow-up loop, Bayesian Tier-2 calibration | Done |
-| Phase 4 | Diagnostic wizard hardening (IUS scoring, constraint envelope, PDF export, telemetry polish) | In progress |
+| Phase 4 | Diagnostic wizard hardening (unified treatment pipeline, IUS + envelope, ZSG safety/culture split, plan snapshot, PDF/UI alignment, telemetry polish) | In progress |
 
 ---
 

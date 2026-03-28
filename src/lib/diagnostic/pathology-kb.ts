@@ -14,7 +14,7 @@
  * Theoretical grounding:
  *   — Hobfoll COR theory (Conservation of Resources spirals)
  *   — Vaughan Normalization of Deviance (Challenger disaster)
- *   — Edmondson Psychological Safety / Accountability matrix
+ *   — Edmondson Psychological Safety → canonical type ZSG_SAFETY; zero-sum / silo incentives → ZSG_CULTURE
  *   — Argyris & Schön Double-Loop Learning
  *   — Sweller Cognitive Load Theory (CLT)
  *   — Floridi Ontological Friction & Semantic Drift
@@ -22,10 +22,12 @@
  *   — Israeli high-tech cases 2024–2026: Playtika, Firebolt, Cariad, Replit, Humane AI
  *
  * Comorbidity cascade (from DSM-Org HTML):
- *   CS → NOD, CS → CLT, NOD → OLD, ZSG → OLD, ZSG → CS, CLT → NOD
+ *   CS → NOD, CS → CLT, NOD → OLD, ZSG_* → OLD, ZSG_* → CS, CLT → NOD
  *   CS is the system amplifier: accelerates all other pathologies.
  */
 
+import type { QuestionnaireAnswer } from '../corsys-questionnaire'
+import { computePsiFromAnswers } from '../corsys-questionnaire'
 import type { DiagnosticAxis } from './questions'
 
 // ─── Severity taxonomy (original) ────────────────────────────────────────────
@@ -136,9 +138,9 @@ privatisation by PE at cost of human capital.
   },
 ]
 
-// ─── Type taxonomy (DSM-Org 5 pathologies) ───────────────────────────────────
+// ─── Type taxonomy (DSM-Org: NOD + ZSG split + OLD + CLT + CS) ───────────────
 
-export type PathologyType = 'NOD' | 'ZSG' | 'OLD' | 'CLT' | 'CS'
+export type PathologyType = 'NOD' | 'ZSG_SAFETY' | 'ZSG_CULTURE' | 'OLD' | 'CLT' | 'CS'
 
 export interface TamSignature {
   t: number  // Time cost 1–5
@@ -195,43 +197,43 @@ stress, deviations normalise faster). CLT → NOD (when overloaded, shortcuts be
     `.trim(),
   },
   {
-    type: 'ZSG',
-    label_he: 'תרבות משחק סכום-אפס',
+    type: 'ZSG_SAFETY',
+    label_he: 'גירעון בביטחון פסיכולוגי',
+    label_en: 'Psychological Safety Deficit (Edmondson)',
+    tam: { t: 2, a: 4, m: 3 },
+    primary_axes: ['ND', 'UC'],
+    is_amplifier: false,
+    description: `
+Psychological safety deficit (canonical code ZSG_SAFETY): people do not surface errors, risks,
+or half-baked ideas early. Reporting feels personally costly; near-miss and learning signals
+are suppressed. Edmondson PSI and voice-channel quality are primary discriminators.
+
+T/A/M: T=2, A=4 (attention dominated by impression management and fear), M=3.
+
+Comorbidities: ZSG_SAFETY → OLD (without safety, double-loop learning cannot start).
+ZSG_SAFETY often co-occurs with ZSG_CULTURE (zero-sum incentives amplify fear of speaking up).
+    `.trim(),
+  },
+  {
+    type: 'ZSG_CULTURE',
+    label_he: 'תרבות ניכור פנים-ארגונית (סכום-אפס)',
     label_en: 'Zero-Sum Game Culture',
     tam: { t: 3, a: 3, m: 5 },
     primary_axes: ['ND', 'DR'],
     is_amplifier: false,
     description: `
-Zero-Sum Game Culture (ZSG): internal competition, information hoarding, and silo dynamics
-create contradiction loss — local optimisations systematically destroy system-level performance.
-Resources, credit, and visibility are treated as finite: one team's win requires another's loss.
-Information is withheld as competitive advantage. Post-mortems become blame assignments.
-Cross-team dependencies become negotiation zones rather than coordination mechanisms.
+Zero-Sum Game Culture (canonical code ZSG_CULTURE): internal competition, information hoarding,
+and silo dynamics create contradiction loss — local optimisations destroy system-level performance.
+Resources, credit, and visibility are treated as finite. Post-mortems become blame assignments.
 
-T/A/M signature: T=3 (medium-high delays from ownership disputes; decisions re-opened after
-resolution; coordination meetings that repeat the same arguments), A=3 (cognitive energy burned
-on internal politics and positioning instead of actual work; emotional load of navigating
-territorial boundaries), M=5 (critical: duplicate builds, parallel initiatives, high turnover
-costs when people leave the culture, loss of compound institutional knowledge).
+T/A/M signature: T=3, A=3, M=5. MBI: depersonalisation / territorial defence more salient than
+pure exhaustion.
 
-Mechanisms: Psychological safety collapse (Edmondson) — when culture is zero-sum, reporting
-a failure risks being held responsible. This suppresses early warning signals. The organisation
-learns of problems at crisis stage rather than incubation stage. MBI profile: ZSG activates
-Depersonalisation dimension primarily (people become means to an end), unlike CS which
-activates Emotional Exhaustion.
+Israeli high-tech: Playtika cycles, HQ-vs-branch dynamics, miluim-related key-person leverage.
 
-Israeli high-tech case: Playtika layoff cycles — each round increased ZSG dynamics as surviving
-employees competed for diminishing resources and visibility. The "psychological contract" breaks
-(Rousseau): employees who survived sacrifice now face arbitrary cuts, and shift to protective
-self-interest mode. Firebolt R&D closure in Israel: HQ-vs-subsidiary zero-sum dynamic,
-where the local team was excluded from the strategic conversation and became a cost item.
+Intervention: shared metrics, RevOps/CoS, incentive realignment — not "culture workshop" alone.
 
-Differential: NOD is when people skip because "everyone does it". ZSG is when people hoard
-because "no one shares here". Intervention differs: NOD requires social proof of safety.
-ZSG requires structural incentive realignment (shared metrics, RevOps architecture).
-
-Comorbidities: ZSG → OLD (blame culture prevents learning from mistakes). ZSG → CS
-(sustained internal competition produces chronic stress). Escalates with CS.
+Comorbidities: ZSG_CULTURE → OLD; ZSG_CULTURE → CS under sustained threat.
     `.trim(),
   },
   {
@@ -256,7 +258,7 @@ hitting it"; emotional load of pattern without explanation), M=4 (high: direct c
 and rework; indirect cost of customer trust erosion from repeated failures).
 
 Mechanisms: OLD is often a downstream consequence of NOD (normalised deviance prevents
-recognising what needs to change) and ZSG (blame culture suppresses the psychological safety
+recognising what needs to change) and ZSG variants (blame / zero-sum suppress the psychological safety
 required for genuine retrospection). The Replit AI case illustrates OLD: the same type of
 AI-without-guardrails failure recurred across different tools, different teams, different
 incidents — no cross-incident learning mechanism existed. The learning disability is structural,
@@ -274,7 +276,7 @@ Differential: NOD means the organisation does not see the deviation. OLD means t
 sees the deviation but cannot change the pattern. NOD is a visibility problem; OLD is a
 learning structure problem.
 
-Comorbidities: NOD → OLD (primary cascade). ZSG → OLD (blame prevents learning).
+Comorbidities: NOD → OLD (primary cascade). ZSG_SAFETY / ZSG_CULTURE → OLD (blame prevents learning).
     `.trim(),
   },
   {
@@ -337,13 +339,13 @@ available for complex work collapses; emotional load dominates working memory),
 M=5 (critical: the financial cost cascades through all downstream pathologies CS amplifies).
 
 CS amplifier mechanism: CS → NOD (under chronic stress, deviations normalise faster because
-people lack the capacity to enforce standards). CS → ZSG (internal competition increases when
+people lack the capacity to enforce standards). CS → ZSG_CULTURE (internal competition increases when
 people feel their survival is threatened). CS → OLD (learning capacity diminishes; the brain
 under sustained cortisol load cannot engage double-loop reflection). CS → CLT (emotional
 exhaustion reduces the cognitive buffer, amplifying architectural overload).
 
 MBI profile: CS activates Emotional Exhaustion dimension primarily (people feel depleted before
-the day begins), unlike ZSG which activates Depersonalisation. When MBI Emotional Exhaustion
+the day begins), unlike ZSG_CULTURE which activates Depersonalisation. When MBI Emotional Exhaustion
 score > 27, the organisation is clinically within CS territory.
 
 Israeli context: CS is structurally amplified in Israeli high-tech 2023–2026. October 7 created
@@ -399,28 +401,64 @@ export function inferScoresFromProfile(
 }
 
 /**
+ * When ND is elevated and decision reciprocity (DR) is weak, choose ZSG_SAFETY vs ZSG_CULTURE
+ * using questionnaire signals; score-only fallback if answers absent.
+ */
+export function inferZsgVariant(
+  scores: { dr: number; nd: number; uc: number },
+  answers?: QuestionnaireAnswer | null
+): 'ZSG_SAFETY' | 'ZSG_CULTURE' {
+  if (answers) {
+    const psi = computePsiFromAnswers(answers)
+    if (psi != null && psi < 4) return 'ZSG_SAFETY'
+    if (answers.pathologyZeroSum === 'frequent' || answers.pathologyZeroSum === 'occasional') {
+      return 'ZSG_CULTURE'
+    }
+    if (
+      answers.voiceInfrastructure === 'no_channel' ||
+      answers.voiceInfrastructure === 'unused_channel'
+    ) {
+      return 'ZSG_SAFETY'
+    }
+  }
+  if (scores.uc >= 6 && scores.nd >= 5) return 'ZSG_SAFETY'
+  return 'ZSG_CULTURE'
+}
+
+/** Map persisted or legacy string codes to current PathologyType (snapshots, imports). */
+export function normalizeLegacyPathologyType(raw: string): PathologyType {
+  if (raw === 'ZSG') return 'ZSG_CULTURE'
+  const allowed: PathologyType[] = [
+    'NOD',
+    'ZSG_SAFETY',
+    'ZSG_CULTURE',
+    'OLD',
+    'CLT',
+    'CS',
+  ]
+  if (allowed.includes(raw as PathologyType)) return raw as PathologyType
+  return 'NOD'
+}
+
+/**
  * Map DR/ND/UC dominant axis to most likely PathologyType.
  * CS detection is handled separately via detectCsAmplifier.
  */
 export function axisToPathologyType(
   dominantAxis: DiagnosticAxis,
-  scores: { dr: number; nd: number; uc: number }
+  scores: { dr: number; nd: number; uc: number },
+  answers?: QuestionnaireAnswer | null
 ): PathologyType {
-  // If UC is dominant: CLT (architectural) or CS (emotional)
-  // Use second axis to distinguish
   if (dominantAxis === 'UC') {
-    // High ND alongside high UC → OLD (learning breakdown)
     if (scores.nd >= scores.dr) return 'OLD'
     return 'CLT'
   }
-  // If DR is dominant: NOD (high ND secondary) or CS (high UC secondary)
   if (dominantAxis === 'DR') {
     if (scores.nd >= scores.uc) return 'NOD'
-    return 'NOD' // DR-dominant always starts with NOD as primary
+    return 'NOD'
   }
-  // If ND is dominant: NOD (primary) or ZSG (if DR is low)
   if (dominantAxis === 'ND') {
-    if (scores.dr < 5 && scores.nd >= 5) return 'ZSG'
+    if (scores.dr < 5 && scores.nd >= 5) return inferZsgVariant(scores, answers)
     return 'NOD'
   }
   return 'NOD'

@@ -1,8 +1,13 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 const FROM = process.env.RESEND_FROM ?? 'COR-SYS <onboarding@resend.dev>'
+
+/** Avoid `new Resend()` at module load — Resend throws when the key is missing (common in local dev). */
+function getResend(): Resend | null {
+  const key = process.env.RESEND_API_KEY?.trim()
+  if (!key) return null
+  return new Resend(key)
+}
 
 export interface AssessmentCompletedPayload {
   clientName: string
@@ -15,7 +20,8 @@ export async function sendAssessmentCompletedEmail(
   to: string,
   payload: AssessmentCompletedPayload
 ): Promise<{ ok: boolean; error?: string }> {
-  if (!process.env.RESEND_API_KEY) {
+  const resend = getResend()
+  if (!resend) {
     console.warn('[email] RESEND_API_KEY not set — skipping send')
     return { ok: true }
   }

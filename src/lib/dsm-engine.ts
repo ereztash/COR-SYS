@@ -5,8 +5,8 @@
  * comorbidity analysis, and intervention protocols.
  *
  * Based on: integrated-model.md (N=10,000 simulation)
- * Pathologies: DR (Distorted Reciprocity), ND (Normalization of Deviance), UC (Unrepresentative Calibration)
- * Extended (v2): ZSG (Zero Safety Ground), CLT (Cognitive Load Trap), OLD (Organizational Learning Deficit)
+ * Pathologies: DR (Distorted Reciprocity), ND (Normalization of Deviance), UC (Unrepresentative Calibration), SC (structural clarity)
+ * Extended (v2) DSM-Org types: ZSG_SAFETY / ZSG_CULTURE, CLT, OLD — see dsm-org-taxonomy / pathology-kb
  * Correlations: DR↔ND r=.19, DR↔UC r=-.27, ND↔UC r=.28
  * Psychometrics: α DR=.872, ND=.881, UC=.893
  */

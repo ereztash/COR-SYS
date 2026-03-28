@@ -3,6 +3,7 @@ import { getAssessmentByToken, getClientById } from '@/lib/data'
 import { getOptionById } from '@/lib/service-catalog'
 import type { QuestionnaireAnswer } from '@/lib/corsys-questionnaire'
 import { computeDiagnostic } from '@/lib/diagnostic'
+import { PATHOLOGY_TYPE_LABELS } from '@/lib/diagnostic/action-plan'
 import { SEVERITY_PROFILES, type PathologySeverity } from '@/lib/dsm-engine'
 import { ComorbidityMap, InterventionProtocolsCard } from '@/components/diagnostic'
 import { ModeBlurb } from '@/components/ui/ModeBlurb'
@@ -167,15 +168,18 @@ export default async function AssessResultsPage({ params }: { params: Promise<{ 
 
   let planResult:           ReturnType<typeof computeDiagnostic>['planResult']           | null = null
   let dsmDiagnosis:         ReturnType<typeof computeDiagnostic>['dsmDiagnosis']         | null = null
+  let orgPathology:         ReturnType<typeof computeDiagnostic>['orgPathology']         | null = null
   let comorbidityEdges:     ReturnType<typeof computeDiagnostic>['comorbidityEdges']           = []
-  let interventionProtocols:ReturnType<typeof computeDiagnostic>['interventionProtocols']      = []
+  let unifiedTreatmentPlan: ReturnType<typeof computeDiagnostic>['unifiedTreatmentPlan'] | null =
+    null
 
   try {
     const d = computeDiagnostic(clientName, answers)
     planResult            = d.planResult
     dsmDiagnosis          = d.dsmDiagnosis
+    orgPathology          = d.orgPathology
     comorbidityEdges      = d.comorbidityEdges
-    interventionProtocols = d.interventionProtocols
+    unifiedTreatmentPlan  = d.unifiedTreatmentPlan
   } catch { /* show minimal view */ }
 
   const severity  = dsmDiagnosis?.severityProfile ?? 'at-risk'
@@ -278,6 +282,15 @@ export default async function AssessResultsPage({ params }: { params: Promise<{ 
                 </span>
                 <span>{profile.labelHe}</span>
               </div>
+
+              {orgPathology && (
+                <p className="text-xs text-slate-400 mt-3 max-w-lg">
+                  <span className="text-slate-500">סוג DSM-Org (מיפוי מאוחד):</span>{' '}
+                  <span className="text-indigo-300 font-semibold">
+                    {PATHOLOGY_TYPE_LABELS[orgPathology.primaryType]}
+                  </span>
+                </p>
+              )}
 
               {/* Entropy score */}
               {planResult?.entropyScore !== undefined && (
@@ -451,8 +464,8 @@ export default async function AssessResultsPage({ params }: { params: Promise<{ 
           <ComorbidityMap edges={comorbidityEdges} diagnosis={dsmDiagnosis} />
         )}
 
-        {/* Intervention protocols */}
-        <InterventionProtocolsCard protocols={interventionProtocols} />
+        {/* Unified treatment plan */}
+        {unifiedTreatmentPlan && <InterventionProtocolsCard unifiedPlan={unifiedTreatmentPlan} />}
 
         {/* Next steps */}
         {planResult?.nextSteps && (

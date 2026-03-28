@@ -43,6 +43,8 @@ export interface TamImpact {
 export interface ConstraintEnvelope {
   t_max: 30 | 60 | 90
   r_max: 1 | 2 | 3 | 4 | 5
+  /** Max intervention budget index (optional; reserved for future IUS / cost gating). */
+  b_max?: number
 }
 
 /**
@@ -62,6 +64,8 @@ export interface IUSScore {
 }
 
 export interface ActionPlanItem {
+  /** Stable id for snapshots and UI keys (set by unified pipeline). */
+  interventionId?: string
   priority: InterventionPriority
   horizon: InterventionHorizon
   axis: DiagnosticAxis
@@ -81,6 +85,15 @@ export interface ActionPlanItem {
   target_pathologies: PathologyType[]
   evidence?: InterventionEvidence
   kpi_stack?: InterventionKpiStack
+  /** Short rationale for PDF / UI (Hebrew). */
+  narrative_rationale_he?: string
+  /** Links to 7×21 content ids when populated. */
+  related_content_ids?: string[]
+  /** UX tags e.g. Miluim_Multiplier, MVC */
+  display_tags?: string[]
+  /** Sequencing: item is deferred until prerequisite wave (set by pipeline). */
+  sequencing_locked?: boolean
+  sequencing_lock_reason_he?: string
 }
 
 export interface InterventionEvidence {
@@ -165,7 +178,7 @@ const DR_INTERVENTIONS: ActionPlanItem[] = [
     tam_impact: { t: 3, a: 2, m: 3 },
     iam: 4, aim: 3, fim: 4, impact: 4,
     applicable_profiles: ['at-risk', 'critical', 'systemic-collapse'],
-    target_pathologies: ['NOD', 'ZSG'],
+    target_pathologies: ['NOD', 'ZSG_SAFETY', 'ZSG_CULTURE'],
   },
   {
     priority: 3,
@@ -226,7 +239,7 @@ const ND_INTERVENTIONS: ActionPlanItem[] = [
     tam_impact: { t: 2, a: 3, m: 3 },
     iam: 5, aim: 2, fim: 3, impact: 5,
     applicable_profiles: ['at-risk', 'critical', 'systemic-collapse'],
-    target_pathologies: ['NOD', 'ZSG'],
+    target_pathologies: ['NOD', 'ZSG_SAFETY', 'ZSG_CULTURE'],
   },
 ]
 
@@ -306,7 +319,7 @@ const SC_INTERVENTIONS: ActionPlanItem[] = [
     tam_impact: { t: 2, a: 2, m: 3 },
     iam: 4, aim: 3, fim: 4, impact: 4,
     applicable_profiles: ['at-risk', 'critical', 'systemic-collapse'],
-    target_pathologies: ['OLD', 'ZSG'],
+    target_pathologies: ['OLD', 'ZSG_CULTURE'],
   },
   {
     priority: 3,
@@ -324,50 +337,55 @@ const SC_INTERVENTIONS: ActionPlanItem[] = [
   },
 ]
 
-// ─── ZSG Interventions (Zero-Sum Game Culture) ───────────────────────────────
+// ─── ZSG_SAFETY (Edmondson / reporting) ─────────────────────────────────────
 
-const ZSG_INTERVENTIONS: ActionPlanItem[] = [
+const ZSG_SAFETY_INTERVENTIONS: ActionPlanItem[] = [
   {
     priority: 1,
     horizon: '14d',
     axis: 'ND',
     title_he: 'מדד ביטחון פסיכולוגי — Edmondson Baseline',
     what_he: 'להריץ 7 שאלות ה-Psychological Safety Survey של Edmondson בכל צוות. לפרסם תוצאות (ברמת צוות, לא פרט). להכריז שהמדד יחזור כל 90 יום.',
-    why_he: 'ZSG מסתתרת: אנשים לא מדווחים על דחיקה פנימית. מדד explicit שובר את שתיקת הקונצנזוס — ירידה של 20%+ מ-baseline היא אינדיקטור מערכתי, לא "צוות קשה".',
+    why_he: 'חסם דיווח ושחיקת אמון מערכתית מסתתרים: מדד explicit שובר שתיקה — ירידה של 20%+ מ-baseline היא אינדיקטור מערכתי.',
     metric_he: 'Edmondson score ≥ 6.5/7 בכל הצוותים תוך 90 יום',
     tag: 'Psychological Safety',
     tam_impact: { t: 1, a: 3, m: 3 },
     iam: 5, aim: 3, fim: 5, impact: 4,
     applicable_profiles: ['at-risk', 'critical', 'systemic-collapse'],
-    target_pathologies: ['ZSG'],
+    target_pathologies: ['ZSG_SAFETY'],
   },
+]
+
+// ─── ZSG_CULTURE (zero-sum / incentives) ────────────────────────────────────
+
+const ZSG_CULTURE_INTERVENTIONS: ActionPlanItem[] = [
   {
     priority: 2,
     horizon: '30d',
     axis: 'ND',
     title_he: 'מדדים משותפים חוצי-צוות (Shared OKRs)',
-    what_he: 'לזהות נקודת החיכוך בין שני צוותים עם ה-ZSG הגבוה ביותר. לבנות OKR משותף אחד שמדיד לשניהם. לתמחר את ה-upside של שיתוף פעולה במפורש.',
-    why_he: 'ZSG מונעת על ידי מבנה תמריצים, לא על ידי "תרבות רעה". כשאנשים מנצחים יחד, הם מפסיקים לספור ניצחונות נפרדים.',
+    what_he: 'לזהות נקודת החיכוך בין שני צוותים עם חיכוך פנים-ארגוני גבוה. לבנות OKR משותף אחד שמדיד לשניהם. לתמחר את ה-upside של שיתוף פעולה במפורש.',
+    why_he: 'תרבות סכום-אפס מונעת על ידי מבנה תמריצים. כשאנשים מנצחים יחד, הם מפסיקים לספור ניצחונות נפרדים.',
     metric_he: 'ירידה ≥ 50% ב-escalations בין הצוותים תוך 30 יום',
     tag: 'Incentive Architecture',
     tam_impact: { t: 2, a: 3, m: 3 },
     iam: 4, aim: 3, fim: 4, impact: 3,
     applicable_profiles: ['at-risk', 'critical', 'systemic-collapse'],
-    target_pathologies: ['ZSG', 'OLD'],
+    target_pathologies: ['ZSG_CULTURE', 'OLD'],
   },
   {
     priority: 3,
     horizon: '90d',
     axis: 'ND',
     title_he: 'ארכיטקטורת RevOps / Chief of Staff',
-    what_he: 'לבנות תפקיד תיאום ארכיטקטוני (RevOps לארגון GTM, CoS לארגון מוצר/R&D). תפקיד זה יוצר שכבת ממשק ניטרלית שמונעת את ה-Handoff Overload שמזין ZSG.',
-    why_he: 'RevOps מאחד Sales, Marketing ו-CS תחת מדדים משותפים — מבטל את ה-zero-sum ברמה המבנית. CoS מטפל ב-ZSG ברמת ה-C-suite.',
+    what_he: 'לבנות תפקיד תיאום ארכיטקטוני (RevOps לארגון GTM, CoS לארגון מוצר/R&D). תפקיד זה יוצר שכבת ממשק ניטרלית שמונעת Handoff Overload.',
+    why_he: 'RevOps מאחד Sales, Marketing ו-CS תחת מדדים משותפים — מבטל zero-sum מבני. CoS מטפל בקונפליקטים ברמת ה-C-suite.',
     metric_he: 'ירידה ≥ 30% ב-duplicate initiatives ו-build overlap בין מחלקות',
     tag: 'Coordination Architecture',
     tam_impact: { t: 2, a: 2, m: 3 },
     iam: 4, aim: 2, fim: 2, impact: 5,
     applicable_profiles: ['critical', 'systemic-collapse'],
-    target_pathologies: ['ZSG', 'CLT'],
+    target_pathologies: ['ZSG_CULTURE', 'CLT'],
   },
 ]
 
@@ -469,7 +487,8 @@ const CS_INTERVENTIONS: ActionPlanItem[] = [
 
 const PATHOLOGY_BANKS: Record<PathologyType, ActionPlanItem[]> = {
   NOD: ND_INTERVENTIONS,
-  ZSG: ZSG_INTERVENTIONS,
+  ZSG_SAFETY: ZSG_SAFETY_INTERVENTIONS,
+  ZSG_CULTURE: ZSG_CULTURE_INTERVENTIONS,
   OLD: [
     // OLD uses ND P2 (double-loop) as its primary, then adds UC P3 (knowledge transfer)
     ND_INTERVENTIONS[1],   // Post-Mortem double-loop
@@ -520,13 +539,19 @@ export const OPERATIONAL_TRIGGER_RULES: TriggerRule[] = [
 ]
 
 export const MANDATORY_COMORBIDITY_SEQUENCES: Array<{
-  id: 'clt-before-cs' | 'zsg-before-old' | 'sc-before-nod'
+  id:
+    | 'clt-before-cs'
+    | 'zsg-before-old'
+    | 'zsg-safety-before-old'
+    | 'zsg-culture-before-old'
+    | 'sc-before-nod'
   when: string
   first: PathologyType | 'SC'
   then: PathologyType
 }> = [
   { id: 'clt-before-cs', when: 'CS amplifier + high UC', first: 'CLT', then: 'CS' },
-  { id: 'zsg-before-old', when: 'OLD with low psychological safety', first: 'ZSG', then: 'OLD' },
+  { id: 'zsg-safety-before-old', when: 'OLD with low psychological safety', first: 'ZSG_SAFETY', then: 'OLD' },
+  { id: 'zsg-culture-before-old', when: 'OLD with zero-sum culture', first: 'ZSG_CULTURE', then: 'OLD' },
   { id: 'sc-before-nod', when: 'NOD with high structural ambiguity', first: 'SC', then: 'NOD' },
 ]
 
@@ -672,7 +697,11 @@ export function buildActionPlan(
     const primary = scBeforeNod ? byAxis.SC : bank
     candidates = [...primary, ...bank, ...byAxis[secondAxis]]
     if (pathologyType === 'OLD' && scores.nd >= 5) {
-      candidates = [...ZSG_INTERVENTIONS, ...candidates]
+      candidates = [
+        ...ZSG_SAFETY_INTERVENTIONS,
+        ...ZSG_CULTURE_INTERVENTIONS,
+        ...candidates,
+      ]
     }
   } else {
     const axisScores: [DiagnosticAxis, number][] = [
@@ -799,7 +828,12 @@ export function evaluateTriggerRulesWithConfig(
     const r = byId.get('tr-hotfix-spike')
     if (r) out.push(r)
   }
-  if (input.pathologyType === 'ZSG' || input.profile === 'critical' || input.profile === 'systemic-collapse') {
+  if (
+    input.pathologyType === 'ZSG_SAFETY' ||
+    input.pathologyType === 'ZSG_CULTURE' ||
+    input.profile === 'critical' ||
+    input.profile === 'systemic-collapse'
+  ) {
     const r = byId.get('tr-near-miss-zero')
     if (r) out.push(r)
   }
@@ -862,16 +896,18 @@ export const HORIZON_LABELS: Record<InterventionHorizon, string> = {
 
 export const PATHOLOGY_TYPE_LABELS: Record<PathologyType, string> = {
   NOD: 'נורמליזציה של סטייה',
-  ZSG: 'תרבות סכום-אפס',
+  ZSG_SAFETY: 'גירעון בביטחון פסיכולוגי',
+  ZSG_CULTURE: 'תרבות ניכור פנים-ארגונית (סכום-אפס)',
   OLD: 'מוגבלות למידה ארגונית',
   CLT: 'עומס קוגניטיבי כרוני',
   CS:  'לחץ כרוני — מגביר מערכתי',
 }
 
 export const PATHOLOGY_PROTOCOL_MAP: Record<PathologyType, { protocol: string; successKpi: string }> = {
-  NOD: { protocol: 'Vaughan Audit + Just Culture',      successKpi: 'Hotfix Rate יורד, near-miss reporting עולה' },
-  ZSG: { protocol: 'Psychological Safety + RevOps/CoS', successKpi: 'Edmondson עולה, escalations בין צוותים יורדות' },
-  OLD: { protocol: 'Double-Loop Learning + TTX',        successKpi: 'Recurring Action Items יורדים מתחת 20%' },
-  CLT: { protocol: 'Nudge Management + Async-First',    successKpi: 'Context Switches יורדים, Focus Time עולה' },
-  CS:  { protocol: 'Tech Tourniquet + Capacity Buffer', successKpi: 'Decision Latency מתקצר, MBI Exhaustion יורד' },
+  NOD: { protocol: 'Vaughan Audit + Just Culture', successKpi: 'Hotfix Rate יורד, near-miss reporting עולה' },
+  ZSG_SAFETY: { protocol: 'Edmondson PSI + Just Culture', successKpi: 'מדד בטחון פסיכולוגי עולה, דיווח מוקדם עולה' },
+  ZSG_CULTURE: { protocol: 'Shared OKRs + RevOps/CoS', successKpi: 'Escalations בין צוותים יורדות, כפילויות יורדות' },
+  OLD: { protocol: 'Double-Loop Learning + TTX', successKpi: 'Recurring Action Items יורדים מתחת 20%' },
+  CLT: { protocol: 'Nudge Management + Async-First', successKpi: 'Context Switches יורדים, Focus Time עולה' },
+  CS: { protocol: 'Tech Tourniquet + Capacity Buffer', successKpi: 'Decision Latency מתקצר, MBI Exhaustion יורד' },
 }

@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import type { ClientBusinessPlanUpsert } from '@/types/database'
 import { buildPlanFromQuestionnaire, type QuestionnaireAnswer } from '@/lib/corsys-questionnaire'
 import { diagnose } from '@/lib/dsm-engine'
+import { runUnifiedTreatmentPipelineFromDiagnosis } from '@/lib/diagnostic/unified-pipeline'
 import { insertDiagnostic } from '@/lib/data'
 import { revalidatePath } from 'next/cache'
 import { isValidUuid } from '@/lib/validation'
@@ -32,11 +33,25 @@ export async function savePlanFromQuestionnaire(clientId: string, clientName: st
     entropyScore: planResult.entropyScore,
   }
 
+  const unified = runUnifiedTreatmentPipelineFromDiagnosis(dsmDiagnosis, answers)
+  const questionnaire_response = {
+    ...(answers as unknown as Record<string, unknown>),
+    unified_action_plan_snapshot: {
+      version: unified.pipelineVersion,
+      generated_at: new Date().toISOString(),
+      narrative_primary_he: unified.narrative_primary_he,
+      primary_type: unified.orgPathology.primaryType,
+      cs_amplifier: unified.orgPathology.csAmplifier,
+      intervention_ids: unified.items.map((i) => i.interventionId),
+      items: unified.items,
+    },
+  }
+
   const upsertPayload: ClientBusinessPlanUpsert = {
     client_id: clientId,
     status: 'active',
     title,
-    questionnaire_response: answers as unknown as Record<string, unknown>,
+    questionnaire_response,
     recommended_channel_id: recommendedChannelId,
     recommended_option_id: recommendedOptionId,
     summary,

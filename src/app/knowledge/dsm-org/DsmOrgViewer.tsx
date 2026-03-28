@@ -81,7 +81,8 @@ function PathologyCard({ entry }: { entry: DsmPathologyEntry }) {
 
   const typeColors: Record<string, string> = {
     NOD: 'border-t-red-500',
-    ZSG: 'border-t-orange-500',
+    ZSG_SAFETY: 'border-t-orange-500',
+    ZSG_CULTURE: 'border-t-amber-500',
     OLD: 'border-t-yellow-500',
     CLT: 'border-t-indigo-500',
     CS:  'border-t-purple-500',
@@ -517,7 +518,7 @@ export function DsmOrgViewer() {
                     <p className="pr-4">→ כן + MBI תשישות רגשית &gt; 27 → חשד ל-<strong className="text-purple-300">CS</strong></p>
                     <p className="pr-4">→ כן + MBI &lt; 27 + Context Switches &gt; 15/day → חשד ל-<strong className="text-indigo-300">CLT</strong></p>
                     <p><strong className="text-white">שאלה 2:</strong> האם ציר M הוא הגבוה ביותר?</p>
-                    <p className="pr-4">→ כן + Edmondson &lt; 3.5 → חשד ל-<strong className="text-orange-300">ZSG</strong></p>
+                    <p className="pr-4">→ כן + Edmondson &lt; 3.5 (אינדיקטור) → חשד ל-<strong className="text-orange-300">ZSG_SAFETY</strong> / <strong className="text-amber-300">ZSG_CULTURE</strong> (לפי שאלון)</p>
                     <p className="pr-4">→ כן + Hotfix Rate &gt; 3x baseline → חשד ל-<strong className="text-red-300">NOD</strong></p>
                     <p><strong className="text-white">שאלה 3:</strong> האם אותם כשלים חוזרים &gt; 3 פעמים ב-6 חודשים?</p>
                     <p className="pr-4">→ כן + Retro Action Items חוזרים → חשד ל-<strong className="text-yellow-300">OLD</strong></p>
@@ -620,7 +621,7 @@ export function DsmOrgViewer() {
                   <thead>
                     <tr className="border-b border-slate-700/60">
                       <th className="text-right px-2 py-1.5 type-meta">התערבות</th>
-                      {(['NOD','ZSG','OLD','CLT','CS'] as const).map(t => (
+                      {(['NOD','ZSG_SAFETY','ZSG_CULTURE','OLD','CLT','CS'] as const).map(t => (
                         <th key={t} className="px-2 py-1.5 type-meta text-center">{t}</th>
                       ))}
                     </tr>
@@ -629,7 +630,7 @@ export function DsmOrgViewer() {
                     {DSM_INTERVENTION_PLAYBOOKS.map(p => (
                       <tr key={p.id} className="border-b border-slate-800/60 last:border-0">
                         <td className="px-2 py-1.5 text-slate-300 font-medium whitespace-nowrap">{p.id} {p.title}</td>
-                        {(['NOD','ZSG','OLD','CLT','CS'] as const).map(t => {
+                        {(['NOD','ZSG_SAFETY','ZSG_CULTURE','OLD','CLT','CS'] as const).map(t => {
                           const eff = p.effectiveness[t]
                           return (
                             <td key={t} className="px-2 py-1.5 text-center">

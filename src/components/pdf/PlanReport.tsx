@@ -23,6 +23,8 @@ export function PlanReport({
   codes,
   pathologies,
   protocols,
+  dsmOrgTypeLabelHe,
+  unifiedPlan,
 }: {
   clientName: string
   summary: string
@@ -32,6 +34,20 @@ export function PlanReport({
   codes: string[]
   pathologies: { code: string; nameHe: string; score: number }[]
   protocols: { nameHe: string; phase: string; components: { step: string; detail: string }[] }[]
+  /** Unified NOD / ZSG_* / … label from dsm-synthesis */
+  dsmOrgTypeLabelHe?: string
+  /** Single CDSS output: ranked interventions + narrative */
+  unifiedPlan?: {
+    narrative_primary_he: string
+    items: Array<{
+      title_he: string
+      horizon: string
+      what_he: string
+      metric_he: string
+      sequencing_locked?: boolean
+      sequencing_lock_reason_he?: string
+    }>
+  }
 }) {
   return (
     <Document title={`תוכנית עסקית — ${clientName}`}>
@@ -59,6 +75,13 @@ export function PlanReport({
           <Text style={styles.body}>{codes.join(', ') || '—'}</Text>
         </View>
 
+        {dsmOrgTypeLabelHe && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>סוג DSM-Org (מיפוי מאוחד)</Text>
+            <Text style={styles.body}>{dsmOrgTypeLabelHe}</Text>
+          </View>
+        )}
+
         {pathologies.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>פירוט ציונים</Text>
@@ -75,6 +98,26 @@ export function PlanReport({
           <Text style={styles.sectionTitle}>המלצה אופרטיבית</Text>
           <Text style={styles.body}>{ctaParagraph}</Text>
         </View>
+
+        {unifiedPlan && unifiedPlan.items.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>תוכנית טיפול מדורגת</Text>
+            <Text style={styles.body}>{unifiedPlan.narrative_primary_he}</Text>
+            {unifiedPlan.items.map((it, i) => (
+              <View key={it.title_he + i} style={{ marginTop: 8 }}>
+                <Text style={styles.body}>
+                  {i + 1}. {it.title_he} ({it.horizon})
+                  {it.sequencing_locked ? ' [נעול]' : ''}
+                </Text>
+                {it.sequencing_lock_reason_he && (
+                  <Text style={[styles.body, { color: '#b45309' }]}>{it.sequencing_lock_reason_he}</Text>
+                )}
+                <Text style={[styles.body, { marginRight: 8 }]}>{it.what_he}</Text>
+                <Text style={[styles.body, { color: '#059669' }]}>מדד: {it.metric_he}</Text>
+              </View>
+            ))}
+          </View>
+        )}
 
         {protocols.length > 0 && (
           <View style={styles.section}>

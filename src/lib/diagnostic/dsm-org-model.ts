@@ -143,10 +143,12 @@ export interface DiagnosticStep {
 export const DSM_COMORBIDITY_MATRIX: ComorbidityEntry[] = [
   { from: 'CS',  to: 'NOD', mechanism: 'לחץ כרוני מוריד את הסף לנורמליזציה. סטיות שהיו נתפסות כבעיה מתקבלות כ"מה לעשות, מלחמה".', prevalence: 'high' },
   { from: 'NOD', to: 'OLD', mechanism: 'כשסטיות הופכות לנורמה, אין מה ללמוד. ה-Retro מודד לפי הנורמה החדשה (הסוטה), לא לפי הסטנדרט המקורי.', prevalence: 'high' },
-  { from: 'ZSG', to: 'CS',  mechanism: 'תחרות פנימית מייצרת לחץ כרוני. "מי שלא נלחם מפסיד" הופך למקור לחץ מתמיד.', prevalence: 'high' },
+  { from: 'ZSG_CULTURE', to: 'CS',  mechanism: 'תחרות פנימית מייצרת לחץ כרוני. "מי שלא נלחם מפסיד" הופך למקור לחץ מתמיד.', prevalence: 'high' },
+  { from: 'ZSG_SAFETY', to: 'CS',  mechanism: 'חסם דיווח ולחץ רגשי מצטבר — תורם לספירלת שחיקה כרונית.', prevalence: 'medium-high' },
   { from: 'CLT', to: 'NOD', mechanism: 'עומס קוגניטיבי מוביל לדילוג על תהליכים. "אין לי קשב לזה עכשיו" הופך ל"אנחנו לא עושים את זה".', prevalence: 'medium-high' },
   { from: 'CS',  to: 'CLT', mechanism: 'לחץ כרוני מצמצם קיבולת קוגניטיבית. אותו עומס גירויים שהיה ניתן לניהול הופך לבלתי-נסבל.', prevalence: 'high' },
-  { from: 'ZSG', to: 'OLD', mechanism: 'תרבות האשמה מונעת למידה. אם דיווח על כשל גורם לעונש, אנשים לא מדווחים. אם לא מדווחים, לא לומדים.', prevalence: 'medium-high' },
+  { from: 'ZSG_CULTURE', to: 'OLD', mechanism: 'תרבות האשמה וסכום-אפס מונעים למידה — דיווח על כשל מרגיש אישי.', prevalence: 'medium-high' },
+  { from: 'ZSG_SAFETY', to: 'OLD', mechanism: 'בלי בטחון פסיכולוגי — למידה דו-לולאתית לא יכולה להתחיל.', prevalence: 'high' },
 ]
 
 export const DSM_PATHOLOGIES: DsmPathologyEntry[] = [
@@ -192,11 +194,47 @@ export const DSM_PATHOLOGIES: DsmPathologyEntry[] = [
     leadingInterventions: ['5.1', '5.3', '5.4'],
   },
 
-  // ─── ZSG ────────────────────────────────────────────────────────────────────
+  // ─── ZSG_SAFETY ─────────────────────────────────────────────────────────────
+  {
+    code: 'DSM-Org 2.0',
+    type: 'ZSG_SAFETY',
+    label_he: 'גירעון בביטחון פסיכולוגי',
+    label_en: 'Psychological Safety Deficit',
+    tam: { t: 2, a: 4, m: 3, total: 9 },
+    criteriaA: [
+      { letter: 'A1', text: 'Edmondson Psychological Safety ממוצע < 3.5 (מתוך 7), או ירידה של 20%+ מול קו בסיס.' },
+      { letter: 'A2', text: 'ערוץ קול יעיל לא קיים או לא בשימוש (דיווח רשמי/בטוח על בעיות כמעט ולא מתרחש).' },
+    ],
+    criteriaB: [
+      { letter: 'B1', text: 'Near-miss / דיווחי סטייה קרובים לאפס למרות NOD או לחץ משלוח.' },
+      { letter: 'B2', text: 'במבחני MBI — דה-פרסונליזציה עולה ביחס לתשישות רגשית (אינדיקטור ל"שקט מזויף").' },
+    ],
+    criteriaC: [
+      { letter: 'C1', text: 'הממצא אינו מוסבר אך ורק על ידי עומס קוגניטיבי גולמי (CLT) ללא רכיב פחד מדיווח.' },
+    ],
+    severitySpecifiers: [
+      { level: 'mild',     label: 'קל',    description: 'Edmondson 3.0–3.5. דיווח חלקי אך קיים.', tamRange: '6–7' },
+      { level: 'moderate', label: 'בינוני', description: 'Edmondson < 3.0. דיווח רק ב"מסדרונות".', tamRange: '8–9' },
+      { level: 'severe',   label: 'חמור',  description: 'Edmondson < 2.5 או שתיקה מוחלטת על כשלים.', tamRange: '10–12' },
+    ],
+    theoreticalMechanism: 'ללא בטחון פסיכולוגי (Edmondson) למידה מטעויות ודיווח מוקדם נחתכים. זה קדם-תנאי קליני ל-OLD ול-NOD מתקדם.',
+    israeliContext: 'ערוצי דוגרי וישירות יכולים להסוות חוסר בטיחות — חשוב להצליב סקר מובנה ולא רק "אווירה".',
+    vignettes: [
+      { id: 'zsgs-1', title: 'דיווח אפס למרות תקלות חוזרות', tags: ['ZSG_SAFETY', 'NOD'], body: 'צוותים מדווחים על הצלחות בלבד; כשלים חוזרים בפרודקשן ללא near-miss.' },
+    ],
+    prognosis: 'מדידת Edmondson חוזרת + Just Culture + חיזוק ערוץ קול — 8–12 שבועות לשיפור ראשוני.',
+    differential: [
+      { versus: 'ZSG_CULTURE', howToDistinguish: 'SAFETY = פחד מדיווח ושקט. CULTURE = תחרות פנימית וסכום-אפס מבני גלויים.' },
+      { versus: 'NOD', howToDistinguish: 'NOD = "ככה עובדים פה". SAFETY = אנשים יודעים שיש בעיה אבל לא מדברים.' },
+    ],
+    leadingInterventions: ['5.1'],
+  },
+
+  // ─── ZSG_CULTURE (zero-sum) ────────────────────────────────────────────────
   {
     code: 'DSM-Org 2.1',
-    type: 'ZSG',
-    label_he: 'תרבות משחק סכום-אפס',
+    type: 'ZSG_CULTURE',
+    label_he: 'תרבות ניכור פנים-ארגונית (סכום-אפס)',
     label_en: 'Zero-Sum Game Culture',
     tam: { t: 3, a: 3, m: 5, total: 11 },
     criteriaA: [
@@ -210,7 +248,7 @@ export const DSM_PATHOLOGIES: DsmPathologyEntry[] = [
       { letter: 'B4', text: 'קיום שיח פנימי שבו "הצלחה של צוות אחר" מתוארת בטרמינולוגיה שלילית ("הם לקחו לנו", "הגנו על שלנו").' },
     ],
     criteriaC: [
-      { letter: 'C1', text: 'התחרות אינה תוצאה של מבנה תמריצים מכוון (בונוסים תחרותיים מובנים אינם ZSG. ZSG הוא תחרות שצמחה מתוך מבנה, לא תחרות שתוכננה).' },
+      { letter: 'C1', text: 'התחרות אינה תוצאה של מבנה תמריצים מכוון (בונוסים תחרותיים מובנים אינם סכום-אפס תרבותי. כאן התחרות צמחה מתוך מבנה, לא תוכננה).' },
     ],
     severitySpecifiers: [
       { level: 'mild',     label: 'קל',    description: 'תחרות מוגבלת ל-2–3 צוותים. Edmondson 3.0–3.5. שכפול מאמצים מזוהה אך ניתן לתיקון.', tamRange: '8–9' },
@@ -220,8 +258,8 @@ export const DSM_PATHOLOGIES: DsmPathologyEntry[] = [
     theoreticalMechanism: 'ZSG מבוסס על תאוריית משחק סכום-אפס: הרווח שלי שווה להפסד שלך. בארגון, המנגנון פועל כשמשאבים נתפסים כקבועים (headcount, budget, C-Level attention). כל צוות שמקבל יותר = צוות אחר שמקבל פחות. התפיסה הזו מייצרת Contradiction Loss.',
     israeliContext: 'תרבות ה"דוגרי" היא חרב פיפיות. בצד החיובי: ישירות, ללא פוליטיקה. בצד השלילי: "דוגרי" שמתדרדר לתרבות האשמה. כשהישירות הופכת לטוקסית, אנשים מפסיקים להעלות בעיות.',
     vignettes: [
-      { id: 'zsg-1', title: 'Playtika: 15% קיצוץ, 500 משרות', tags: ['ZSG', 'CS'], body: 'כשארגון חותך 500 משרות, המסר הסמוי לנשארים: "אתם הבאים". ZSG מתעצם: כולם מגנים על הטריטוריה, שיתוף פעולה יורד, אנשים שומרים מידע כ-leverage. ZSG Severe + CS Comorbid.' },
-      { id: 'zsg-2', title: 'Vimeo: סגירת R&D בישראל', tags: ['ZSG'], body: 'ההחלטה נלקחה מרחוק, בלי שהצוות המקומי היה חלק מהשיח. ZSG ברמת Global: HQ מול Branch, עם ישראל כצד המפסיד. ידע מוסדי של שנים הלך לפח.' },
+      { id: 'zsg-1', title: 'Playtika: 15% קיצוץ, 500 משרות', tags: ['ZSG_CULTURE', 'CS'], body: 'כשארגון חותך 500 משרות, המסר הסמוי לנשארים: "אתם הבאים". סכום-אפס מתעצם: כולם מגנים על הטריטוריה, שיתוף פעולה יורד, אנשים שומרים מידע כ-leverage. Severe + CS Comorbid.' },
+      { id: 'zsg-2', title: 'Vimeo: סגירת R&D בישראל', tags: ['ZSG_CULTURE'], body: 'ההחלטה נלקחה מרחוק, בלי שהצוות המקומי היה חלק מהשיח. HQ מול Branch, עם ישראל כצד המפסיד. ידע מוסדי של שנים הלך לפח.' },
     ],
     prognosis: 'ZSG מתפתח לרוב סביב אירוע מפעיל: reorg, קיצוצים, שינוי אסטרטגיה. ללא התערבות: ספירלת תחלופה הולכת וגדלה. עם התערבות: Just Culture + RevOps/CoS משנים את מבנה התמריצים תוך 8–16 שבועות.',
     differential: [
@@ -335,12 +373,12 @@ export const DSM_PATHOLOGIES: DsmPathologyEntry[] = [
     theoreticalMechanism: 'COR Theory (Hobfoll, 1989): אנשים וארגונים פועלים מתוך דחף לשמור על משאבים. הפסד כואב יותר מרווח מקביל (Loss Primacy). הפסדים יוצרים ספירלה (Loss Spiral). Rebound Effect: ארגון שנכנס לספירלת הפסד לא חוזר לקו הבסיס גם אחרי שהלחץ מוסר — נדרשת התערבות מבנית.',
     israeliContext: 'ישראל 2024–2026: מלחמה, מילואים, אי-ודאות קיומית. הלחץ הכרוני אינו ארגוני בלבד — הוא קיומי. CS הוא המגביר המערכתי הקטלני ביותר: T/A/M כולל 14/15.',
     vignettes: [
-      { id: 'cs-1', title: 'Playtika: ספירלת תחלופה', tags: ['CS', 'ZSG'], body: 'כל סבב פיטורים הגביר ZSG ו-CS בו-זמנית. Survivor Guilt + ספירלת הפסד פעילה. הצוותים שנשארו חוו עלייה בתחלופה ב-quarter שלאחר הפיטורים.' },
+      { id: 'cs-1', title: 'Playtika: ספירלת תחלופה', tags: ['CS', 'ZSG_CULTURE'], body: 'כל סבב פיטורים הגביר סכום-אפס ו-CS בו-זמנית. Survivor Guilt + ספירלת הפסד פעילה. הצוותים שנשארו חוו עלייה בתחלופה ב-quarter שלאחר הפיטורים.' },
     ],
-    prognosis: 'CS היא הפתולוגיה הקטלנית ביותר (T/A/M 14/15) וגם המגביר: CS מזינה NOD, ZSG, OLD ו-CLT בו-זמנית. CS תמיד ראשון אם קיים — כי הוא amplifier שמחמיר הכל.',
+    prognosis: 'CS היא הפתולוגיה הקטלנית ביותר (T/A/M 14/15) וגם המגביר: CS מזינה NOD, ZSG_SAFETY/ZSG_CULTURE, OLD ו-CLT בו-זמנית. CS תמיד ראשון אם קיים — כי הוא amplifier שמחמיר הכל.',
     differential: [
       { versus: 'CLT', howToDistinguish: 'CLT = עומס ארכיטקטוני. CS = עומס רגשי/קיומי. אם שינוי ארכיטקטורת עבודה פותר, זה CLT. אם לא, זה CS.' },
-      { versus: 'ZSG', howToDistinguish: 'ZSG = שחיקה מקונפליקט. CS = שחיקה מהפסד. ב-ZSG אנשים כועסים. ב-CS אנשים תשושים.' },
+      { versus: 'ZSG_CULTURE', howToDistinguish: 'סכום-אפס = שחיקה מקונפליקט. CS = שחיקה מהפסד. בסכום-אפס אנשים כועסים. ב-CS אנשים תשושים.' },
       { versus: 'לחץ אקוטי רגיל', howToDistinguish: 'Launch week, Incident Response < 2 שבועות = לחץ אקוטי נורמלי. CS דורש 3+ חודשים של דפוס כרוני + Rebound Effect.' },
     ],
     leadingInterventions: ['5.4', '5.7', '5.1'],
@@ -351,12 +389,19 @@ export const DSM_INTERVENTION_PLAYBOOKS: InterventionPlaybook[] = [
   {
     id: '5.1',
     title: 'Just Culture Algorithm',
-    target: ['NOD', 'ZSG'],
+    target: ['NOD', 'ZSG_SAFETY', 'ZSG_CULTURE'],
     axes: ['A', 'M'],
     timeline: '30d',
     protocol: 'שלוש שאלות שיטתיות לכל תקרית:\n1. האם היה נוהל ברור?\n2. האם הנוהל היה ישים בתנאי השטח?\n3. האם האדם סטה ביודעין ובכוונה?\nרק אם כן-כן-כן → אחריות אישית. בכל מקרה אחר → כשל מערכתי.',
     successMetric: 'עלייה ב-Incident Reports ללא עלייה בתקריות. Edmondson Score עולה מעל 3.5.',
-    effectiveness: { NOD: 'primary', ZSG: 'primary', OLD: 'secondary', CLT: 'indirect', CS: 'secondary' },
+    effectiveness: {
+      NOD: 'primary',
+      ZSG_SAFETY: 'primary',
+      ZSG_CULTURE: 'primary',
+      OLD: 'secondary',
+      CLT: 'indirect',
+      CS: 'secondary',
+    },
   },
   {
     id: '5.2',
@@ -366,7 +411,14 @@ export const DSM_INTERVENTION_PLAYBOOKS: InterventionPlaybook[] = [
     timeline: 'ongoing',
     protocol: 'כל Retrospective / Post-Mortem חייב לייצר שני תוצרים:\n1. Action Item (לולאה ראשונה): מה מתקנים.\n2. Assumption Update (לולאה שנייה): איזו הנחה מעדכנים.\nשאלת המפתח: "מה חשבנו שנכון ש-incident זה הוכיח שלא?"',
     successMetric: 'ירידה ב-Recurring Action Items. יעד: < 20% חזרה (מול 40%+ baseline ב-OLD).',
-    effectiveness: { OLD: 'primary', NOD: 'secondary', ZSG: 'indirect', CLT: 'indirect', CS: 'secondary' },
+    effectiveness: {
+      OLD: 'primary',
+      NOD: 'secondary',
+      ZSG_SAFETY: 'indirect',
+      ZSG_CULTURE: 'indirect',
+      CLT: 'indirect',
+      CS: 'secondary',
+    },
   },
   {
     id: '5.3',
@@ -376,27 +428,48 @@ export const DSM_INTERVENTION_PLAYBOOKS: InterventionPlaybook[] = [
     timeline: '14d',
     protocol: 'Default Settings: Code Review אוטומטית (opt-out, לא opt-in).\nContextual Reminders: Bot שמזהה PR בלי tests ושואל "בכוונה?"\nTransparent Metrics: דשבורד צוותי עם Tech Debt Score בזמן אמת.\nArchitecture Guardrails: Linting rules שמונעים Copy-Paste מעל סף.',
     successMetric: 'ירידה ב-Copy-Paste Code מתחת ל-12%. עלייה ב-Refactoring Activity. ירידה ב-Hotfix Rate.',
-    effectiveness: { NOD: 'primary', CLT: 'primary', OLD: 'secondary', ZSG: 'indirect', CS: 'indirect' },
+    effectiveness: {
+      NOD: 'primary',
+      CLT: 'primary',
+      OLD: 'secondary',
+      ZSG_SAFETY: 'indirect',
+      ZSG_CULTURE: 'indirect',
+      CS: 'indirect',
+    },
   },
   {
     id: '5.4',
     title: 'Tech Tourniquet — חוסם עורקים טכנולוגי',
-    target: ['NOD', 'ZSG', 'OLD', 'CLT', 'CS'],
+    target: ['NOD', 'ZSG_SAFETY', 'ZSG_CULTURE', 'OLD', 'CLT', 'CS'],
     axes: ['T', 'M'],
     timeline: '14d',
     protocol: 'כלל 1: חייב להיבנות תוך 1–3 ימים. אם לוקח יותר = פרויקט, לא Tourniquet.\nכלל 2: פותר בעיה אחת. לא שתיים.\nכלל 3: מדד הצלחה חד: Decision Latency ירד? Handoffs ירדו? Context Switches ירדו?\nדוגמאות: דשבורד שמרכז מידע מ-7 מערכות (CLT). בוט שמנתב שאלות לאדם הנכון (Decision Latency).',
     successMetric: 'קיצור Decision Latency ו/או צמצום Handoffs תוך שבוע מיישום.',
-    effectiveness: { NOD: 'secondary', ZSG: 'secondary', OLD: 'secondary', CLT: 'primary', CS: 'secondary' },
+    effectiveness: {
+      NOD: 'secondary',
+      ZSG_SAFETY: 'secondary',
+      ZSG_CULTURE: 'secondary',
+      OLD: 'secondary',
+      CLT: 'primary',
+      CS: 'secondary',
+    },
   },
   {
     id: '5.5',
     title: 'ארכיטקטורת RevOps / CoS',
-    target: ['ZSG', 'CLT'],
+    target: ['ZSG_CULTURE', 'CLT'],
     axes: ['T', 'A', 'M'],
     timeline: '90d',
     protocol: 'RevOps מאחד Sales, Marketing ו-CS תחת מדדים משותפים. CoS יוצר שכבת תיאום שמונעת Handoff Overload. בחברת 50–300 עובדים, הסיילואים עדיין לא בטון.',
     successMetric: 'ירידה בכמות Handoffs/process. ירידה בכמות ישיבות להחלטה. עלייה ב-Response Time ללקוח.',
-    effectiveness: { ZSG: 'primary', CLT: 'primary', OLD: 'secondary', NOD: 'indirect', CS: 'indirect' },
+    effectiveness: {
+      ZSG_CULTURE: 'primary',
+      ZSG_SAFETY: 'indirect',
+      CLT: 'primary',
+      OLD: 'secondary',
+      NOD: 'indirect',
+      CS: 'indirect',
+    },
   },
   {
     id: '5.6',
@@ -406,7 +479,14 @@ export const DSM_INTERVENTION_PLAYBOOKS: InterventionPlaybook[] = [
     timeline: '30d',
     protocol: 'Value Stream Mapping של תהליך קריטי אחד. זיהוי כל Handoff. חיסול מה שניתן. אוטומציה של מה שנשאר. Domain-Driven Design: מבנה העבודה צריך לשקף את מבנה הדומיין.',
     successMetric: 'ירידה ב-Handoff Count בתהליך שמופה. ירידה ב-Cycle Time.',
-    effectiveness: { CLT: 'primary', NOD: 'secondary', ZSG: 'secondary', OLD: 'indirect', CS: 'indirect' },
+    effectiveness: {
+      CLT: 'primary',
+      NOD: 'secondary',
+      ZSG_SAFETY: 'secondary',
+      ZSG_CULTURE: 'secondary',
+      OLD: 'indirect',
+      CS: 'indirect',
+    },
   },
   {
     id: '5.7',
@@ -416,7 +496,14 @@ export const DSM_INTERVENTION_PLAYBOOKS: InterventionPlaybook[] = [
     timeline: 'one-time',
     protocol: 'Tabletop Exercise: סימולציה שמודדת Decision Latency תחת לחץ.\nמדד 1: זמן עד החלטה ראשונה (target: < 15 דקות).\nמדד 2: כמות מידע שנדרש לפני החלטה (target: < 3 שאלות).\nמדד 3: מי מחליט ומי מחכה (target: בעל סמכות מחליט, לא ועדה).\nמדד 4: הנחות סמויות שנחשפו (target: > 2 הנחות שהוזמו).',
     successMetric: 'קיצור Decision Latency בתרחיש. חשיפת הנחות סמויות.',
-    effectiveness: { OLD: 'primary', CS: 'primary', ZSG: 'secondary', NOD: 'indirect', CLT: 'indirect' },
+    effectiveness: {
+      OLD: 'primary',
+      CS: 'primary',
+      ZSG_SAFETY: 'secondary',
+      ZSG_CULTURE: 'secondary',
+      NOD: 'indirect',
+      CLT: 'indirect',
+    },
   },
 ]
 
@@ -437,7 +524,7 @@ export const DSM_ASSESSMENT_INSTRUMENTS: AssessmentInstrument[] = [
     id: 'edmondson',
     name: 'Edmondson 7-Item Psychological Safety Survey',
     description: 'Amy Edmondson (1999). שבעה פריטים בסולם 1–7. ציון ממוצע. Cutoff: < 3.5 = ביטחון פסיכולוגי נמוך. < 2.5 = קריטי.',
-    usageInDsmOrg: 'כלי אבחוני ראשי ל-ZSG. ירידה של 20%+ מ-baseline = אינדיקטור לשינוי מערכתי.',
+    usageInDsmOrg: 'כלי אבחוני ראשי ל-ZSG_SAFETY / NOD. ירידה של 20%+ מ-baseline = אינדיקטור לשינוי מערכתי.',
   },
   {
     id: 'rsq',
@@ -499,7 +586,14 @@ export const DSM_DIAGNOSTIC_PROCESS: DiagnosticStep[] = [
  * CS always first (systemic amplifier), then by T/A/M total descending.
  */
 export function sortByInterventionPriority(types: PathologyType[]): PathologyType[] {
-  const order: Record<PathologyType, number> = { CS: 0, NOD: 1, ZSG: 2, OLD: 3, CLT: 4 }
+  const order: Record<PathologyType, number> = {
+    CS: 0,
+    NOD: 1,
+    ZSG_SAFETY: 2,
+    ZSG_CULTURE: 2,
+    OLD: 3,
+    CLT: 4,
+  }
   return [...types].sort((a, b) => order[a] - order[b])
 }
 

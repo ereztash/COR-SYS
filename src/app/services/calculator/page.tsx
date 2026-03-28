@@ -15,6 +15,8 @@ import {
   RESEARCH_MODULES,
   type GoldenQuestionAnswers,
 } from '@/lib/dsm-policy-engine'
+import { PATHOLOGY_TYPE_LABELS } from '@/lib/diagnostic/action-plan'
+import { primaryOrgPathologyFromDiagnosis } from '@/lib/diagnostic/dsm-synthesis'
 import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 function formatILS(n: number) {
@@ -263,6 +265,8 @@ export default function CalculatorPage() {
     [diagnosis, managers, hoursPerWeek, monthlySalary]
   )
 
+  const orgPathology = useMemo(() => primaryOrgPathologyFromDiagnosis(diagnosis), [diagnosis])
+
   return (
     <div className="p-6 lg:p-8 min-h-screen">
       <div className="max-w-2xl mx-auto">
@@ -381,6 +385,10 @@ export default function CalculatorPage() {
 
         {/* ── Pathology Detail Strip ── */}
         <div className="mt-4 bento-card p-5">
+          <p className="text-[10px] font-bold text-slate-500 uppercase mb-2">סוג DSM-Org (מיפוי מאוחד)</p>
+          <p className="text-sm text-indigo-200 font-semibold mb-3">
+            {PATHOLOGY_TYPE_LABELS[orgPathology.primaryType]}
+          </p>
           <p className="text-[10px] font-bold text-slate-500 uppercase mb-3">ציוני פתולוגיה — פירוט</p>
           <div className="space-y-2.5">
             {diagnosis.pathologies.map((p) => {

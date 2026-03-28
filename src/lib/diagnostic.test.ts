@@ -12,7 +12,7 @@ const ALL_HIGH_ANSWERS = {
 }
 
 describe('computeDiagnostic', () => {
-  it('returns all four result fields; plan title includes client name', () => {
+  it('returns plan, dsmDiagnosis, orgPathology, edges, protocols; plan title includes client name', () => {
     const result = computeDiagnostic('Acme Corp', {
       pathologyZeroSum: 'occasional',
       pathologyNod: 'medium',
@@ -28,8 +28,14 @@ describe('computeDiagnostic', () => {
     expect(result.planResult).toBeDefined()
     expect(result.planResult.title).toBe('תוכנית עסקית — Acme Corp')
     expect(result.dsmDiagnosis).toBeDefined()
+    expect(result.orgPathology).toBeDefined()
+    expect(result.orgPathology).toHaveProperty('primaryType')
+    expect(result.orgPathology).toHaveProperty('csAmplifier')
     expect(result.comorbidityEdges).toBeDefined()
     expect(result.interventionProtocols).toBeDefined()
+    expect(result.unifiedTreatmentPlan).toBeDefined()
+    expect(Array.isArray(result.unifiedTreatmentPlan.items)).toBe(true)
+    expect(result.unifiedTreatmentPlan.pipelineVersion).toBeTruthy()
   })
 
   it('dsmDiagnosis has expected shape', () => {
@@ -72,7 +78,7 @@ describe('computeDiagnostic', () => {
 
   // ─── Edge case: all-high answers ─────────────────────────────────────────
 
-  it('all-high answers: systemic-collapse, comorbidity edges, and protocols', () => {
+  it('all-high answers: systemic-collapse, comorbidity edges, protocols, and CS org type', () => {
     const result = computeDiagnostic('Crisis Corp', {
       ...ALL_HIGH_ANSWERS,
       urgencyLevel: 'high',
@@ -81,7 +87,10 @@ describe('computeDiagnostic', () => {
     })
     expect(result.dsmDiagnosis.severityProfile).toBe('systemic-collapse')
     expect(result.dsmDiagnosis.codes).toEqual(['DR-3', 'ND-3', 'UC-3', 'SC-3'])
+    expect(result.orgPathology.csAmplifier).toBe(true)
+    expect(result.orgPathology.primaryType).toBe('CS')
     expect(result.interventionProtocols.length).toBeGreaterThan(0)
+    expect(result.unifiedTreatmentPlan.items.length).toBeGreaterThan(0)
     expect(result.comorbidityEdges.length).toBeGreaterThan(0)
   })
 

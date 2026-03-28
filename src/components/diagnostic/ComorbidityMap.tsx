@@ -5,9 +5,10 @@ export function ComorbidityMap({ edges, diagnosis }: { edges: ComorbidityEdge[];
   if (activeEdges.length === 0 && diagnosis.severityProfile === 'healthy') return null
 
   const nodes: { code: string; cx: number; cy: number; nameHe: string }[] = [
-    { code: 'DR', cx: 150, cy: 40, nameHe: 'הדדיות מעוותת' },
-    { code: 'ND', cx: 60, cy: 160, nameHe: 'נורמליזציית סטייה' },
-    { code: 'UC', cx: 240, cy: 160, nameHe: 'כיול לא-מייצג' },
+    { code: 'SC', cx: 150, cy: 32, nameHe: 'עמימות מבנית' },
+    { code: 'DR', cx: 58, cy: 142, nameHe: 'הדדיות מעוותת' },
+    { code: 'ND', cx: 150, cy: 178, nameHe: 'נורמליזציית סטייה' },
+    { code: 'UC', cx: 242, cy: 142, nameHe: 'כיול לא-מייצג' },
   ]
   const nodeMap = Object.fromEntries(nodes.map((n) => [n.code, n]))
   const pathologyMap = Object.fromEntries(diagnosis.pathologies.map((p) => [p.code, p]))
@@ -20,6 +21,7 @@ export function ComorbidityMap({ edges, diagnosis }: { edges: ComorbidityEdge[];
         {edges.map((edge) => {
           const from = nodeMap[edge.from]
           const to = nodeMap[edge.to]
+          if (!from || !to) return null
           const color = edge.direction === 'positive' ? '#3b82f6' : '#f97316'
           const opacity = edge.active ? 0.9 : 0.2
           const strokeWidth = edge.active ? 2.5 : 1

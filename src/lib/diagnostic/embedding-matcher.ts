@@ -7,8 +7,8 @@
  *   Maps answer text → healthy / at-risk / critical / systemic-collapse
  *   Used for: sprint urgency, profile label, score inference
  *
- * Pass 2 — TYPE match (PATHOLOGY_TYPE_KB, 5 entries)
- *   Maps answer text → NOD / ZSG / OLD / CLT / CS
+ * Pass 2 — TYPE match (PATHOLOGY_TYPE_KB)
+ *   Maps answer text → NOD / ZSG_SAFETY / ZSG_CULTURE / OLD / CLT / CS
  *   Used for: intervention selection, T/A/M cost signature, protocol recommendation
  *
  * Both passes use the same embedding model and cosine similarity function.

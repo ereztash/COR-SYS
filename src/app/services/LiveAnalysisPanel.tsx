@@ -2,12 +2,14 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
-  buildActionPlan,
   getDominantAxis,
   HORIZON_LABELS,
+  PATHOLOGY_TYPE_LABELS,
   PROFILE_LABELS,
   profileFromScores,
 } from '@/lib/diagnostic/action-plan'
+import { runUnifiedTreatmentPipeline } from '@/lib/diagnostic/unified-pipeline'
+import { DEFAULT_SC_WHEN_MISSING } from '@/lib/diagnostic/unified-pipeline'
 import { logUxEvent } from '@/lib/ux-metrics'
 
 type Axis = 'DR' | 'ND' | 'UC'
@@ -73,11 +75,20 @@ export function LiveAnalysisPanel() {
     dr: Number(scores.dr.toFixed(1)),
     nd: Number(scores.nd.toFixed(1)),
     uc: Number(scores.uc.toFixed(1)),
+    sc: DEFAULT_SC_WHEN_MISSING,
   }
 
   const dominantAxis = getDominantAxis(roundedScores)
   const profile = profileFromScores(roundedScores)
-  const actionPlan = buildActionPlan(dominantAxis, profile, roundedScores)
+  const unifiedPlan = useMemo(
+    () =>
+      runUnifiedTreatmentPipeline({
+        scores: roundedScores,
+        envelope: { t_max: 90, r_max: 3 },
+      }),
+    [roundedScores.dr, roundedScores.nd, roundedScores.uc, roundedScores.sc]
+  )
+  const actionPlan = unifiedPlan.items
   const completion = Math.round(
     (Object.values(values).filter((v) => v !== 5).length / QUESTIONS.length) * 100
   )
@@ -116,9 +127,10 @@ export function LiveAnalysisPanel() {
     markFirstInteraction()
     const lines = [
       'סיכום ניתוח לייב — COR-SYS',
-      `DR: ${roundedScores.dr} | ND: ${roundedScores.nd} | UC: ${roundedScores.uc}`,
+      `DR: ${roundedScores.dr} | ND: ${roundedScores.nd} | UC: ${roundedScores.uc} | SC*: ${roundedScores.sc} (ברירת מחדל)`,
       `ציר דומיננטי: ${dominantAxis}`,
       `פרופיל: ${PROFILE_LABELS[profile]}`,
+      `סוג DSM-Org: ${PATHOLOGY_TYPE_LABELS[unifiedPlan.orgPathology.primaryType]}`,
       `חסם מוביל: ${strongestQuestion.label} (${values[strongestQuestion.id]}/10)`,
       '',
       'תוכנית פעולה מוצעת:',

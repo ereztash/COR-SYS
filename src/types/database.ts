@@ -74,11 +74,26 @@ export interface Financial {
 
 export type ClientBusinessPlanStatus = 'draft' | 'active' | 'archived'
 
+/**
+ * Stored under `questionnaire_response.unified_action_plan_snapshot` when plans are saved
+ * from the questionnaire (see `savePlanFromQuestionnaire`). Shape mirrors unified pipeline output subset.
+ */
+export interface UnifiedActionPlanSnapshot {
+  version: string
+  generated_at: string
+  narrative_primary_he: string
+  primary_type: string
+  cs_amplifier: boolean
+  intervention_ids: string[]
+  items: unknown[]
+}
+
 export interface ClientBusinessPlan {
   id: string
   client_id: string
   status: ClientBusinessPlanStatus
   title: string | null
+  /** Raw questionnaire answers; may include `unified_action_plan_snapshot` (see {@link UnifiedActionPlanSnapshot}). */
   questionnaire_response: Record<string, unknown> | null
   recommended_channel_id: string | null
   recommended_option_id: string | null

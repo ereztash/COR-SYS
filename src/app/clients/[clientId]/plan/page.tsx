@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { getOptionById } from '@/lib/service-catalog'
 import type { QuestionnaireAnswer } from '@/lib/corsys-questionnaire'
 import { computeDiagnostic } from '@/lib/diagnostic'
+import { PATHOLOGY_TYPE_LABELS } from '@/lib/diagnostic/action-plan'
 import { EntropyDots, DSMDiagnosisCard, ComorbidityMap, InterventionProtocolsCard, PlanProtocolsCta, DiagnosticHistoryCard } from '@/components/diagnostic'
 import { PlanQuestionnaireForm } from './PlanQuestionnaireForm'
 import { ModeBlurb } from '@/components/ui/ModeBlurb'
@@ -23,8 +24,10 @@ export default async function ClientPlanPage({ params }: { params: Promise<{ cli
 
   let planResult: ReturnType<typeof computeDiagnostic>['planResult'] | null = null
   let dsmDiagnosis: ReturnType<typeof computeDiagnostic>['dsmDiagnosis'] | null = null
+  let orgPathology: ReturnType<typeof computeDiagnostic>['orgPathology'] | null = null
   let comorbidityEdges: ReturnType<typeof computeDiagnostic>['comorbidityEdges'] = []
-  let interventionProtocols: ReturnType<typeof computeDiagnostic>['interventionProtocols'] = []
+  let unifiedTreatmentPlan: ReturnType<typeof computeDiagnostic>['unifiedTreatmentPlan'] | null =
+    null
 
   if (plan?.questionnaire_response) {
     const qa = plan.questionnaire_response as QuestionnaireAnswer
@@ -32,8 +35,9 @@ export default async function ClientPlanPage({ params }: { params: Promise<{ cli
       const diagnostic = computeDiagnostic(client.name, qa)
       planResult = diagnostic.planResult
       dsmDiagnosis = diagnostic.dsmDiagnosis
+      orgPathology = diagnostic.orgPathology
       comorbidityEdges = diagnostic.comorbidityEdges
-      interventionProtocols = diagnostic.interventionProtocols
+      unifiedTreatmentPlan = diagnostic.unifiedTreatmentPlan
     } catch {
       // graceful fallback — show stored data only
     }
@@ -97,14 +101,24 @@ export default async function ClientPlanPage({ params }: { params: Promise<{ cli
               </div>
             )}
 
+            {/* Unified DSM-Org type (same rules as wizard / snapshot) */}
+            {orgPathology && (
+              <div className="bento-card p-5 border-t-4 border-t-indigo-500/60">
+                <p className="text-xs font-bold text-slate-500 uppercase mb-2">סוג DSM-Org (מיפוי מאוחד)</p>
+                <p className="text-sm font-bold text-white">{PATHOLOGY_TYPE_LABELS[orgPathology.primaryType]}</p>
+              </div>
+            )}
+
             {/* DSM Diagnosis */}
             {dsmDiagnosis && <DSMDiagnosisCard diagnosis={dsmDiagnosis} />}
 
             {/* Comorbidity Map */}
             {dsmDiagnosis && <ComorbidityMap edges={comorbidityEdges} diagnosis={dsmDiagnosis} />}
 
-            {/* Intervention Protocols */}
-            <InterventionProtocolsCard protocols={interventionProtocols} ctaSlot={<PlanProtocolsCta />} />
+            {/* Unified treatment plan */}
+            {unifiedTreatmentPlan && (
+              <InterventionProtocolsCard unifiedPlan={unifiedTreatmentPlan} ctaSlot={<PlanProtocolsCta />} />
+            )}
 
             {/* Diagnostic History */}
             <DiagnosticHistoryCard diagnostics={diagnostics} />

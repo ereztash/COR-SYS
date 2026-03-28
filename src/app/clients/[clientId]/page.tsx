@@ -9,7 +9,7 @@ import { AgentInsightsPanel } from './AgentInsightsPanel'
 import { DecisionSpine } from '@/components/ui/DecisionSpine'
 import { buildDecisionSpineData } from '@/lib/decision-spine-builder'
 import { PATHOLOGY_PROTOCOL_MAP } from '@/lib/diagnostic/action-plan'
-import type { PathologyType } from '@/lib/diagnostic/pathology-kb'
+import { primaryOrgPathologyFromAxisScores } from '@/lib/diagnostic/dsm-synthesis'
 
 export const dynamic = 'force-dynamic'
 
@@ -29,16 +29,6 @@ const SEVERITY_LABEL: Record<string, string> = {
   'systemic-collapse': 'קריסה מערכתית',
 }
 
-function inferPrimaryPathology(snapshot: { score_dr?: number | null; score_nd?: number | null; score_uc?: number | null }): PathologyType {
-  const dr = snapshot.score_dr ?? 0
-  const nd = snapshot.score_nd ?? 0
-  const uc = snapshot.score_uc ?? 0
-  if (dr >= 6 && nd >= 6 && uc >= 6) return 'CS'
-  if (nd >= dr && nd >= uc) return dr < 5 ? 'ZSG' : 'NOD'
-  if (uc >= dr && uc >= nd) return nd >= dr ? 'OLD' : 'CLT'
-  return 'NOD'
-}
-
 export default async function ClientDetailPage({ params }: { params: Promise<{ clientId: string }> }) {
   const { clientId } = await params
   const [clientWithPlan, sprints, financials, cbrSnapshot, interventionHistory] = await Promise.all([
@@ -56,7 +46,14 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
   const severity       = snapshot?.severity_profile ?? null
   const accent         = severity ? (SEVERITY_ACCENT[severity] ?? '#818cf8') : '#6366f1'
   const activesprints  = sprints.filter(s => s.status === 'active').length
-  const primaryPathology = snapshot ? inferPrimaryPathology(snapshot) : null
+  const primaryPathology = snapshot
+    ? primaryOrgPathologyFromAxisScores({
+        dr: snapshot.score_dr ?? 0,
+        nd: snapshot.score_nd ?? 0,
+        uc: snapshot.score_uc ?? 0,
+        sc: snapshot.score_sc ?? 0,
+      }).primaryType
+    : null
   const protocolMapping = primaryPathology ? PATHOLOGY_PROTOCOL_MAP[primaryPathology] : null
 
   // Loss frame: ₪/day from decision latency

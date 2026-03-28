@@ -4,6 +4,7 @@ import { requireUser } from '@/lib/api/require-user'
 import { getClientById, getPlanByClientId } from '@/lib/data'
 import type { QuestionnaireAnswer } from '@/lib/corsys-questionnaire'
 import { computeDiagnostic } from '@/lib/diagnostic'
+import { HORIZON_LABELS, PATHOLOGY_TYPE_LABELS } from '@/lib/diagnostic/action-plan'
 import { renderToBuffer } from '@react-pdf/renderer'
 import { PlanReport } from '@/components/pdf/PlanReport'
 
@@ -25,7 +26,8 @@ export async function GET(
     return NextResponse.json({ error: 'Client not found' }, { status: 404 })
   }
   const answers = (plan?.questionnaire_response ?? {}) as QuestionnaireAnswer
-  const { planResult, dsmDiagnosis, interventionProtocols } = computeDiagnostic(client.name, answers)
+  const { planResult, dsmDiagnosis, orgPathology, interventionProtocols, unifiedTreatmentPlan } =
+    computeDiagnostic(client.name, answers)
 
   const doc = (
     <PlanReport
@@ -45,6 +47,18 @@ export async function GET(
         phase: p.phase,
         components: p.components,
       }))}
+      dsmOrgTypeLabelHe={PATHOLOGY_TYPE_LABELS[orgPathology.primaryType]}
+      unifiedPlan={{
+        narrative_primary_he: unifiedTreatmentPlan.narrative_primary_he,
+        items: unifiedTreatmentPlan.items.map((it) => ({
+          title_he: it.title_he,
+          horizon: HORIZON_LABELS[it.horizon],
+          what_he: it.what_he,
+          metric_he: it.metric_he,
+          sequencing_locked: it.sequencing_locked,
+          sequencing_lock_reason_he: it.sequencing_lock_reason_he,
+        })),
+      }}
     />
   )
 

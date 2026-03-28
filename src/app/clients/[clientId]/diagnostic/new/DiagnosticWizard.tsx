@@ -6,7 +6,6 @@ import { toast } from 'sonner'
 import { DIAGNOSTIC_QUESTIONS } from '@/lib/diagnostic/questions'
 import { buildEmbeddingText } from '@/lib/diagnostic/questions'
 import {
-  buildActionPlan,
   build90DayGateReviews,
   build90DayGateReviewsWithConfig,
   evaluateTriggerRules,
@@ -18,11 +17,11 @@ import {
   PATHOLOGY_TYPE_LABELS,
   PATHOLOGY_PROTOCOL_MAP,
 } from '@/lib/diagnostic/action-plan'
+import { runUnifiedTreatmentPipeline } from '@/lib/diagnostic/unified-pipeline'
 import { createDiagnosticSprintAction } from '@/lib/actions/diagnostic'
 import type { DiagnosticAnalysisResult } from '@/app/api/diagnostic/analyze/route'
 import type { DiagnosticAxis } from '@/lib/diagnostic/questions'
 import type { PathologyProfile, PathologyType } from '@/lib/diagnostic/pathology-kb'
-import { axisToPathologyType, detectCsAmplifier } from '@/lib/diagnostic/pathology-kb'
 import type { ActionPlanItem, ConstraintEnvelope } from '@/lib/diagnostic/action-plan'
 import type { DiagnosticRuntimeConfig } from '@/lib/diagnostic/action-plan'
 import { logUxEvent } from '@/lib/ux-metrics'
@@ -80,9 +79,12 @@ const COMORBIDITY_CASCADE: Record<PathologyType, { downstream: PathologyType; ri
   NOD: [
     { downstream: 'OLD', risk_he: 'סטיות שאינן מזוהות מונעות למידה מכשלים — OLD מסתבר' },
   ],
-  ZSG: [
+  ZSG_SAFETY: [
+    { downstream: 'OLD', risk_he: 'בלי בטחון פסיכולוגי — למידה מכשלים נחתכת; OLD צפוי' },
+  ],
+  ZSG_CULTURE: [
     { downstream: 'OLD', risk_he: 'תרבות האשמה מונעת Post-Mortem אמיתי — OLD צפוי' },
-    { downstream: 'CS',  risk_he: 'תחרות פנימית מתמשכת שוחקת רגשית — CS מסתבר' },
+    { downstream: 'CS', risk_he: 'תחרות פנימית מתמשכת שוחקת רגשית — CS מסתבר' },
   ],
   OLD: [
     { downstream: 'NOD', risk_he: 'חוסר למידה מסטיות מנרמל אותן בדיעבד — NOD מגביר' },
@@ -93,7 +95,7 @@ const COMORBIDITY_CASCADE: Record<PathologyType, { downstream: PathologyType; ri
   CS: [
     { downstream: 'NOD', risk_he: 'תחת לחץ כרוני, סטיות מתנרמלות מהר יותר' },
     { downstream: 'CLT', risk_he: 'שחיקה רגשית מצמצמת קיבולת קוגניטיבית — CLT מוגבר' },
-    { downstream: 'ZSG', risk_he: 'תחושת איום קיומי מגבירה תחרות פנימית' },
+    { downstream: 'ZSG_CULTURE', risk_he: 'תחושת איום קיומי מגבירה תחרות פנימית' },
     { downstream: 'OLD', risk_he: 'יכולת למידה פוחתת תחת cortisol כרוני' },
   ],
 }
@@ -278,12 +280,18 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
   function analyzeFromSliders() {
     const profile = profileFromScores(scores)
     const axis = getDominantAxis(scores)
-    const csAmp = detectCsAmplifier(scores)
-    const pType = axisToPathologyType(axis, scores)
     const envelope: ConstraintEnvelope = { t_max: tMax, r_max: rMax }
-    const interventions = buildActionPlan(axis, profile, scores, pType, csAmp, envelope, {
-      evidenceProfiles: runtimeConfig?.evidenceProfiles,
+    const unified = runUnifiedTreatmentPipeline({
+      scores,
+      envelope,
+      runtimeConfig: runtimeConfig?.evidenceProfiles
+        ? { evidenceProfiles: runtimeConfig.evidenceProfiles }
+        : undefined,
     })
+    const syn = unified.orgPathology
+    const pType = syn.primaryType
+    const csAmp = syn.csAmplifier
+    const interventions = unified.items
     const triggers = runtimeConfig?.triggerRules
       ? evaluateTriggerRulesWithConfig({ profile, dominantAxis: axis, scores, pathologyType: pType }, runtimeConfig.triggerRules)
       : evaluateTriggerRules({ profile, dominantAxis: axis, scores, pathologyType: pType })
@@ -363,12 +371,18 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
       }
       const profile = data.topMatch.profile
       const axis = getDominantAxis(blended)
-      const pType = data.topType.type
-      const csAmp = data.csAmplifier
       const envelope: ConstraintEnvelope = { t_max: tMax, r_max: rMax }
-      const interventions = buildActionPlan(axis, profile, blended, pType, csAmp, envelope, {
-        evidenceProfiles: runtimeConfig?.evidenceProfiles,
+      const unified = runUnifiedTreatmentPipeline({
+        scores: blended,
+        envelope,
+        runtimeConfig: runtimeConfig?.evidenceProfiles
+          ? { evidenceProfiles: runtimeConfig.evidenceProfiles }
+          : undefined,
       })
+      const syn = unified.orgPathology
+      const pType = syn.primaryType
+      const csAmp = syn.csAmplifier
+      const interventions = unified.items
       const triggers = runtimeConfig?.triggerRules
         ? evaluateTriggerRulesWithConfig({ profile, dominantAxis: axis, scores: blended, pathologyType: pType }, runtimeConfig.triggerRules)
         : evaluateTriggerRules({ profile, dominantAxis: axis, scores: blended, pathologyType: pType })

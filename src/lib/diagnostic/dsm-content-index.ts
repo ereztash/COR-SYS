@@ -45,7 +45,7 @@ export const DSM_CONTENT_INDEX: ContentLink[] = [
   {
     subtopicId: 'tam-signature',
     part: 1,
-    pathologyTypes: ['NOD', 'ZSG', 'OLD', 'CLT', 'CS'],
+    pathologyTypes: ['NOD', 'ZSG_SAFETY', 'ZSG_CULTURE', 'OLD', 'CLT', 'CS'],
     axes: ['DR', 'ND', 'UC', 'SC'],
     playbookIds: ['5.4'],
     tags: ['triage', 'T/A/M', 'measurement'],
@@ -74,7 +74,7 @@ export const DSM_CONTENT_INDEX: ContentLink[] = [
   {
     subtopicId: 'psg',
     part: 2,
-    pathologyTypes: ['ZSG', 'CS'],
+    pathologyTypes: ['ZSG_SAFETY', 'CS'],
     axes: ['DR', 'UC'],
     playbookIds: ['5.1', '5.7'],
     tags: ['PSG', 'psychological-safety', 'Edmondson', 'near-miss'],
@@ -83,7 +83,7 @@ export const DSM_CONTENT_INDEX: ContentLink[] = [
   {
     subtopicId: 'dugri-toxicity',
     part: 2,
-    pathologyTypes: ['ZSG'],
+    pathologyTypes: ['ZSG_CULTURE'],
     axes: ['DR', 'ND'],
     playbookIds: ['5.1', '5.5'],
     tags: ['dugri', 'blame-culture', 'Israeli-DNA'],
@@ -141,7 +141,7 @@ export const DSM_CONTENT_INDEX: ContentLink[] = [
   {
     subtopicId: 'conceptia-fixation',
     part: 4,
-    pathologyTypes: ['OLD', 'ZSG'],
+    pathologyTypes: ['OLD', 'ZSG_CULTURE'],
     axes: ['UC', 'DR'],
     playbookIds: ['5.2', '5.7'],
     tags: ['conceptia', 'AAR-malfunction', 'defensive-routines'],
@@ -161,7 +161,7 @@ export const DSM_CONTENT_INDEX: ContentLink[] = [
   {
     subtopicId: 'distorted-reciprocity',
     part: 5,
-    pathologyTypes: ['ZSG', 'CS'],
+    pathologyTypes: ['ZSG_SAFETY', 'ZSG_CULTURE', 'CS'],
     axes: ['DR'],
     playbookIds: ['5.1', '5.7'],
     tags: ['Hobfoll', 'psychological-contract', 'layoffs', 'BLM'],
@@ -190,7 +190,7 @@ export const DSM_CONTENT_INDEX: ContentLink[] = [
   {
     subtopicId: 'cascade-state',
     part: 6,
-    pathologyTypes: ['CS', 'NOD', 'ZSG', 'OLD', 'CLT'],
+    pathologyTypes: ['CS', 'NOD', 'ZSG_SAFETY', 'ZSG_CULTURE', 'OLD', 'CLT'],
     axes: ['DR', 'ND', 'UC', 'SC'],
     playbookIds: ['5.4'],
     tags: ['cascade', 'halt', 'P_c', 'entropy'],
@@ -199,7 +199,7 @@ export const DSM_CONTENT_INDEX: ContentLink[] = [
   {
     subtopicId: 'burke-litwin',
     part: 6,
-    pathologyTypes: ['CS', 'ZSG', 'NOD'],
+    pathologyTypes: ['CS', 'ZSG_SAFETY', 'ZSG_CULTURE', 'NOD'],
     axes: ['DR', 'SC'],
     playbookIds: [],
     tags: ['Burke-Litwin', 'transformational', 'transactional'],
@@ -219,7 +219,7 @@ export const DSM_CONTENT_INDEX: ContentLink[] = [
   {
     subtopicId: 'just-culture',
     part: 7,
-    pathologyTypes: ['ZSG', 'NOD', 'OLD'],
+    pathologyTypes: ['ZSG_SAFETY', 'ZSG_CULTURE', 'NOD', 'OLD'],
     axes: ['ND', 'DR'],
     playbookIds: ['5.1', '5.2'],
     tags: ['ECRI', 'just-culture', 'appreciative-inquiry', 'near-miss-forum'],
@@ -237,7 +237,7 @@ export const DSM_CONTENT_INDEX: ContentLink[] = [
   {
     subtopicId: 'structural-engineering',
     part: 7,
-    pathologyTypes: ['ZSG', 'CLT'],
+    pathologyTypes: ['ZSG_CULTURE', 'CLT'],
     axes: ['SC', 'DR'],
     playbookIds: ['5.5', '5.6'],
     tags: ['DACI', 'RevOps', 'CoS', 'shock-absorber'],
