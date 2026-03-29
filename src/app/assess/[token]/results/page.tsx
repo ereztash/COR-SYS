@@ -1,8 +1,13 @@
 import { notFound } from 'next/navigation'
 import { getAssessmentByToken, getClientById } from '@/lib/data'
 import { getOptionById } from '@/lib/service-catalog'
-import type { QuestionnaireAnswer } from '@/lib/corsys-questionnaire'
+import {
+  type QuestionnaireAnswer,
+  mergeOperatingContextFromClient,
+  effectiveOperatingContext,
+} from '@/lib/corsys-questionnaire'
 import { computeDiagnostic } from '@/lib/diagnostic'
+import { contextAwareLabels } from '@/lib/client-context-labels'
 import { PATHOLOGY_TYPE_LABELS } from '@/lib/diagnostic/action-plan'
 import { SEVERITY_PROFILES, type PathologySeverity } from '@/lib/dsm-engine'
 import { ComorbidityMap, InterventionProtocolsCard } from '@/components/diagnostic'
@@ -161,10 +166,11 @@ export default async function AssessResultsPage({ params }: { params: Promise<{ 
   const assessment = await getAssessmentByToken(token)
   if (!assessment) notFound()
 
-  const answers    = (assessment.answers ?? {}) as QuestionnaireAnswer
-  const clientName = assessment.client_id
-    ? (await getClientById(assessment.client_id))?.name ?? 'הארגון'
-    : 'הארגון'
+  const answersRaw = (assessment.answers ?? {}) as QuestionnaireAnswer
+  const linkedClient = assessment.client_id ? await getClientById(assessment.client_id) : null
+  const clientName = linkedClient?.name ?? 'הארגון'
+  const answers = mergeOperatingContextFromClient(answersRaw, linkedClient)
+  const uiLabels = contextAwareLabels(effectiveOperatingContext(answers))
 
   let planResult:           ReturnType<typeof computeDiagnostic>['planResult']           | null = null
   let dsmDiagnosis:         ReturnType<typeof computeDiagnostic>['dsmDiagnosis']         | null = null
@@ -172,14 +178,16 @@ export default async function AssessResultsPage({ params }: { params: Promise<{ 
   let comorbidityEdges:     ReturnType<typeof computeDiagnostic>['comorbidityEdges']           = []
   let unifiedTreatmentPlan: ReturnType<typeof computeDiagnostic>['unifiedTreatmentPlan'] | null =
     null
+  let ignition: ReturnType<typeof computeDiagnostic>['ignition'] | null = null
 
   try {
-    const d = computeDiagnostic(clientName, answers)
+    const d = computeDiagnostic(clientName, answers, linkedClient)
     planResult            = d.planResult
     dsmDiagnosis          = d.dsmDiagnosis
     orgPathology          = d.orgPathology
     comorbidityEdges      = d.comorbidityEdges
     unifiedTreatmentPlan  = d.unifiedTreatmentPlan
+    ignition              = d.ignition
   } catch { /* show minimal view */ }
 
   const severity  = dsmDiagnosis?.severityProfile ?? 'at-risk'
@@ -246,7 +254,8 @@ export default async function AssessResultsPage({ params }: { params: Promise<{ 
                   className="text-[11px] font-bold uppercase tracking-[0.15em]"
                   style={{ color: accent }}
                 >
-                  אבחון DSM ארגוני &nbsp;·&nbsp; {new Date().toLocaleDateString('he-IL', { year: 'numeric', month: 'long', day: 'numeric' })}
+                  {uiLabels.dsmBadgeLine} &nbsp;·&nbsp;{' '}
+                  {new Date().toLocaleDateString('he-IL', { year: 'numeric', month: 'long', day: 'numeric' })}
                 </span>
               </div>
 
@@ -258,8 +267,7 @@ export default async function AssessResultsPage({ params }: { params: Promise<{ 
               </h1>
 
               <p className="text-slate-400 text-base leading-relaxed mb-7 max-w-lg">
-                {planResult?.dynamicSummary.roleParagraph
-                  ?? 'ניתוח מעמיק של הדינמיקות הארגוניות ומפת הפתולוגיות הפעילות.'}
+                {planResult?.dynamicSummary.roleParagraph ?? uiLabels.heroFallbackParagraph}
               </p>
               <ModeBlurb
                 className="mb-5"
@@ -295,7 +303,7 @@ export default async function AssessResultsPage({ params }: { params: Promise<{ 
               {/* Entropy score */}
               {planResult?.entropyScore !== undefined && (
                 <div className="mt-5 flex items-center gap-3">
-                  <span className="text-xs text-slate-600 font-mono">אנטרופיה ארגונית</span>
+                  <span className="text-xs text-slate-600 font-mono">{uiLabels.entropyMetric}</span>
                   <div className="flex gap-1">
                     {[0, 1, 2, 3].map(i => (
                       <div
@@ -333,7 +341,7 @@ export default async function AssessResultsPage({ params }: { params: Promise<{ 
         {dsmDiagnosis && (
           <section>
             <h2 className="text-[11px] font-bold text-slate-600 uppercase tracking-widest mb-4">
-              פרופיל פתולוגיות — 4 ממדים MECE
+              {uiLabels.pathologyGridTitle}
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {dsmDiagnosis.pathologies.map(p => {
@@ -405,9 +413,27 @@ export default async function AssessResultsPage({ params }: { params: Promise<{ 
               className="text-[11px] font-bold uppercase tracking-widest mb-3"
               style={{ color: accent }}
             >
-              ניתוח אבחוני
+              {uiLabels.diagnosisSectionTitle}
             </p>
             <p className="text-slate-200 leading-relaxed">{planResult.dynamicSummary.diagnosisParagraph}</p>
+          </div>
+        )}
+
+        {(planResult?.dynamicSummary.ignitionParagraph ?? ignition) && (
+          <div
+            className="rounded-2xl p-7 border relative overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg,rgba(245,158,11,0.08) 0%,rgba(6,13,31,0.92) 65%)',
+              borderColor: 'rgba(245,158,11,0.25)',
+            }}
+          >
+            <p className="text-[11px] font-bold text-amber-400/90 uppercase tracking-widest mb-3">
+              התנעה עסקית
+            </p>
+            <p className="text-slate-200 leading-relaxed text-sm">
+              {planResult?.dynamicSummary.ignitionParagraph ??
+                (ignition ? `${ignition.narrativeHe} צעד ראשון: ${ignition.firstMoveHe}` : '')}
+            </p>
           </div>
         )}
 

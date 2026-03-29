@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useTransition, useEffect, useRef, useCallback } from 'react'
+import { useState, useTransition, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { DIAGNOSTIC_QUESTIONS } from '@/lib/diagnostic/questions'
+import { getDiagnosticQuestions } from '@/lib/diagnostic/questions'
+import type { OperatingContext } from '@/lib/corsys-questionnaire'
 import { buildEmbeddingText } from '@/lib/diagnostic/questions'
 import {
   build90DayGateReviews,
@@ -107,6 +108,13 @@ const QUICK_CHIPS: Record<DiagnosticAxis, string[]> = {
   SC: ['תפקידים חופפים', 'אין בעלות ברורה', 'תהליך לא מתועד', 'אסטרטגיה לא יורדת לביצוע'],
 }
 
+const QUICK_CHIPS_OMS: Record<DiagnosticAxis, string[]> = {
+  DR: ['המתנה ללקוח/ספק', 'הכל עליי בלי delegation', 'אין זמן להחליט', 'החלטות בווטסאפ בלי תיעוד'],
+  ND: ['חותכים פינות כדי לספק', 'אין זמן ללמוד מהטעות', 'ידוע שלא אידיאלי ולא עוצרים', 'תיקון זמני שהפך קבוע'],
+  UC: ['רק אני יודע איך זה עובד', 'תוכנית בראש בלי ולידציה', 'תלות בלקוח אחד', 'אין מסלול לבעיה עם ספק'],
+  SC: ['Scope לא מוגדר', 'אין SOP מתועד', 'שני אחראים = אף אחד', 'אסטרטגיה לא יורדת למשימות'],
+}
+
 // ─── Draft persistence ────────────────────────────────────────────────────────
 
 interface WizardDraft {
@@ -115,6 +123,7 @@ interface WizardDraft {
   answers: Record<string, string>
   currentQ: number
   savedAt: number
+  operatingContext?: OperatingContext
 }
 
 function draftKey(clientId: string) {
@@ -161,14 +170,25 @@ interface Props {
   clientId: string
   clientName: string
   sprintCount: number
+  clientOperatingContext?: OperatingContext | null
 }
 
-export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
+export function DiagnosticWizard({
+  clientId,
+  clientName,
+  sprintCount,
+  clientOperatingContext = null,
+}: Props) {
   const router = useRouter()
   const [, startTransition] = useTransition()
 
   // Stage
   const [stage, setStage] = useState<WizardStage>('triage')
+
+  /** הקשר לאבחון פתוח — מאותחל מפרופיל הלקוח אם הוגדר */
+  const [operatingContext, setOperatingContext] = useState<OperatingContext>(() =>
+    clientOperatingContext === 'one_man_show' ? 'one_man_show' : 'team'
+  )
 
   // Triage
   const [scores, setScores] = useState<TriageScores>({ dr: 3, nd: 3, uc: 3, sc: 3 })
@@ -213,15 +233,24 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
 
   // ── Draft: restore on mount ───────────────────────────────────────────────
   useEffect(() => {
+    const fallback: OperatingContext =
+      clientOperatingContext === 'one_man_show' ? 'one_man_show' : 'team'
     const draft = loadDraft(clientId)
     if (draft && (draft.stage === 'triage' || draft.stage === 'questions')) {
       setScores(draft.scores)
       setAnswers(draft.answers)
       setCurrentQ(draft.currentQ)
       setStage(draft.stage)
+      setOperatingContext(
+        draft.operatingContext === 'one_man_show'
+          ? 'one_man_show'
+          : draft.operatingContext === 'team'
+            ? 'team'
+            : fallback
+      )
       setDraftRestored(true)
     }
-  }, [clientId])
+  }, [clientId, clientOperatingContext])
 
   useEffect(() => {
     fetch('/api/diagnostic/config')
@@ -242,18 +271,21 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
     if (saveTimer.current) clearTimeout(saveTimer.current)
     saveTimer.current = setTimeout(() => {
       if (stage === 'triage' || stage === 'questions') {
-        saveDraft(clientId, { stage, scores, answers, currentQ })
+        saveDraft(clientId, { stage, scores, answers, currentQ, operatingContext })
       }
     }, 800)
-  }, [clientId, stage, scores, answers, currentQ])
+  }, [clientId, stage, scores, answers, currentQ, operatingContext])
 
   useEffect(() => {
     scheduleSave()
     return () => { if (saveTimer.current) clearTimeout(saveTimer.current) }
   }, [scheduleSave])
 
-  // Targeted questions = only questions for dominant axis
-  const targetedQuestions = DIAGNOSTIC_QUESTIONS.filter(q => q.axis === liveAxis)
+  // Targeted questions = only questions for dominant axis (ניסוח לפי team / One man show)
+  const targetedQuestions = useMemo(
+    () => getDiagnosticQuestions(operatingContext).filter((q) => q.axis === liveAxis),
+    [operatingContext, liveAxis]
+  )
 
   const ucBreakdown = {
     learning: Math.max(0, Math.min(10, scores.uc)),
@@ -350,11 +382,11 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
     }
     setStage('analyzing')
     try {
-      buildEmbeddingText(finalAnswers) // side-effect: validates answers format
+      buildEmbeddingText(finalAnswers, operatingContext)
       const res = await fetch('/api/diagnostic/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers: finalAnswers, clientId, scores }),
+        body: JSON.stringify({ answers: finalAnswers, clientId, scores, operatingContext }),
       })
       if (!res.ok) {
         const err = await res.json()
@@ -790,7 +822,8 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
     const ac = AXIS_CONFIG[q.axis]
     const total = targetedQuestions.length
     const progress = Math.round((currentQ / total) * 100)
-    const chips = QUICK_CHIPS[q.axis]
+    const chips =
+      operatingContext === 'one_man_show' ? QUICK_CHIPS_OMS[q.axis] : QUICK_CHIPS[q.axis]
 
     return (
       <div className="space-y-5 animate-fade-up delay-0">
@@ -881,13 +914,58 @@ export function DiagnosticWizard({ clientId, clientName, sprintCount }: Props) {
             <span className="font-bold">טיוטה שוחזרה</span> — המשך מהמקום שעצרת
           </p>
           <button
-            onClick={() => { clearDraft(clientId); setScores({ dr: 3, nd: 3, uc: 3, sc: 3 }); setAnswers({}); setCurrentQ(0); setDraftRestored(false) }}
+            onClick={() => {
+              clearDraft(clientId)
+              setScores({ dr: 3, nd: 3, uc: 3, sc: 3 })
+              setAnswers({})
+              setCurrentQ(0)
+              setOperatingContext('team')
+              setDraftRestored(false)
+            }}
             className="text-[10px] text-indigo-500 hover:text-indigo-300 transition-colors whitespace-nowrap"
           >
             נקה טיוטה
           </button>
         </div>
       )}
+
+      {/* הקשר אבחון: צוות מול One man show */}
+      <div className="rounded-xl border border-slate-700/80 bg-slate-900/50 p-4 space-y-2">
+        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">הקשר לקוח</p>
+        <p className="text-xs text-slate-400">
+          בוחרים את מסלול הניסוח לשאלות הפתוחות (לא משנה את מנוע הציונים — רק את השפה וההקשר).
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              setOperatingContext('team')
+              setCurrentQ(0)
+            }}
+            className={`px-3 py-2 rounded-lg text-xs font-bold transition-colors ${
+              operatingContext === 'team'
+                ? 'bg-blue-600 text-white'
+                : 'bg-slate-800 text-slate-400 hover:text-white border border-slate-700'
+            }`}
+          >
+            ארגון עם צוות
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setOperatingContext('one_man_show')
+              setCurrentQ(0)
+            }}
+            className={`px-3 py-2 rounded-lg text-xs font-bold transition-colors ${
+              operatingContext === 'one_man_show'
+                ? 'bg-emerald-600 text-white'
+                : 'bg-slate-800 text-slate-400 hover:text-white border border-slate-700'
+            }`}
+          >
+            One man show / עצמאי
+          </button>
+        </div>
+      </div>
 
       {/* Sliders */}
       <div className="space-y-4">

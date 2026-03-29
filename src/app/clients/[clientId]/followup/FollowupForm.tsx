@@ -21,10 +21,11 @@ import { useState, useTransition } from 'react'
 import { saveFollowup } from '@/lib/actions/cbr'
 import { computePsiScore } from '@/lib/resilience-formula'
 import { ModeBlurb } from '@/components/ui/ModeBlurb'
+import type { OperatingContext } from '@/lib/corsys-questionnaire'
 
 // ─── Edmondson PSI items ──────────────────────────────────────────────────────
 
-const PSI_ITEMS = [
+const PSI_ITEMS_TEAM = [
   { idx: 1, he: 'אם אעשה טעות בצוות זה, לרוב יחזיקו בה נגדי.', reversed: true },
   { idx: 2, he: 'חברי הצוות יכולים להעלות בעיות ונושאים קשים.', reversed: false },
   { idx: 3, he: 'אנשים בצוות זה לפעמים דוחים אחרים על שהם שונים.', reversed: true },
@@ -34,18 +35,41 @@ const PSI_ITEMS = [
   { idx: 7, he: 'בעבודה עם חברי הצוות, הכישורים הייחודיים שלי מוערכים.', reversed: false },
 ] as const
 
+/** ניסוח מקביל ל-One man show (מעגל מקצועי במקום "צוות") */
+const PSI_ITEMS_OMS = [
+  { idx: 1, he: 'אם טועים מול לקוח/שותף — זה "נזכר" נגדי או יוצר עימות.', reversed: true },
+  { idx: 2, he: 'אפשר להעלות נושאים קשים מול מי שאני עובד איתו בלי פחד מנקמה.', reversed: false },
+  { idx: 3, he: 'במעגל המקצועי לפעמים דוחים מישהו כי הוא שונה בסגנון.', reversed: true },
+  { idx: 4, he: 'בטוח לנסות גישה חדשה או סיכון מקצועי בלי שזה יהפוך לאסון.', reversed: false },
+  { idx: 5, he: 'קשה לבקש עזרה מספק או שותף כשאני תקוע/ה.', reversed: true },
+  { idx: 6, he: 'במעגל הקרוב אף אחד לא יפגע במכוון במאמצים שלי.', reversed: false },
+  { idx: 7, he: 'הכישורים שלי מוערכים ומנוצלים ביחסים המקצועיים שלי.', reversed: false },
+] as const
+
 interface Props {
   interventionId: string
   prevScoreDr: number
   prevPsiScore: number | null
   clientId: string
   actualCta?: string | null
+  /** מפרופיל הלקוח — ניסוח PSI התחלתי */
+  defaultPsiContext?: OperatingContext | null
 }
 
 type PsiMode = 'full' | 'single'
 
-export function FollowupForm({ interventionId, prevScoreDr, prevPsiScore, clientId, actualCta }: Props) {
+export function FollowupForm({
+  interventionId,
+  prevScoreDr,
+  prevPsiScore,
+  clientId,
+  actualCta,
+  defaultPsiContext = null,
+}: Props) {
   const [newDr, setNewDr] = useState('')
+  const [psiContext, setPsiContext] = useState<OperatingContext>(
+    defaultPsiContext === 'one_man_show' ? 'one_man_show' : 'team'
+  )
   const [psiMode, setPsiMode] = useState<PsiMode>('full')
   const [psiItems, setPsiItems] = useState<string[]>(Array(7).fill(''))
   const [newPsiSingle, setNewPsiSingle] = useState('')
@@ -57,6 +81,8 @@ export function FollowupForm({ interventionId, prevScoreDr, prevPsiScore, client
 
   const inputCls =
     'w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-slate-500'
+
+  const psiItemLabels = psiContext === 'one_man_show' ? PSI_ITEMS_OMS : PSI_ITEMS_TEAM
 
   function resolvePsiScore(): number | null {
     if (psiMode === 'full') {
@@ -131,6 +157,30 @@ export function FollowupForm({ interventionId, prevScoreDr, prevPsiScore, client
         research="Outcome measurement layer for state-transition and feedback-loop classification."
       />
 
+      <div className="rounded-xl border border-slate-700/80 bg-slate-900/40 p-3 space-y-2">
+        <p className="text-[10px] font-bold text-slate-500 uppercase">ניסוח פריטי PSI</p>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setPsiContext('team')}
+            className={`text-xs px-3 py-1.5 rounded-lg font-bold transition-colors ${
+              psiContext === 'team' ? 'bg-blue-700 text-white' : 'bg-slate-700 text-slate-400 hover:text-white'
+            }`}
+          >
+            צוות ארגוני
+          </button>
+          <button
+            type="button"
+            onClick={() => setPsiContext('one_man_show')}
+            className={`text-xs px-3 py-1.5 rounded-lg font-bold transition-colors ${
+              psiContext === 'one_man_show' ? 'bg-emerald-700 text-white' : 'bg-slate-700 text-slate-400 hover:text-white'
+            }`}
+          >
+            One man show / עצמאי
+          </button>
+        </div>
+      </div>
+
       {/* DR score */}
       <div>
         <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
@@ -177,7 +227,7 @@ export function FollowupForm({ interventionId, prevScoreDr, prevPsiScore, client
         {psiMode === 'full' ? (
           <div className="space-y-2">
             <p className="text-[10px] text-slate-600">דרג כל פריט 1–7 (1=לא מסכים בכלל, 7=מסכים מאוד)</p>
-            {PSI_ITEMS.map((item, i) => (
+            {psiItemLabels.map((item, i) => (
               <div key={item.idx} className="flex items-start gap-3">
                 <span className="text-[10px] text-slate-600 w-4 shrink-0 mt-2">{item.idx}.</span>
                 <p className="text-xs text-slate-300 flex-1 leading-relaxed">

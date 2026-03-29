@@ -6,7 +6,14 @@
  * Organizational DSM-Org type is unified via `primaryOrgPathologyFromDiagnosis`.
  * Treatment ranking uses `runUnifiedTreatmentPipelineFromDiagnosis` (single CDSS output).
  */
-import { buildPlanFromQuestionnaire, type QuestionnaireAnswer } from '@/lib/corsys-questionnaire'
+import {
+  buildPlanFromQuestionnaire,
+  effectiveOperatingContext,
+  mergeOperatingContextFromClient,
+  type QuestionnaireAnswer,
+} from '@/lib/corsys-questionnaire'
+import { computeIgnitionProfile } from '@/lib/business-ignition'
+import type { IgnitionProfile } from '@/lib/ignition-types'
 import { diagnose, getComorbidityMap, getInterventionProtocols, type ComorbidityEdge, type DSMDiagnosis, type InterventionProtocol } from '@/lib/dsm-engine'
 import {
   primaryOrgPathologyFromDiagnosis,
@@ -20,6 +27,7 @@ import {
 
 export type { PrimaryOrgPathologyResult }
 export type { UnifiedTreatmentPlanResult }
+export type { IgnitionProfile }
 
 export type DiagnosticResult = {
   planResult: ReturnType<typeof buildPlanFromQuestionnaire>
@@ -30,15 +38,28 @@ export type DiagnosticResult = {
   /** @deprecated Prefer `unifiedTreatmentPlan`. Retained for shadow diff when UNIFIED_PIPELINE_SHADOW=true. */
   interventionProtocols: InterventionProtocol[]
   unifiedTreatmentPlan: UnifiedTreatmentPlanResult
+  /** פרופיל התנעה לעצמאים — null כשלא רלוונטי או לא מולא שאלון */
+  ignition: IgnitionProfile | null
 }
 
-export function computeDiagnostic(clientName: string, answers: QuestionnaireAnswer): DiagnosticResult {
-  const planResult = buildPlanFromQuestionnaire(clientName, answers)
-  const dsmDiagnosis = diagnose(answers)
-  const orgPathology = primaryOrgPathologyFromDiagnosis(dsmDiagnosis, answers)
+export function computeDiagnostic(
+  clientName: string,
+  answers: QuestionnaireAnswer,
+  client?: { operating_context?: string | null } | null
+): DiagnosticResult {
+  const merged = mergeOperatingContextFromClient(answers, client ?? null)
+  const clientCtx =
+    client?.operating_context === 'one_man_show' || client?.operating_context === 'team'
+      ? client.operating_context
+      : null
+  const effCtx = effectiveOperatingContext(merged, clientCtx)
+  const ignition = computeIgnitionProfile(merged, effCtx)
+  const planResult = buildPlanFromQuestionnaire(clientName, merged)
+  const dsmDiagnosis = diagnose(merged)
+  const orgPathology = primaryOrgPathologyFromDiagnosis(dsmDiagnosis, merged)
   const comorbidityEdges = getComorbidityMap(dsmDiagnosis)
-  const interventionProtocols = getInterventionProtocols(dsmDiagnosis, answers)
-  const unifiedTreatmentPlan = runUnifiedTreatmentPipelineFromDiagnosis(dsmDiagnosis, answers)
+  const interventionProtocols = getInterventionProtocols(dsmDiagnosis, merged)
+  const unifiedTreatmentPlan = runUnifiedTreatmentPipelineFromDiagnosis(dsmDiagnosis, merged)
 
   if (process.env.UNIFIED_PIPELINE_SHADOW === 'true') {
     console.log('[unified-pipeline shadow]', {
@@ -55,5 +76,6 @@ export function computeDiagnostic(clientName: string, answers: QuestionnaireAnsw
     comorbidityEdges,
     interventionProtocols,
     unifiedTreatmentPlan,
+    ignition,
   }
 }

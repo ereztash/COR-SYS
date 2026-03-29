@@ -106,11 +106,21 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ c
                 </div>
               )}
 
-              <div className="flex items-center gap-3 mb-1">
+              <div className="flex items-center gap-3 mb-1 flex-wrap">
                 <h1 className="type-display text-white">
                   {client.name}
                 </h1>
                 <Badge status={client.status} />
+                {client.operating_context === 'one_man_show' && (
+                  <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+                    הקשר: עצמאי
+                  </span>
+                )}
+                {client.operating_context === 'team' && (
+                  <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-md bg-blue-500/15 text-blue-300 border border-blue-500/25">
+                    הקשר: צוות
+                  </span>
+                )}
               </div>
               <p className="type-body text-slate-400">
                 {client.company ?? ''}

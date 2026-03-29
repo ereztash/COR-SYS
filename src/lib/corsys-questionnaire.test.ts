@@ -3,8 +3,51 @@ import {
   buildPlanFromQuestionnaire,
   computeEntropyScore,
   buildDynamicSummary,
+  mergeOperatingContextFromClient,
+  effectiveOperatingContext,
+  resolveQuestionnaireSteps,
   type QuestionnaireAnswer,
 } from '@/lib/corsys-questionnaire'
+import { computeIgnitionProfile } from '@/lib/business-ignition'
+
+// ─── mergeOperatingContextFromClient ─────────────────────────────────────────
+
+describe('mergeOperatingContextFromClient', () => {
+  it('fills operatingContext from client when answers omit it', () => {
+    const m = mergeOperatingContextFromClient(
+      { championRole: 'ceo' },
+      { operating_context: 'one_man_show' }
+    )
+    expect(m.operatingContext).toBe('one_man_show')
+  })
+
+  it('keeps explicit answers.operatingContext over client', () => {
+    const m = mergeOperatingContextFromClient(
+      { operatingContext: 'team' },
+      { operating_context: 'one_man_show' }
+    )
+    expect(m.operatingContext).toBe('team')
+  })
+})
+
+describe('effectiveOperatingContext', () => {
+  it('uses client fallback when answers lack operatingContext', () => {
+    expect(effectiveOperatingContext({}, 'one_man_show')).toBe('one_man_show')
+    expect(effectiveOperatingContext({}, null)).toBe('team')
+  })
+})
+
+describe('resolveQuestionnaireSteps', () => {
+  it('omits ignition step for team context', () => {
+    const steps = resolveQuestionnaireSteps('team')
+    expect(steps.some((s) => s.id === 'ignition')).toBe(false)
+  })
+
+  it('includes ignition step for one_man_show', () => {
+    const steps = resolveQuestionnaireSteps('one_man_show')
+    expect(steps.some((s) => s.id === 'ignition')).toBe(true)
+  })
+})
 
 // ─── computeEntropyScore ──────────────────────────────────────────────────────
 
@@ -158,6 +201,23 @@ describe('buildPlanFromQuestionnaire', () => {
     expect(r.summary).toContain('חורג מ-ICP')
   })
 
+  it('summary notes One man show path when operatingContext is one_man_show', () => {
+    const r = buildPlanFromQuestionnaire('Solo', {
+      operatingContext: 'one_man_show',
+      companySize: 'oms_solo',
+    })
+    expect(r.summary).toContain('One man show')
+  })
+
+  it('recommends live-demo for OMS with low entropy', () => {
+    const r = buildPlanFromQuestionnaire('Solo', {
+      operatingContext: 'one_man_show',
+      companySize: 'oms_solo',
+      pathologyNod: 'low',
+    })
+    expect(r.recommendedOptionId).toBe('live-demo')
+  })
+
   // ─── dynamicSummary ───────────────────────────────────────────────────────
 
   it('dynamicSummary has all three paragraphs', () => {
@@ -186,6 +246,39 @@ describe('buildPlanFromQuestionnaire', () => {
     const r = buildPlanFromQuestionnaire('C', { decisionLatency: 'over_15' })
     expect(r.dynamicSummary.ctaParagraph).toContain('ספרינט')
   })
+
+  it('OMS ignition nudge upgrades live-demo to sprint when commercial action is stale', () => {
+    const r = buildPlanFromQuestionnaire('Solo', {
+      operatingContext: 'one_man_show',
+      companySize: 'oms_solo',
+      championRole: 'ceo',
+      industrySector: 'other',
+      pathologyNod: 'low',
+      pathologyZeroSum: 'rare',
+      pathologyLearning: 'double_loop',
+      pathologySemantic: 'low_drift',
+      decisionLatency: 'under_5',
+      urgencyLevel: 'low',
+      interventionGoal: 'reduce_entropy',
+      ignitionPrimaryVector: 'market_pull',
+      ignitionDominantTrap: 'busy_motion',
+      ignitionLastCommercialAsk: 'never_recent',
+    })
+    expect(r.recommendedOptionId).toBe('sprint')
+    expect(r.dynamicSummary.ignitionParagraph).toBeTruthy()
+  })
+
+  it('OMS audit_only keeps live-demo despite ignition nudge', () => {
+    const r = buildPlanFromQuestionnaire('Solo', {
+      operatingContext: 'one_man_show',
+      companySize: 'oms_solo',
+      interventionGoal: 'audit_only',
+      ignitionPrimaryVector: 'market_pull',
+      ignitionDominantTrap: 'busy_motion',
+      ignitionLastCommercialAsk: 'never_recent',
+    })
+    expect(r.recommendedOptionId).toBe('live-demo')
+  })
 })
 
 // ─── buildDynamicSummary ──────────────────────────────────────────────────────
@@ -209,5 +302,20 @@ describe('buildDynamicSummary', () => {
   it('live-demo CTA mentions Live Demo', () => {
     const ds = buildDynamicSummary({}, { channelId: 'l1', optionId: 'live-demo' })
     expect(ds.ctaParagraph).toContain('Live Demo')
+  })
+
+  it('includes ignitionParagraph when profile provided', () => {
+    const prof = computeIgnitionProfile(
+      {
+        operatingContext: 'one_man_show',
+        ignitionPrimaryVector: 'internal_push',
+        ignitionDominantTrap: 'prep_trap',
+        ignitionLastCommercialAsk: 'over_90d',
+      },
+      'one_man_show'
+    )
+    expect(prof).not.toBeNull()
+    const ds = buildDynamicSummary({}, { channelId: 'l1', optionId: 'live-demo' }, prof)
+    expect(ds.ignitionParagraph).toContain('צעד ראשון מומלץ')
   })
 })

@@ -25,12 +25,15 @@ export function PlanReport({
   protocols,
   dsmOrgTypeLabelHe,
   unifiedPlan,
+  ignitionParagraph,
 }: {
   clientName: string
   summary: string
   entropyScore: number
   diagnosisParagraph: string
   ctaParagraph: string
+  /** סעיף התנעה לעצמאים — אופציונלי */
+  ignitionParagraph?: string | null
   codes: string[]
   pathologies: { code: string; nameHe: string; score: number }[]
   protocols: { nameHe: string; phase: string; components: { step: string; detail: string }[] }[]
@@ -69,6 +72,13 @@ export function PlanReport({
           <Text style={styles.sectionTitle}>אבחון פתולוגיות</Text>
           <Text style={styles.body}>{diagnosisParagraph}</Text>
         </View>
+
+        {ignitionParagraph ? (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>התנעה עסקית (עצמאי)</Text>
+            <Text style={styles.body}>{ignitionParagraph}</Text>
+          </View>
+        ) : null}
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>קודי DSM</Text>

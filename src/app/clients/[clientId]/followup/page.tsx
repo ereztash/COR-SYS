@@ -10,7 +10,7 @@
 
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { getLatestInterventionForClient } from '@/lib/data'
+import { getLatestInterventionForClient, getClientById } from '@/lib/data'
 import { FollowupForm } from './FollowupForm'
 import { formatDate } from '@/lib/utils'
 import { DecisionSpine } from '@/components/ui/DecisionSpine'
@@ -25,7 +25,10 @@ export default async function FollowupPage({
   params: Promise<{ clientId: string }>
 }) {
   const { clientId } = await params
-  const data = await getLatestInterventionForClient(clientId)
+  const [data, clientRow] = await Promise.all([
+    getLatestInterventionForClient(clientId),
+    getClientById(clientId),
+  ])
 
   if (!data) {
     return (
@@ -197,6 +200,7 @@ export default async function FollowupPage({
               prevPsiScore={snapshot.psi_score}
               clientId={clientId}
               actualCta={intervention.actual_cta}
+              defaultPsiContext={clientRow?.operating_context ?? null}
             />
           </div>
         )}

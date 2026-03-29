@@ -45,7 +45,12 @@ export default async function DiagnosticNewPage({ params }: Props) {
         </div>
 
         {/* Wizard */}
-        <DiagnosticWizard clientId={clientId} clientName={client.name} sprintCount={sprintCount} />
+        <DiagnosticWizard
+          clientId={clientId}
+          clientName={client.name}
+          sprintCount={sprintCount}
+          clientOperatingContext={client.operating_context ?? null}
+        />
 
       </div>
     </div>

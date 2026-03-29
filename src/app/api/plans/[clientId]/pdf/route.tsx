@@ -26,8 +26,12 @@ export async function GET(
     return NextResponse.json({ error: 'Client not found' }, { status: 404 })
   }
   const answers = (plan?.questionnaire_response ?? {}) as QuestionnaireAnswer
-  const { planResult, dsmDiagnosis, orgPathology, interventionProtocols, unifiedTreatmentPlan } =
-    computeDiagnostic(client.name, answers)
+  const { planResult, dsmDiagnosis, orgPathology, interventionProtocols, unifiedTreatmentPlan, ignition } =
+    computeDiagnostic(client.name, answers, client)
+
+  const ignitionParagraph =
+    planResult.dynamicSummary.ignitionParagraph ??
+    (ignition ? `${ignition.narrativeHe}\n\nצעד ראשון: ${ignition.firstMoveHe}` : null)
 
   const doc = (
     <PlanReport
@@ -36,6 +40,7 @@ export async function GET(
       entropyScore={planResult.entropyScore}
       diagnosisParagraph={planResult.dynamicSummary.diagnosisParagraph}
       ctaParagraph={planResult.dynamicSummary.ctaParagraph}
+      ignitionParagraph={ignitionParagraph}
       codes={dsmDiagnosis.codes}
       pathologies={dsmDiagnosis.pathologies.map((p) => ({
         code: p.code,

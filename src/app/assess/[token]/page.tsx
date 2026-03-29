@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getAssessmentByToken } from '@/lib/data'
+import { getAssessmentByToken, getClientById } from '@/lib/data'
 import { AssessmentForm } from './AssessmentForm'
 import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
@@ -9,6 +9,9 @@ export default async function AssessPage({ params }: { params: Promise<{ token: 
   const { token } = await params
   const assessment = await getAssessmentByToken(token)
   if (!assessment) notFound()
+
+  const linkedClient = assessment.client_id ? await getClientById(assessment.client_id) : null
+
   if (assessment.status === 'completed') {
     return (
       <div className="min-h-screen bg-[#0f172a] p-6 flex items-center justify-center">
@@ -37,7 +40,10 @@ export default async function AssessPage({ params }: { params: Promise<{ token: 
           advanced="Provide realistic operational responses for a reliable baseline."
           research="Structured self-report instrument for downstream diagnostic inference."
         />
-        <AssessmentForm token={token} />
+        <AssessmentForm
+          token={token}
+          clientOperatingContext={linkedClient?.operating_context ?? null}
+        />
       </div>
     </div>
   )

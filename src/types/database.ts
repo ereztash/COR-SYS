@@ -5,12 +5,17 @@ export type SprintStatus = 'planned' | 'active' | 'completed' | 'cancelled'
 export type TaskStatus = 'todo' | 'in_progress' | 'done' | 'blocked'
 export type TaskPriority = 'critical' | 'high' | 'medium' | 'low'
 
+/** מקור אמת להקשר שאלונים ותוכן מנוסח: צוות מול עצמאי */
+export type ClientOperatingContext = 'team' | 'one_man_show'
+
 export interface Client {
   id: string
   name: string
   company: string | null
   industry: string | null
   status: ClientStatus
+  /** אחרי מיגרציה `supabase-migration-client-operating-context.sql`; עד אז עשוי להיות undefined */
+  operating_context?: ClientOperatingContext | null
   hourly_rate: number | null
   monthly_retainer: number | null
   decision_latency_hours: number | null

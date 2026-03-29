@@ -1,31 +1,67 @@
 'use client'
 
-import { useState } from 'react'
-import { QUESTIONNAIRE_STEPS, type QuestionnaireAnswer, type DynamicSummary, buildPlanFromQuestionnaire } from '@/lib/corsys-questionnaire'
+import { useMemo, useState } from 'react'
+import {
+  resolveQuestionnaireSteps,
+  effectiveOperatingContext,
+  mergeOperatingContextFromClient,
+  type QuestionnaireAnswer,
+  type DynamicSummary,
+  type OperatingContext,
+  buildPlanFromQuestionnaire,
+} from '@/lib/corsys-questionnaire'
 import { savePlanFromQuestionnaire } from '@/lib/actions/plans'
 import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
 export function PlanQuestionnaireForm({
   clientId,
   clientName,
-}: { clientId: string; clientName: string }) {
+  clientOperatingContext = null,
+}: {
+  clientId: string
+  clientName: string
+  /** מפרופיל הלקוח — מסנכרן שאלות ותצוגה מקדימה בלי לשאול שוב */
+  clientOperatingContext?: OperatingContext | null
+}) {
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<QuestionnaireAnswer>({})
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [preview, setPreview] = useState<DynamicSummary | null>(null)
 
-  const currentStep = QUESTIONNAIRE_STEPS[step]
-  const isLast = step === QUESTIONNAIRE_STEPS.length - 1
+  const ctx = effectiveOperatingContext(answers, clientOperatingContext)
+  const steps = useMemo(() => {
+    const base = resolveQuestionnaireSteps(ctx)
+    const locked =
+      clientOperatingContext === 'team' || clientOperatingContext === 'one_man_show'
+    if (!locked) return base
+    return base.map((step) => ({
+      ...step,
+      fields: step.fields.filter((f) => f.key !== 'operatingContext'),
+    }))
+  }, [ctx, clientOperatingContext])
+
+  const currentStep = steps[step]
+  const isLast = step === steps.length - 1
 
   const set = (key: keyof QuestionnaireAnswer, value: unknown) => {
-    setAnswers((a) => ({ ...a, [key]: value }))
+    setAnswers((a) => {
+      const next = { ...a, [key]: value } as QuestionnaireAnswer
+      if (key === 'operatingContext') {
+        next.companySize = undefined
+      }
+      return next
+    })
     setError(null)
     setPreview(null)
   }
 
   const handlePreview = () => {
-    const result = buildPlanFromQuestionnaire(clientName, answers)
+    const merged = mergeOperatingContextFromClient(
+      answers,
+      clientOperatingContext ? { operating_context: clientOperatingContext } : null
+    )
+    const result = buildPlanFromQuestionnaire(clientName, merged)
     setPreview(result.dynamicSummary)
   }
 
@@ -50,7 +86,7 @@ export function PlanQuestionnaireForm({
       />
       {/* Step tabs */}
       <div className="flex gap-2 mb-4">
-        {QUESTIONNAIRE_STEPS.map((s, i) => (
+        {steps.map((s, i) => (
           <button
             key={s.id}
             type="button"
@@ -98,6 +134,32 @@ export function PlanQuestionnaireForm({
                   ))}
                 </div>
               )}
+              {f.type === 'scale' && (
+                <div>
+                  {f.scaleLabels != null && (
+                    <div className="flex justify-between text-xs text-slate-500 mb-2 px-1">
+                      <span>{f.scaleLabels.min}</span>
+                      <span>{f.scaleLabels.max}</span>
+                    </div>
+                  )}
+                  <div className="flex gap-1.5 justify-between flex-wrap">
+                    {f.options?.map((o) => (
+                      <button
+                        key={o.value}
+                        type="button"
+                        onClick={() => set(f.key as keyof QuestionnaireAnswer, o.value)}
+                        className={`min-w-[2.25rem] h-10 rounded-lg text-sm font-bold transition-colors border ${
+                          answers[f.key as keyof QuestionnaireAnswer] === o.value
+                            ? 'bg-blue-600 border-blue-500 text-white'
+                            : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500 hover:text-white'
+                        }`}
+                      >
+                        {o.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -132,6 +194,12 @@ export function PlanQuestionnaireForm({
                 <div>
                   <p className="text-xs text-slate-500 font-semibold uppercase mb-1">המלצה אופרטיבית</p>
                   <p className="text-sm text-emerald-300 leading-relaxed font-medium">{preview.ctaParagraph}</p>
+                </div>
+              )}
+              {preview.ignitionParagraph && (
+                <div>
+                  <p className="text-xs text-slate-500 font-semibold uppercase mb-1">התנעה עסקית</p>
+                  <p className="text-sm text-amber-200/90 leading-relaxed">{preview.ignitionParagraph}</p>
                 </div>
               )}
             </div>

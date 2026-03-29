@@ -1,4 +1,6 @@
 import { getClientById, getPlanByClientId, getDiagnosticsByClientId } from '@/lib/data'
+import { mergeOperatingContextFromClient, effectiveOperatingContext } from '@/lib/corsys-questionnaire'
+import { contextAwareLabels } from '@/lib/client-context-labels'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getOptionById } from '@/lib/service-catalog'
@@ -28,20 +30,30 @@ export default async function ClientPlanPage({ params }: { params: Promise<{ cli
   let comorbidityEdges: ReturnType<typeof computeDiagnostic>['comorbidityEdges'] = []
   let unifiedTreatmentPlan: ReturnType<typeof computeDiagnostic>['unifiedTreatmentPlan'] | null =
     null
+  let ignition: ReturnType<typeof computeDiagnostic>['ignition'] | null = null
 
   if (plan?.questionnaire_response) {
     const qa = plan.questionnaire_response as QuestionnaireAnswer
     try {
-      const diagnostic = computeDiagnostic(client.name, qa)
+      const diagnostic = computeDiagnostic(client.name, qa, client)
       planResult = diagnostic.planResult
       dsmDiagnosis = diagnostic.dsmDiagnosis
       orgPathology = diagnostic.orgPathology
       comorbidityEdges = diagnostic.comorbidityEdges
       unifiedTreatmentPlan = diagnostic.unifiedTreatmentPlan
+      ignition = diagnostic.ignition
     } catch {
       // graceful fallback — show stored data only
     }
   }
+
+  const displayCtx = effectiveOperatingContext(
+    mergeOperatingContextFromClient(
+      (plan?.questionnaire_response ?? {}) as QuestionnaireAnswer,
+      client
+    )
+  )
+  const uiLabels = contextAwareLabels(displayCtx)
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 min-h-screen">
@@ -62,7 +74,7 @@ export default async function ClientPlanPage({ params }: { params: Promise<{ cli
             {/* Entropy Score */}
             {planResult && (
               <div className="bento-card p-5">
-                <p className="text-xs font-bold text-slate-500 uppercase mb-3">ציון אנטרופיה ארגונית</p>
+                <p className="text-xs font-bold text-slate-500 uppercase mb-3">{uiLabels.entropyMetric}</p>
                 <EntropyDots score={planResult.entropyScore} />
               </div>
             )}
@@ -70,7 +82,7 @@ export default async function ClientPlanPage({ params }: { params: Promise<{ cli
             {/* Role paragraph */}
             {planResult?.dynamicSummary.roleParagraph && (
               <div className="bento-card p-6">
-                <p className="text-xs text-slate-500 font-semibold uppercase mb-2">תפקיד ושלב ארגוני</p>
+                <p className="text-xs text-slate-500 font-semibold uppercase mb-2">{uiLabels.roleSectionTitle}</p>
                 <p className="text-sm text-slate-300 leading-relaxed">{planResult.dynamicSummary.roleParagraph}</p>
               </div>
             )}
@@ -78,7 +90,7 @@ export default async function ClientPlanPage({ params }: { params: Promise<{ cli
             {/* Diagnosis paragraph */}
             {planResult?.dynamicSummary.diagnosisParagraph && (
               <div className="bento-card p-6 border-r-4 border-r-orange-500">
-                <p className="text-xs text-slate-500 font-semibold uppercase mb-2">אבחון פתולוגיות</p>
+                <p className="text-xs text-slate-500 font-semibold uppercase mb-2">{uiLabels.diagnosisSectionTitle}</p>
                 <p className="text-sm text-slate-300 leading-relaxed">{planResult.dynamicSummary.diagnosisParagraph}</p>
               </div>
             )}
@@ -98,6 +110,16 @@ export default async function ClientPlanPage({ params }: { params: Promise<{ cli
               <div className="bento-card p-6 border-t-4 border-t-emerald-500">
                 <p className="text-xs text-slate-500 font-semibold uppercase mb-2">המלצה אופרטיבית</p>
                 <p className="text-sm text-emerald-300 leading-relaxed font-medium">{planResult.dynamicSummary.ctaParagraph}</p>
+              </div>
+            )}
+
+            {(planResult?.dynamicSummary.ignitionParagraph ?? ignition) && (
+              <div className="bento-card p-6 border-t-4 border-t-amber-500/80">
+                <p className="text-xs text-slate-500 font-semibold uppercase mb-2">התנעה עסקית</p>
+                <p className="text-sm text-amber-100/95 leading-relaxed">
+                  {planResult?.dynamicSummary.ignitionParagraph ??
+                    (ignition ? `${ignition.narrativeHe} צעד ראשון: ${ignition.firstMoveHe}` : '')}
+                </p>
               </div>
             )}
 
@@ -155,7 +177,11 @@ export default async function ClientPlanPage({ params }: { params: Promise<{ cli
                   <span className="hidden group-open:inline">סגור שאלון</span>
                 </summary>
                 <div className="mt-3">
-                  <PlanQuestionnaireForm clientId={clientId} clientName={client.name} />
+                  <PlanQuestionnaireForm
+                    clientId={clientId}
+                    clientName={client.name}
+                    clientOperatingContext={client.operating_context ?? null}
+                  />
                 </div>
               </details>
             </div>
@@ -163,7 +189,11 @@ export default async function ClientPlanPage({ params }: { params: Promise<{ cli
         ) : (
           <div className="mt-8">
             <p className="text-slate-400 text-sm mb-6">מלא את השאלון לפי מודל COR-SYS. התוכנית תיבנה אוטומטית (המלצת ערוץ, שירות וצעדים).</p>
-            <PlanQuestionnaireForm clientId={clientId} clientName={client.name} />
+            <PlanQuestionnaireForm
+              clientId={clientId}
+              clientName={client.name}
+              clientOperatingContext={client.operating_context ?? null}
+            />
           </div>
         )}
 

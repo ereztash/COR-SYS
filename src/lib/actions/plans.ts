@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import type { ClientBusinessPlanUpsert } from '@/types/database'
-import { buildPlanFromQuestionnaire, type QuestionnaireAnswer } from '@/lib/corsys-questionnaire'
+import { buildPlanFromQuestionnaire, mergeOperatingContextFromClient, type QuestionnaireAnswer } from '@/lib/corsys-questionnaire'
 import { diagnose } from '@/lib/dsm-engine'
 import { runUnifiedTreatmentPipelineFromDiagnosis } from '@/lib/diagnostic/unified-pipeline'
 import { insertDiagnostic } from '@/lib/data'
@@ -13,11 +13,21 @@ export async function savePlanFromQuestionnaire(clientId: string, clientName: st
   if (!isValidUuid(clientId)) return { ok: false, error: 'מזהה לקוח לא חוקי' }
   const supabase = await createClient()
 
+  const { data: clientRow } = await supabase
+    .from('clients')
+    .select('operating_context')
+    .eq('id', clientId)
+    .single()
+  const merged = mergeOperatingContextFromClient(
+    answers,
+    clientRow as { operating_context?: string | null } | null
+  )
+
   let planResult: ReturnType<typeof buildPlanFromQuestionnaire>
   let dsmDiagnosis: ReturnType<typeof diagnose>
   try {
-    planResult = buildPlanFromQuestionnaire(clientName, answers)
-    dsmDiagnosis = diagnose(answers)
+    planResult = buildPlanFromQuestionnaire(clientName, merged)
+    dsmDiagnosis = diagnose(merged)
   } catch (e) {
     console.error('[savePlanFromQuestionnaire] DSM computation failed', e)
     return { ok: false, error: 'שגיאה בחישוב האבחון — נסה שוב' }
@@ -33,9 +43,9 @@ export async function savePlanFromQuestionnaire(clientId: string, clientName: st
     entropyScore: planResult.entropyScore,
   }
 
-  const unified = runUnifiedTreatmentPipelineFromDiagnosis(dsmDiagnosis, answers)
+  const unified = runUnifiedTreatmentPipelineFromDiagnosis(dsmDiagnosis, merged)
   const questionnaire_response = {
-    ...(answers as unknown as Record<string, unknown>),
+    ...(merged as unknown as Record<string, unknown>),
     unified_action_plan_snapshot: {
       version: unified.pipelineVersion,
       generated_at: new Date().toISOString(),
@@ -68,7 +78,7 @@ export async function savePlanFromQuestionnaire(clientId: string, clientName: st
 
   // Diagnostic insert is best-effort — a failure here should not block the plan save
   try {
-    await insertDiagnostic(clientId, answers as unknown as Record<string, unknown>, dsmSummary)
+    await insertDiagnostic(clientId, merged as unknown as Record<string, unknown>, dsmSummary)
   } catch (e) {
     console.error('[savePlanFromQuestionnaire] insertDiagnostic failed', e)
   }

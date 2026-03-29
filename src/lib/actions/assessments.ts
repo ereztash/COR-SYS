@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import type { ClientAssessmentInsert, ClientAssessmentUpdate } from '@/types/database'
-import type { QuestionnaireAnswer } from '@/lib/corsys-questionnaire'
+import { mergeOperatingContextFromClient, type QuestionnaireAnswer } from '@/lib/corsys-questionnaire'
 import { revalidatePath } from 'next/cache'
 import { isValidUuid } from '@/lib/validation'
 import { getAssessmentByToken, getClientById, insertDiagnostic } from '@/lib/data'
@@ -44,8 +44,15 @@ export async function saveAssessmentAnswers(
 ): Promise<{ ok: boolean; error?: string }> {
   if (!token) return { ok: false, error: 'חסר token' }
   const supabase = await createClient()
+
+  const assessmentPre = await getAssessmentByToken(token)
+  const clientForMerge = assessmentPre?.client_id
+    ? await getClientById(assessmentPre.client_id)
+    : null
+  const merged = mergeOperatingContextFromClient(answers, clientForMerge)
+
   const updatePayload: ClientAssessmentUpdate = {
-    answers: answers as unknown as Record<string, unknown>,
+    answers: merged as unknown as Record<string, unknown>,
     status: 'completed',
     completed_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
@@ -60,7 +67,7 @@ export async function saveAssessmentAnswers(
   // DSM + diagnostic — wrapped so a computation failure never blocks the client
   let dsmDiagnosis: ReturnType<typeof diagnose> | null = null
   try {
-    dsmDiagnosis = diagnose(answers)
+    dsmDiagnosis = diagnose(merged)
   } catch (e) {
     console.error('[saveAssessmentAnswers] diagnose failed', e)
   }
@@ -70,9 +77,9 @@ export async function saveAssessmentAnswers(
   if (dsmDiagnosis && assessment?.client_id) {
     try {
       const clientName = (await getClientById(assessment.client_id))?.name ?? 'לקוח'
-      const planResult = buildPlanFromQuestionnaire(clientName, answers)
+      const planResult = buildPlanFromQuestionnaire(clientName, merged)
       const scoreMap = Object.fromEntries(dsmDiagnosis.pathologies.map((p) => [p.code, p.score]))
-      await insertDiagnostic(assessment.client_id, answers as unknown as Record<string, unknown>, {
+      await insertDiagnostic(assessment.client_id, merged as unknown as Record<string, unknown>, {
         drScore: scoreMap.DR ?? 0,
         ndScore: scoreMap.ND ?? 0,
         ucScore: scoreMap.UC ?? 0,

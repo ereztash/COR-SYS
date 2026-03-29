@@ -13,6 +13,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { buildEmbeddingText } from '@/lib/diagnostic/questions'
+import type { OperatingContext } from '@/lib/corsys-questionnaire'
 import { matchPathologyDual } from '@/lib/diagnostic/embedding-matcher'
 import { inferScoresFromProfile } from '@/lib/diagnostic/pathology-kb'
 import type { PathologyProfile, PathologyType } from '@/lib/diagnostic/pathology-kb'
@@ -56,11 +57,14 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json()
-  const { answers, clientId, scores } = body as {
+  const { answers, clientId, scores, operatingContext: ocRaw } = body as {
     answers: Record<string, string>
     clientId: string
     scores?: { dr: number; nd: number; uc: number }
+    operatingContext?: string
   }
+  const operatingContext: OperatingContext =
+    ocRaw === 'one_man_show' ? 'one_man_show' : 'team'
 
   if (!answers || typeof answers !== 'object' || !clientId) {
     return NextResponse.json({ error: 'Missing answers or clientId' }, { status: 400 })
@@ -81,7 +85,7 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const embeddingText = buildEmbeddingText(answers)
+  const embeddingText = buildEmbeddingText(answers, operatingContext)
 
   const { severityMatches, typeMatches, topType, csAmplifier } =
     await matchPathologyDual(embeddingText, scores)

@@ -12,6 +12,15 @@ const ALL_HIGH_ANSWERS = {
 }
 
 describe('computeDiagnostic', () => {
+  it('merges operating_context from client into plan summary when answers omit it', () => {
+    const r = computeDiagnostic(
+      'Solo',
+      { companySize: 'oms_solo' } as QuestionnaireAnswer,
+      { operating_context: 'one_man_show' }
+    )
+    expect(r.planResult.summary).toContain('One man show')
+  })
+
   it('returns plan, dsmDiagnosis, orgPathology, edges, protocols; plan title includes client name', () => {
     const result = computeDiagnostic('Acme Corp', {
       pathologyZeroSum: 'occasional',
@@ -36,6 +45,7 @@ describe('computeDiagnostic', () => {
     expect(result.unifiedTreatmentPlan).toBeDefined()
     expect(Array.isArray(result.unifiedTreatmentPlan.items)).toBe(true)
     expect(result.unifiedTreatmentPlan.pipelineVersion).toBeTruthy()
+    expect(result.ignition).toBeNull()
   })
 
   it('dsmDiagnosis has expected shape', () => {
@@ -125,5 +135,22 @@ describe('computeDiagnostic', () => {
     })
     const validProfiles = ['at-risk', 'critical', 'systemic-collapse']
     expect(validProfiles).toContain(result.dsmDiagnosis.severityProfile)
+  })
+
+  it('ignition is null when not one_man_show', () => {
+    expect(computeDiagnostic('Org', { companySize: '50_150' }).ignition).toBeNull()
+  })
+
+  it('ignition profile when OMS and ignition questionnaire filled', () => {
+    const result = computeDiagnostic('Solo', {
+      operatingContext: 'one_man_show',
+      companySize: 'oms_solo',
+      ignitionPrimaryVector: 'internal_push',
+      ignitionDominantTrap: 'prep_trap',
+      ignitionLastCommercialAsk: 'within_30d',
+    })
+    expect(result.ignition).not.toBeNull()
+    expect(result.ignition?.primaryVector).toBe('internal_push')
+    expect(result.planResult.dynamicSummary.ignitionParagraph).toBeTruthy()
   })
 })

@@ -1,20 +1,49 @@
 'use client'
 
-import { useState } from 'react'
-import { QUESTIONNAIRE_STEPS, type QuestionnaireAnswer } from '@/lib/corsys-questionnaire'
+import { useMemo, useState } from 'react'
+import {
+  resolveQuestionnaireSteps,
+  effectiveOperatingContext,
+  type QuestionnaireAnswer,
+  type OperatingContext,
+} from '@/lib/corsys-questionnaire'
 import { saveAssessmentAnswers } from '@/lib/actions/assessments'
 
-export function AssessmentForm({ token }: { token: string }) {
+export function AssessmentForm({
+  token,
+  clientOperatingContext = null,
+}: {
+  token: string
+  clientOperatingContext?: OperatingContext | null
+}) {
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<QuestionnaireAnswer>({})
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const currentStep = QUESTIONNAIRE_STEPS[step]
-  const isLast = step === QUESTIONNAIRE_STEPS.length - 1
+  const ctx = effectiveOperatingContext(answers, clientOperatingContext)
+  const steps = useMemo(() => {
+    const base = resolveQuestionnaireSteps(ctx)
+    const locked =
+      clientOperatingContext === 'team' || clientOperatingContext === 'one_man_show'
+    if (!locked) return base
+    return base.map((step) => ({
+      ...step,
+      fields: step.fields.filter((f) => f.key !== 'operatingContext'),
+    }))
+  }, [ctx, clientOperatingContext])
+
+  const currentStep = steps[step]
+  const isLast = step === steps.length - 1
 
   const set = (key: keyof QuestionnaireAnswer, value: unknown) => {
-    setAnswers((a) => ({ ...a, [key]: value }))
+    setAnswers((a) => {
+      const next = { ...a, [key]: value } as QuestionnaireAnswer
+      if (key === 'operatingContext') {
+        next.companySize = undefined
+      }
+      return next
+    })
     setError(null)
   }
 
@@ -34,7 +63,7 @@ export function AssessmentForm({ token }: { token: string }) {
     <div className="space-y-6">
       <div className="flex gap-2 mb-4 overflow-x-auto pb-1 -mx-1">
         <div className="flex gap-2 flex-nowrap min-w-0">
-          {QUESTIONNAIRE_STEPS.map((s, i) => (
+          {steps.map((s, i) => (
             <button
               key={s.id}
               type="button"
@@ -84,7 +113,7 @@ export function AssessmentForm({ token }: { token: string }) {
               )}
               {f.type === 'scale' && (
                 <div>
-                  {'scaleLabels' in f && (
+                  {f.scaleLabels != null && (
                     <div className="flex justify-between text-xs text-slate-500 mb-2 px-1">
                       <span>{f.scaleLabels.min}</span>
                       <span>{f.scaleLabels.max}</span>

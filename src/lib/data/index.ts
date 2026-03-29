@@ -1,4 +1,11 @@
-export { getClients, getClientById, getClientWithPlan, type ClientWithPlan } from './clients'
+export {
+  getClients,
+  getClientById,
+  getClientWithPlan,
+  getClientPortfolioStats,
+  type ClientWithPlan,
+  type ClientPortfolioStats,
+} from './clients'
 export { getSprints, getSprintsWithTasks, getSprintsByClient, getSprintById, getSprintCountByClient } from './sprints'
 export { getTasksBySprint, getOpenTasks } from './tasks'
 export { getFinancials, getFinancialsByClient, getClientsForSelect } from './financials'

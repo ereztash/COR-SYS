@@ -17,6 +17,25 @@ export function isClientStatus(s: string): s is (typeof CLIENT_STATUSES)[number]
   return CLIENT_STATUSES.includes(s as (typeof CLIENT_STATUSES)[number])
 }
 
+export const CLIENT_OPERATING_CONTEXTS = ['team', 'one_man_show'] as const
+
+export function isClientOperatingContext(
+  s: string | null | undefined
+): s is (typeof CLIENT_OPERATING_CONTEXTS)[number] {
+  if (s == null || s === '') return false
+  return CLIENT_OPERATING_CONTEXTS.includes(s as (typeof CLIENT_OPERATING_CONTEXTS)[number])
+}
+
+import {
+  IGNITION_PRIMARY_VECTORS,
+  type IgnitionPrimaryVector,
+} from '@/lib/ignition-types'
+
+/** בדיקת ערך שאלון התנעה (עצמאים) */
+export function isIgnitionPrimaryVector(s: string | undefined): s is IgnitionPrimaryVector {
+  return s != null && IGNITION_PRIMARY_VECTORS.includes(s as IgnitionPrimaryVector)
+}
+
 export function isSprintStatus(s: string): s is (typeof SPRINT_STATUSES)[number] {
   return SPRINT_STATUSES.includes(s as (typeof SPRINT_STATUSES)[number])
 }

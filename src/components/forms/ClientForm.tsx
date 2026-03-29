@@ -20,6 +20,7 @@ export function ClientForm({ initial, clientId }: ClientFormProps) {
     company: initial?.company ?? '',
     industry: initial?.industry ?? '',
     status: initial?.status ?? 'prospect',
+    operating_context: initial?.operating_context ?? '',
     hourly_rate: initial?.hourly_rate?.toString() ?? '',
     monthly_retainer: initial?.monthly_retainer?.toString() ?? '',
     decision_latency_hours: initial?.decision_latency_hours?.toString() ?? '',
@@ -39,6 +40,7 @@ export function ClientForm({ initial, clientId }: ClientFormProps) {
       company: form.company || null,
       industry: form.industry || null,
       status: form.status as ClientStatus,
+      operating_context: form.operating_context || null,
       hourly_rate: form.hourly_rate ? parseFloat(form.hourly_rate) : null,
       monthly_retainer: form.monthly_retainer ? parseFloat(form.monthly_retainer) : null,
       decision_latency_hours: form.decision_latency_hours ? parseFloat(form.decision_latency_hours) : null,
@@ -84,6 +86,20 @@ export function ClientForm({ initial, clientId }: ClientFormProps) {
             <option value="volunteer">התנדבות</option>
             <option value="paused">מושהה</option>
             <option value="churned">עזב</option>
+          </select>
+        </Field>
+        <Field
+          label="הקשר שאלונים ואבחון"
+          hint="מקור אמת לניסוח שאלות ותוצאות. אם לא נבחר — המשתמש יבחר בשאלון."
+        >
+          <select
+            className={inputCls}
+            value={form.operating_context}
+            onChange={(e) => set('operating_context', e.target.value)}
+          >
+            <option value="">לא מוגדר (יבחר בשאלון)</option>
+            <option value="team">ארגון עם צוות</option>
+            <option value="one_man_show">One man show / עצמאי</option>
           </select>
         </Field>
         <Field label="תעריף שעתי (₪)">
