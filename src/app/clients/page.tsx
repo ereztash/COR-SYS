@@ -7,7 +7,8 @@ import { ModeBlurb } from '@/components/ui/ModeBlurb'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Users } from 'lucide-react'
 
-export const revalidate = 30
+// ללא ISR — אחרת רשימת לקוחות / סטטיסטיקות עלולות להישאר stale אחרי עדכון operating_context וכו'
+export const dynamic = 'force-dynamic'
 
 const STATUS_LABEL_HE: Record<string, string> = {
   active: 'פעיל',

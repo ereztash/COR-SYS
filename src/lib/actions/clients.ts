@@ -73,8 +73,8 @@ export async function createClientAction(payload: ClientPayload): Promise<{ ok: 
     error = retry.error
   }
   if (error) return { ok: false, error: error.message }
-  revalidatePath('/')
-  revalidatePath('/clients')
+  revalidatePath('/', 'layout')
+  revalidatePath('/clients', 'layout')
   return { ok: true, id: (data as { id: string } | null)?.id }
 }
 
@@ -122,8 +122,10 @@ export async function updateClientAction(id: string, payload: Partial<ClientPayl
     error = retry.error
   }
   if (error) return { ok: false, error: error.message }
-  revalidatePath('/')
-  revalidatePath('/clients')
-  revalidatePath(`/clients/${id}`)
+  revalidatePath('/', 'layout')
+  revalidatePath('/clients', 'layout')
+  revalidatePath(`/clients/${id}`, 'layout')
+  revalidatePath(`/clients/${id}/plan`, 'layout')
+  revalidatePath(`/clients/${id}/edit`, 'page')
   return { ok: true }
 }
