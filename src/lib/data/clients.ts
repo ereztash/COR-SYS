@@ -23,9 +23,10 @@ export type ClientPortfolioStats = {
 
 export const getClientPortfolioStats = cache(async function getClientPortfolioStats(): Promise<ClientPortfolioStats | null> {
   const supabase = await createClient()
+  // `select('*')` — לא מציינים operating_context במפורש כדי שלא יישבר לפני מיגרציית Supabase
   const { data: clients, error: cErr } = await supabase
     .from('clients')
-    .select('id, status, operating_context')
+    .select('*')
     .order('created_at', { ascending: false })
   if (cErr) {
     console.error('[data/clients] getClientPortfolioStats', cErr.message)

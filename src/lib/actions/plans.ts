@@ -15,7 +15,7 @@ export async function savePlanFromQuestionnaire(clientId: string, clientName: st
 
   const { data: clientRow } = await supabase
     .from('clients')
-    .select('operating_context')
+    .select('*')
     .eq('id', clientId)
     .single()
   const merged = mergeOperatingContextFromClient(
