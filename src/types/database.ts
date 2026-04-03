@@ -5,7 +5,7 @@ export type SprintStatus = 'planned' | 'active' | 'completed' | 'cancelled'
 export type TaskStatus = 'todo' | 'in_progress' | 'done' | 'blocked'
 export type TaskPriority = 'critical' | 'high' | 'medium' | 'low'
 
-/** מקור אמת להקשר שאלונים ותוכן מנוסח: צוות מול עצמאי */
+/** \u05DE\u05E7\u05D5\u05E8 \u05D0\u05DE\u05EA \u05DC\u05D4\u05E7\u05E9\u05E8 \u05E9\u05D0\u05DC\u05D5\u05E0\u05D9\u05DD \u05D5\u05EA\u05D5\u05DB\u05DF \u05DE\u05E0\u05D5\u05E1\u05D7: \u05E6\u05D5\u05D5\u05EA \u05DE\u05D5\u05DC \u05E2\u05E6\u05DE\u05D0\u05D9 */
 export type ClientOperatingContext = 'team' | 'one_man_show'
 
 export interface Client {
@@ -14,7 +14,7 @@ export interface Client {
   company: string | null
   industry: string | null
   status: ClientStatus
-  /** אחרי מיגרציה `supabase-migration-client-operating-context.sql`; עד אז עשוי להיות undefined */
+  /** \u05D0\u05D7\u05E8\u05D9 \u05DE\u05D9\u05D2\u05E8\u05E6\u05D9\u05D4 `supabase-migration-client-operating-context.sql`; \u05E2\u05D3 \u05D0\u05D6 \u05E2\u05E9\u05D5\u05D9 \u05DC\u05D4\u05D9\u05D5\u05EA undefined */
   operating_context?: ClientOperatingContext | null
   hourly_rate: number | null
   monthly_retainer: number | null

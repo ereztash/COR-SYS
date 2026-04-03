@@ -14,7 +14,7 @@ type FinancialPayload = {
 }
 
 export async function createFinancialAction(payload: FinancialPayload): Promise<{ ok: boolean; error?: string; id?: string }> {
-  if (!isValidUuid(payload.client_id)) return { ok: false, error: 'מזהה לקוח לא חוקי' }
+  if (!isValidUuid(payload.client_id)) return { ok: false, error: '\u05DE\u05D6\u05D4\u05D4 \u05DC\u05E7\u05D5\u05D7 \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9' }
   const revenue = clampRevenue(Number(payload.revenue) || 0)
   const supabase = await createClient()
   const insert = {

@@ -1,14 +1,14 @@
 ﻿/**
- * DSM-Org synthesis Γאפ single mapping from axis scores (DR/ND/UC/SC) to
+ * DSM-Org synthesis Γ\u05D0\u05E4 single mapping from axis scores (DR/ND/UC/SC) to
  * organizational PathologyType (NOD / ZSG_SAFETY / ZSG_CULTURE / OLD / CLT / CS).
  *
  * ## Where this sits in the product
  *
- * - **Long questionnaire** (`diagnose` in dsm-engine): answers Γזע `DSMDiagnosis` with axis scores
- *   Γזע use `primaryOrgPathologyFromDiagnosis` for DSM-Org type + CS amplifier flag.
+ * - **Long questionnaire** (`diagnose` in dsm-engine): answers Γ\u05D6\u05E2 `DSMDiagnosis` with axis scores
+ *   Γ\u05D6\u05E2 use `primaryOrgPathologyFromDiagnosis` for DSM-Org type + CS amplifier flag.
  * - **Fast triage** (wizard sliders / embeddings blended scores): same numeric scores
- *   Γזע use `primaryOrgPathologyFromAxisScores`.
- * - **CBR snapshot** (`score_dr` Γאª `score_sc`): same Γזע `primaryOrgPathologyFromAxisScores`.
+ *   Γ\u05D6\u05E2 use `primaryOrgPathologyFromAxisScores`.
+ * - **CBR snapshot** (`score_dr` Γ\u05D0ª `score_sc`): same Γ\u05D6\u05E2 `primaryOrgPathologyFromAxisScores`.
  *
  * ```mermaid
  * flowchart LR
@@ -36,7 +36,7 @@
  * default to NOD. We type from the strongest axis among DR/ND/UC (structural load still
  * reflected in `dominantAxis` for UI / action-plan pooling).
  *
- * **ZSG** split: ZSG_SAFETY (Edmondson / voice) vs ZSG_CULTURE (zero-sum) Γאפ see pathology-kb.
+ * **ZSG** split: ZSG_SAFETY (Edmondson / voice) vs ZSG_CULTURE (zero-sum) Γ\u05D0\u05E4 see pathology-kb.
  */
 
 import type { QuestionnaireAnswer } from '@/lib/corsys-questionnaire'
@@ -81,7 +81,7 @@ export function resolveDominantAxisForOrgType(scores: AxisScoreInput): Diagnosti
 }
 
 /**
- * Canonical mapping: axis scores Γזע primary DSM-Org type + CS systemic amplifier flag.
+ * Canonical mapping: axis scores Γ\u05D6\u05E2 primary DSM-Org type + CS systemic amplifier flag.
  */
 export function primaryOrgPathologyFromAxisScores(
   scores: AxisScoreInput,

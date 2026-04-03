@@ -90,7 +90,7 @@ function applySequencingAndTags(
 
   if (csAmplifier && (scores.uc >= 8 || scores.dr >= 8)) {
     alerts.push(
-      'זוהה מצב קסקדה (CS) עם עומס גבוה על הצירים. בעדיפות ראשונה: עצירת דימום וייצוב באופק 30 הימים הראשונים.'
+      '\u05D6\u05D5\u05D4\u05D4 \u05DE\u05E6\u05D1 \u05E7\u05E1\u05E7\u05D3\u05D4 (CS) \u05E2\u05DD \u05E2\u05D5\u05DE\u05E1 \u05D2\u05D1\u05D5\u05D4 \u05E2\u05DC \u05D4\u05E6\u05D9\u05E8\u05D9\u05DD. \u05D1\u05E2\u05D3\u05D9\u05E4\u05D5\u05EA \u05E8\u05D0\u05E9\u05D5\u05E0\u05D4: \u05E2\u05E6\u05D9\u05E8\u05EA \u05D3\u05D9\u05DE\u05D5\u05DD \u05D5\u05D9\u05D9\u05E6\u05D5\u05D1 \u05D1\u05D0\u05D5\u05E4\u05E7 30 \u05D4\u05D9\u05DE\u05D9\u05DD \u05D4\u05E8\u05D0\u05E9\u05D5\u05E0\u05D9\u05DD.'
     )
   }
 
@@ -107,7 +107,7 @@ function applySequencingAndTags(
         if (nodOnly && item.axis === 'ND' && item.priority === 1) {
           sequencing_locked = true
           sequencing_lock_reason_he =
-            'נעילה: יש להבהיר בעלות והיררכיה (SC) לפני התערבויות אכיפה על נרמול סטיות.'
+            '\u05E0\u05E2\u05D9\u05DC\u05D4: \u05D9\u05E9 \u05DC\u05D4\u05D1\u05D4\u05D9\u05E8 \u05D1\u05E2\u05DC\u05D5\u05EA \u05D5\u05D4\u05D9\u05E8\u05E8\u05DB\u05D9\u05D4 (SC) \u05DC\u05E4\u05E0\u05D9 \u05D4\u05EA\u05E2\u05E8\u05D1\u05D5\u05D9\u05D5\u05EA \u05D0\u05DB\u05D9\u05E4\u05D4 \u05E2\u05DC \u05E0\u05E8\u05DE\u05D5\u05DC \u05E1\u05D8\u05D9\u05D5\u05EA.'
         }
       }
 
@@ -119,7 +119,7 @@ function applySequencingAndTags(
         if (oldDeep) {
           sequencing_locked = true
           sequencing_lock_reason_he =
-            'נעילה: יש לייצב בטחון פסיכולוגי ותמריצים (ZSG) לפני ארכיטקטורת למידה עמוקה.'
+            '\u05E0\u05E2\u05D9\u05DC\u05D4: \u05D9\u05E9 \u05DC\u05D9\u05D9\u05E6\u05D1 \u05D1\u05D8\u05D7\u05D5\u05DF \u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9 \u05D5\u05EA\u05DE\u05E8\u05D9\u05E6\u05D9\u05DD (ZSG) \u05DC\u05E4\u05E0\u05D9 \u05D0\u05E8\u05DB\u05D9\u05D8\u05E7\u05D8\u05D5\u05E8\u05EA \u05DC\u05DE\u05D9\u05D3\u05D4 \u05E2\u05DE\u05D5\u05E7\u05D4.'
         }
       }
 
@@ -129,7 +129,7 @@ function applySequencingAndTags(
 
       const narrative_rationale_he =
         item.narrative_rationale_he ??
-        `${item.title_he} — מותאם לציר ${item.axis} ואופק ${item.horizon}.`
+        `${item.title_he} — \u05DE\u05D5\u05EA\u05D0\u05DD \u05DC\u05E6\u05D9\u05E8 ${item.axis} \u05D5\u05D0\u05D5\u05E4\u05E7 ${item.horizon}.`
 
       return {
         ...item,

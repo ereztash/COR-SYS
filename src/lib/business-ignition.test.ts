@@ -29,7 +29,7 @@ describe('computeIgnitionProfile', () => {
     expect(p!.urgency).toBe('high')
     expect(p!.suggestsSprintNudge).toBe(true)
     expect(p!.firstMoveTag).toBe('direct_commercial_touch')
-    expect(p!.narrativeHe).toContain('משיכה מבוססת ביקוש')
+    expect(p!.narrativeHe).toContain('\u05DE\u05E9\u05D9\u05DB\u05D4 \u05DE\u05D1\u05D5\u05E1\u05E1\u05EA \u05D1\u05D9\u05E7\u05D5\u05E9')
   })
 
   it('internal_push with none_clear uses bricolage first move', () => {

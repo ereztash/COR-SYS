@@ -35,7 +35,7 @@ describe('computeDiagnostic', () => {
 
     expect(result).toBeDefined()
     expect(result.planResult).toBeDefined()
-    expect(result.planResult.title).toBe('תוכנית עסקית — Acme Corp')
+    expect(result.planResult.title).toBe('\u05EA\u05D5\u05DB\u05E0\u05D9\u05EA \u05E2\u05E1\u05E7\u05D9\u05EA — Acme Corp')
     expect(result.dsmDiagnosis).toBeDefined()
     expect(result.orgPathology).toBeDefined()
     expect(result.orgPathology).toHaveProperty('primaryType')

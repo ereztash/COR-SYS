@@ -1,18 +1,18 @@
 import type { OperatingContext } from '@/lib/corsys-questionnaire'
 
-/** כותרות ותוויות UI לפי הקשר תפעולי (צוות מול עצמאי) */
+/** \u05DB\u05D5\u05EA\u05E8\u05D5\u05EA \u05D5\u05EA\u05D5\u05D5\u05D9\u05D5\u05EA UI \u05DC\u05E4\u05D9 \u05D4\u05E7\u05E9\u05E8 \u05EA\u05E4\u05E2\u05D5\u05DC\u05D9 (\u05E6\u05D5\u05D5\u05EA \u05DE\u05D5\u05DC \u05E2\u05E6\u05DE\u05D0\u05D9) */
 export function contextAwareLabels(ctx: OperatingContext) {
   const oms = ctx === 'one_man_show'
   return {
-    entropyMetric: oms ? 'אנטרופיה תפעולית' : 'אנטרופיה ארגונית',
+    entropyMetric: oms ? '\u05D0\u05E0\u05D8\u05E8\u05D5\u05E4\u05D9\u05D4 \u05EA\u05E4\u05E2\u05D5\u05DC\u05D9\u05EA' : '\u05D0\u05E0\u05D8\u05E8\u05D5\u05E4\u05D9\u05D4 \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05EA',
     heroFallbackParagraph: oms
-      ? 'ניתוח מעמיק של דפוסי עומס, החלטות ומסירה בהקשר עצמאי / One man show.'
-      : 'ניתוח מעמיק של הדינמיקות הארגוניות ומפת הפתולוגיות הפעילות.',
+      ? '\u05E0\u05D9\u05EA\u05D5\u05D7 \u05DE\u05E2\u05DE\u05D9\u05E7 \u05E9\u05DC \u05D3\u05E4\u05D5\u05E1\u05D9 \u05E2\u05D5\u05DE\u05E1, \u05D4\u05D7\u05DC\u05D8\u05D5\u05EA \u05D5\u05DE\u05E1\u05D9\u05E8\u05D4 \u05D1\u05D4\u05E7\u05E9\u05E8 \u05E2\u05E6\u05DE\u05D0\u05D9 / One man show.'
+      : '\u05E0\u05D9\u05EA\u05D5\u05D7 \u05DE\u05E2\u05DE\u05D9\u05E7 \u05E9\u05DC \u05D4\u05D3\u05D9\u05E0\u05DE\u05D9\u05E7\u05D5\u05EA \u05D4\u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05D5\u05EA \u05D5\u05DE\u05E4\u05EA \u05D4\u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA \u05D4\u05E4\u05E2\u05D9\u05DC\u05D5\u05EA.',
     pathologyGridTitle: oms
-      ? 'פרופיל עומס — 4 ממדים (הקשר עצמאי)'
-      : 'פרופיל פתולוגיות — 4 ממדים MECE',
-    dsmBadgeLine: oms ? 'אבחון DSM · הקשר עצמאי' : 'אבחון DSM ארגוני',
-    roleSectionTitle: oms ? 'הקשר עסקי ועומס' : 'תפקיד ושלב ארגוני',
-    diagnosisSectionTitle: oms ? 'ניתוח אבחוני (עצמאי)' : 'ניתוח אבחוני',
+      ? '\u05E4\u05E8\u05D5\u05E4\u05D9\u05DC \u05E2\u05D5\u05DE\u05E1 — 4 \u05DE\u05DE\u05D3\u05D9\u05DD (\u05D4\u05E7\u05E9\u05E8 \u05E2\u05E6\u05DE\u05D0\u05D9)'
+      : '\u05E4\u05E8\u05D5\u05E4\u05D9\u05DC \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA — 4 \u05DE\u05DE\u05D3\u05D9\u05DD MECE',
+    dsmBadgeLine: oms ? '\u05D0\u05D1\u05D7\u05D5\u05DF DSM · \u05D4\u05E7\u05E9\u05E8 \u05E2\u05E6\u05DE\u05D0\u05D9' : '\u05D0\u05D1\u05D7\u05D5\u05DF DSM \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9',
+    roleSectionTitle: oms ? '\u05D4\u05E7\u05E9\u05E8 \u05E2\u05E1\u05E7\u05D9 \u05D5\u05E2\u05D5\u05DE\u05E1' : '\u05EA\u05E4\u05E7\u05D9\u05D3 \u05D5\u05E9\u05DC\u05D1 \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9',
+    diagnosisSectionTitle: oms ? '\u05E0\u05D9\u05EA\u05D5\u05D7 \u05D0\u05D1\u05D7\u05D5\u05E0\u05D9 (\u05E2\u05E6\u05DE\u05D0\u05D9)' : '\u05E0\u05D9\u05EA\u05D5\u05D7 \u05D0\u05D1\u05D7\u05D5\u05E0\u05D9',
   }
 }

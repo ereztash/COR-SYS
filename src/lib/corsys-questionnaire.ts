@@ -1,6 +1,6 @@
 /**
- * שאלון COR-SYS — מבנה תוכנית עסקית לפי פתולוגיות, ICP ויעדים.
- * מבוסס על תשתית מחקרית: Dunbar, Greiner, Vaughan (NOD), Argyris (Double-Loop),
+ * \u05E9\u05D0\u05DC\u05D5\u05DF COR-SYS — \u05DE\u05D1\u05E0\u05D4 \u05EA\u05D5\u05DB\u05E0\u05D9\u05EA \u05E2\u05E1\u05E7\u05D9\u05EA \u05DC\u05E4\u05D9 \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA, ICP \u05D5\u05D9\u05E2\u05D3\u05D9\u05DD.
+ * \u05DE\u05D1\u05D5\u05E1\u05E1 \u05E2\u05DC \u05EA\u05E9\u05EA\u05D9\u05EA \u05DE\u05D7\u05E7\u05E8\u05D9\u05EA: Dunbar, Greiner, Vaughan (NOD), Argyris (Double-Loop),
  * Floridi (Ontological Friction), Decision Latency Index.
  */
 
@@ -16,7 +16,7 @@ import type {
 
 // ─── Block 1: ICP ────────────────────────────────────────────────────────────
 
-/** team = ארגון עם צוות; one_man_show = עצמאי/יזם יחיד ללא צוות פנימי קבוע */
+/** team = \u05D0\u05E8\u05D2\u05D5\u05DF \u05E2\u05DD \u05E6\u05D5\u05D5\u05EA; one_man_show = \u05E2\u05E6\u05DE\u05D0\u05D9/\u05D9\u05D6\u05DD \u05D9\u05D7\u05D9\u05D3 \u05DC\u05DC\u05D0 \u05E6\u05D5\u05D5\u05EA \u05E4\u05E0\u05D9\u05DE\u05D9 \u05E7\u05D1\u05D5\u05E2 */
 export type OperatingContext = 'team' | 'one_man_show'
 
 export type ChampionRole = 'ceo' | 'coo' | 'cfo' | 'other'
@@ -93,7 +93,7 @@ export interface QuestionnaireAnswer {
   strategyExecution?: StrategyExecution
   engagementProxy?: EngagementProxy
 
-  // Block 3b — התנעה עסקית (רלוונטי ל־one_man_show; נשמר ב־JSON)
+  // Block 3b — \u05D4\u05EA\u05E0\u05E2\u05D4 \u05E2\u05E1\u05E7\u05D9\u05EA (\u05E8\u05DC\u05D5\u05D5\u05E0\u05D8\u05D9 \u05DC\u05BEone_man_show; \u05E0\u05E9\u05DE\u05E8 \u05D1\u05BEJSON)
   ignitionLifecycleStage?: IgnitionLifecycleStage
   ignitionPrimaryVector?: IgnitionPrimaryVector
   ignitionDominantTrap?: IgnitionDominantTrap
@@ -102,18 +102,18 @@ export interface QuestionnaireAnswer {
   // Block 4 — Edmondson PSI (7-item Psychological Safety Index)
   // Scale: 1=Strongly Disagree, 7=Strongly Agree
   // Items 1, 3, 5 are REVERSED (negatively worded)
-  psi1?: PsiRating  // "אם עושים טעות, זה מוחזק כנגדך" ← REVERSED
-  psi2?: PsiRating  // "חברי הצוות יכולים להעלות בעיות קשות"
-  psi3?: PsiRating  // "אנשים לפעמים דוחים אחרים שהם שונים" ← REVERSED
-  psi4?: PsiRating  // "זה בטוח לקחת סיכונים בצוות"
-  psi5?: PsiRating  // "קשה לבקש עזרה מחברי הצוות" ← REVERSED
-  psi6?: PsiRating  // "אף אחד לא יפגע במאמצים שלי בכוונה"
-  psi7?: PsiRating  // "הכישורים שלי מוערכים ומנוצלים"
+  psi1?: PsiRating  // "\u05D0\u05DD \u05E2\u05D5\u05E9\u05D9\u05DD \u05D8\u05E2\u05D5\u05EA, \u05D6\u05D4 \u05DE\u05D5\u05D7\u05D6\u05E7 \u05DB\u05E0\u05D2\u05D3\u05DA" ← REVERSED
+  psi2?: PsiRating  // "\u05D7\u05D1\u05E8\u05D9 \u05D4\u05E6\u05D5\u05D5\u05EA \u05D9\u05DB\u05D5\u05DC\u05D9\u05DD \u05DC\u05D4\u05E2\u05DC\u05D5\u05EA \u05D1\u05E2\u05D9\u05D5\u05EA \u05E7\u05E9\u05D5\u05EA"
+  psi3?: PsiRating  // "\u05D0\u05E0\u05E9\u05D9\u05DD \u05DC\u05E4\u05E2\u05DE\u05D9\u05DD \u05D3\u05D5\u05D7\u05D9\u05DD \u05D0\u05D7\u05E8\u05D9\u05DD \u05E9\u05D4\u05DD \u05E9\u05D5\u05E0\u05D9\u05DD" ← REVERSED
+  psi4?: PsiRating  // "\u05D6\u05D4 \u05D1\u05D8\u05D5\u05D7 \u05DC\u05E7\u05D7\u05EA \u05E1\u05D9\u05DB\u05D5\u05E0\u05D9\u05DD \u05D1\u05E6\u05D5\u05D5\u05EA"
+  psi5?: PsiRating  // "\u05E7\u05E9\u05D4 \u05DC\u05D1\u05E7\u05E9 \u05E2\u05D6\u05E8\u05D4 \u05DE\u05D7\u05D1\u05E8\u05D9 \u05D4\u05E6\u05D5\u05D5\u05EA" ← REVERSED
+  psi6?: PsiRating  // "\u05D0\u05E3 \u05D0\u05D7\u05D3 \u05DC\u05D0 \u05D9\u05E4\u05D2\u05E2 \u05D1\u05DE\u05D0\u05DE\u05E6\u05D9\u05DD \u05E9\u05DC\u05D9 \u05D1\u05DB\u05D5\u05D5\u05E0\u05D4"
+  psi7?: PsiRating  // "\u05D4\u05DB\u05D9\u05E9\u05D5\u05E8\u05D9\u05DD \u05E9\u05DC\u05D9 \u05DE\u05D5\u05E2\u05E8\u05DB\u05D9\u05DD \u05D5\u05DE\u05E0\u05D5\u05E6\u05DC\u05D9\u05DD"
 }
 
 // ─── Questionnaire Steps ──────────────────────────────────────────────────────
 
-/** שדה אחרי מיזוג טקסטים לפי operatingContext (לטפסים) */
+/** \u05E9\u05D3\u05D4 \u05D0\u05D7\u05E8\u05D9 \u05DE\u05D9\u05D6\u05D5\u05D2 \u05D8\u05E7\u05E1\u05D8\u05D9\u05DD \u05DC\u05E4\u05D9 operatingContext (\u05DC\u05D8\u05E4\u05E1\u05D9\u05DD) */
 export type ResolvedQuestionnaireField = {
   key: string
   label: string
@@ -144,7 +144,7 @@ type QuestionnaireStepDef = {
   id: string
   title: string
   omsTitle?: string
-  /** כשמוגדר — השלב מוצג רק ב־one_man_show */
+  /** \u05DB\u05E9\u05DE\u05D5\u05D2\u05D3\u05E8 — \u05D4\u05E9\u05DC\u05D1 \u05DE\u05D5\u05E6\u05D2 \u05E8\u05E7 \u05D1\u05BEone_man_show */
   omsOnly?: boolean
   fields: QuestionnaireFieldDef[]
 }
@@ -152,177 +152,177 @@ type QuestionnaireStepDef = {
 const QUESTIONNAIRE_STEPS_RAW: QuestionnaireStepDef[] = [
   {
     id: 'icp',
-    title: 'אפיון הלקוח והקשר ארגוני',
-    omsTitle: 'אפיון העצמאי/ת והקשר העסקי',
+    title: '\u05D0\u05E4\u05D9\u05D5\u05DF \u05D4\u05DC\u05E7\u05D5\u05D7 \u05D5\u05D4\u05E7\u05E9\u05E8 \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9',
+    omsTitle: '\u05D0\u05E4\u05D9\u05D5\u05DF \u05D4\u05E2\u05E6\u05DE\u05D0\u05D9/\u05EA \u05D5\u05D4\u05E7\u05E9\u05E8 \u05D4\u05E2\u05E1\u05E7\u05D9',
     fields: [
       {
         key: 'operatingContext',
-        label: 'איך הכי נכון לתאר את דפוס העבודה שלך?',
+        label: '\u05D0\u05D9\u05DA \u05D4\u05DB\u05D9 \u05E0\u05DB\u05D5\u05DF \u05DC\u05EA\u05D0\u05E8 \u05D0\u05EA \u05D3\u05E4\u05D5\u05E1 \u05D4\u05E2\u05D1\u05D5\u05D3\u05D4 \u05E9\u05DC\u05DA?',
         type: 'select',
         required: true,
         options: [
-          { value: 'team', label: 'ארגון / חברה עם צוות ושכבות תפקיד (לא One man show)' },
-          { value: 'one_man_show', label: 'One man show — אני העסק (עצמאי, יזם יחיד, בלי צוות פנימי קבוע)' },
+          { value: 'team', label: '\u05D0\u05E8\u05D2\u05D5\u05DF / \u05D7\u05D1\u05E8\u05D4 \u05E2\u05DD \u05E6\u05D5\u05D5\u05EA \u05D5\u05E9\u05DB\u05D1\u05D5\u05EA \u05EA\u05E4\u05E7\u05D9\u05D3 (\u05DC\u05D0 One man show)' },
+          { value: 'one_man_show', label: 'One man show — \u05D0\u05E0\u05D9 \u05D4\u05E2\u05E1\u05E7 (\u05E2\u05E6\u05DE\u05D0\u05D9, \u05D9\u05D6\u05DD \u05D9\u05D7\u05D9\u05D3, \u05D1\u05DC\u05D9 \u05E6\u05D5\u05D5\u05EA \u05E4\u05E0\u05D9\u05DE\u05D9 \u05E7\u05D1\u05D5\u05E2)' },
         ],
       },
       {
         key: 'championRole',
-        label: 'מהו תפקידך המרכזי והאחריות שלך בארגון?',
+        label: '\u05DE\u05D4\u05D5 \u05EA\u05E4\u05E7\u05D9\u05D3\u05DA \u05D4\u05DE\u05E8\u05DB\u05D6\u05D9 \u05D5\u05D4\u05D0\u05D7\u05E8\u05D9\u05D5\u05EA \u05E9\u05DC\u05DA \u05D1\u05D0\u05E8\u05D2\u05D5\u05DF?',
         type: 'select',
         required: true,
         options: [
-          { value: 'ceo', label: 'מנכ"ל או יזם (מוכוון אסטרטגיה וצמיחה)' },
-          { value: 'coo', label: 'סמנכ"ל תפעול / משאבי אנוש (מוכוון ביצוע)' },
-          { value: 'cfo', label: 'סמנכ"ל כספים (מוכוון ROI ועלויות)' },
-          { value: 'other', label: 'מנהל אחר' },
+          { value: 'ceo', label: '\u05DE\u05E0\u05DB"\u05DC \u05D0\u05D5 \u05D9\u05D6\u05DD (\u05DE\u05D5\u05DB\u05D5\u05D5\u05DF \u05D0\u05E1\u05D8\u05E8\u05D8\u05D2\u05D9\u05D4 \u05D5\u05E6\u05DE\u05D9\u05D7\u05D4)' },
+          { value: 'coo', label: '\u05E1\u05DE\u05E0\u05DB"\u05DC \u05EA\u05E4\u05E2\u05D5\u05DC / \u05DE\u05E9\u05D0\u05D1\u05D9 \u05D0\u05E0\u05D5\u05E9 (\u05DE\u05D5\u05DB\u05D5\u05D5\u05DF \u05D1\u05D9\u05E6\u05D5\u05E2)' },
+          { value: 'cfo', label: '\u05E1\u05DE\u05E0\u05DB"\u05DC \u05DB\u05E1\u05E4\u05D9\u05DD (\u05DE\u05D5\u05DB\u05D5\u05D5\u05DF ROI \u05D5\u05E2\u05DC\u05D5\u05D9\u05D5\u05EA)' },
+          { value: 'other', label: '\u05DE\u05E0\u05D4\u05DC \u05D0\u05D7\u05E8' },
         ],
         oms: {
-          label: 'מה התפקיד המרכזי שלך ביחס לעסק?',
+          label: '\u05DE\u05D4 \u05D4\u05EA\u05E4\u05E7\u05D9\u05D3 \u05D4\u05DE\u05E8\u05DB\u05D6\u05D9 \u05E9\u05DC\u05DA \u05D1\u05D9\u05D7\u05E1 \u05DC\u05E2\u05E1\u05E7?',
           options: [
-            { value: 'ceo', label: 'יזם / בעלים / עצמאי — אני מחליט ומבצע את רוב הליבה לבד' },
-            { value: 'coo', label: 'מנהל תפעול / רכז פרויקטים (אם יש תפקיד כזה אצלי)' },
-            { value: 'cfo', label: 'אחראי/ת כספים — פנימי חלקי או יועץ חיצוני קרוב' },
-            { value: 'other', label: 'תפקיד אחר רלוונטי' },
+            { value: 'ceo', label: '\u05D9\u05D6\u05DD / \u05D1\u05E2\u05DC\u05D9\u05DD / \u05E2\u05E6\u05DE\u05D0\u05D9 — \u05D0\u05E0\u05D9 \u05DE\u05D7\u05DC\u05D9\u05D8 \u05D5\u05DE\u05D1\u05E6\u05E2 \u05D0\u05EA \u05E8\u05D5\u05D1 \u05D4\u05DC\u05D9\u05D1\u05D4 \u05DC\u05D1\u05D3' },
+            { value: 'coo', label: '\u05DE\u05E0\u05D4\u05DC \u05EA\u05E4\u05E2\u05D5\u05DC / \u05E8\u05DB\u05D6 \u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD (\u05D0\u05DD \u05D9\u05E9 \u05EA\u05E4\u05E7\u05D9\u05D3 \u05DB\u05D6\u05D4 \u05D0\u05E6\u05DC\u05D9)' },
+            { value: 'cfo', label: '\u05D0\u05D7\u05E8\u05D0\u05D9/\u05EA \u05DB\u05E1\u05E4\u05D9\u05DD — \u05E4\u05E0\u05D9\u05DE\u05D9 \u05D7\u05DC\u05E7\u05D9 \u05D0\u05D5 \u05D9\u05D5\u05E2\u05E5 \u05D7\u05D9\u05E6\u05D5\u05E0\u05D9 \u05E7\u05E8\u05D5\u05D1' },
+            { value: 'other', label: '\u05EA\u05E4\u05E7\u05D9\u05D3 \u05D0\u05D7\u05E8 \u05E8\u05DC\u05D5\u05D5\u05E0\u05D8\u05D9' },
           ],
         },
       },
       {
         key: 'companySize',
-        label: 'מהו גודל הארגון שלך (מספר עובדים)?',
+        label: '\u05DE\u05D4\u05D5 \u05D2\u05D5\u05D3\u05DC \u05D4\u05D0\u05E8\u05D2\u05D5\u05DF \u05E9\u05DC\u05DA (\u05DE\u05E1\u05E4\u05E8 \u05E2\u05D5\u05D1\u05D3\u05D9\u05DD)?',
         type: 'select',
         required: true,
         options: [
-          { value: 'under_50', label: 'עד 50 עובדים (תקשורת ישירה)' },
-          { value: '50_150', label: '50 עד 150 עובדים (שלב צמיחה ומעבר)' },
-          { value: '150_300', label: '150 עד 300 עובדים (משבר מורכבות)' },
-          { value: 'over_300', label: 'מעל 300 עובדים' },
+          { value: 'under_50', label: '\u05E2\u05D3 50 \u05E2\u05D5\u05D1\u05D3\u05D9\u05DD (\u05EA\u05E7\u05E9\u05D5\u05E8\u05EA \u05D9\u05E9\u05D9\u05E8\u05D4)' },
+          { value: '50_150', label: '50 \u05E2\u05D3 150 \u05E2\u05D5\u05D1\u05D3\u05D9\u05DD (\u05E9\u05DC\u05D1 \u05E6\u05DE\u05D9\u05D7\u05D4 \u05D5\u05DE\u05E2\u05D1\u05E8)' },
+          { value: '150_300', label: '150 \u05E2\u05D3 300 \u05E2\u05D5\u05D1\u05D3\u05D9\u05DD (\u05DE\u05E9\u05D1\u05E8 \u05DE\u05D5\u05E8\u05DB\u05D1\u05D5\u05EA)' },
+          { value: 'over_300', label: '\u05DE\u05E2\u05DC 300 \u05E2\u05D5\u05D1\u05D3\u05D9\u05DD' },
         ],
         oms: {
-          label: 'איך נראה מודל ההרחבה שלך מעבר ל"אני"?',
+          label: '\u05D0\u05D9\u05DA \u05E0\u05E8\u05D0\u05D4 \u05DE\u05D5\u05D3\u05DC \u05D4\u05D4\u05E8\u05D7\u05D1\u05D4 \u05E9\u05DC\u05DA \u05DE\u05E2\u05D1\u05E8 \u05DC"\u05D0\u05E0\u05D9"?',
           options: [
-            { value: 'oms_solo', label: 'רק אני מפעיל/ה את העסק (ללא שכירים קבועים)' },
-            { value: 'oms_micro', label: 'אני + עד 3 אנשים קבועים (שכירים או שותפים פעילים)' },
-            { value: 'oms_network', label: 'בעיקר אני + רשת ספקים / קבלני משנה לפי פרויקט' },
+            { value: 'oms_solo', label: '\u05E8\u05E7 \u05D0\u05E0\u05D9 \u05DE\u05E4\u05E2\u05D9\u05DC/\u05D4 \u05D0\u05EA \u05D4\u05E2\u05E1\u05E7 (\u05DC\u05DC\u05D0 \u05E9\u05DB\u05D9\u05E8\u05D9\u05DD \u05E7\u05D1\u05D5\u05E2\u05D9\u05DD)' },
+            { value: 'oms_micro', label: '\u05D0\u05E0\u05D9 + \u05E2\u05D3 3 \u05D0\u05E0\u05E9\u05D9\u05DD \u05E7\u05D1\u05D5\u05E2\u05D9\u05DD (\u05E9\u05DB\u05D9\u05E8\u05D9\u05DD \u05D0\u05D5 \u05E9\u05D5\u05EA\u05E4\u05D9\u05DD \u05E4\u05E2\u05D9\u05DC\u05D9\u05DD)' },
+            { value: 'oms_network', label: '\u05D1\u05E2\u05D9\u05E7\u05E8 \u05D0\u05E0\u05D9 + \u05E8\u05E9\u05EA \u05E1\u05E4\u05E7\u05D9\u05DD / \u05E7\u05D1\u05DC\u05E0\u05D9 \u05DE\u05E9\u05E0\u05D4 \u05DC\u05E4\u05D9 \u05E4\u05E8\u05D5\u05D9\u05E7\u05D8' },
           ],
         },
       },
       {
         key: 'industrySector',
-        label: 'באיזה ענף או סקטור פועל הארגון?',
+        label: '\u05D1\u05D0\u05D9\u05D6\u05D4 \u05E2\u05E0\u05E3 \u05D0\u05D5 \u05E1\u05E7\u05D8\u05D5\u05E8 \u05E4\u05D5\u05E2\u05DC \u05D4\u05D0\u05E8\u05D2\u05D5\u05DF?',
         type: 'select',
         required: true,
         options: [
-          { value: 'cyber_fintech', label: 'סייבר או פינטק' },
-          { value: 'ai_healthtech', label: 'בינה מלאכותית, מדעי החיים' },
-          { value: 'complex_b2b', label: 'תוכנה ו-B2B מורכב' },
-          { value: 'other', label: 'אחר' },
+          { value: 'cyber_fintech', label: '\u05E1\u05D9\u05D9\u05D1\u05E8 \u05D0\u05D5 \u05E4\u05D9\u05E0\u05D8\u05E7' },
+          { value: 'ai_healthtech', label: '\u05D1\u05D9\u05E0\u05D4 \u05DE\u05DC\u05D0\u05DB\u05D5\u05EA\u05D9\u05EA, \u05DE\u05D3\u05E2\u05D9 \u05D4\u05D7\u05D9\u05D9\u05DD' },
+          { value: 'complex_b2b', label: '\u05EA\u05D5\u05DB\u05E0\u05D4 \u05D5-B2B \u05DE\u05D5\u05E8\u05DB\u05D1' },
+          { value: 'other', label: '\u05D0\u05D7\u05E8' },
         ],
         oms: {
-          label: 'באיזה תחום או שוק את/ה פועל/ת?',
+          label: '\u05D1\u05D0\u05D9\u05D6\u05D4 \u05EA\u05D7\u05D5\u05DD \u05D0\u05D5 \u05E9\u05D5\u05E7 \u05D0\u05EA/\u05D4 \u05E4\u05D5\u05E2\u05DC/\u05EA?',
         },
       },
     ],
   },
   {
     id: 'pathologies',
-    title: 'אבחון פתולוגיות ודימום קוגניטיבי',
-    omsTitle: 'אבחון עומס קוגניטיבי ודפוסי עבודה (עצמאי)',
+    title: '\u05D0\u05D1\u05D7\u05D5\u05DF \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA \u05D5\u05D3\u05D9\u05DE\u05D5\u05DD \u05E7\u05D5\u05D2\u05E0\u05D9\u05D8\u05D9\u05D1\u05D9',
+    omsTitle: '\u05D0\u05D1\u05D7\u05D5\u05DF \u05E2\u05D5\u05DE\u05E1 \u05E7\u05D5\u05D2\u05E0\u05D9\u05D8\u05D9\u05D1\u05D9 \u05D5\u05D3\u05E4\u05D5\u05E1\u05D9 \u05E2\u05D1\u05D5\u05D3\u05D4 (\u05E2\u05E6\u05DE\u05D0\u05D9)',
     fields: [
       {
         key: 'pathologyNod',
-        label: 'בסביבת העבודה היומיומית, באיזו תדירות צוותים עוקפים נהלים רשמיים, יוצרים "אקסלים צדדיים" או משתמשים בקיצורי דרך כדי לעמוד ביעדים תחת לחץ?',
+        label: '\u05D1\u05E1\u05D1\u05D9\u05D1\u05EA \u05D4\u05E2\u05D1\u05D5\u05D3\u05D4 \u05D4\u05D9\u05D5\u05DE\u05D9\u05D5\u05DE\u05D9\u05EA, \u05D1\u05D0\u05D9\u05D6\u05D5 \u05EA\u05D3\u05D9\u05E8\u05D5\u05EA \u05E6\u05D5\u05D5\u05EA\u05D9\u05DD \u05E2\u05D5\u05E7\u05E4\u05D9\u05DD \u05E0\u05D4\u05DC\u05D9\u05DD \u05E8\u05E9\u05DE\u05D9\u05D9\u05DD, \u05D9\u05D5\u05E6\u05E8\u05D9\u05DD "\u05D0\u05E7\u05E1\u05DC\u05D9\u05DD \u05E6\u05D3\u05D3\u05D9\u05D9\u05DD" \u05D0\u05D5 \u05DE\u05E9\u05EA\u05DE\u05E9\u05D9\u05DD \u05D1\u05E7\u05D9\u05E6\u05D5\u05E8\u05D9 \u05D3\u05E8\u05DA \u05DB\u05D3\u05D9 \u05DC\u05E2\u05DE\u05D5\u05D3 \u05D1\u05D9\u05E2\u05D3\u05D9\u05DD \u05EA\u05D7\u05EA \u05DC\u05D7\u05E5?',
         type: 'select',
         required: true,
         options: [
-          { value: 'high', label: 'כמעט תמיד — זו הדרך המעשית היחידה לגרום לדברים לקרות מהר' },
-          { value: 'medium', label: 'לעיתים, בעיקר בתקופות עומס ולחץ לספק תוצאות' },
-          { value: 'low', label: 'נדיר מאוד — נהלי העבודה ומערכות הליבה תומכים היטב בעבודה' },
+          { value: 'high', label: '\u05DB\u05DE\u05E2\u05D8 \u05EA\u05DE\u05D9\u05D3 — \u05D6\u05D5 \u05D4\u05D3\u05E8\u05DA \u05D4\u05DE\u05E2\u05E9\u05D9\u05EA \u05D4\u05D9\u05D7\u05D9\u05D3\u05D4 \u05DC\u05D2\u05E8\u05D5\u05DD \u05DC\u05D3\u05D1\u05E8\u05D9\u05DD \u05DC\u05E7\u05E8\u05D5\u05EA \u05DE\u05D4\u05E8' },
+          { value: 'medium', label: '\u05DC\u05E2\u05D9\u05EA\u05D9\u05DD, \u05D1\u05E2\u05D9\u05E7\u05E8 \u05D1\u05EA\u05E7\u05D5\u05E4\u05D5\u05EA \u05E2\u05D5\u05DE\u05E1 \u05D5\u05DC\u05D7\u05E5 \u05DC\u05E1\u05E4\u05E7 \u05EA\u05D5\u05E6\u05D0\u05D5\u05EA' },
+          { value: 'low', label: '\u05E0\u05D3\u05D9\u05E8 \u05DE\u05D0\u05D5\u05D3 — \u05E0\u05D4\u05DC\u05D9 \u05D4\u05E2\u05D1\u05D5\u05D3\u05D4 \u05D5\u05DE\u05E2\u05E8\u05DB\u05D5\u05EA \u05D4\u05DC\u05D9\u05D1\u05D4 \u05EA\u05D5\u05DE\u05DB\u05D9\u05DD \u05D4\u05D9\u05D8\u05D1 \u05D1\u05E2\u05D1\u05D5\u05D3\u05D4' },
         ],
         oms: {
           label:
-            'בעבודה השוטפת שלך, באיזו תדירות את/ה (או מי שעובד איתך) עוקפים נהלים, כלים או "איך שכתוב" — ונשענים על דרך מהירה/אקסל צדדי כדי לספק ללקוח או לעמוד בדדליין?',
+            '\u05D1\u05E2\u05D1\u05D5\u05D3\u05D4 \u05D4\u05E9\u05D5\u05D8\u05E4\u05EA \u05E9\u05DC\u05DA, \u05D1\u05D0\u05D9\u05D6\u05D5 \u05EA\u05D3\u05D9\u05E8\u05D5\u05EA \u05D0\u05EA/\u05D4 (\u05D0\u05D5 \u05DE\u05D9 \u05E9\u05E2\u05D5\u05D1\u05D3 \u05D0\u05D9\u05EA\u05DA) \u05E2\u05D5\u05E7\u05E4\u05D9\u05DD \u05E0\u05D4\u05DC\u05D9\u05DD, \u05DB\u05DC\u05D9\u05DD \u05D0\u05D5 "\u05D0\u05D9\u05DA \u05E9\u05DB\u05EA\u05D5\u05D1" — \u05D5\u05E0\u05E9\u05E2\u05E0\u05D9\u05DD \u05E2\u05DC \u05D3\u05E8\u05DA \u05DE\u05D4\u05D9\u05E8\u05D4/\u05D0\u05E7\u05E1\u05DC \u05E6\u05D3\u05D3\u05D9 \u05DB\u05D3\u05D9 \u05DC\u05E1\u05E4\u05E7 \u05DC\u05DC\u05E7\u05D5\u05D7 \u05D0\u05D5 \u05DC\u05E2\u05DE\u05D5\u05D3 \u05D1\u05D3\u05D3\u05DC\u05D9\u05D9\u05DF?',
           options: [
-            { value: 'high', label: 'כמעט תמיד — בלי זה הפיצ\'רים והמשלוחים לא יוצאים לדרך בזמן' },
-            { value: 'medium', label: 'לעיתים, בעיקר כשהלחץ עולה או כשהלקוח דוחף' },
-            { value: 'low', label: 'נדיר — התהליכים והכלים שלי תומכים בעבודה בלי לברוח מהם כל הזמן' },
+            { value: 'high', label: '\u05DB\u05DE\u05E2\u05D8 \u05EA\u05DE\u05D9\u05D3 — \u05D1\u05DC\u05D9 \u05D6\u05D4 \u05D4\u05E4\u05D9\u05E6\'\u05E8\u05D9\u05DD \u05D5\u05D4\u05DE\u05E9\u05DC\u05D5\u05D7\u05D9\u05DD \u05DC\u05D0 \u05D9\u05D5\u05E6\u05D0\u05D9\u05DD \u05DC\u05D3\u05E8\u05DA \u05D1\u05D6\u05DE\u05DF' },
+            { value: 'medium', label: '\u05DC\u05E2\u05D9\u05EA\u05D9\u05DD, \u05D1\u05E2\u05D9\u05E7\u05E8 \u05DB\u05E9\u05D4\u05DC\u05D7\u05E5 \u05E2\u05D5\u05DC\u05D4 \u05D0\u05D5 \u05DB\u05E9\u05D4\u05DC\u05E7\u05D5\u05D7 \u05D3\u05D5\u05D7\u05E3' },
+            { value: 'low', label: '\u05E0\u05D3\u05D9\u05E8 — \u05D4\u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD \u05D5\u05D4\u05DB\u05DC\u05D9\u05DD \u05E9\u05DC\u05D9 \u05EA\u05D5\u05DE\u05DB\u05D9\u05DD \u05D1\u05E2\u05D1\u05D5\u05D3\u05D4 \u05D1\u05DC\u05D9 \u05DC\u05D1\u05E8\u05D5\u05D7 \u05DE\u05D4\u05DD \u05DB\u05DC \u05D4\u05D6\u05DE\u05DF' },
           ],
         },
       },
       {
         key: 'pathologyZeroSum',
-        label: 'האם קיימת בארגון תחושה שהצלחה של מחלקה אחת (למשל, מכירות) באה לעיתים קרובות על חשבון עומס או פגיעה ביעדים של מחלקה אחרת (למשל, תפעול)?',
+        label: '\u05D4\u05D0\u05DD \u05E7\u05D9\u05D9\u05DE\u05EA \u05D1\u05D0\u05E8\u05D2\u05D5\u05DF \u05EA\u05D7\u05D5\u05E9\u05D4 \u05E9\u05D4\u05E6\u05DC\u05D7\u05D4 \u05E9\u05DC \u05DE\u05D7\u05DC\u05E7\u05D4 \u05D0\u05D7\u05EA (\u05DC\u05DE\u05E9\u05DC, \u05DE\u05DB\u05D9\u05E8\u05D5\u05EA) \u05D1\u05D0\u05D4 \u05DC\u05E2\u05D9\u05EA\u05D9\u05DD \u05E7\u05E8\u05D5\u05D1\u05D5\u05EA \u05E2\u05DC \u05D7\u05E9\u05D1\u05D5\u05DF \u05E2\u05D5\u05DE\u05E1 \u05D0\u05D5 \u05E4\u05D2\u05D9\u05E2\u05D4 \u05D1\u05D9\u05E2\u05D3\u05D9\u05DD \u05E9\u05DC \u05DE\u05D7\u05DC\u05E7\u05D4 \u05D0\u05D7\u05E8\u05EA (\u05DC\u05DE\u05E9\u05DC, \u05EA\u05E4\u05E2\u05D5\u05DC)?',
         type: 'select',
         required: true,
         options: [
-          { value: 'frequent', label: 'כן, קיים חיכוך מתמיד הנובע מיעדים ואינטרסים מנוגדים' },
-          { value: 'occasional', label: 'לפעמים, תלוי בסיטואציה ולרוב סביב סופי רבעון' },
-          { value: 'rare', label: 'לא, קיימת סינרגיה וסנכרון ברור של מדדים ואחריות' },
+          { value: 'frequent', label: '\u05DB\u05DF, \u05E7\u05D9\u05D9\u05DD \u05D7\u05D9\u05DB\u05D5\u05DA \u05DE\u05EA\u05DE\u05D9\u05D3 \u05D4\u05E0\u05D5\u05D1\u05E2 \u05DE\u05D9\u05E2\u05D3\u05D9\u05DD \u05D5\u05D0\u05D9\u05E0\u05D8\u05E8\u05E1\u05D9\u05DD \u05DE\u05E0\u05D5\u05D2\u05D3\u05D9\u05DD' },
+          { value: 'occasional', label: '\u05DC\u05E4\u05E2\u05DE\u05D9\u05DD, \u05EA\u05DC\u05D5\u05D9 \u05D1\u05E1\u05D9\u05D8\u05D5\u05D0\u05E6\u05D9\u05D4 \u05D5\u05DC\u05E8\u05D5\u05D1 \u05E1\u05D1\u05D9\u05D1 \u05E1\u05D5\u05E4\u05D9 \u05E8\u05D1\u05E2\u05D5\u05DF' },
+          { value: 'rare', label: '\u05DC\u05D0, \u05E7\u05D9\u05D9\u05DE\u05EA \u05E1\u05D9\u05E0\u05E8\u05D2\u05D9\u05D4 \u05D5\u05E1\u05E0\u05DB\u05E8\u05D5\u05DF \u05D1\u05E8\u05D5\u05E8 \u05E9\u05DC \u05DE\u05D3\u05D3\u05D9\u05DD \u05D5\u05D0\u05D7\u05E8\u05D9\u05D5\u05EA' },
         ],
         oms: {
           label:
-            'האם יש אצלך מתח מתמשך בין "כובעים" או זרמים (למשל מכירות מול איכות מסירה, לקוחות מול קיבולת, מוצר מול תפעול) — כך שהצלחה באחד באה לעיתים על חשבון השני?',
+            '\u05D4\u05D0\u05DD \u05D9\u05E9 \u05D0\u05E6\u05DC\u05DA \u05DE\u05EA\u05D7 \u05DE\u05EA\u05DE\u05E9\u05DA \u05D1\u05D9\u05DF "\u05DB\u05D5\u05D1\u05E2\u05D9\u05DD" \u05D0\u05D5 \u05D6\u05E8\u05DE\u05D9\u05DD (\u05DC\u05DE\u05E9\u05DC \u05DE\u05DB\u05D9\u05E8\u05D5\u05EA \u05DE\u05D5\u05DC \u05D0\u05D9\u05DB\u05D5\u05EA \u05DE\u05E1\u05D9\u05E8\u05D4, \u05DC\u05E7\u05D5\u05D7\u05D5\u05EA \u05DE\u05D5\u05DC \u05E7\u05D9\u05D1\u05D5\u05DC\u05EA, \u05DE\u05D5\u05E6\u05E8 \u05DE\u05D5\u05DC \u05EA\u05E4\u05E2\u05D5\u05DC) — \u05DB\u05DA \u05E9\u05D4\u05E6\u05DC\u05D7\u05D4 \u05D1\u05D0\u05D7\u05D3 \u05D1\u05D0\u05D4 \u05DC\u05E2\u05D9\u05EA\u05D9\u05DD \u05E2\u05DC \u05D7\u05E9\u05D1\u05D5\u05DF \u05D4\u05E9\u05E0\u05D9?',
           options: [
-            { value: 'frequent', label: 'כן — אני תקוע/ה בין אינטרסים מנוגדים כמעט כל הזמן' },
-            { value: 'occasional', label: 'לפעמים, בעיקר בסוף רבעון או כשהכל נהיה צפוף' },
-            { value: 'rare', label: 'לא — יש לי סדר עדיפויות וגבולות ברורים בין מה שחשוב עכשיו' },
+            { value: 'frequent', label: '\u05DB\u05DF — \u05D0\u05E0\u05D9 \u05EA\u05E7\u05D5\u05E2/\u05D4 \u05D1\u05D9\u05DF \u05D0\u05D9\u05E0\u05D8\u05E8\u05E1\u05D9\u05DD \u05DE\u05E0\u05D5\u05D2\u05D3\u05D9\u05DD \u05DB\u05DE\u05E2\u05D8 \u05DB\u05DC \u05D4\u05D6\u05DE\u05DF' },
+            { value: 'occasional', label: '\u05DC\u05E4\u05E2\u05DE\u05D9\u05DD, \u05D1\u05E2\u05D9\u05E7\u05E8 \u05D1\u05E1\u05D5\u05E3 \u05E8\u05D1\u05E2\u05D5\u05DF \u05D0\u05D5 \u05DB\u05E9\u05D4\u05DB\u05DC \u05E0\u05D4\u05D9\u05D4 \u05E6\u05E4\u05D5\u05E3' },
+            { value: 'rare', label: '\u05DC\u05D0 — \u05D9\u05E9 \u05DC\u05D9 \u05E1\u05D3\u05E8 \u05E2\u05D3\u05D9\u05E4\u05D5\u05D9\u05D5\u05EA \u05D5\u05D2\u05D1\u05D5\u05DC\u05D5\u05EA \u05D1\u05E8\u05D5\u05E8\u05D9\u05DD \u05D1\u05D9\u05DF \u05DE\u05D4 \u05E9\u05D7\u05E9\u05D5\u05D1 \u05E2\u05DB\u05E9\u05D9\u05D5' },
           ],
         },
       },
       {
         key: 'pathologyLearning',
-        label: 'כאשר מתרחשת תקלה משמעותית או עיכוב מרכזי, מה מאפיין לרוב את התגובה הארגונית לאחר מכן?',
+        label: '\u05DB\u05D0\u05E9\u05E8 \u05DE\u05EA\u05E8\u05D7\u05E9\u05EA \u05EA\u05E7\u05DC\u05D4 \u05DE\u05E9\u05DE\u05E2\u05D5\u05EA\u05D9\u05EA \u05D0\u05D5 \u05E2\u05D9\u05DB\u05D5\u05D1 \u05DE\u05E8\u05DB\u05D6\u05D9, \u05DE\u05D4 \u05DE\u05D0\u05E4\u05D9\u05D9\u05DF \u05DC\u05E8\u05D5\u05D1 \u05D0\u05EA \u05D4\u05EA\u05D2\u05D5\u05D1\u05D4 \u05D4\u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05EA \u05DC\u05D0\u05D7\u05E8 \u05DE\u05DB\u05DF?',
         type: 'select',
         required: true,
         options: [
-          { value: 'single_loop', label: '"כיבוי שריפות" — ממהרים לתקן את התקלה הנקודתית וממשיכים הלאה' },
-          { value: 'mixed', label: 'מבצעים תחקיר, אך לרוב התובנות לא מתורגמות לשינוי תהליכי עומק' },
-          { value: 'double_loop', label: 'למידה עמוקה — בוחנים ומשנים את ההנחות ונהלי העבודה שאפשרו לתקלה לקרות' },
+          { value: 'single_loop', label: '"\u05DB\u05D9\u05D1\u05D5\u05D9 \u05E9\u05E8\u05D9\u05E4\u05D5\u05EA" — \u05DE\u05DE\u05D4\u05E8\u05D9\u05DD \u05DC\u05EA\u05E7\u05DF \u05D0\u05EA \u05D4\u05EA\u05E7\u05DC\u05D4 \u05D4\u05E0\u05E7\u05D5\u05D3\u05EA\u05D9\u05EA \u05D5\u05DE\u05DE\u05E9\u05D9\u05DB\u05D9\u05DD \u05D4\u05DC\u05D0\u05D4' },
+          { value: 'mixed', label: '\u05DE\u05D1\u05E6\u05E2\u05D9\u05DD \u05EA\u05D7\u05E7\u05D9\u05E8, \u05D0\u05DA \u05DC\u05E8\u05D5\u05D1 \u05D4\u05EA\u05D5\u05D1\u05E0\u05D5\u05EA \u05DC\u05D0 \u05DE\u05EA\u05D5\u05E8\u05D2\u05DE\u05D5\u05EA \u05DC\u05E9\u05D9\u05E0\u05D5\u05D9 \u05EA\u05D4\u05DC\u05D9\u05DB\u05D9 \u05E2\u05D5\u05DE\u05E7' },
+          { value: 'double_loop', label: '\u05DC\u05DE\u05D9\u05D3\u05D4 \u05E2\u05DE\u05D5\u05E7\u05D4 — \u05D1\u05D5\u05D7\u05E0\u05D9\u05DD \u05D5\u05DE\u05E9\u05E0\u05D9\u05DD \u05D0\u05EA \u05D4\u05D4\u05E0\u05D7\u05D5\u05EA \u05D5\u05E0\u05D4\u05DC\u05D9 \u05D4\u05E2\u05D1\u05D5\u05D3\u05D4 \u05E9\u05D0\u05E4\u05E9\u05E8\u05D5 \u05DC\u05EA\u05E7\u05DC\u05D4 \u05DC\u05E7\u05E8\u05D5\u05EA' },
         ],
         oms: {
-          label: 'כשיש כשל במסירה, בלקוח, או בעיכוב משמעותי — מה לרוב קורה אצלך אחרי זה?',
+          label: '\u05DB\u05E9\u05D9\u05E9 \u05DB\u05E9\u05DC \u05D1\u05DE\u05E1\u05D9\u05E8\u05D4, \u05D1\u05DC\u05E7\u05D5\u05D7, \u05D0\u05D5 \u05D1\u05E2\u05D9\u05DB\u05D5\u05D1 \u05DE\u05E9\u05DE\u05E2\u05D5\u05EA\u05D9 — \u05DE\u05D4 \u05DC\u05E8\u05D5\u05D1 \u05E7\u05D5\u05E8\u05D4 \u05D0\u05E6\u05DC\u05DA \u05D0\u05D7\u05E8\u05D9 \u05D6\u05D4?',
           options: [
-            { value: 'single_loop', label: 'מתקן/ת מה שנשבר ורצים הלאה — אין זמן לעצור' },
-            { value: 'mixed', label: 'יש סיבוב ראש אבל לרוב לא משנים את השגרה שייצרה את הבעיה' },
-            { value: 'double_loop', label: 'בודקים מה להנחות/תהליך לשנות כדי שלא יחזור' },
+            { value: 'single_loop', label: '\u05DE\u05EA\u05E7\u05DF/\u05EA \u05DE\u05D4 \u05E9\u05E0\u05E9\u05D1\u05E8 \u05D5\u05E8\u05E6\u05D9\u05DD \u05D4\u05DC\u05D0\u05D4 — \u05D0\u05D9\u05DF \u05D6\u05DE\u05DF \u05DC\u05E2\u05E6\u05D5\u05E8' },
+            { value: 'mixed', label: '\u05D9\u05E9 \u05E1\u05D9\u05D1\u05D5\u05D1 \u05E8\u05D0\u05E9 \u05D0\u05D1\u05DC \u05DC\u05E8\u05D5\u05D1 \u05DC\u05D0 \u05DE\u05E9\u05E0\u05D9\u05DD \u05D0\u05EA \u05D4\u05E9\u05D2\u05E8\u05D4 \u05E9\u05D9\u05D9\u05E6\u05E8\u05D4 \u05D0\u05EA \u05D4\u05D1\u05E2\u05D9\u05D4' },
+            { value: 'double_loop', label: '\u05D1\u05D5\u05D3\u05E7\u05D9\u05DD \u05DE\u05D4 \u05DC\u05D4\u05E0\u05D7\u05D5\u05EA/\u05EA\u05D4\u05DC\u05D9\u05DA \u05DC\u05E9\u05E0\u05D5\u05EA \u05DB\u05D3\u05D9 \u05E9\u05DC\u05D0 \u05D9\u05D7\u05D6\u05D5\u05E8' },
           ],
         },
       },
       {
         key: 'pathologySemantic',
-        label: 'עד כמה הגדרות העבודה, גבולות האחריות בין תפקידים ומושגי יסוד (כמו "פרויקט הושלם") ברורים ומוסכמים באותה צורה על פני כלל המחלקות?',
+        label: '\u05E2\u05D3 \u05DB\u05DE\u05D4 \u05D4\u05D2\u05D3\u05E8\u05D5\u05EA \u05D4\u05E2\u05D1\u05D5\u05D3\u05D4, \u05D2\u05D1\u05D5\u05DC\u05D5\u05EA \u05D4\u05D0\u05D7\u05E8\u05D9\u05D5\u05EA \u05D1\u05D9\u05DF \u05EA\u05E4\u05E7\u05D9\u05D3\u05D9\u05DD \u05D5\u05DE\u05D5\u05E9\u05D2\u05D9 \u05D9\u05E1\u05D5\u05D3 (\u05DB\u05DE\u05D5 "\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8 \u05D4\u05D5\u05E9\u05DC\u05DD") \u05D1\u05E8\u05D5\u05E8\u05D9\u05DD \u05D5\u05DE\u05D5\u05E1\u05DB\u05DE\u05D9\u05DD \u05D1\u05D0\u05D5\u05EA\u05D4 \u05E6\u05D5\u05E8\u05D4 \u05E2\u05DC \u05E4\u05E0\u05D9 \u05DB\u05DC\u05DC \u05D4\u05DE\u05D7\u05DC\u05E7\u05D5\u05EA?',
         type: 'select',
         required: true,
         options: [
-          { value: 'high_drift', label: 'קיימים פערים משמעותיים בהבנה וויכוחים תכופים על תחומי אחריות והגדרות' },
-          { value: 'medium_drift', label: 'ישנה הבנה כללית, אך נוצרים שטחים אפורים ובלבול מפעם לפעם' },
-          { value: 'low_drift', label: 'בהירות גבוהה והסכמה מלאה על מילון המונחים הארגוני ותחומי האחריות' },
+          { value: 'high_drift', label: '\u05E7\u05D9\u05D9\u05DE\u05D9\u05DD \u05E4\u05E2\u05E8\u05D9\u05DD \u05DE\u05E9\u05DE\u05E2\u05D5\u05EA\u05D9\u05D9\u05DD \u05D1\u05D4\u05D1\u05E0\u05D4 \u05D5\u05D5\u05D9\u05DB\u05D5\u05D7\u05D9\u05DD \u05EA\u05DB\u05D5\u05E4\u05D9\u05DD \u05E2\u05DC \u05EA\u05D7\u05D5\u05DE\u05D9 \u05D0\u05D7\u05E8\u05D9\u05D5\u05EA \u05D5\u05D4\u05D2\u05D3\u05E8\u05D5\u05EA' },
+          { value: 'medium_drift', label: '\u05D9\u05E9\u05E0\u05D4 \u05D4\u05D1\u05E0\u05D4 \u05DB\u05DC\u05DC\u05D9\u05EA, \u05D0\u05DA \u05E0\u05D5\u05E6\u05E8\u05D9\u05DD \u05E9\u05D8\u05D7\u05D9\u05DD \u05D0\u05E4\u05D5\u05E8\u05D9\u05DD \u05D5\u05D1\u05DC\u05D1\u05D5\u05DC \u05DE\u05E4\u05E2\u05DD \u05DC\u05E4\u05E2\u05DD' },
+          { value: 'low_drift', label: '\u05D1\u05D4\u05D9\u05E8\u05D5\u05EA \u05D2\u05D1\u05D5\u05D4\u05D4 \u05D5\u05D4\u05E1\u05DB\u05DE\u05D4 \u05DE\u05DC\u05D0\u05D4 \u05E2\u05DC \u05DE\u05D9\u05DC\u05D5\u05DF \u05D4\u05DE\u05D5\u05E0\u05D7\u05D9\u05DD \u05D4\u05D0\u05E8\u05D2\u05D5\u05E0\u05D9 \u05D5\u05EA\u05D7\u05D5\u05DE\u05D9 \u05D4\u05D0\u05D7\u05E8\u05D9\u05D5\u05EA' },
         ],
         oms: {
           label:
-            'עד כמה מוסכם בינך לבין לקוחות, ספקים או שותפים מה נכלל ב"גמור", מה האחריות של מי, ומה מילון המונחים — בלי ויכוחים חוזרים?',
+            '\u05E2\u05D3 \u05DB\u05DE\u05D4 \u05DE\u05D5\u05E1\u05DB\u05DD \u05D1\u05D9\u05E0\u05DA \u05DC\u05D1\u05D9\u05DF \u05DC\u05E7\u05D5\u05D7\u05D5\u05EA, \u05E1\u05E4\u05E7\u05D9\u05DD \u05D0\u05D5 \u05E9\u05D5\u05EA\u05E4\u05D9\u05DD \u05DE\u05D4 \u05E0\u05DB\u05DC\u05DC \u05D1"\u05D2\u05DE\u05D5\u05E8", \u05DE\u05D4 \u05D4\u05D0\u05D7\u05E8\u05D9\u05D5\u05EA \u05E9\u05DC \u05DE\u05D9, \u05D5\u05DE\u05D4 \u05DE\u05D9\u05DC\u05D5\u05DF \u05D4\u05DE\u05D5\u05E0\u05D7\u05D9\u05DD — \u05D1\u05DC\u05D9 \u05D5\u05D9\u05DB\u05D5\u05D7\u05D9\u05DD \u05D7\u05D5\u05D6\u05E8\u05D9\u05DD?',
           options: [
-            { value: 'high_drift', label: 'פערים גדולים — הרבה תרגום וניחושים בין מה שאמרו למה שקורה' },
-            { value: 'medium_drift', label: 'בגדול ברור, אבל יש שטחים אפורים שגורמים לחיכוך' },
-            { value: 'low_drift', label: 'ברור ומוסכם — נדיר שמתווכחים על הגדרות' },
+            { value: 'high_drift', label: '\u05E4\u05E2\u05E8\u05D9\u05DD \u05D2\u05D3\u05D5\u05DC\u05D9\u05DD — \u05D4\u05E8\u05D1\u05D4 \u05EA\u05E8\u05D2\u05D5\u05DD \u05D5\u05E0\u05D9\u05D7\u05D5\u05E9\u05D9\u05DD \u05D1\u05D9\u05DF \u05DE\u05D4 \u05E9\u05D0\u05DE\u05E8\u05D5 \u05DC\u05DE\u05D4 \u05E9\u05E7\u05D5\u05E8\u05D4' },
+            { value: 'medium_drift', label: '\u05D1\u05D2\u05D3\u05D5\u05DC \u05D1\u05E8\u05D5\u05E8, \u05D0\u05D1\u05DC \u05D9\u05E9 \u05E9\u05D8\u05D7\u05D9\u05DD \u05D0\u05E4\u05D5\u05E8\u05D9\u05DD \u05E9\u05D2\u05D5\u05E8\u05DE\u05D9\u05DD \u05DC\u05D7\u05D9\u05DB\u05D5\u05DA' },
+            { value: 'low_drift', label: '\u05D1\u05E8\u05D5\u05E8 \u05D5\u05DE\u05D5\u05E1\u05DB\u05DD — \u05E0\u05D3\u05D9\u05E8 \u05E9\u05DE\u05EA\u05D5\u05D5\u05DB\u05D7\u05D9\u05DD \u05E2\u05DC \u05D4\u05D2\u05D3\u05E8\u05D5\u05EA' },
           ],
         },
       },
       {
         key: 'pathologySc',
-        label: 'עד כמה המבנה הארגוני מוגדר בצורה ברורה — תפקידים, תהליכים, אחריות והיררכיית סמכות?',
+        label: '\u05E2\u05D3 \u05DB\u05DE\u05D4 \u05D4\u05DE\u05D1\u05E0\u05D4 \u05D4\u05D0\u05E8\u05D2\u05D5\u05E0\u05D9 \u05DE\u05D5\u05D2\u05D3\u05E8 \u05D1\u05E6\u05D5\u05E8\u05D4 \u05D1\u05E8\u05D5\u05E8\u05D4 — \u05EA\u05E4\u05E7\u05D9\u05D3\u05D9\u05DD, \u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD, \u05D0\u05D7\u05E8\u05D9\u05D5\u05EA \u05D5\u05D4\u05D9\u05E8\u05E8\u05DB\u05D9\u05D9\u05EA \u05E1\u05DE\u05DB\u05D5\u05EA?',
         type: 'select',
         required: false,
         options: [
-          { value: 'high', label: 'גבוהה — תפקידים לא מוגדרים, תהליכים לא מתועדים, אחריות מטושטשת לעיתים קרובות' },
-          { value: 'medium', label: 'בינונית — קיים מבנה חלקי אך יש אי-בהירויות משמעותיות בשדות אפורים' },
-          { value: 'low', label: 'נמוכה — מבנה ברור, תפקידים מוגדרים ותהליכים מתועדים בצורה שיטתית' },
+          { value: 'high', label: '\u05D2\u05D1\u05D5\u05D4\u05D4 — \u05EA\u05E4\u05E7\u05D9\u05D3\u05D9\u05DD \u05DC\u05D0 \u05DE\u05D5\u05D2\u05D3\u05E8\u05D9\u05DD, \u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD \u05DC\u05D0 \u05DE\u05EA\u05D5\u05E2\u05D3\u05D9\u05DD, \u05D0\u05D7\u05E8\u05D9\u05D5\u05EA \u05DE\u05D8\u05D5\u05E9\u05D8\u05E9\u05EA \u05DC\u05E2\u05D9\u05EA\u05D9\u05DD \u05E7\u05E8\u05D5\u05D1\u05D5\u05EA' },
+          { value: 'medium', label: '\u05D1\u05D9\u05E0\u05D5\u05E0\u05D9\u05EA — \u05E7\u05D9\u05D9\u05DD \u05DE\u05D1\u05E0\u05D4 \u05D7\u05DC\u05E7\u05D9 \u05D0\u05DA \u05D9\u05E9 \u05D0\u05D9-\u05D1\u05D4\u05D9\u05E8\u05D5\u05D9\u05D5\u05EA \u05DE\u05E9\u05DE\u05E2\u05D5\u05EA\u05D9\u05D5\u05EA \u05D1\u05E9\u05D3\u05D5\u05EA \u05D0\u05E4\u05D5\u05E8\u05D9\u05DD' },
+          { value: 'low', label: '\u05E0\u05DE\u05D5\u05DB\u05D4 — \u05DE\u05D1\u05E0\u05D4 \u05D1\u05E8\u05D5\u05E8, \u05EA\u05E4\u05E7\u05D9\u05D3\u05D9\u05DD \u05DE\u05D5\u05D2\u05D3\u05E8\u05D9\u05DD \u05D5\u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD \u05DE\u05EA\u05D5\u05E2\u05D3\u05D9\u05DD \u05D1\u05E6\u05D5\u05E8\u05D4 \u05E9\u05D9\u05D8\u05EA\u05D9\u05EA' },
         ],
         oms: {
-          label: 'עד כמה אצלך ברור איך העסק רץ — תהליכים, צ\'ק-ליסטים, איפה נשמר ידע, ומה את/ה באמת אחראי/ת עליו?',
+          label: '\u05E2\u05D3 \u05DB\u05DE\u05D4 \u05D0\u05E6\u05DC\u05DA \u05D1\u05E8\u05D5\u05E8 \u05D0\u05D9\u05DA \u05D4\u05E2\u05E1\u05E7 \u05E8\u05E5 — \u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD, \u05E6\'\u05E7-\u05DC\u05D9\u05E1\u05D8\u05D9\u05DD, \u05D0\u05D9\u05E4\u05D4 \u05E0\u05E9\u05DE\u05E8 \u05D9\u05D3\u05E2, \u05D5\u05DE\u05D4 \u05D0\u05EA/\u05D4 \u05D1\u05D0\u05DE\u05EA \u05D0\u05D7\u05E8\u05D0\u05D9/\u05EA \u05E2\u05DC\u05D9\u05D5?',
           options: [
-            { value: 'high', label: 'הרבה בראש — חסר תיעוד, תפקידים מטושטשים, קשה להעביר למישהו אחר' },
-            { value: 'medium', label: 'חלק מתועד וחלק חי בעל פה' },
-            { value: 'low', label: 'מסודר — יש תהליכים ותיעוד שאפשר לעקוב אחריהם' },
+            { value: 'high', label: '\u05D4\u05E8\u05D1\u05D4 \u05D1\u05E8\u05D0\u05E9 — \u05D7\u05E1\u05E8 \u05EA\u05D9\u05E2\u05D5\u05D3, \u05EA\u05E4\u05E7\u05D9\u05D3\u05D9\u05DD \u05DE\u05D8\u05D5\u05E9\u05D8\u05E9\u05D9\u05DD, \u05E7\u05E9\u05D4 \u05DC\u05D4\u05E2\u05D1\u05D9\u05E8 \u05DC\u05DE\u05D9\u05E9\u05D4\u05D5 \u05D0\u05D7\u05E8' },
+            { value: 'medium', label: '\u05D7\u05DC\u05E7 \u05DE\u05EA\u05D5\u05E2\u05D3 \u05D5\u05D7\u05DC\u05E7 \u05D7\u05D9 \u05D1\u05E2\u05DC \u05E4\u05D4' },
+            { value: 'low', label: '\u05DE\u05E1\u05D5\u05D3\u05E8 — \u05D9\u05E9 \u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD \u05D5\u05EA\u05D9\u05E2\u05D5\u05D3 \u05E9\u05D0\u05E4\u05E9\u05E8 \u05DC\u05E2\u05E7\u05D5\u05D1 \u05D0\u05D7\u05E8\u05D9\u05D4\u05DD' },
           ],
         },
       },
@@ -330,149 +330,149 @@ const QUESTIONNAIRE_STEPS_RAW: QuestionnaireStepDef[] = [
   },
   {
     id: 'metrics',
-    title: 'מדדי ביצוע והערכת דחיפות',
-    omsTitle: 'מדדי זמן, עומס והערכת דחיפות (עצמאי)',
+    title: '\u05DE\u05D3\u05D3\u05D9 \u05D1\u05D9\u05E6\u05D5\u05E2 \u05D5\u05D4\u05E2\u05E8\u05DB\u05EA \u05D3\u05D7\u05D9\u05E4\u05D5\u05EA',
+    omsTitle: '\u05DE\u05D3\u05D3\u05D9 \u05D6\u05DE\u05DF, \u05E2\u05D5\u05DE\u05E1 \u05D5\u05D4\u05E2\u05E8\u05DB\u05EA \u05D3\u05D7\u05D9\u05E4\u05D5\u05EA (\u05E2\u05E6\u05DE\u05D0\u05D9)',
     fields: [
       {
         key: 'decisionLatency',
-        label: 'כמה שעות בשבוע להערכתך שורף צוות הניהול על פגישות עודפות, כיבוי שריפות והמתנה להחלטות ואישורים (זמן שיכול היה להיות מוקדש לעבודה אסטרטגית)?',
+        label: '\u05DB\u05DE\u05D4 \u05E9\u05E2\u05D5\u05EA \u05D1\u05E9\u05D1\u05D5\u05E2 \u05DC\u05D4\u05E2\u05E8\u05DB\u05EA\u05DA \u05E9\u05D5\u05E8\u05E3 \u05E6\u05D5\u05D5\u05EA \u05D4\u05E0\u05D9\u05D4\u05D5\u05DC \u05E2\u05DC \u05E4\u05D2\u05D9\u05E9\u05D5\u05EA \u05E2\u05D5\u05D3\u05E4\u05D5\u05EA, \u05DB\u05D9\u05D1\u05D5\u05D9 \u05E9\u05E8\u05D9\u05E4\u05D5\u05EA \u05D5\u05D4\u05DE\u05EA\u05E0\u05D4 \u05DC\u05D4\u05D7\u05DC\u05D8\u05D5\u05EA \u05D5\u05D0\u05D9\u05E9\u05D5\u05E8\u05D9\u05DD (\u05D6\u05DE\u05DF \u05E9\u05D9\u05DB\u05D5\u05DC \u05D4\u05D9\u05D4 \u05DC\u05D4\u05D9\u05D5\u05EA \u05DE\u05D5\u05E7\u05D3\u05E9 \u05DC\u05E2\u05D1\u05D5\u05D3\u05D4 \u05D0\u05E1\u05D8\u05E8\u05D8\u05D2\u05D9\u05EA)?',
         type: 'select',
         required: true,
         options: [
-          { value: 'over_15', label: 'למעלה מ-15 שעות בשבוע (פגיעה קשה בניצול המשאבים)' },
-          { value: '5_to_15', label: 'בין 5 ל-15 שעות בשבוע' },
-          { value: 'under_5', label: 'פחות מ-5 שעות בשבוע (קצב החלטות מהיר)' },
+          { value: 'over_15', label: '\u05DC\u05DE\u05E2\u05DC\u05D4 \u05DE-15 \u05E9\u05E2\u05D5\u05EA \u05D1\u05E9\u05D1\u05D5\u05E2 (\u05E4\u05D2\u05D9\u05E2\u05D4 \u05E7\u05E9\u05D4 \u05D1\u05E0\u05D9\u05E6\u05D5\u05DC \u05D4\u05DE\u05E9\u05D0\u05D1\u05D9\u05DD)' },
+          { value: '5_to_15', label: '\u05D1\u05D9\u05DF 5 \u05DC-15 \u05E9\u05E2\u05D5\u05EA \u05D1\u05E9\u05D1\u05D5\u05E2' },
+          { value: 'under_5', label: '\u05E4\u05D7\u05D5\u05EA \u05DE-5 \u05E9\u05E2\u05D5\u05EA \u05D1\u05E9\u05D1\u05D5\u05E2 (\u05E7\u05E6\u05D1 \u05D4\u05D7\u05DC\u05D8\u05D5\u05EA \u05DE\u05D4\u05D9\u05E8)' },
         ],
         oms: {
           label:
-            'כמה שעות בשבוע להערכתך נשרפות על בירוקרטיה, המתנה ללקוחות/ספקים, פגישות מיותרות, הקשרים והחלטות — במקום על עבודה שמייצרת הכנסה או מסירה?',
+            '\u05DB\u05DE\u05D4 \u05E9\u05E2\u05D5\u05EA \u05D1\u05E9\u05D1\u05D5\u05E2 \u05DC\u05D4\u05E2\u05E8\u05DB\u05EA\u05DA \u05E0\u05E9\u05E8\u05E4\u05D5\u05EA \u05E2\u05DC \u05D1\u05D9\u05E8\u05D5\u05E7\u05E8\u05D8\u05D9\u05D4, \u05D4\u05DE\u05EA\u05E0\u05D4 \u05DC\u05DC\u05E7\u05D5\u05D7\u05D5\u05EA/\u05E1\u05E4\u05E7\u05D9\u05DD, \u05E4\u05D2\u05D9\u05E9\u05D5\u05EA \u05DE\u05D9\u05D5\u05EA\u05E8\u05D5\u05EA, \u05D4\u05E7\u05E9\u05E8\u05D9\u05DD \u05D5\u05D4\u05D7\u05DC\u05D8\u05D5\u05EA — \u05D1\u05DE\u05E7\u05D5\u05DD \u05E2\u05DC \u05E2\u05D1\u05D5\u05D3\u05D4 \u05E9\u05DE\u05D9\u05D9\u05E6\u05E8\u05EA \u05D4\u05DB\u05E0\u05E1\u05D4 \u05D0\u05D5 \u05DE\u05E1\u05D9\u05E8\u05D4?',
           options: [
-            { value: 'over_15', label: 'מעל 15 שעות — רוב הזמן "מנהל את העסק" ולא בונה אותו' },
-            { value: '5_to_15', label: 'בין 5 ל-15 שעות' },
-            { value: 'under_5', label: 'פחות מ-5 שעות — זרימה יחסית מהירה' },
+            { value: 'over_15', label: '\u05DE\u05E2\u05DC 15 \u05E9\u05E2\u05D5\u05EA — \u05E8\u05D5\u05D1 \u05D4\u05D6\u05DE\u05DF "\u05DE\u05E0\u05D4\u05DC \u05D0\u05EA \u05D4\u05E2\u05E1\u05E7" \u05D5\u05DC\u05D0 \u05D1\u05D5\u05E0\u05D4 \u05D0\u05D5\u05EA\u05D5' },
+            { value: '5_to_15', label: '\u05D1\u05D9\u05DF 5 \u05DC-15 \u05E9\u05E2\u05D5\u05EA' },
+            { value: 'under_5', label: '\u05E4\u05D7\u05D5\u05EA \u05DE-5 \u05E9\u05E2\u05D5\u05EA — \u05D6\u05E8\u05D9\u05DE\u05D4 \u05D9\u05D7\u05E1\u05D9\u05EA \u05DE\u05D4\u05D9\u05E8\u05D4' },
           ],
         },
       },
       {
         key: 'interventionGoal',
-        label: 'מהו היעד הדחוף ביותר שעמו תרצה שארגונך יתמודד בטווח המיידי?',
+        label: '\u05DE\u05D4\u05D5 \u05D4\u05D9\u05E2\u05D3 \u05D4\u05D3\u05D7\u05D5\u05E3 \u05D1\u05D9\u05D5\u05EA\u05E8 \u05E9\u05E2\u05DE\u05D5 \u05EA\u05E8\u05E6\u05D4 \u05E9\u05D0\u05E8\u05D2\u05D5\u05E0\u05DA \u05D9\u05EA\u05DE\u05D5\u05D3\u05D3 \u05D1\u05D8\u05D5\u05D5\u05D7 \u05D4\u05DE\u05D9\u05D9\u05D3\u05D9?',
         type: 'select',
         required: true,
         options: [
-          { value: 'reduce_latency', label: 'האצת קצב קבלת ההחלטות והסרת צווארי בקבוק' },
-          { value: 'reduce_entropy', label: 'עשיית סדר, יישור תהליכים וצמצום כאוס תפעולי' },
-          { value: 'both', label: 'התמודדות משולבת עם אובדן הזמן והכאוס הארגוני' },
-          { value: 'audit_only', label: 'רק לקבל אבחון מקצועי והערכת מצב אובייקטיבית' },
+          { value: 'reduce_latency', label: '\u05D4\u05D0\u05E6\u05EA \u05E7\u05E6\u05D1 \u05E7\u05D1\u05DC\u05EA \u05D4\u05D4\u05D7\u05DC\u05D8\u05D5\u05EA \u05D5\u05D4\u05E1\u05E8\u05EA \u05E6\u05D5\u05D5\u05D0\u05E8\u05D9 \u05D1\u05E7\u05D1\u05D5\u05E7' },
+          { value: 'reduce_entropy', label: '\u05E2\u05E9\u05D9\u05D9\u05EA \u05E1\u05D3\u05E8, \u05D9\u05D9\u05E9\u05D5\u05E8 \u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD \u05D5\u05E6\u05DE\u05E6\u05D5\u05DD \u05DB\u05D0\u05D5\u05E1 \u05EA\u05E4\u05E2\u05D5\u05DC\u05D9' },
+          { value: 'both', label: '\u05D4\u05EA\u05DE\u05D5\u05D3\u05D3\u05D5\u05EA \u05DE\u05E9\u05D5\u05DC\u05D1\u05EA \u05E2\u05DD \u05D0\u05D5\u05D1\u05D3\u05DF \u05D4\u05D6\u05DE\u05DF \u05D5\u05D4\u05DB\u05D0\u05D5\u05E1 \u05D4\u05D0\u05E8\u05D2\u05D5\u05E0\u05D9' },
+          { value: 'audit_only', label: '\u05E8\u05E7 \u05DC\u05E7\u05D1\u05DC \u05D0\u05D1\u05D7\u05D5\u05DF \u05DE\u05E7\u05E6\u05D5\u05E2\u05D9 \u05D5\u05D4\u05E2\u05E8\u05DB\u05EA \u05DE\u05E6\u05D1 \u05D0\u05D5\u05D1\u05D9\u05D9\u05E7\u05D8\u05D9\u05D1\u05D9\u05EA' },
         ],
         oms: {
-          label: 'מה הדבר הדחוף ביותר שאת/ה רוצה לשפר בעסק בטווח המיידי?',
+          label: '\u05DE\u05D4 \u05D4\u05D3\u05D1\u05E8 \u05D4\u05D3\u05D7\u05D5\u05E3 \u05D1\u05D9\u05D5\u05EA\u05E8 \u05E9\u05D0\u05EA/\u05D4 \u05E8\u05D5\u05E6\u05D4 \u05DC\u05E9\u05E4\u05E8 \u05D1\u05E2\u05E1\u05E7 \u05D1\u05D8\u05D5\u05D5\u05D7 \u05D4\u05DE\u05D9\u05D9\u05D3\u05D9?',
           options: [
-            { value: 'reduce_latency', label: 'להאיץ החלטות ולצמצם המתנות (לקוחות, ספקים, אישורים)' },
-            { value: 'reduce_entropy', label: 'לעשות סדר — תהליכים, תיעוד, פחות כאוס בין כובעים' },
-            { value: 'both', label: 'גם זמן וגם סדר — שניהם חונקים אותי' },
-            { value: 'audit_only', label: 'רק אבחון והבנה אובייקטיבית של המצב' },
+            { value: 'reduce_latency', label: '\u05DC\u05D4\u05D0\u05D9\u05E5 \u05D4\u05D7\u05DC\u05D8\u05D5\u05EA \u05D5\u05DC\u05E6\u05DE\u05E6\u05DD \u05D4\u05DE\u05EA\u05E0\u05D5\u05EA (\u05DC\u05E7\u05D5\u05D7\u05D5\u05EA, \u05E1\u05E4\u05E7\u05D9\u05DD, \u05D0\u05D9\u05E9\u05D5\u05E8\u05D9\u05DD)' },
+            { value: 'reduce_entropy', label: '\u05DC\u05E2\u05E9\u05D5\u05EA \u05E1\u05D3\u05E8 — \u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD, \u05EA\u05D9\u05E2\u05D5\u05D3, \u05E4\u05D7\u05D5\u05EA \u05DB\u05D0\u05D5\u05E1 \u05D1\u05D9\u05DF \u05DB\u05D5\u05D1\u05E2\u05D9\u05DD' },
+            { value: 'both', label: '\u05D2\u05DD \u05D6\u05DE\u05DF \u05D5\u05D2\u05DD \u05E1\u05D3\u05E8 — \u05E9\u05E0\u05D9\u05D4\u05DD \u05D7\u05D5\u05E0\u05E7\u05D9\u05DD \u05D0\u05D5\u05EA\u05D9' },
+            { value: 'audit_only', label: '\u05E8\u05E7 \u05D0\u05D1\u05D7\u05D5\u05DF \u05D5\u05D4\u05D1\u05E0\u05D4 \u05D0\u05D5\u05D1\u05D9\u05D9\u05E7\u05D8\u05D9\u05D1\u05D9\u05EA \u05E9\u05DC \u05D4\u05DE\u05E6\u05D1' },
           ],
         },
       },
       {
         key: 'urgencyLevel',
-        label: 'כיצד היית מגדיר את רמת הדחיפות לפתרון חסמים אלו ביחס ליעדי החברה הנוכחיים?',
+        label: '\u05DB\u05D9\u05E6\u05D3 \u05D4\u05D9\u05D9\u05EA \u05DE\u05D2\u05D3\u05D9\u05E8 \u05D0\u05EA \u05E8\u05DE\u05EA \u05D4\u05D3\u05D7\u05D9\u05E4\u05D5\u05EA \u05DC\u05E4\u05EA\u05E8\u05D5\u05DF \u05D7\u05E1\u05DE\u05D9\u05DD \u05D0\u05DC\u05D5 \u05D1\u05D9\u05D7\u05E1 \u05DC\u05D9\u05E2\u05D3\u05D9 \u05D4\u05D7\u05D1\u05E8\u05D4 \u05D4\u05E0\u05D5\u05DB\u05D7\u05D9\u05D9\u05DD?',
         type: 'select',
         required: false,
         options: [
-          { value: 'high', label: 'קריטי ומיידי (החסמים פוגעים בצמיחה או ברווחיות כעת)' },
-          { value: 'medium', label: 'חשוב מאוד לביצוע ברבעונים הקרובים' },
-          { value: 'low', label: 'משימה אסטרטגית עתידית, ללא דחיפות מיידית' },
+          { value: 'high', label: '\u05E7\u05E8\u05D9\u05D8\u05D9 \u05D5\u05DE\u05D9\u05D9\u05D3\u05D9 (\u05D4\u05D7\u05E1\u05DE\u05D9\u05DD \u05E4\u05D5\u05D2\u05E2\u05D9\u05DD \u05D1\u05E6\u05DE\u05D9\u05D7\u05D4 \u05D0\u05D5 \u05D1\u05E8\u05D5\u05D5\u05D7\u05D9\u05D5\u05EA \u05DB\u05E2\u05EA)' },
+          { value: 'medium', label: '\u05D7\u05E9\u05D5\u05D1 \u05DE\u05D0\u05D5\u05D3 \u05DC\u05D1\u05D9\u05E6\u05D5\u05E2 \u05D1\u05E8\u05D1\u05E2\u05D5\u05E0\u05D9\u05DD \u05D4\u05E7\u05E8\u05D5\u05D1\u05D9\u05DD' },
+          { value: 'low', label: '\u05DE\u05E9\u05D9\u05DE\u05D4 \u05D0\u05E1\u05D8\u05E8\u05D8\u05D2\u05D9\u05EA \u05E2\u05EA\u05D9\u05D3\u05D9\u05EA, \u05DC\u05DC\u05D0 \u05D3\u05D7\u05D9\u05E4\u05D5\u05EA \u05DE\u05D9\u05D9\u05D3\u05D9\u05EA' },
         ],
         oms: {
-          label: 'כמה דחוף לטפל בחסמים האלה ביחס ליעדים שלך לרווח ולצמיחה?',
+          label: '\u05DB\u05DE\u05D4 \u05D3\u05D7\u05D5\u05E3 \u05DC\u05D8\u05E4\u05DC \u05D1\u05D7\u05E1\u05DE\u05D9\u05DD \u05D4\u05D0\u05DC\u05D4 \u05D1\u05D9\u05D7\u05E1 \u05DC\u05D9\u05E2\u05D3\u05D9\u05DD \u05E9\u05DC\u05DA \u05DC\u05E8\u05D5\u05D5\u05D7 \u05D5\u05DC\u05E6\u05DE\u05D9\u05D7\u05D4?',
         },
       },
     ],
   },
   {
     id: 'ignition',
-    title: 'התנעה עסקית',
-    omsTitle: 'התנעה עסקית — מ"תנועה" ל"פעולה"',
+    title: '\u05D4\u05EA\u05E0\u05E2\u05D4 \u05E2\u05E1\u05E7\u05D9\u05EA',
+    omsTitle: '\u05D4\u05EA\u05E0\u05E2\u05D4 \u05E2\u05E1\u05E7\u05D9\u05EA — \u05DE"\u05EA\u05E0\u05D5\u05E2\u05D4" \u05DC"\u05E4\u05E2\u05D5\u05DC\u05D4"',
     omsOnly: true,
     fields: [
       {
         key: 'ignitionLifecycleStage',
-        label: 'איפה העסק בזמן? (אופציונלי — בלי גיל)',
+        label: '\u05D0\u05D9\u05E4\u05D4 \u05D4\u05E2\u05E1\u05E7 \u05D1\u05D6\u05DE\u05DF? (\u05D0\u05D5\u05E4\u05E6\u05D9\u05D5\u05E0\u05DC\u05D9 — \u05D1\u05DC\u05D9 \u05D2\u05D9\u05DC)',
         type: 'select',
         required: false,
         options: [
-          { value: 'early_under_1y', label: 'פחות משנה בתפעול עצמאי מלא' },
-          { value: 'one_to_three', label: 'בין שנה לשלוש' },
-          { value: 'three_plus', label: 'מעל שלוש שנים' },
-          { value: 'prefer_not', label: 'מעדיף/ה לא לציין' },
+          { value: 'early_under_1y', label: '\u05E4\u05D7\u05D5\u05EA \u05DE\u05E9\u05E0\u05D4 \u05D1\u05EA\u05E4\u05E2\u05D5\u05DC \u05E2\u05E6\u05DE\u05D0\u05D9 \u05DE\u05DC\u05D0' },
+          { value: 'one_to_three', label: '\u05D1\u05D9\u05DF \u05E9\u05E0\u05D4 \u05DC\u05E9\u05DC\u05D5\u05E9' },
+          { value: 'three_plus', label: '\u05DE\u05E2\u05DC \u05E9\u05DC\u05D5\u05E9 \u05E9\u05E0\u05D9\u05DD' },
+          { value: 'prefer_not', label: '\u05DE\u05E2\u05D3\u05D9\u05E3/\u05D4 \u05DC\u05D0 \u05DC\u05E6\u05D9\u05D9\u05DF' },
         ],
       },
       {
         key: 'ignitionPrimaryVector',
-        label: 'איזה וקטור התנעה הכי מתאר אותך עכשיו?',
+        label: '\u05D0\u05D9\u05D6\u05D4 \u05D5\u05E7\u05D8\u05D5\u05E8 \u05D4\u05EA\u05E0\u05E2\u05D4 \u05D4\u05DB\u05D9 \u05DE\u05EA\u05D0\u05E8 \u05D0\u05D5\u05EA\u05DA \u05E2\u05DB\u05E9\u05D9\u05D5?',
         type: 'select',
         required: true,
         options: [
           {
             value: 'internal_push',
-            label: 'מה שיש לי עכשיו — קשרים, מיומנות, לקוח 0 (Effectuation / בריקולאז׳)',
+            label: '\u05DE\u05D4 \u05E9\u05D9\u05E9 \u05DC\u05D9 \u05E2\u05DB\u05E9\u05D9\u05D5 — \u05E7\u05E9\u05E8\u05D9\u05DD, \u05DE\u05D9\u05D5\u05DE\u05E0\u05D5\u05EA, \u05DC\u05E7\u05D5\u05D7 0 (Effectuation / \u05D1\u05E8\u05D9\u05E7\u05D5\u05DC\u05D0\u05D6\u05F3)',
           },
           {
             value: 'market_pull',
-            label: 'כאב שוק חד — אימות ביקוש לפני בנייה כבדה (Lean / JTBD)',
+            label: '\u05DB\u05D0\u05D1 \u05E9\u05D5\u05E7 \u05D7\u05D3 — \u05D0\u05D9\u05DE\u05D5\u05EA \u05D1\u05D9\u05E7\u05D5\u05E9 \u05DC\u05E4\u05E0\u05D9 \u05D1\u05E0\u05D9\u05D9\u05D4 \u05DB\u05D1\u05D3\u05D4 (Lean / JTBD)',
           },
           {
             value: 'capital_blitz',
-            label: 'הון או מסה — פריצה מהירה עם משאבים גדולים',
+            label: '\u05D4\u05D5\u05DF \u05D0\u05D5 \u05DE\u05E1\u05D4 — \u05E4\u05E8\u05D9\u05E6\u05D4 \u05DE\u05D4\u05D9\u05E8\u05D4 \u05E2\u05DD \u05DE\u05E9\u05D0\u05D1\u05D9\u05DD \u05D2\u05D3\u05D5\u05DC\u05D9\u05DD',
           },
           {
             value: 'momentum_transfer',
-            label: 'תנע מועבר — זיכיון, רכישה, או רכיבה על גל חיצוני',
+            label: '\u05EA\u05E0\u05E2 \u05DE\u05D5\u05E2\u05D1\u05E8 — \u05D6\u05D9\u05DB\u05D9\u05D5\u05DF, \u05E8\u05DB\u05D9\u05E9\u05D4, \u05D0\u05D5 \u05E8\u05DB\u05D9\u05D1\u05D4 \u05E2\u05DC \u05D2\u05DC \u05D7\u05D9\u05E6\u05D5\u05E0\u05D9',
           },
         ],
       },
       {
         key: 'ignitionDominantTrap',
-        label: 'איזה דפוס הכי בולט אצלך היום?',
+        label: '\u05D0\u05D9\u05D6\u05D4 \u05D3\u05E4\u05D5\u05E1 \u05D4\u05DB\u05D9 \u05D1\u05D5\u05DC\u05D8 \u05D0\u05E6\u05DC\u05DA \u05D4\u05D9\u05D5\u05DD?',
         type: 'select',
         required: true,
         options: [
-          { value: 'prep_trap', label: 'מלכודת הכנה — ליטוש חומרים בלי הצעה מסחרית חוזרת' },
-          { value: 'over_learn', label: 'אגירת לימוד — קורסים ותוכן בלי סגירה' },
-          { value: 'free_value', label: 'ערך בחינם — קהילות ותשובות בלי מסלול לתשלום' },
-          { value: 'busy_motion', label: 'תנועה חברתית — פגישות ותוכן בלי בקשה מסחרית חדה' },
-          { value: 'none_clear', label: 'לא בטוח/ה — רוצה מיקוד' },
+          { value: 'prep_trap', label: '\u05DE\u05DC\u05DB\u05D5\u05D3\u05EA \u05D4\u05DB\u05E0\u05D4 — \u05DC\u05D9\u05D8\u05D5\u05E9 \u05D7\u05D5\u05DE\u05E8\u05D9\u05DD \u05D1\u05DC\u05D9 \u05D4\u05E6\u05E2\u05D4 \u05DE\u05E1\u05D7\u05E8\u05D9\u05EA \u05D7\u05D5\u05D6\u05E8\u05EA' },
+          { value: 'over_learn', label: '\u05D0\u05D2\u05D9\u05E8\u05EA \u05DC\u05D9\u05DE\u05D5\u05D3 — \u05E7\u05D5\u05E8\u05E1\u05D9\u05DD \u05D5\u05EA\u05D5\u05DB\u05DF \u05D1\u05DC\u05D9 \u05E1\u05D2\u05D9\u05E8\u05D4' },
+          { value: 'free_value', label: '\u05E2\u05E8\u05DA \u05D1\u05D7\u05D9\u05E0\u05DD — \u05E7\u05D4\u05D9\u05DC\u05D5\u05EA \u05D5\u05EA\u05E9\u05D5\u05D1\u05D5\u05EA \u05D1\u05DC\u05D9 \u05DE\u05E1\u05DC\u05D5\u05DC \u05DC\u05EA\u05E9\u05DC\u05D5\u05DD' },
+          { value: 'busy_motion', label: '\u05EA\u05E0\u05D5\u05E2\u05D4 \u05D7\u05D1\u05E8\u05EA\u05D9\u05EA — \u05E4\u05D2\u05D9\u05E9\u05D5\u05EA \u05D5\u05EA\u05D5\u05DB\u05DF \u05D1\u05DC\u05D9 \u05D1\u05E7\u05E9\u05D4 \u05DE\u05E1\u05D7\u05E8\u05D9\u05EA \u05D7\u05D3\u05D4' },
+          { value: 'none_clear', label: '\u05DC\u05D0 \u05D1\u05D8\u05D5\u05D7/\u05D4 — \u05E8\u05D5\u05E6\u05D4 \u05DE\u05D9\u05E7\u05D5\u05D3' },
         ],
       },
       {
         key: 'ignitionLastCommercialAsk',
-        label: 'מתי בפעם האחרונה ביצעת פעולה מסחרית מול לקוח (הצעת מחיר, בקשת תשלום, הצעת שירות ממוקדת)?',
+        label: '\u05DE\u05EA\u05D9 \u05D1\u05E4\u05E2\u05DD \u05D4\u05D0\u05D7\u05E8\u05D5\u05E0\u05D4 \u05D1\u05D9\u05E6\u05E2\u05EA \u05E4\u05E2\u05D5\u05DC\u05D4 \u05DE\u05E1\u05D7\u05E8\u05D9\u05EA \u05DE\u05D5\u05DC \u05DC\u05E7\u05D5\u05D7 (\u05D4\u05E6\u05E2\u05EA \u05DE\u05D7\u05D9\u05E8, \u05D1\u05E7\u05E9\u05EA \u05EA\u05E9\u05DC\u05D5\u05DD, \u05D4\u05E6\u05E2\u05EA \u05E9\u05D9\u05E8\u05D5\u05EA \u05DE\u05DE\u05D5\u05E7\u05D3\u05EA)?',
         type: 'select',
         required: true,
         options: [
-          { value: 'within_7d', label: 'בשבוע האחרון' },
-          { value: 'within_30d', label: 'בחודש האחרון' },
-          { value: 'within_90d', label: 'בשלושת החודשים האחרונים' },
-          { value: 'over_90d', label: 'לפני יותר מ־90 יום' },
-          { value: 'never_recent', label: 'לא בזמן האחרון / כמעט לא' },
+          { value: 'within_7d', label: '\u05D1\u05E9\u05D1\u05D5\u05E2 \u05D4\u05D0\u05D7\u05E8\u05D5\u05DF' },
+          { value: 'within_30d', label: '\u05D1\u05D7\u05D5\u05D3\u05E9 \u05D4\u05D0\u05D7\u05E8\u05D5\u05DF' },
+          { value: 'within_90d', label: '\u05D1\u05E9\u05DC\u05D5\u05E9\u05EA \u05D4\u05D7\u05D5\u05D3\u05E9\u05D9\u05DD \u05D4\u05D0\u05D7\u05E8\u05D5\u05E0\u05D9\u05DD' },
+          { value: 'over_90d', label: '\u05DC\u05E4\u05E0\u05D9 \u05D9\u05D5\u05EA\u05E8 \u05DE\u05BE90 \u05D9\u05D5\u05DD' },
+          { value: 'never_recent', label: '\u05DC\u05D0 \u05D1\u05D6\u05DE\u05DF \u05D4\u05D0\u05D7\u05E8\u05D5\u05DF / \u05DB\u05DE\u05E2\u05D8 \u05DC\u05D0' },
         ],
       },
     ],
   },
   {
     id: 'psi',
-    title: 'בטיחות פסיכולוגית בצוות (Edmondson PSI)',
-    omsTitle: 'בטיחות פסיכולוגית מול המעגל המקצועי (PSI מותאם לעצמאי)',
+    title: '\u05D1\u05D8\u05D9\u05D7\u05D5\u05EA \u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9\u05EA \u05D1\u05E6\u05D5\u05D5\u05EA (Edmondson PSI)',
+    omsTitle: '\u05D1\u05D8\u05D9\u05D7\u05D5\u05EA \u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9\u05EA \u05DE\u05D5\u05DC \u05D4\u05DE\u05E2\u05D2\u05DC \u05D4\u05DE\u05E7\u05E6\u05D5\u05E2\u05D9 (PSI \u05DE\u05D5\u05EA\u05D0\u05DD \u05DC\u05E2\u05E6\u05DE\u05D0\u05D9)',
     fields: [
       {
         key: 'psi1',
-        label: '⚠️ [1] בצוות שלנו, אם עושים טעות — זה מוחזק כנגדך',
+        label: '⚠️ [1] \u05D1\u05E6\u05D5\u05D5\u05EA \u05E9\u05DC\u05E0\u05D5, \u05D0\u05DD \u05E2\u05D5\u05E9\u05D9\u05DD \u05D8\u05E2\u05D5\u05EA — \u05D6\u05D4 \u05DE\u05D5\u05D7\u05D6\u05E7 \u05DB\u05E0\u05D2\u05D3\u05DA',
         type: 'scale',
         required: true,
         scaleMin: 1,
         scaleMax: 7,
-        scaleLabels: { min: 'לא מסכים כלל (1)', max: 'מסכים מאוד (7)' },
+        scaleLabels: { min: '\u05DC\u05D0 \u05DE\u05E1\u05DB\u05D9\u05DD \u05DB\u05DC\u05DC (1)', max: '\u05DE\u05E1\u05DB\u05D9\u05DD \u05DE\u05D0\u05D5\u05D3 (7)' },
         reversed: true,
         options: [
           { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' },
@@ -481,18 +481,18 @@ const QUESTIONNAIRE_STEPS_RAW: QuestionnaireStepDef[] = [
         ],
         oms: {
           label:
-            '⚠️ [1] במעגל המקצועי הקרוב (לקוחות / שותפים / ספקים), כשטועים — זה "נזכר" נגדי או יוצר עימות',
-          scaleLabels: { min: 'לא מסכים (1)', max: 'מסכים מאוד (7)' },
+            '⚠️ [1] \u05D1\u05DE\u05E2\u05D2\u05DC \u05D4\u05DE\u05E7\u05E6\u05D5\u05E2\u05D9 \u05D4\u05E7\u05E8\u05D5\u05D1 (\u05DC\u05E7\u05D5\u05D7\u05D5\u05EA / \u05E9\u05D5\u05EA\u05E4\u05D9\u05DD / \u05E1\u05E4\u05E7\u05D9\u05DD), \u05DB\u05E9\u05D8\u05D5\u05E2\u05D9\u05DD — \u05D6\u05D4 "\u05E0\u05D6\u05DB\u05E8" \u05E0\u05D2\u05D3\u05D9 \u05D0\u05D5 \u05D9\u05D5\u05E6\u05E8 \u05E2\u05D9\u05DE\u05D5\u05EA',
+          scaleLabels: { min: '\u05DC\u05D0 \u05DE\u05E1\u05DB\u05D9\u05DD (1)', max: '\u05DE\u05E1\u05DB\u05D9\u05DD \u05DE\u05D0\u05D5\u05D3 (7)' },
         },
       },
       {
         key: 'psi2',
-        label: '[2] חברי הצוות יכולים להעלות בעיות ונושאים קשים',
+        label: '[2] \u05D7\u05D1\u05E8\u05D9 \u05D4\u05E6\u05D5\u05D5\u05EA \u05D9\u05DB\u05D5\u05DC\u05D9\u05DD \u05DC\u05D4\u05E2\u05DC\u05D5\u05EA \u05D1\u05E2\u05D9\u05D5\u05EA \u05D5\u05E0\u05D5\u05E9\u05D0\u05D9\u05DD \u05E7\u05E9\u05D9\u05DD',
         type: 'scale',
         required: true,
         scaleMin: 1,
         scaleMax: 7,
-        scaleLabels: { min: 'לא מסכים כלל (1)', max: 'מסכים מאוד (7)' },
+        scaleLabels: { min: '\u05DC\u05D0 \u05DE\u05E1\u05DB\u05D9\u05DD \u05DB\u05DC\u05DC (1)', max: '\u05DE\u05E1\u05DB\u05D9\u05DD \u05DE\u05D0\u05D5\u05D3 (7)' },
         reversed: false,
         options: [
           { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' },
@@ -500,17 +500,17 @@ const QUESTIONNAIRE_STEPS_RAW: QuestionnaireStepDef[] = [
           { value: '7', label: '7' },
         ],
         oms: {
-          label: '[2] אפשר להעלות נושאים קשים (מחיר, גבולות, איכות) מול מי שאני עובד איתו בלי לפחד מנקמה',
+          label: '[2] \u05D0\u05E4\u05E9\u05E8 \u05DC\u05D4\u05E2\u05DC\u05D5\u05EA \u05E0\u05D5\u05E9\u05D0\u05D9\u05DD \u05E7\u05E9\u05D9\u05DD (\u05DE\u05D7\u05D9\u05E8, \u05D2\u05D1\u05D5\u05DC\u05D5\u05EA, \u05D0\u05D9\u05DB\u05D5\u05EA) \u05DE\u05D5\u05DC \u05DE\u05D9 \u05E9\u05D0\u05E0\u05D9 \u05E2\u05D5\u05D1\u05D3 \u05D0\u05D9\u05EA\u05D5 \u05D1\u05DC\u05D9 \u05DC\u05E4\u05D7\u05D3 \u05DE\u05E0\u05E7\u05DE\u05D4',
         },
       },
       {
         key: 'psi3',
-        label: '⚠️ [3] אנשים בצוות לפעמים דוחים אחרים בגלל שהם שונים',
+        label: '⚠️ [3] \u05D0\u05E0\u05E9\u05D9\u05DD \u05D1\u05E6\u05D5\u05D5\u05EA \u05DC\u05E4\u05E2\u05DE\u05D9\u05DD \u05D3\u05D5\u05D7\u05D9\u05DD \u05D0\u05D7\u05E8\u05D9\u05DD \u05D1\u05D2\u05DC\u05DC \u05E9\u05D4\u05DD \u05E9\u05D5\u05E0\u05D9\u05DD',
         type: 'scale',
         required: true,
         scaleMin: 1,
         scaleMax: 7,
-        scaleLabels: { min: 'לא מסכים כלל (1)', max: 'מסכים מאוד (7)' },
+        scaleLabels: { min: '\u05DC\u05D0 \u05DE\u05E1\u05DB\u05D9\u05DD \u05DB\u05DC\u05DC (1)', max: '\u05DE\u05E1\u05DB\u05D9\u05DD \u05DE\u05D0\u05D5\u05D3 (7)' },
         reversed: true,
         options: [
           { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' },
@@ -518,17 +518,17 @@ const QUESTIONNAIRE_STEPS_RAW: QuestionnaireStepDef[] = [
           { value: '7', label: '7' },
         ],
         oms: {
-          label: '⚠️ [3] במעגל הזה יש דחייה או ביקורת על אנשים כי הם "לא כמו כולם" או שונים בסגנון',
+          label: '⚠️ [3] \u05D1\u05DE\u05E2\u05D2\u05DC \u05D4\u05D6\u05D4 \u05D9\u05E9 \u05D3\u05D7\u05D9\u05D9\u05D4 \u05D0\u05D5 \u05D1\u05D9\u05E7\u05D5\u05E8\u05EA \u05E2\u05DC \u05D0\u05E0\u05E9\u05D9\u05DD \u05DB\u05D9 \u05D4\u05DD "\u05DC\u05D0 \u05DB\u05DE\u05D5 \u05DB\u05D5\u05DC\u05DD" \u05D0\u05D5 \u05E9\u05D5\u05E0\u05D9\u05DD \u05D1\u05E1\u05D2\u05E0\u05D5\u05DF',
         },
       },
       {
         key: 'psi4',
-        label: '[4] זה בטוח לקחת סיכונים בצוות הזה',
+        label: '[4] \u05D6\u05D4 \u05D1\u05D8\u05D5\u05D7 \u05DC\u05E7\u05D7\u05EA \u05E1\u05D9\u05DB\u05D5\u05E0\u05D9\u05DD \u05D1\u05E6\u05D5\u05D5\u05EA \u05D4\u05D6\u05D4',
         type: 'scale',
         required: true,
         scaleMin: 1,
         scaleMax: 7,
-        scaleLabels: { min: 'לא מסכים כלל (1)', max: 'מסכים מאוד (7)' },
+        scaleLabels: { min: '\u05DC\u05D0 \u05DE\u05E1\u05DB\u05D9\u05DD \u05DB\u05DC\u05DC (1)', max: '\u05DE\u05E1\u05DB\u05D9\u05DD \u05DE\u05D0\u05D5\u05D3 (7)' },
         reversed: false,
         options: [
           { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' },
@@ -536,17 +536,17 @@ const QUESTIONNAIRE_STEPS_RAW: QuestionnaireStepDef[] = [
           { value: '7', label: '7' },
         ],
         oms: {
-          label: '[4] בטוח לי לנסות גישה חדשה או לקחת סיכון מקצועי (הצעה, ניסוי, גבול) בלי שזה יהפוך ל"אסון"',
+          label: '[4] \u05D1\u05D8\u05D5\u05D7 \u05DC\u05D9 \u05DC\u05E0\u05E1\u05D5\u05EA \u05D2\u05D9\u05E9\u05D4 \u05D7\u05D3\u05E9\u05D4 \u05D0\u05D5 \u05DC\u05E7\u05D7\u05EA \u05E1\u05D9\u05DB\u05D5\u05DF \u05DE\u05E7\u05E6\u05D5\u05E2\u05D9 (\u05D4\u05E6\u05E2\u05D4, \u05E0\u05D9\u05E1\u05D5\u05D9, \u05D2\u05D1\u05D5\u05DC) \u05D1\u05DC\u05D9 \u05E9\u05D6\u05D4 \u05D9\u05D4\u05E4\u05D5\u05DA \u05DC"\u05D0\u05E1\u05D5\u05DF"',
         },
       },
       {
         key: 'psi5',
-        label: '⚠️ [5] קשה לבקש עזרה מחברי צוות אחרים',
+        label: '⚠️ [5] \u05E7\u05E9\u05D4 \u05DC\u05D1\u05E7\u05E9 \u05E2\u05D6\u05E8\u05D4 \u05DE\u05D7\u05D1\u05E8\u05D9 \u05E6\u05D5\u05D5\u05EA \u05D0\u05D7\u05E8\u05D9\u05DD',
         type: 'scale',
         required: true,
         scaleMin: 1,
         scaleMax: 7,
-        scaleLabels: { min: 'לא מסכים כלל (1)', max: 'מסכים מאוד (7)' },
+        scaleLabels: { min: '\u05DC\u05D0 \u05DE\u05E1\u05DB\u05D9\u05DD \u05DB\u05DC\u05DC (1)', max: '\u05DE\u05E1\u05DB\u05D9\u05DD \u05DE\u05D0\u05D5\u05D3 (7)' },
         reversed: true,
         options: [
           { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' },
@@ -554,17 +554,17 @@ const QUESTIONNAIRE_STEPS_RAW: QuestionnaireStepDef[] = [
           { value: '7', label: '7' },
         ],
         oms: {
-          label: '⚠️ [5] קשה לבקש עזרה מספק, שותף או לקוח כשאני תקוע/ה — אני מעדיף/ה לסחוט לבד',
+          label: '⚠️ [5] \u05E7\u05E9\u05D4 \u05DC\u05D1\u05E7\u05E9 \u05E2\u05D6\u05E8\u05D4 \u05DE\u05E1\u05E4\u05E7, \u05E9\u05D5\u05EA\u05E3 \u05D0\u05D5 \u05DC\u05E7\u05D5\u05D7 \u05DB\u05E9\u05D0\u05E0\u05D9 \u05EA\u05E7\u05D5\u05E2/\u05D4 — \u05D0\u05E0\u05D9 \u05DE\u05E2\u05D3\u05D9\u05E3/\u05D4 \u05DC\u05E1\u05D7\u05D5\u05D8 \u05DC\u05D1\u05D3',
         },
       },
       {
         key: 'psi6',
-        label: '[6] אף אחד בצוות לא יפעל בכוונה בדרך שפוגעת במאמצים שלי',
+        label: '[6] \u05D0\u05E3 \u05D0\u05D7\u05D3 \u05D1\u05E6\u05D5\u05D5\u05EA \u05DC\u05D0 \u05D9\u05E4\u05E2\u05DC \u05D1\u05DB\u05D5\u05D5\u05E0\u05D4 \u05D1\u05D3\u05E8\u05DA \u05E9\u05E4\u05D5\u05D2\u05E2\u05EA \u05D1\u05DE\u05D0\u05DE\u05E6\u05D9\u05DD \u05E9\u05DC\u05D9',
         type: 'scale',
         required: true,
         scaleMin: 1,
         scaleMax: 7,
-        scaleLabels: { min: 'לא מסכים כלל (1)', max: 'מסכים מאוד (7)' },
+        scaleLabels: { min: '\u05DC\u05D0 \u05DE\u05E1\u05DB\u05D9\u05DD \u05DB\u05DC\u05DC (1)', max: '\u05DE\u05E1\u05DB\u05D9\u05DD \u05DE\u05D0\u05D5\u05D3 (7)' },
         reversed: false,
         options: [
           { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' },
@@ -572,17 +572,17 @@ const QUESTIONNAIRE_STEPS_RAW: QuestionnaireStepDef[] = [
           { value: '7', label: '7' },
         ],
         oms: {
-          label: '[6] במעגל המקצועי הקרוב, אף אחד לא יפגע במכוון במאמצים שלי או ינסה לסבך לי בכוונה',
+          label: '[6] \u05D1\u05DE\u05E2\u05D2\u05DC \u05D4\u05DE\u05E7\u05E6\u05D5\u05E2\u05D9 \u05D4\u05E7\u05E8\u05D5\u05D1, \u05D0\u05E3 \u05D0\u05D7\u05D3 \u05DC\u05D0 \u05D9\u05E4\u05D2\u05E2 \u05D1\u05DE\u05DB\u05D5\u05D5\u05DF \u05D1\u05DE\u05D0\u05DE\u05E6\u05D9\u05DD \u05E9\u05DC\u05D9 \u05D0\u05D5 \u05D9\u05E0\u05E1\u05D4 \u05DC\u05E1\u05D1\u05DA \u05DC\u05D9 \u05D1\u05DB\u05D5\u05D5\u05E0\u05D4',
         },
       },
       {
         key: 'psi7',
-        label: '[7] הכישורים והיכולות הייחודיים שלי מוערכים ומנוצלים בעבודה',
+        label: '[7] \u05D4\u05DB\u05D9\u05E9\u05D5\u05E8\u05D9\u05DD \u05D5\u05D4\u05D9\u05DB\u05D5\u05DC\u05D5\u05EA \u05D4\u05D9\u05D9\u05D7\u05D5\u05D3\u05D9\u05D9\u05DD \u05E9\u05DC\u05D9 \u05DE\u05D5\u05E2\u05E8\u05DB\u05D9\u05DD \u05D5\u05DE\u05E0\u05D5\u05E6\u05DC\u05D9\u05DD \u05D1\u05E2\u05D1\u05D5\u05D3\u05D4',
         type: 'scale',
         required: true,
         scaleMin: 1,
         scaleMax: 7,
-        scaleLabels: { min: 'לא מסכים כלל (1)', max: 'מסכים מאוד (7)' },
+        scaleLabels: { min: '\u05DC\u05D0 \u05DE\u05E1\u05DB\u05D9\u05DD \u05DB\u05DC\u05DC (1)', max: '\u05DE\u05E1\u05DB\u05D9\u05DD \u05DE\u05D0\u05D5\u05D3 (7)' },
         reversed: false,
         options: [
           { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' },
@@ -590,120 +590,120 @@ const QUESTIONNAIRE_STEPS_RAW: QuestionnaireStepDef[] = [
           { value: '7', label: '7' },
         ],
         oms: {
-          label: '[7] הכישורים שלי מוערכים ומנוצלים היטב ביחסים המקצועיים שיש לי (לקוחות / שותפים)',
+          label: '[7] \u05D4\u05DB\u05D9\u05E9\u05D5\u05E8\u05D9\u05DD \u05E9\u05DC\u05D9 \u05DE\u05D5\u05E2\u05E8\u05DB\u05D9\u05DD \u05D5\u05DE\u05E0\u05D5\u05E6\u05DC\u05D9\u05DD \u05D4\u05D9\u05D8\u05D1 \u05D1\u05D9\u05D7\u05E1\u05D9\u05DD \u05D4\u05DE\u05E7\u05E6\u05D5\u05E2\u05D9\u05D9\u05DD \u05E9\u05D9\u05E9 \u05DC\u05D9 (\u05DC\u05E7\u05D5\u05D7\u05D5\u05EA / \u05E9\u05D5\u05EA\u05E4\u05D9\u05DD)',
         },
       },
     ],
   },
   {
     id: 'moderators',
-    title: 'Moderators והערכת הסתגלות',
-    omsTitle: 'הסתגלות, סמכות וביצוע (מותאם לעצמאי)',
+    title: 'Moderators \u05D5\u05D4\u05E2\u05E8\u05DB\u05EA \u05D4\u05E1\u05EA\u05D2\u05DC\u05D5\u05EA',
+    omsTitle: '\u05D4\u05E1\u05EA\u05D2\u05DC\u05D5\u05EA, \u05E1\u05DE\u05DB\u05D5\u05EA \u05D5\u05D1\u05D9\u05E6\u05D5\u05E2 (\u05DE\u05D5\u05EA\u05D0\u05DD \u05DC\u05E2\u05E6\u05DE\u05D0\u05D9)',
     fields: [
       {
         key: 'greinerStage',
-        label: 'מהו אתגר הצמיחה הניהולי הדומיננטי כרגע בארגון?',
+        label: '\u05DE\u05D4\u05D5 \u05D0\u05EA\u05D2\u05E8 \u05D4\u05E6\u05DE\u05D9\u05D7\u05D4 \u05D4\u05E0\u05D9\u05D4\u05D5\u05DC\u05D9 \u05D4\u05D3\u05D5\u05DE\u05D9\u05E0\u05E0\u05D8\u05D9 \u05DB\u05E8\u05D2\u05E2 \u05D1\u05D0\u05E8\u05D2\u05D5\u05DF?',
         type: 'select',
         required: false,
         options: [
-          { value: 'phase_1_2', label: 'מייסדים עדיין מנהלים ישירות — חסר delegation מבני (Greiner 1-2)' },
-          { value: 'phase_3', label: 'חוסר שליטה בין יחידות — כל מחלקה מושכת לכיוון אחר (Greiner 3)' },
-          { value: 'phase_4', label: 'עודף ביורוקרטיה — שינוי דורש יותר מדי אישורים (Greiner 4)' },
-          { value: 'phase_5', label: 'הצמיחה נבלמת — נדרשת הסתגלות וחדשנות ארגונית (Greiner 5)' },
+          { value: 'phase_1_2', label: '\u05DE\u05D9\u05D9\u05E1\u05D3\u05D9\u05DD \u05E2\u05D3\u05D9\u05D9\u05DF \u05DE\u05E0\u05D4\u05DC\u05D9\u05DD \u05D9\u05E9\u05D9\u05E8\u05D5\u05EA — \u05D7\u05E1\u05E8 delegation \u05DE\u05D1\u05E0\u05D9 (Greiner 1-2)' },
+          { value: 'phase_3', label: '\u05D7\u05D5\u05E1\u05E8 \u05E9\u05DC\u05D9\u05D8\u05D4 \u05D1\u05D9\u05DF \u05D9\u05D7\u05D9\u05D3\u05D5\u05EA — \u05DB\u05DC \u05DE\u05D7\u05DC\u05E7\u05D4 \u05DE\u05D5\u05E9\u05DB\u05EA \u05DC\u05DB\u05D9\u05D5\u05D5\u05DF \u05D0\u05D7\u05E8 (Greiner 3)' },
+          { value: 'phase_4', label: '\u05E2\u05D5\u05D3\u05E3 \u05D1\u05D9\u05D5\u05E8\u05D5\u05E7\u05E8\u05D8\u05D9\u05D4 — \u05E9\u05D9\u05E0\u05D5\u05D9 \u05D3\u05D5\u05E8\u05E9 \u05D9\u05D5\u05EA\u05E8 \u05DE\u05D3\u05D9 \u05D0\u05D9\u05E9\u05D5\u05E8\u05D9\u05DD (Greiner 4)' },
+          { value: 'phase_5', label: '\u05D4\u05E6\u05DE\u05D9\u05D7\u05D4 \u05E0\u05D1\u05DC\u05DE\u05EA — \u05E0\u05D3\u05E8\u05E9\u05EA \u05D4\u05E1\u05EA\u05D2\u05DC\u05D5\u05EA \u05D5\u05D7\u05D3\u05E9\u05E0\u05D5\u05EA \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05EA (Greiner 5)' },
         ],
         oms: {
-          label: 'מהו אתגר הצמיחה או הסקייל הדומיננטי אצלך כרגע כעצמאי?',
+          label: '\u05DE\u05D4\u05D5 \u05D0\u05EA\u05D2\u05E8 \u05D4\u05E6\u05DE\u05D9\u05D7\u05D4 \u05D0\u05D5 \u05D4\u05E1\u05E7\u05D9\u05D9\u05DC \u05D4\u05D3\u05D5\u05DE\u05D9\u05E0\u05E0\u05D8\u05D9 \u05D0\u05E6\u05DC\u05DA \u05DB\u05E8\u05D2\u05E2 \u05DB\u05E2\u05E6\u05DE\u05D0\u05D9?',
           options: [
-            { value: 'phase_1_2', label: 'הכל עובר דרכי — אין באמת מי לפרוש אליו עבודה' },
-            { value: 'phase_3', label: 'יותר מדי כיוונים במקביל — לקוחות, מוצרים, שיווק, מסירה — בלי סדר עדיפויות' },
-            { value: 'phase_4', label: 'הרבה "פרוצדורות" שיצרתי לעצמי — קשה לזוז מהר' },
-            { value: 'phase_5', label: 'הצמיחה נתקעת — צריך מודל חדש או שוק חדש וקשה להסתגל' },
+            { value: 'phase_1_2', label: '\u05D4\u05DB\u05DC \u05E2\u05D5\u05D1\u05E8 \u05D3\u05E8\u05DB\u05D9 — \u05D0\u05D9\u05DF \u05D1\u05D0\u05DE\u05EA \u05DE\u05D9 \u05DC\u05E4\u05E8\u05D5\u05E9 \u05D0\u05DC\u05D9\u05D5 \u05E2\u05D1\u05D5\u05D3\u05D4' },
+            { value: 'phase_3', label: '\u05D9\u05D5\u05EA\u05E8 \u05DE\u05D3\u05D9 \u05DB\u05D9\u05D5\u05D5\u05E0\u05D9\u05DD \u05D1\u05DE\u05E7\u05D1\u05D9\u05DC — \u05DC\u05E7\u05D5\u05D7\u05D5\u05EA, \u05DE\u05D5\u05E6\u05E8\u05D9\u05DD, \u05E9\u05D9\u05D5\u05D5\u05E7, \u05DE\u05E1\u05D9\u05E8\u05D4 — \u05D1\u05DC\u05D9 \u05E1\u05D3\u05E8 \u05E2\u05D3\u05D9\u05E4\u05D5\u05D9\u05D5\u05EA' },
+            { value: 'phase_4', label: '\u05D4\u05E8\u05D1\u05D4 "\u05E4\u05E8\u05D5\u05E6\u05D3\u05D5\u05E8\u05D5\u05EA" \u05E9\u05D9\u05E6\u05E8\u05EA\u05D9 \u05DC\u05E2\u05E6\u05DE\u05D9 — \u05E7\u05E9\u05D4 \u05DC\u05D6\u05D5\u05D6 \u05DE\u05D4\u05E8' },
+            { value: 'phase_5', label: '\u05D4\u05E6\u05DE\u05D9\u05D7\u05D4 \u05E0\u05EA\u05E7\u05E2\u05EA — \u05E6\u05E8\u05D9\u05DA \u05DE\u05D5\u05D3\u05DC \u05D7\u05D3\u05E9 \u05D0\u05D5 \u05E9\u05D5\u05E7 \u05D7\u05D3\u05E9 \u05D5\u05E7\u05E9\u05D4 \u05DC\u05D4\u05E1\u05EA\u05D2\u05DC' },
           ],
         },
       },
       {
         key: 'adaptiveCapacity',
-        label: 'כאשר מתרחש שינוי משמעותי בשוק, מה מאפיין את תגובת הארגון?',
+        label: '\u05DB\u05D0\u05E9\u05E8 \u05DE\u05EA\u05E8\u05D7\u05E9 \u05E9\u05D9\u05E0\u05D5\u05D9 \u05DE\u05E9\u05DE\u05E2\u05D5\u05EA\u05D9 \u05D1\u05E9\u05D5\u05E7, \u05DE\u05D4 \u05DE\u05D0\u05E4\u05D9\u05D9\u05DF \u05D0\u05EA \u05EA\u05D2\u05D5\u05D1\u05EA \u05D4\u05D0\u05E8\u05D2\u05D5\u05DF?',
         type: 'select',
         required: false,
         options: [
-          { value: 'rigid', label: 'ממשיכים כרגיל; שינוי נתפס כהפרעה ולא כהזדמנות' },
-          { value: 'slow_adapt', label: 'מגיבים, אך באיחור משמעותי ובמאמץ חריג' },
-          { value: 'agile', label: 'מסתגלים מהר; יש מנגנון קבוע לסריקה ותגובה' },
+          { value: 'rigid', label: '\u05DE\u05DE\u05E9\u05D9\u05DB\u05D9\u05DD \u05DB\u05E8\u05D2\u05D9\u05DC; \u05E9\u05D9\u05E0\u05D5\u05D9 \u05E0\u05EA\u05E4\u05E1 \u05DB\u05D4\u05E4\u05E8\u05E2\u05D4 \u05D5\u05DC\u05D0 \u05DB\u05D4\u05D6\u05D3\u05DE\u05E0\u05D5\u05EA' },
+          { value: 'slow_adapt', label: '\u05DE\u05D2\u05D9\u05D1\u05D9\u05DD, \u05D0\u05DA \u05D1\u05D0\u05D9\u05D7\u05D5\u05E8 \u05DE\u05E9\u05DE\u05E2\u05D5\u05EA\u05D9 \u05D5\u05D1\u05DE\u05D0\u05DE\u05E5 \u05D7\u05E8\u05D9\u05D2' },
+          { value: 'agile', label: '\u05DE\u05E1\u05EA\u05D2\u05DC\u05D9\u05DD \u05DE\u05D4\u05E8; \u05D9\u05E9 \u05DE\u05E0\u05D2\u05E0\u05D5\u05DF \u05E7\u05D1\u05D5\u05E2 \u05DC\u05E1\u05E8\u05D9\u05E7\u05D4 \u05D5\u05EA\u05D2\u05D5\u05D1\u05D4' },
         ],
         oms: {
-          label: 'כשהשוק זז או שהלקוחות משתנים — איך את/ה מגיב/ה בפועל?',
+          label: '\u05DB\u05E9\u05D4\u05E9\u05D5\u05E7 \u05D6\u05D6 \u05D0\u05D5 \u05E9\u05D4\u05DC\u05E7\u05D5\u05D7\u05D5\u05EA \u05DE\u05E9\u05EA\u05E0\u05D9\u05DD — \u05D0\u05D9\u05DA \u05D0\u05EA/\u05D4 \u05DE\u05D2\u05D9\u05D1/\u05D4 \u05D1\u05E4\u05D5\u05E2\u05DC?',
         },
       },
       {
         key: 'voiceInfrastructure',
-        label: 'כאשר עובד מזהה בעיה, עד כמה קיימת תשתית דיווח אפקטיבית?',
+        label: '\u05DB\u05D0\u05E9\u05E8 \u05E2\u05D5\u05D1\u05D3 \u05DE\u05D6\u05D4\u05D4 \u05D1\u05E2\u05D9\u05D4, \u05E2\u05D3 \u05DB\u05DE\u05D4 \u05E7\u05D9\u05D9\u05DE\u05EA \u05EA\u05E9\u05EA\u05D9\u05EA \u05D3\u05D9\u05D5\u05D5\u05D7 \u05D0\u05E4\u05E7\u05D8\u05D9\u05D1\u05D9\u05EA?',
         type: 'select',
         required: false,
         options: [
-          { value: 'no_channel', label: 'אין ערוץ ברור או שדיווחים נבלעים ללא תגובה' },
-          { value: 'unused_channel', label: 'יש ערוצים אך כמעט לא משתמשים בהם בפועל' },
-          { value: 'effective_channel', label: 'יש ערוץ חי, הדיווחים נקלטים ומטופלים בזמן סביר' },
+          { value: 'no_channel', label: '\u05D0\u05D9\u05DF \u05E2\u05E8\u05D5\u05E5 \u05D1\u05E8\u05D5\u05E8 \u05D0\u05D5 \u05E9\u05D3\u05D9\u05D5\u05D5\u05D7\u05D9\u05DD \u05E0\u05D1\u05DC\u05E2\u05D9\u05DD \u05DC\u05DC\u05D0 \u05EA\u05D2\u05D5\u05D1\u05D4' },
+          { value: 'unused_channel', label: '\u05D9\u05E9 \u05E2\u05E8\u05D5\u05E6\u05D9\u05DD \u05D0\u05DA \u05DB\u05DE\u05E2\u05D8 \u05DC\u05D0 \u05DE\u05E9\u05EA\u05DE\u05E9\u05D9\u05DD \u05D1\u05D4\u05DD \u05D1\u05E4\u05D5\u05E2\u05DC' },
+          { value: 'effective_channel', label: '\u05D9\u05E9 \u05E2\u05E8\u05D5\u05E5 \u05D7\u05D9, \u05D4\u05D3\u05D9\u05D5\u05D5\u05D7\u05D9\u05DD \u05E0\u05E7\u05DC\u05D8\u05D9\u05DD \u05D5\u05DE\u05D8\u05D5\u05E4\u05DC\u05D9\u05DD \u05D1\u05D6\u05DE\u05DF \u05E1\u05D1\u05D9\u05E8' },
         ],
         oms: {
-          label: 'כשאת/ה או מישהו מהמעגל המקצועי מזהה בעיה — האם יש דרך ברורה לדווח ולטפל?',
+          label: '\u05DB\u05E9\u05D0\u05EA/\u05D4 \u05D0\u05D5 \u05DE\u05D9\u05E9\u05D4\u05D5 \u05DE\u05D4\u05DE\u05E2\u05D2\u05DC \u05D4\u05DE\u05E7\u05E6\u05D5\u05E2\u05D9 \u05DE\u05D6\u05D4\u05D4 \u05D1\u05E2\u05D9\u05D4 — \u05D4\u05D0\u05DD \u05D9\u05E9 \u05D3\u05E8\u05DA \u05D1\u05E8\u05D5\u05E8\u05D4 \u05DC\u05D3\u05D5\u05D5\u05D7 \u05D5\u05DC\u05D8\u05E4\u05DC?',
           options: [
-            { value: 'no_channel', label: 'אין דרך ברורה — הבעיה נבלעת או נשארת אצלי בראש' },
-            { value: 'unused_channel', label: 'יש SLA או מייל אבל בפועל לא משתמשים או לא מגיבים' },
-            { value: 'effective_channel', label: 'יש ערוץ שעובד — מישהו מגיב וסוגר לולאה' },
+            { value: 'no_channel', label: '\u05D0\u05D9\u05DF \u05D3\u05E8\u05DA \u05D1\u05E8\u05D5\u05E8\u05D4 — \u05D4\u05D1\u05E2\u05D9\u05D4 \u05E0\u05D1\u05DC\u05E2\u05EA \u05D0\u05D5 \u05E0\u05E9\u05D0\u05E8\u05EA \u05D0\u05E6\u05DC\u05D9 \u05D1\u05E8\u05D0\u05E9' },
+            { value: 'unused_channel', label: '\u05D9\u05E9 SLA \u05D0\u05D5 \u05DE\u05D9\u05D9\u05DC \u05D0\u05D1\u05DC \u05D1\u05E4\u05D5\u05E2\u05DC \u05DC\u05D0 \u05DE\u05E9\u05EA\u05DE\u05E9\u05D9\u05DD \u05D0\u05D5 \u05DC\u05D0 \u05DE\u05D2\u05D9\u05D1\u05D9\u05DD' },
+            { value: 'effective_channel', label: '\u05D9\u05E9 \u05E2\u05E8\u05D5\u05E5 \u05E9\u05E2\u05D5\u05D1\u05D3 — \u05DE\u05D9\u05E9\u05D4\u05D5 \u05DE\u05D2\u05D9\u05D1 \u05D5\u05E1\u05D5\u05D2\u05E8 \u05DC\u05D5\u05DC\u05D0\u05D4' },
           ],
         },
       },
       {
         key: 'leadershipCascade',
-        label: 'כיצד היית מתאר את הדינמיקה בין הנהלה בכירה למנהלי ביניים?',
+        label: '\u05DB\u05D9\u05E6\u05D3 \u05D4\u05D9\u05D9\u05EA \u05DE\u05EA\u05D0\u05E8 \u05D0\u05EA \u05D4\u05D3\u05D9\u05E0\u05DE\u05D9\u05E7\u05D4 \u05D1\u05D9\u05DF \u05D4\u05E0\u05D4\u05DC\u05D4 \u05D1\u05DB\u05D9\u05E8\u05D4 \u05DC\u05DE\u05E0\u05D4\u05DC\u05D9 \u05D1\u05D9\u05E0\u05D9\u05D9\u05DD?',
         type: 'select',
         required: false,
         options: [
-          { value: 'micromanage', label: 'מיקרו-ניהול או היעדר הובלה; סמכות לא יורדת לשטח' },
-          { value: 'partial_delegation', label: 'יש delegation חלקי, אך החלטות חוזרות ל-C-level' },
-          { value: 'full_delegation', label: 'סמכות ברורה ושרשרת החלטה יציבה לכל דרג' },
+          { value: 'micromanage', label: '\u05DE\u05D9\u05E7\u05E8\u05D5-\u05E0\u05D9\u05D4\u05D5\u05DC \u05D0\u05D5 \u05D4\u05D9\u05E2\u05D3\u05E8 \u05D4\u05D5\u05D1\u05DC\u05D4; \u05E1\u05DE\u05DB\u05D5\u05EA \u05DC\u05D0 \u05D9\u05D5\u05E8\u05D3\u05EA \u05DC\u05E9\u05D8\u05D7' },
+          { value: 'partial_delegation', label: '\u05D9\u05E9 delegation \u05D7\u05DC\u05E7\u05D9, \u05D0\u05DA \u05D4\u05D7\u05DC\u05D8\u05D5\u05EA \u05D7\u05D5\u05D6\u05E8\u05D5\u05EA \u05DC-C-level' },
+          { value: 'full_delegation', label: '\u05E1\u05DE\u05DB\u05D5\u05EA \u05D1\u05E8\u05D5\u05E8\u05D4 \u05D5\u05E9\u05E8\u05E9\u05E8\u05EA \u05D4\u05D7\u05DC\u05D8\u05D4 \u05D9\u05E6\u05D9\u05D1\u05D4 \u05DC\u05DB\u05DC \u05D3\u05E8\u05D2' },
         ],
         oms: {
-          label: 'כמה את/ה מצליח/ה לפרוש החוצה (ספקים, עוזרים, שותפים) בלי להישאר צוואר בקבוק?',
+          label: '\u05DB\u05DE\u05D4 \u05D0\u05EA/\u05D4 \u05DE\u05E6\u05DC\u05D9\u05D7/\u05D4 \u05DC\u05E4\u05E8\u05D5\u05E9 \u05D4\u05D7\u05D5\u05E6\u05D4 (\u05E1\u05E4\u05E7\u05D9\u05DD, \u05E2\u05D5\u05D6\u05E8\u05D9\u05DD, \u05E9\u05D5\u05EA\u05E4\u05D9\u05DD) \u05D1\u05DC\u05D9 \u05DC\u05D4\u05D9\u05E9\u05D0\u05E8 \u05E6\u05D5\u05D5\u05D0\u05E8 \u05D1\u05E7\u05D1\u05D5\u05E7?',
           options: [
-            { value: 'micromanage', label: 'הכל דרכי — קשה לשחרר שליטה' },
-            { value: 'partial_delegation', label: 'יש עזרה חלקית אבל כל החלטה חוזרת אליי' },
-            { value: 'full_delegation', label: 'יש אנשים שאני סומך עליהם עם אחריות אמיתית' },
+            { value: 'micromanage', label: '\u05D4\u05DB\u05DC \u05D3\u05E8\u05DB\u05D9 — \u05E7\u05E9\u05D4 \u05DC\u05E9\u05D7\u05E8\u05E8 \u05E9\u05DC\u05D9\u05D8\u05D4' },
+            { value: 'partial_delegation', label: '\u05D9\u05E9 \u05E2\u05D6\u05E8\u05D4 \u05D7\u05DC\u05E7\u05D9\u05EA \u05D0\u05D1\u05DC \u05DB\u05DC \u05D4\u05D7\u05DC\u05D8\u05D4 \u05D7\u05D5\u05D6\u05E8\u05EA \u05D0\u05DC\u05D9\u05D9' },
+            { value: 'full_delegation', label: '\u05D9\u05E9 \u05D0\u05E0\u05E9\u05D9\u05DD \u05E9\u05D0\u05E0\u05D9 \u05E1\u05D5\u05DE\u05DA \u05E2\u05DC\u05D9\u05D4\u05DD \u05E2\u05DD \u05D0\u05D7\u05E8\u05D9\u05D5\u05EA \u05D0\u05DE\u05D9\u05EA\u05D9\u05EA' },
           ],
         },
       },
       {
         key: 'strategyExecution',
-        label: 'מה קורה אחרי החלטה אסטרטגית חדשה?',
+        label: '\u05DE\u05D4 \u05E7\u05D5\u05E8\u05D4 \u05D0\u05D7\u05E8\u05D9 \u05D4\u05D7\u05DC\u05D8\u05D4 \u05D0\u05E1\u05D8\u05E8\u05D8\u05D2\u05D9\u05EA \u05D7\u05D3\u05E9\u05D4?',
         type: 'select',
         required: false,
         options: [
-          { value: 'no_cascade', label: 'אין תרגום לביצוע; רוב הארגון לא מבין מה השתנה' },
-          { value: 'partial_cascade', label: 'יש תרגום חלקי אך ללא אחריות ודדליינים ברורים' },
-          { value: 'full_cascade', label: 'תהליך סדור: יעד → אחריות → KPI → מעקב ביצוע' },
+          { value: 'no_cascade', label: '\u05D0\u05D9\u05DF \u05EA\u05E8\u05D2\u05D5\u05DD \u05DC\u05D1\u05D9\u05E6\u05D5\u05E2; \u05E8\u05D5\u05D1 \u05D4\u05D0\u05E8\u05D2\u05D5\u05DF \u05DC\u05D0 \u05DE\u05D1\u05D9\u05DF \u05DE\u05D4 \u05D4\u05E9\u05EA\u05E0\u05D4' },
+          { value: 'partial_cascade', label: '\u05D9\u05E9 \u05EA\u05E8\u05D2\u05D5\u05DD \u05D7\u05DC\u05E7\u05D9 \u05D0\u05DA \u05DC\u05DC\u05D0 \u05D0\u05D7\u05E8\u05D9\u05D5\u05EA \u05D5\u05D3\u05D3\u05DC\u05D9\u05D9\u05E0\u05D9\u05DD \u05D1\u05E8\u05D5\u05E8\u05D9\u05DD' },
+          { value: 'full_cascade', label: '\u05EA\u05D4\u05DC\u05D9\u05DA \u05E1\u05D3\u05D5\u05E8: \u05D9\u05E2\u05D3 → \u05D0\u05D7\u05E8\u05D9\u05D5\u05EA → KPI → \u05DE\u05E2\u05E7\u05D1 \u05D1\u05D9\u05E6\u05D5\u05E2' },
         ],
         oms: {
-          label: 'אחרי שאת/ה מחליט/ה על כיוון (מוצר, שוק, מחיר) — מה קורה בפועל בשבועיים הקרובים?',
+          label: '\u05D0\u05D7\u05E8\u05D9 \u05E9\u05D0\u05EA/\u05D4 \u05DE\u05D7\u05DC\u05D9\u05D8/\u05D4 \u05E2\u05DC \u05DB\u05D9\u05D5\u05D5\u05DF (\u05DE\u05D5\u05E6\u05E8, \u05E9\u05D5\u05E7, \u05DE\u05D7\u05D9\u05E8) — \u05DE\u05D4 \u05E7\u05D5\u05E8\u05D4 \u05D1\u05E4\u05D5\u05E2\u05DC \u05D1\u05E9\u05D1\u05D5\u05E2\u05D9\u05D9\u05DD \u05D4\u05E7\u05E8\u05D5\u05D1\u05D9\u05DD?',
           options: [
-            { value: 'no_cascade', label: 'נשאר על הנייר — השגרה בולעת והכיוון לא יורד לביצוע' },
-            { value: 'partial_cascade', label: 'חלק מתורגם למשימות אבל בלי דדליינים או בעלות ברורה' },
-            { value: 'full_cascade', label: 'יש רשימת משימות, בעלים ומעקב — אני רואה התקדמות' },
+            { value: 'no_cascade', label: '\u05E0\u05E9\u05D0\u05E8 \u05E2\u05DC \u05D4\u05E0\u05D9\u05D9\u05E8 — \u05D4\u05E9\u05D2\u05E8\u05D4 \u05D1\u05D5\u05DC\u05E2\u05EA \u05D5\u05D4\u05DB\u05D9\u05D5\u05D5\u05DF \u05DC\u05D0 \u05D9\u05D5\u05E8\u05D3 \u05DC\u05D1\u05D9\u05E6\u05D5\u05E2' },
+            { value: 'partial_cascade', label: '\u05D7\u05DC\u05E7 \u05DE\u05EA\u05D5\u05E8\u05D2\u05DD \u05DC\u05DE\u05E9\u05D9\u05DE\u05D5\u05EA \u05D0\u05D1\u05DC \u05D1\u05DC\u05D9 \u05D3\u05D3\u05DC\u05D9\u05D9\u05E0\u05D9\u05DD \u05D0\u05D5 \u05D1\u05E2\u05DC\u05D5\u05EA \u05D1\u05E8\u05D5\u05E8\u05D4' },
+            { value: 'full_cascade', label: '\u05D9\u05E9 \u05E8\u05E9\u05D9\u05DE\u05EA \u05DE\u05E9\u05D9\u05DE\u05D5\u05EA, \u05D1\u05E2\u05DC\u05D9\u05DD \u05D5\u05DE\u05E2\u05E7\u05D1 — \u05D0\u05E0\u05D9 \u05E8\u05D5\u05D0\u05D4 \u05D4\u05EA\u05E7\u05D3\u05DE\u05D5\u05EA' },
           ],
         },
       },
       {
         key: 'engagementProxy',
-        label: 'איך היית מתאר את רמת האנרגיה והמוטיבציה של צוות ההנהלה בחודש האחרון?',
+        label: '\u05D0\u05D9\u05DA \u05D4\u05D9\u05D9\u05EA \u05DE\u05EA\u05D0\u05E8 \u05D0\u05EA \u05E8\u05DE\u05EA \u05D4\u05D0\u05E0\u05E8\u05D2\u05D9\u05D4 \u05D5\u05D4\u05DE\u05D5\u05D8\u05D9\u05D1\u05E6\u05D9\u05D4 \u05E9\u05DC \u05E6\u05D5\u05D5\u05EA \u05D4\u05D4\u05E0\u05D4\u05DC\u05D4 \u05D1\u05D7\u05D5\u05D3\u05E9 \u05D4\u05D0\u05D7\u05E8\u05D5\u05DF?',
         type: 'select',
         required: false,
         options: [
-          { value: 'burnout', label: 'שחיקה ניכרת — הישרדות במקום הובלה' },
-          { value: 'mixed', label: 'תנודתיות גבוהה — ימים טובים לצד דעיכה ניכרת' },
-          { value: 'high', label: 'אנרגיה גבוהה — יוזמה, מחויבות וביצוע עקבי' },
+          { value: 'burnout', label: '\u05E9\u05D7\u05D9\u05E7\u05D4 \u05E0\u05D9\u05DB\u05E8\u05EA — \u05D4\u05D9\u05E9\u05E8\u05D3\u05D5\u05EA \u05D1\u05DE\u05E7\u05D5\u05DD \u05D4\u05D5\u05D1\u05DC\u05D4' },
+          { value: 'mixed', label: '\u05EA\u05E0\u05D5\u05D3\u05EA\u05D9\u05D5\u05EA \u05D2\u05D1\u05D5\u05D4\u05D4 — \u05D9\u05DE\u05D9\u05DD \u05D8\u05D5\u05D1\u05D9\u05DD \u05DC\u05E6\u05D3 \u05D3\u05E2\u05D9\u05DB\u05D4 \u05E0\u05D9\u05DB\u05E8\u05EA' },
+          { value: 'high', label: '\u05D0\u05E0\u05E8\u05D2\u05D9\u05D4 \u05D2\u05D1\u05D5\u05D4\u05D4 — \u05D9\u05D5\u05D6\u05DE\u05D4, \u05DE\u05D7\u05D5\u05D9\u05D1\u05D5\u05EA \u05D5\u05D1\u05D9\u05E6\u05D5\u05E2 \u05E2\u05E7\u05D1\u05D9' },
         ],
         oms: {
-          label: 'איך היית מתאר את האנרגיה והמוטיבציה שלך לעבודה בחודש האחרון?',
+          label: '\u05D0\u05D9\u05DA \u05D4\u05D9\u05D9\u05EA \u05DE\u05EA\u05D0\u05E8 \u05D0\u05EA \u05D4\u05D0\u05E0\u05E8\u05D2\u05D9\u05D4 \u05D5\u05D4\u05DE\u05D5\u05D8\u05D9\u05D1\u05E6\u05D9\u05D4 \u05E9\u05DC\u05DA \u05DC\u05E2\u05D1\u05D5\u05D3\u05D4 \u05D1\u05D7\u05D5\u05D3\u05E9 \u05D4\u05D0\u05D7\u05E8\u05D5\u05DF?',
         },
       },
     ],
@@ -732,7 +732,7 @@ function resolveQuestionnaireField(
   }
 }
 
-/** טקסטי שאלות לפי בחירת המשתמש (team / one_man_show). */
+/** \u05D8\u05E7\u05E1\u05D8\u05D9 \u05E9\u05D0\u05DC\u05D5\u05EA \u05DC\u05E4\u05D9 \u05D1\u05D7\u05D9\u05E8\u05EA \u05D4\u05DE\u05E9\u05EA\u05DE\u05E9 (team / one_man_show). */
 export function resolveQuestionnaireSteps(ctx: OperatingContext): ResolvedQuestionnaireStep[] {
   return QUESTIONNAIRE_STEPS_RAW.filter((step) => !step.omsOnly || ctx === 'one_man_show').map(
     (step) => ({
@@ -743,12 +743,12 @@ export function resolveQuestionnaireSteps(ctx: OperatingContext): ResolvedQuesti
   )
 }
 
-/** מסלול צוות — תאימות לאחור לקוד שמצפה למערך סטטי */
+/** \u05DE\u05E1\u05DC\u05D5\u05DC \u05E6\u05D5\u05D5\u05EA — \u05EA\u05D0\u05D9\u05DE\u05D5\u05EA \u05DC\u05D0\u05D7\u05D5\u05E8 \u05DC\u05E7\u05D5\u05D3 \u05E9\u05DE\u05E6\u05E4\u05D4 \u05DC\u05DE\u05E2\u05E8\u05DA \u05E1\u05D8\u05D8\u05D9 */
 export const QUESTIONNAIRE_STEPS: ResolvedQuestionnaireStep[] = resolveQuestionnaireSteps('team')
 
 /**
- * הקשר אפקטיבי לתצוגה וללוגיקה.
- * סדר עדיפות: שדה בשאלון → שדה בפרופיל לקוח → ברירת מחדל team.
+ * \u05D4\u05E7\u05E9\u05E8 \u05D0\u05E4\u05E7\u05D8\u05D9\u05D1\u05D9 \u05DC\u05EA\u05E6\u05D5\u05D2\u05D4 \u05D5\u05DC\u05DC\u05D5\u05D2\u05D9\u05E7\u05D4.
+ * \u05E1\u05D3\u05E8 \u05E2\u05D3\u05D9\u05E4\u05D5\u05EA: \u05E9\u05D3\u05D4 \u05D1\u05E9\u05D0\u05DC\u05D5\u05DF → \u05E9\u05D3\u05D4 \u05D1\u05E4\u05E8\u05D5\u05E4\u05D9\u05DC \u05DC\u05E7\u05D5\u05D7 → \u05D1\u05E8\u05D9\u05E8\u05EA \u05DE\u05D7\u05D3\u05DC team.
  */
 export function effectiveOperatingContext(
   answers: QuestionnaireAnswer,
@@ -760,7 +760,7 @@ export function effectiveOperatingContext(
   return 'team'
 }
 
-/** מיזוג לפני חישובי DSM / תוכנית — כשחסר בשאלון, נוטל מפרופיל הלקוח */
+/** \u05DE\u05D9\u05D6\u05D5\u05D2 \u05DC\u05E4\u05E0\u05D9 \u05D7\u05D9\u05E9\u05D5\u05D1\u05D9 DSM / \u05EA\u05D5\u05DB\u05E0\u05D9\u05EA — \u05DB\u05E9\u05D7\u05E1\u05E8 \u05D1\u05E9\u05D0\u05DC\u05D5\u05DF, \u05E0\u05D5\u05D8\u05DC \u05DE\u05E4\u05E8\u05D5\u05E4\u05D9\u05DC \u05D4\u05DC\u05E7\u05D5\u05D7 */
 export function mergeOperatingContextFromClient(
   answers: QuestionnaireAnswer,
   client: { operating_context?: string | null } | null | undefined
@@ -815,7 +815,7 @@ export interface DynamicSummary {
   roleParagraph: string
   diagnosisParagraph: string
   ctaParagraph: string
-  /** סעיף התנעה לעצמאים — כשמולא שאלון ההתנעה */
+  /** \u05E1\u05E2\u05D9\u05E3 \u05D4\u05EA\u05E0\u05E2\u05D4 \u05DC\u05E2\u05E6\u05DE\u05D0\u05D9\u05DD — \u05DB\u05E9\u05DE\u05D5\u05DC\u05D0 \u05E9\u05D0\u05DC\u05D5\u05DF \u05D4\u05D4\u05EA\u05E0\u05E2\u05D4 */
   ignitionParagraph?: string
 }
 
@@ -831,26 +831,26 @@ export function buildDynamicSummary(
   const { championRole, companySize } = answers
   if (ctx === 'one_man_show') {
     roleParagraph =
-      'במסלול One man show ריכוז האחריות על מסירה, שיווק ותפעול אצלך מגביר את השפעה של דימום החלטות ושחיקה קוגניטיבית על ההכנסה והקיימות. הממצאים משקפים עומס שבארגון גדול היה מתפזר בין תפקידים ומחלקות.'
+      '\u05D1\u05DE\u05E1\u05DC\u05D5\u05DC One man show \u05E8\u05D9\u05DB\u05D5\u05D6 \u05D4\u05D0\u05D7\u05E8\u05D9\u05D5\u05EA \u05E2\u05DC \u05DE\u05E1\u05D9\u05E8\u05D4, \u05E9\u05D9\u05D5\u05D5\u05E7 \u05D5\u05EA\u05E4\u05E2\u05D5\u05DC \u05D0\u05E6\u05DC\u05DA \u05DE\u05D2\u05D1\u05D9\u05E8 \u05D0\u05EA \u05D4\u05E9\u05E4\u05E2\u05D4 \u05E9\u05DC \u05D3\u05D9\u05DE\u05D5\u05DD \u05D4\u05D7\u05DC\u05D8\u05D5\u05EA \u05D5\u05E9\u05D7\u05D9\u05E7\u05D4 \u05E7\u05D5\u05D2\u05E0\u05D9\u05D8\u05D9\u05D1\u05D9\u05EA \u05E2\u05DC \u05D4\u05D4\u05DB\u05E0\u05E1\u05D4 \u05D5\u05D4\u05E7\u05D9\u05D9\u05DE\u05D5\u05EA. \u05D4\u05DE\u05DE\u05E6\u05D0\u05D9\u05DD \u05DE\u05E9\u05E7\u05E4\u05D9\u05DD \u05E2\u05D5\u05DE\u05E1 \u05E9\u05D1\u05D0\u05E8\u05D2\u05D5\u05DF \u05D2\u05D3\u05D5\u05DC \u05D4\u05D9\u05D4 \u05DE\u05EA\u05E4\u05D6\u05E8 \u05D1\u05D9\u05DF \u05EA\u05E4\u05E7\u05D9\u05D3\u05D9\u05DD \u05D5\u05DE\u05D7\u05DC\u05E7\u05D5\u05EA.'
     if (championRole === 'cfo') {
       roleParagraph +=
-        ' כאחראי/ת כספים או רווחיות, חשוב במיוחד לכמת את "חוב ההחלטות" בזמן שאינך מייצר/ת הכנסה ישירה.'
+        ' \u05DB\u05D0\u05D7\u05E8\u05D0\u05D9/\u05EA \u05DB\u05E1\u05E4\u05D9\u05DD \u05D0\u05D5 \u05E8\u05D5\u05D5\u05D7\u05D9\u05D5\u05EA, \u05D7\u05E9\u05D5\u05D1 \u05D1\u05DE\u05D9\u05D5\u05D7\u05D3 \u05DC\u05DB\u05DE\u05EA \u05D0\u05EA "\u05D7\u05D5\u05D1 \u05D4\u05D4\u05D7\u05DC\u05D8\u05D5\u05EA" \u05D1\u05D6\u05DE\u05DF \u05E9\u05D0\u05D9\u05E0\u05DA \u05DE\u05D9\u05D9\u05E6\u05E8/\u05EA \u05D4\u05DB\u05E0\u05E1\u05D4 \u05D9\u05E9\u05D9\u05E8\u05D4.'
     }
   } else if (championRole === 'coo' && (companySize === '150_300' || companySize === 'over_300')) {
     roleParagraph =
-      'בתפקידך כ-COO של ארגון שחוצה את רף דאנבר הקריטי, אתה מתמודד עם אתגר טבעי אך מסוכן שבו תהליכים בלתי פורמליים אינם משרתים עוד את המערכת. העומס התפעולי הופך לצוואר בקבוק המעכב ביצועים.'
+      '\u05D1\u05EA\u05E4\u05E7\u05D9\u05D3\u05DA \u05DB-COO \u05E9\u05DC \u05D0\u05E8\u05D2\u05D5\u05DF \u05E9\u05D7\u05D5\u05E6\u05D4 \u05D0\u05EA \u05E8\u05E3 \u05D3\u05D0\u05E0\u05D1\u05E8 \u05D4\u05E7\u05E8\u05D9\u05D8\u05D9, \u05D0\u05EA\u05D4 \u05DE\u05EA\u05DE\u05D5\u05D3\u05D3 \u05E2\u05DD \u05D0\u05EA\u05D2\u05E8 \u05D8\u05D1\u05E2\u05D9 \u05D0\u05DA \u05DE\u05E1\u05D5\u05DB\u05DF \u05E9\u05D1\u05D5 \u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD \u05D1\u05DC\u05EA\u05D9 \u05E4\u05D5\u05E8\u05DE\u05DC\u05D9\u05D9\u05DD \u05D0\u05D9\u05E0\u05DD \u05DE\u05E9\u05E8\u05EA\u05D9\u05DD \u05E2\u05D5\u05D3 \u05D0\u05EA \u05D4\u05DE\u05E2\u05E8\u05DB\u05EA. \u05D4\u05E2\u05D5\u05DE\u05E1 \u05D4\u05EA\u05E4\u05E2\u05D5\u05DC\u05D9 \u05D4\u05D5\u05E4\u05DA \u05DC\u05E6\u05D5\u05D5\u05D0\u05E8 \u05D1\u05E7\u05D1\u05D5\u05E7 \u05D4\u05DE\u05E2\u05DB\u05D1 \u05D1\u05D9\u05E6\u05D5\u05E2\u05D9\u05DD.'
   } else if (championRole === 'coo') {
     roleParagraph =
-      'בתפקידך כ-COO, אתה הראשון שחווה את הקונפליקטים הבין-מחלקתיים ואת חוסר היעילות של התהליכים. זיהוי מוקדם של פתולוגיות מאפשר לך לפעול לפני שהן הופכות לצווארי בקבוק קריטיים.'
+      '\u05D1\u05EA\u05E4\u05E7\u05D9\u05D3\u05DA \u05DB-COO, \u05D0\u05EA\u05D4 \u05D4\u05E8\u05D0\u05E9\u05D5\u05DF \u05E9\u05D7\u05D5\u05D5\u05D4 \u05D0\u05EA \u05D4\u05E7\u05D5\u05E0\u05E4\u05DC\u05D9\u05E7\u05D8\u05D9\u05DD \u05D4\u05D1\u05D9\u05DF-\u05DE\u05D7\u05DC\u05E7\u05EA\u05D9\u05D9\u05DD \u05D5\u05D0\u05EA \u05D7\u05D5\u05E1\u05E8 \u05D4\u05D9\u05E2\u05D9\u05DC\u05D5\u05EA \u05E9\u05DC \u05D4\u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD. \u05D6\u05D9\u05D4\u05D5\u05D9 \u05DE\u05D5\u05E7\u05D3\u05DD \u05E9\u05DC \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA \u05DE\u05D0\u05E4\u05E9\u05E8 \u05DC\u05DA \u05DC\u05E4\u05E2\u05D5\u05DC \u05DC\u05E4\u05E0\u05D9 \u05E9\u05D4\u05DF \u05D4\u05D5\u05E4\u05DB\u05D5\u05EA \u05DC\u05E6\u05D5\u05D5\u05D0\u05E8\u05D9 \u05D1\u05E7\u05D1\u05D5\u05E7 \u05E7\u05E8\u05D9\u05D8\u05D9\u05D9\u05DD.'
   } else if (championRole === 'cfo') {
     roleParagraph =
-      'בתפקידך האסטרטגי כ-CFO, הבטחת יעילות כלכלית היא העיקר. הממצאים מעידים על "חוב החלטות" משמעותי הפוגע בשולי הרווח השוטפים של החברה.'
+      '\u05D1\u05EA\u05E4\u05E7\u05D9\u05D3\u05DA \u05D4\u05D0\u05E1\u05D8\u05E8\u05D8\u05D2\u05D9 \u05DB-CFO, \u05D4\u05D1\u05D8\u05D7\u05EA \u05D9\u05E2\u05D9\u05DC\u05D5\u05EA \u05DB\u05DC\u05DB\u05DC\u05D9\u05EA \u05D4\u05D9\u05D0 \u05D4\u05E2\u05D9\u05E7\u05E8. \u05D4\u05DE\u05DE\u05E6\u05D0\u05D9\u05DD \u05DE\u05E2\u05D9\u05D3\u05D9\u05DD \u05E2\u05DC "\u05D7\u05D5\u05D1 \u05D4\u05D7\u05DC\u05D8\u05D5\u05EA" \u05DE\u05E9\u05DE\u05E2\u05D5\u05EA\u05D9 \u05D4\u05E4\u05D5\u05D2\u05E2 \u05D1\u05E9\u05D5\u05DC\u05D9 \u05D4\u05E8\u05D5\u05D5\u05D7 \u05D4\u05E9\u05D5\u05D8\u05E4\u05D9\u05DD \u05E9\u05DC \u05D4\u05D7\u05D1\u05E8\u05D4.'
   } else if (championRole === 'ceo') {
     roleParagraph =
-      'בתפקידך כמנכ"ל, האחריות לחזון האסטרטגי ולצמיחה מחייבת שהאסטרטגיה תיושם במהירות בשטח. הממצאים מצביעים על פערים בין הכוונה לביצוע שמאטים את קצב הצמיחה.'
+      '\u05D1\u05EA\u05E4\u05E7\u05D9\u05D3\u05DA \u05DB\u05DE\u05E0\u05DB"\u05DC, \u05D4\u05D0\u05D7\u05E8\u05D9\u05D5\u05EA \u05DC\u05D7\u05D6\u05D5\u05DF \u05D4\u05D0\u05E1\u05D8\u05E8\u05D8\u05D2\u05D9 \u05D5\u05DC\u05E6\u05DE\u05D9\u05D7\u05D4 \u05DE\u05D7\u05D9\u05D9\u05D1\u05EA \u05E9\u05D4\u05D0\u05E1\u05D8\u05E8\u05D8\u05D2\u05D9\u05D4 \u05EA\u05D9\u05D5\u05E9\u05DD \u05D1\u05DE\u05D4\u05D9\u05E8\u05D5\u05EA \u05D1\u05E9\u05D8\u05D7. \u05D4\u05DE\u05DE\u05E6\u05D0\u05D9\u05DD \u05DE\u05E6\u05D1\u05D9\u05E2\u05D9\u05DD \u05E2\u05DC \u05E4\u05E2\u05E8\u05D9\u05DD \u05D1\u05D9\u05DF \u05D4\u05DB\u05D5\u05D5\u05E0\u05D4 \u05DC\u05D1\u05D9\u05E6\u05D5\u05E2 \u05E9\u05DE\u05D0\u05D8\u05D9\u05DD \u05D0\u05EA \u05E7\u05E6\u05D1 \u05D4\u05E6\u05DE\u05D9\u05D7\u05D4.'
   } else {
     roleParagraph =
-      'הממצאים מצביעים על מספר אינדיקטורים לאנטרופיה ארגונית הפוגעת ביכולת הביצוע של הארגון.'
+      '\u05D4\u05DE\u05DE\u05E6\u05D0\u05D9\u05DD \u05DE\u05E6\u05D1\u05D9\u05E2\u05D9\u05DD \u05E2\u05DC \u05DE\u05E1\u05E4\u05E8 \u05D0\u05D9\u05E0\u05D3\u05D9\u05E7\u05D8\u05D5\u05E8\u05D9\u05DD \u05DC\u05D0\u05E0\u05D8\u05E8\u05D5\u05E4\u05D9\u05D4 \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05EA \u05D4\u05E4\u05D5\u05D2\u05E2\u05EA \u05D1\u05D9\u05DB\u05D5\u05DC\u05EA \u05D4\u05D1\u05D9\u05E6\u05D5\u05E2 \u05E9\u05DC \u05D4\u05D0\u05E8\u05D2\u05D5\u05DF.'
   }
 
   // Diagnosis paragraph
@@ -858,60 +858,60 @@ export function buildDynamicSummary(
   if (answers.pathologyNod === 'high' && answers.pathologyLearning === 'single_loop') {
     diagnosisParts.push(
       ctx === 'one_man_show'
-        ? 'זיהינו אינדיקטורים מובהקים לעומס ואנטרופיה תפעולית: ניכר שילוב של "כיבוי שריפות" ומעקפים (Workarounds) במקום למידה דו-לולאתית — מה שפוגע ישירות בקיבולת שלך לייצר תפוקה ורווח.'
-        : 'זיהינו אינדיקטורים מובהקים להצטברות אנטרופיה ארגונית. ניכר שהמערכת עוסקת ב"כיבוי שריפות" ומתבססת על תרבות של מעקפים (Workarounds) במקום לבצע "למידה דו-לולאתית". התנהלות זו צורכת משאבים קוגניטיביים יקרים במקום לייצר תפוקה.'
+        ? '\u05D6\u05D9\u05D4\u05D9\u05E0\u05D5 \u05D0\u05D9\u05E0\u05D3\u05D9\u05E7\u05D8\u05D5\u05E8\u05D9\u05DD \u05DE\u05D5\u05D1\u05D4\u05E7\u05D9\u05DD \u05DC\u05E2\u05D5\u05DE\u05E1 \u05D5\u05D0\u05E0\u05D8\u05E8\u05D5\u05E4\u05D9\u05D4 \u05EA\u05E4\u05E2\u05D5\u05DC\u05D9\u05EA: \u05E0\u05D9\u05DB\u05E8 \u05E9\u05D9\u05DC\u05D5\u05D1 \u05E9\u05DC "\u05DB\u05D9\u05D1\u05D5\u05D9 \u05E9\u05E8\u05D9\u05E4\u05D5\u05EA" \u05D5\u05DE\u05E2\u05E7\u05E4\u05D9\u05DD (Workarounds) \u05D1\u05DE\u05E7\u05D5\u05DD \u05DC\u05DE\u05D9\u05D3\u05D4 \u05D3\u05D5-\u05DC\u05D5\u05DC\u05D0\u05EA\u05D9\u05EA — \u05DE\u05D4 \u05E9\u05E4\u05D5\u05D2\u05E2 \u05D9\u05E9\u05D9\u05E8\u05D5\u05EA \u05D1\u05E7\u05D9\u05D1\u05D5\u05DC\u05EA \u05E9\u05DC\u05DA \u05DC\u05D9\u05D9\u05E6\u05E8 \u05EA\u05E4\u05D5\u05E7\u05D4 \u05D5\u05E8\u05D5\u05D5\u05D7.'
+        : '\u05D6\u05D9\u05D4\u05D9\u05E0\u05D5 \u05D0\u05D9\u05E0\u05D3\u05D9\u05E7\u05D8\u05D5\u05E8\u05D9\u05DD \u05DE\u05D5\u05D1\u05D4\u05E7\u05D9\u05DD \u05DC\u05D4\u05E6\u05D8\u05D1\u05E8\u05D5\u05EA \u05D0\u05E0\u05D8\u05E8\u05D5\u05E4\u05D9\u05D4 \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05EA. \u05E0\u05D9\u05DB\u05E8 \u05E9\u05D4\u05DE\u05E2\u05E8\u05DB\u05EA \u05E2\u05D5\u05E1\u05E7\u05EA \u05D1"\u05DB\u05D9\u05D1\u05D5\u05D9 \u05E9\u05E8\u05D9\u05E4\u05D5\u05EA" \u05D5\u05DE\u05EA\u05D1\u05E1\u05E1\u05EA \u05E2\u05DC \u05EA\u05E8\u05D1\u05D5\u05EA \u05E9\u05DC \u05DE\u05E2\u05E7\u05E4\u05D9\u05DD (Workarounds) \u05D1\u05DE\u05E7\u05D5\u05DD \u05DC\u05D1\u05E6\u05E2 "\u05DC\u05DE\u05D9\u05D3\u05D4 \u05D3\u05D5-\u05DC\u05D5\u05DC\u05D0\u05EA\u05D9\u05EA". \u05D4\u05EA\u05E0\u05D4\u05DC\u05D5\u05EA \u05D6\u05D5 \u05E6\u05D5\u05E8\u05DB\u05EA \u05DE\u05E9\u05D0\u05D1\u05D9\u05DD \u05E7\u05D5\u05D2\u05E0\u05D9\u05D8\u05D9\u05D1\u05D9\u05D9\u05DD \u05D9\u05E7\u05E8\u05D9\u05DD \u05D1\u05DE\u05E7\u05D5\u05DD \u05DC\u05D9\u05D9\u05E6\u05E8 \u05EA\u05E4\u05D5\u05E7\u05D4.'
     )
   } else if (answers.pathologyNod === 'high') {
     diagnosisParts.push(
       ctx === 'one_man_show'
-        ? 'זוהתה נורמליזציית סטייה (NOD) גבוהה: קיצורי דרך ועקיפת נהלים הופכים לדרך הקבועה תחת לחץ מסירה — עם סיכון לטעויות, לשחיקה ולחוסר יכולת לסקייל.'
-        : 'זוהתה נורמליזציית סטייה (NOD) ברמה גבוהה: עקיפת נהלים ותרבות של קיצורי דרך מקבלת הכשר שקט מההנהלה. תופעה זו מגדילה את האנטרופיה המבנית ומסכנת את שלמות התהליכים לאורך זמן.'
+        ? '\u05D6\u05D5\u05D4\u05EA\u05D4 \u05E0\u05D5\u05E8\u05DE\u05DC\u05D9\u05D6\u05E6\u05D9\u05D9\u05EA \u05E1\u05D8\u05D9\u05D9\u05D4 (NOD) \u05D2\u05D1\u05D5\u05D4\u05D4: \u05E7\u05D9\u05E6\u05D5\u05E8\u05D9 \u05D3\u05E8\u05DA \u05D5\u05E2\u05E7\u05D9\u05E4\u05EA \u05E0\u05D4\u05DC\u05D9\u05DD \u05D4\u05D5\u05E4\u05DB\u05D9\u05DD \u05DC\u05D3\u05E8\u05DA \u05D4\u05E7\u05D1\u05D5\u05E2\u05D4 \u05EA\u05D7\u05EA \u05DC\u05D7\u05E5 \u05DE\u05E1\u05D9\u05E8\u05D4 — \u05E2\u05DD \u05E1\u05D9\u05DB\u05D5\u05DF \u05DC\u05D8\u05E2\u05D5\u05D9\u05D5\u05EA, \u05DC\u05E9\u05D7\u05D9\u05E7\u05D4 \u05D5\u05DC\u05D7\u05D5\u05E1\u05E8 \u05D9\u05DB\u05D5\u05DC\u05EA \u05DC\u05E1\u05E7\u05D9\u05D9\u05DC.'
+        : '\u05D6\u05D5\u05D4\u05EA\u05D4 \u05E0\u05D5\u05E8\u05DE\u05DC\u05D9\u05D6\u05E6\u05D9\u05D9\u05EA \u05E1\u05D8\u05D9\u05D9\u05D4 (NOD) \u05D1\u05E8\u05DE\u05D4 \u05D2\u05D1\u05D5\u05D4\u05D4: \u05E2\u05E7\u05D9\u05E4\u05EA \u05E0\u05D4\u05DC\u05D9\u05DD \u05D5\u05EA\u05E8\u05D1\u05D5\u05EA \u05E9\u05DC \u05E7\u05D9\u05E6\u05D5\u05E8\u05D9 \u05D3\u05E8\u05DA \u05DE\u05E7\u05D1\u05DC\u05EA \u05D4\u05DB\u05E9\u05E8 \u05E9\u05E7\u05D8 \u05DE\u05D4\u05D4\u05E0\u05D4\u05DC\u05D4. \u05EA\u05D5\u05E4\u05E2\u05D4 \u05D6\u05D5 \u05DE\u05D2\u05D3\u05D9\u05DC\u05D4 \u05D0\u05EA \u05D4\u05D0\u05E0\u05D8\u05E8\u05D5\u05E4\u05D9\u05D4 \u05D4\u05DE\u05D1\u05E0\u05D9\u05EA \u05D5\u05DE\u05E1\u05DB\u05E0\u05EA \u05D0\u05EA \u05E9\u05DC\u05DE\u05D5\u05EA \u05D4\u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD \u05DC\u05D0\u05D5\u05E8\u05DA \u05D6\u05DE\u05DF.'
     )
   }
   if (answers.pathologyZeroSum === 'frequent') {
     diagnosisParts.push(
       ctx === 'one_man_show'
-        ? 'זוהה מתח מתמשך בין "כובעים" או זרמי עבודה (למשל מכירות מול מסירה, לקוחות מול קיבולת) — כך שמשאבים נשרפים על מתח פנימי במקום על צמיחה בשוק.'
-        : 'זוהה חיכוך בין-מחלקתי מתמיד המעיד על סתירות מובנות בין יעדים ומדדים. הארגון מוציא משאבים על פתרון סכסוכים פנימיים במקום על התמודדות עם מתחרים בשוק.'
+        ? '\u05D6\u05D5\u05D4\u05D4 \u05DE\u05EA\u05D7 \u05DE\u05EA\u05DE\u05E9\u05DA \u05D1\u05D9\u05DF "\u05DB\u05D5\u05D1\u05E2\u05D9\u05DD" \u05D0\u05D5 \u05D6\u05E8\u05DE\u05D9 \u05E2\u05D1\u05D5\u05D3\u05D4 (\u05DC\u05DE\u05E9\u05DC \u05DE\u05DB\u05D9\u05E8\u05D5\u05EA \u05DE\u05D5\u05DC \u05DE\u05E1\u05D9\u05E8\u05D4, \u05DC\u05E7\u05D5\u05D7\u05D5\u05EA \u05DE\u05D5\u05DC \u05E7\u05D9\u05D1\u05D5\u05DC\u05EA) — \u05DB\u05DA \u05E9\u05DE\u05E9\u05D0\u05D1\u05D9\u05DD \u05E0\u05E9\u05E8\u05E4\u05D9\u05DD \u05E2\u05DC \u05DE\u05EA\u05D7 \u05E4\u05E0\u05D9\u05DE\u05D9 \u05D1\u05DE\u05E7\u05D5\u05DD \u05E2\u05DC \u05E6\u05DE\u05D9\u05D7\u05D4 \u05D1\u05E9\u05D5\u05E7.'
+        : '\u05D6\u05D5\u05D4\u05D4 \u05D7\u05D9\u05DB\u05D5\u05DA \u05D1\u05D9\u05DF-\u05DE\u05D7\u05DC\u05E7\u05EA\u05D9 \u05DE\u05EA\u05DE\u05D9\u05D3 \u05D4\u05DE\u05E2\u05D9\u05D3 \u05E2\u05DC \u05E1\u05EA\u05D9\u05E8\u05D5\u05EA \u05DE\u05D5\u05D1\u05E0\u05D5\u05EA \u05D1\u05D9\u05DF \u05D9\u05E2\u05D3\u05D9\u05DD \u05D5\u05DE\u05D3\u05D3\u05D9\u05DD. \u05D4\u05D0\u05E8\u05D2\u05D5\u05DF \u05DE\u05D5\u05E6\u05D9\u05D0 \u05DE\u05E9\u05D0\u05D1\u05D9\u05DD \u05E2\u05DC \u05E4\u05EA\u05E8\u05D5\u05DF \u05E1\u05DB\u05E1\u05D5\u05DB\u05D9\u05DD \u05E4\u05E0\u05D9\u05DE\u05D9\u05D9\u05DD \u05D1\u05DE\u05E7\u05D5\u05DD \u05E2\u05DC \u05D4\u05EA\u05DE\u05D5\u05D3\u05D3\u05D5\u05EA \u05E2\u05DD \u05DE\u05EA\u05D7\u05E8\u05D9\u05DD \u05D1\u05E9\u05D5\u05E7.'
     )
   }
   if (answers.pathologySemantic === 'high_drift') {
     diagnosisParts.push(
       ctx === 'one_man_show'
-        ? 'זוהתה סחיפה סמנטית בינך לבין לקוחות/ספקים: הגדרות לא מיושרות יוצרות תרגום חוזר, ויכוחים על scope ואחריות — ודורשות מאמץ קוגניטיבי יקר.'
-        : 'זוהתה סחיפה סמנטית (Semantic Drift) וחיכוך אונטולוגי: פערים משמעותיים בהגדרות עבודה ותחומי אחריות בין מחלקות. כל פעולה דורשת מאמץ תרגום וגישור הצורך משאבים קוגניטיביים יקרים.'
+        ? '\u05D6\u05D5\u05D4\u05EA\u05D4 \u05E1\u05D7\u05D9\u05E4\u05D4 \u05E1\u05DE\u05E0\u05D8\u05D9\u05EA \u05D1\u05D9\u05E0\u05DA \u05DC\u05D1\u05D9\u05DF \u05DC\u05E7\u05D5\u05D7\u05D5\u05EA/\u05E1\u05E4\u05E7\u05D9\u05DD: \u05D4\u05D2\u05D3\u05E8\u05D5\u05EA \u05DC\u05D0 \u05DE\u05D9\u05D5\u05E9\u05E8\u05D5\u05EA \u05D9\u05D5\u05E6\u05E8\u05D5\u05EA \u05EA\u05E8\u05D2\u05D5\u05DD \u05D7\u05D5\u05D6\u05E8, \u05D5\u05D9\u05DB\u05D5\u05D7\u05D9\u05DD \u05E2\u05DC scope \u05D5\u05D0\u05D7\u05E8\u05D9\u05D5\u05EA — \u05D5\u05D3\u05D5\u05E8\u05E9\u05D5\u05EA \u05DE\u05D0\u05DE\u05E5 \u05E7\u05D5\u05D2\u05E0\u05D9\u05D8\u05D9\u05D1\u05D9 \u05D9\u05E7\u05E8.'
+        : '\u05D6\u05D5\u05D4\u05EA\u05D4 \u05E1\u05D7\u05D9\u05E4\u05D4 \u05E1\u05DE\u05E0\u05D8\u05D9\u05EA (Semantic Drift) \u05D5\u05D7\u05D9\u05DB\u05D5\u05DA \u05D0\u05D5\u05E0\u05D8\u05D5\u05DC\u05D5\u05D2\u05D9: \u05E4\u05E2\u05E8\u05D9\u05DD \u05DE\u05E9\u05DE\u05E2\u05D5\u05EA\u05D9\u05D9\u05DD \u05D1\u05D4\u05D2\u05D3\u05E8\u05D5\u05EA \u05E2\u05D1\u05D5\u05D3\u05D4 \u05D5\u05EA\u05D7\u05D5\u05DE\u05D9 \u05D0\u05D7\u05E8\u05D9\u05D5\u05EA \u05D1\u05D9\u05DF \u05DE\u05D7\u05DC\u05E7\u05D5\u05EA. \u05DB\u05DC \u05E4\u05E2\u05D5\u05DC\u05D4 \u05D3\u05D5\u05E8\u05E9\u05EA \u05DE\u05D0\u05DE\u05E5 \u05EA\u05E8\u05D2\u05D5\u05DD \u05D5\u05D2\u05D9\u05E9\u05D5\u05E8 \u05D4\u05E6\u05D5\u05E8\u05DA \u05DE\u05E9\u05D0\u05D1\u05D9\u05DD \u05E7\u05D5\u05D2\u05E0\u05D9\u05D8\u05D9\u05D1\u05D9\u05D9\u05DD \u05D9\u05E7\u05E8\u05D9\u05DD.'
     )
   }
   const diagnosisParagraph =
     diagnosisParts.length > 0
       ? diagnosisParts.join(' ')
-      : 'הניתוח מצביע על רמת אנטרופיה ארגונית הדורשת תשומת לב ומעקב.'
+      : '\u05D4\u05E0\u05D9\u05EA\u05D5\u05D7 \u05DE\u05E6\u05D1\u05D9\u05E2 \u05E2\u05DC \u05E8\u05DE\u05EA \u05D0\u05E0\u05D8\u05E8\u05D5\u05E4\u05D9\u05D4 \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05EA \u05D4\u05D3\u05D5\u05E8\u05E9\u05EA \u05EA\u05E9\u05D5\u05DE\u05EA \u05DC\u05D1 \u05D5\u05DE\u05E2\u05E7\u05D1.'
 
   // CTA paragraph
   let ctaParagraph = ''
   if (recommendation.optionId === 'sprint') {
     const latencyNote =
       answers.decisionLatency === 'over_15'
-        ? 'הערכתך כי למעלה מ-15 שעות שבועיות אובדות עקב שהיית החלטות מצביעה על דימום קוגניטיבי חמור. '
+        ? '\u05D4\u05E2\u05E8\u05DB\u05EA\u05DA \u05DB\u05D9 \u05DC\u05DE\u05E2\u05DC\u05D4 \u05DE-15 \u05E9\u05E2\u05D5\u05EA \u05E9\u05D1\u05D5\u05E2\u05D9\u05D5\u05EA \u05D0\u05D5\u05D1\u05D3\u05D5\u05EA \u05E2\u05E7\u05D1 \u05E9\u05D4\u05D9\u05D9\u05EA \u05D4\u05D7\u05DC\u05D8\u05D5\u05EA \u05DE\u05E6\u05D1\u05D9\u05E2\u05D4 \u05E2\u05DC \u05D3\u05D9\u05DE\u05D5\u05DD \u05E7\u05D5\u05D2\u05E0\u05D9\u05D8\u05D9\u05D1\u05D9 \u05D7\u05DE\u05D5\u05E8. '
         : ''
     ctaParagraph =
       latencyNote +
       (ctx === 'one_man_show'
-        ? 'מצב זה דורש מעבר מיד משלב אבחון תיאורטי. אנו ממליצים על ספרינט חוסם עורקים (14 ימים) לחיתוך זמני המתנה, ליישור ציפיות מול לקוחות וספקים, ולשחרור קיבולת זמן ליצירת הכנסה.'
-        : 'מצב זה דורש מעבר לאבחון פאסיבי. אנו ממליצים על הפעלת ספרינט חוסם עורקים (14 ימים) שנועד לחתוך את זמני ההמתנה, לנטרל את הסתירות הפנימיות, ולהחזיר לארגון קיבולת זמינה ליצירת רווחים.')
+        ? '\u05DE\u05E6\u05D1 \u05D6\u05D4 \u05D3\u05D5\u05E8\u05E9 \u05DE\u05E2\u05D1\u05E8 \u05DE\u05D9\u05D3 \u05DE\u05E9\u05DC\u05D1 \u05D0\u05D1\u05D7\u05D5\u05DF \u05EA\u05D9\u05D0\u05D5\u05E8\u05D8\u05D9. \u05D0\u05E0\u05D5 \u05DE\u05DE\u05DC\u05D9\u05E6\u05D9\u05DD \u05E2\u05DC \u05E1\u05E4\u05E8\u05D9\u05E0\u05D8 \u05D7\u05D5\u05E1\u05DD \u05E2\u05D5\u05E8\u05E7\u05D9\u05DD (14 \u05D9\u05DE\u05D9\u05DD) \u05DC\u05D7\u05D9\u05EA\u05D5\u05DA \u05D6\u05DE\u05E0\u05D9 \u05D4\u05DE\u05EA\u05E0\u05D4, \u05DC\u05D9\u05D9\u05E9\u05D5\u05E8 \u05E6\u05D9\u05E4\u05D9\u05D5\u05EA \u05DE\u05D5\u05DC \u05DC\u05E7\u05D5\u05D7\u05D5\u05EA \u05D5\u05E1\u05E4\u05E7\u05D9\u05DD, \u05D5\u05DC\u05E9\u05D7\u05E8\u05D5\u05E8 \u05E7\u05D9\u05D1\u05D5\u05DC\u05EA \u05D6\u05DE\u05DF \u05DC\u05D9\u05E6\u05D9\u05E8\u05EA \u05D4\u05DB\u05E0\u05E1\u05D4.'
+        : '\u05DE\u05E6\u05D1 \u05D6\u05D4 \u05D3\u05D5\u05E8\u05E9 \u05DE\u05E2\u05D1\u05E8 \u05DC\u05D0\u05D1\u05D7\u05D5\u05DF \u05E4\u05D0\u05E1\u05D9\u05D1\u05D9. \u05D0\u05E0\u05D5 \u05DE\u05DE\u05DC\u05D9\u05E6\u05D9\u05DD \u05E2\u05DC \u05D4\u05E4\u05E2\u05DC\u05EA \u05E1\u05E4\u05E8\u05D9\u05E0\u05D8 \u05D7\u05D5\u05E1\u05DD \u05E2\u05D5\u05E8\u05E7\u05D9\u05DD (14 \u05D9\u05DE\u05D9\u05DD) \u05E9\u05E0\u05D5\u05E2\u05D3 \u05DC\u05D7\u05EA\u05D5\u05DA \u05D0\u05EA \u05D6\u05DE\u05E0\u05D9 \u05D4\u05D4\u05DE\u05EA\u05E0\u05D4, \u05DC\u05E0\u05D8\u05E8\u05DC \u05D0\u05EA \u05D4\u05E1\u05EA\u05D9\u05E8\u05D5\u05EA \u05D4\u05E4\u05E0\u05D9\u05DE\u05D9\u05D5\u05EA, \u05D5\u05DC\u05D4\u05D7\u05D6\u05D9\u05E8 \u05DC\u05D0\u05E8\u05D2\u05D5\u05DF \u05E7\u05D9\u05D1\u05D5\u05DC\u05EA \u05D6\u05DE\u05D9\u05E0\u05D4 \u05DC\u05D9\u05E6\u05D9\u05E8\u05EA \u05E8\u05D5\u05D5\u05D7\u05D9\u05DD.')
   } else if (recommendation.optionId === 'retainer') {
     ctaParagraph =
-      'הממצאים מצביעים על צורך בבניית תהליכים הדרגתית ארוכת טווח. אנו ממליצים על Resilience Retainer — ליווי אסטרטגי שוטף שיבנה יכולת למידה ארגונית ויצמצם את האנטרופיה באופן מובנה ומדיד.'
+      '\u05D4\u05DE\u05DE\u05E6\u05D0\u05D9\u05DD \u05DE\u05E6\u05D1\u05D9\u05E2\u05D9\u05DD \u05E2\u05DC \u05E6\u05D5\u05E8\u05DA \u05D1\u05D1\u05E0\u05D9\u05D9\u05EA \u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD \u05D4\u05D3\u05E8\u05D2\u05EA\u05D9\u05EA \u05D0\u05E8\u05D5\u05DB\u05EA \u05D8\u05D5\u05D5\u05D7. \u05D0\u05E0\u05D5 \u05DE\u05DE\u05DC\u05D9\u05E6\u05D9\u05DD \u05E2\u05DC Resilience Retainer — \u05DC\u05D9\u05D5\u05D5\u05D9 \u05D0\u05E1\u05D8\u05E8\u05D8\u05D2\u05D9 \u05E9\u05D5\u05D8\u05E3 \u05E9\u05D9\u05D1\u05E0\u05D4 \u05D9\u05DB\u05D5\u05DC\u05EA \u05DC\u05DE\u05D9\u05D3\u05D4 \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05EA \u05D5\u05D9\u05E6\u05DE\u05E6\u05DD \u05D0\u05EA \u05D4\u05D0\u05E0\u05D8\u05E8\u05D5\u05E4\u05D9\u05D4 \u05D1\u05D0\u05D5\u05E4\u05DF \u05DE\u05D5\u05D1\u05E0\u05D4 \u05D5\u05DE\u05D3\u05D9\u05D3.'
   } else {
     ctaParagraph =
       ctx === 'one_man_show'
-        ? 'הצעד הראשון המומלץ הוא Live Demo אבחוני — הזנת חומרים מהעסק (חוזים, תהליכים, תקשורת לקוחות), מפת פער דלתא, ומדידת זמן החלטה. ההדגמה חינמית ומדגימה ערך ממשי למסלול עצמאי.'
-        : 'הצעד הראשון המומלץ הוא Live Demo אבחוני — הזנת מסמכי הארגון, הפקת מפת פער דלתא, ומדידת Decision Latency בסיסי. ההדגמה חינמית ומספקת הוכחה מתמטית לערך ההתערבות.'
+        ? '\u05D4\u05E6\u05E2\u05D3 \u05D4\u05E8\u05D0\u05E9\u05D5\u05DF \u05D4\u05DE\u05D5\u05DE\u05DC\u05E5 \u05D4\u05D5\u05D0 Live Demo \u05D0\u05D1\u05D7\u05D5\u05E0\u05D9 — \u05D4\u05D6\u05E0\u05EA \u05D7\u05D5\u05DE\u05E8\u05D9\u05DD \u05DE\u05D4\u05E2\u05E1\u05E7 (\u05D7\u05D5\u05D6\u05D9\u05DD, \u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD, \u05EA\u05E7\u05E9\u05D5\u05E8\u05EA \u05DC\u05E7\u05D5\u05D7\u05D5\u05EA), \u05DE\u05E4\u05EA \u05E4\u05E2\u05E8 \u05D3\u05DC\u05EA\u05D0, \u05D5\u05DE\u05D3\u05D9\u05D3\u05EA \u05D6\u05DE\u05DF \u05D4\u05D7\u05DC\u05D8\u05D4. \u05D4\u05D4\u05D3\u05D2\u05DE\u05D4 \u05D7\u05D9\u05E0\u05DE\u05D9\u05EA \u05D5\u05DE\u05D3\u05D2\u05D9\u05DE\u05D4 \u05E2\u05E8\u05DA \u05DE\u05DE\u05E9\u05D9 \u05DC\u05DE\u05E1\u05DC\u05D5\u05DC \u05E2\u05E6\u05DE\u05D0\u05D9.'
+        : '\u05D4\u05E6\u05E2\u05D3 \u05D4\u05E8\u05D0\u05E9\u05D5\u05DF \u05D4\u05DE\u05D5\u05DE\u05DC\u05E5 \u05D4\u05D5\u05D0 Live Demo \u05D0\u05D1\u05D7\u05D5\u05E0\u05D9 — \u05D4\u05D6\u05E0\u05EA \u05DE\u05E1\u05DE\u05DB\u05D9 \u05D4\u05D0\u05E8\u05D2\u05D5\u05DF, \u05D4\u05E4\u05E7\u05EA \u05DE\u05E4\u05EA \u05E4\u05E2\u05E8 \u05D3\u05DC\u05EA\u05D0, \u05D5\u05DE\u05D3\u05D9\u05D3\u05EA Decision Latency \u05D1\u05E1\u05D9\u05E1\u05D9. \u05D4\u05D4\u05D3\u05D2\u05DE\u05D4 \u05D7\u05D9\u05E0\u05DE\u05D9\u05EA \u05D5\u05DE\u05E1\u05E4\u05E7\u05EA \u05D4\u05D5\u05DB\u05D7\u05D4 \u05DE\u05EA\u05DE\u05D8\u05D9\u05EA \u05DC\u05E2\u05E8\u05DA \u05D4\u05D4\u05EA\u05E2\u05E8\u05D1\u05D5\u05EA.'
   }
 
   let ignitionParagraph: string | undefined
   if (ignitionProfile) {
-    ignitionParagraph = `${ignitionProfile.narrativeHe} צעד ראשון מומלץ: ${ignitionProfile.firstMoveHe}`
+    ignitionParagraph = `${ignitionProfile.narrativeHe} \u05E6\u05E2\u05D3 \u05E8\u05D0\u05E9\u05D5\u05DF \u05DE\u05D5\u05DE\u05DC\u05E5: ${ignitionProfile.firstMoveHe}`
   }
 
   return { roleParagraph, diagnosisParagraph, ctaParagraph, ignitionParagraph }
@@ -996,21 +996,21 @@ export function buildPlanFromQuestionnaire(
   const dynamicSummary = buildDynamicSummary(answers, recommendation, ignitionProfile)
   const opt = getOptionById(optionId)
 
-  const title = `תוכנית עסקית — ${clientName}`
+  const title = `\u05EA\u05D5\u05DB\u05E0\u05D9\u05EA \u05E2\u05E1\u05E7\u05D9\u05EA — ${clientName}`
 
   const summaryParts = [
     isOms
-      ? 'מסלול One man show — שאלון וסיכום מותאמים להקשר עצמאי.'
+      ? '\u05DE\u05E1\u05DC\u05D5\u05DC One man show — \u05E9\u05D0\u05DC\u05D5\u05DF \u05D5\u05E1\u05D9\u05DB\u05D5\u05DD \u05DE\u05D5\u05EA\u05D0\u05DE\u05D9\u05DD \u05DC\u05D4\u05E7\u05E9\u05E8 \u05E2\u05E6\u05DE\u05D0\u05D9.'
       : isIcpFit
-        ? 'התאמה ל-ICP (50–300+ עובדים).'
-        : 'חורג מ-ICP — לשקול Live Demo לאבחון.',
-    entropyScore > 0 ? `ציון אנטרופיה: ${entropyScore}/4 פתולוגיות בחומרה גבוהה.` : '',
+        ? '\u05D4\u05EA\u05D0\u05DE\u05D4 \u05DC-ICP (50–300+ \u05E2\u05D5\u05D1\u05D3\u05D9\u05DD).'
+        : '\u05D7\u05D5\u05E8\u05D2 \u05DE-ICP — \u05DC\u05E9\u05E7\u05D5\u05DC Live Demo \u05DC\u05D0\u05D1\u05D7\u05D5\u05DF.',
+    entropyScore > 0 ? `\u05E6\u05D9\u05D5\u05DF \u05D0\u05E0\u05D8\u05E8\u05D5\u05E4\u05D9\u05D4: ${entropyScore}/4 \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA \u05D1\u05D7\u05D5\u05DE\u05E8\u05D4 \u05D2\u05D1\u05D5\u05D4\u05D4.` : '',
     answers.decisionLatency === 'over_15'
-      ? 'Decision Latency קריטי (מעל 15 שעות/שבוע) — עדיפות לספרינט חוסם עורקים.'
+      ? 'Decision Latency \u05E7\u05E8\u05D9\u05D8\u05D9 (\u05DE\u05E2\u05DC 15 \u05E9\u05E2\u05D5\u05EA/\u05E9\u05D1\u05D5\u05E2) — \u05E2\u05D3\u05D9\u05E4\u05D5\u05EA \u05DC\u05E1\u05E4\u05E8\u05D9\u05E0\u05D8 \u05D7\u05D5\u05E1\u05DD \u05E2\u05D5\u05E8\u05E7\u05D9\u05DD.'
       : '',
-    opt ? `המלצה: ${opt.nameHe} (${opt.priceLabel}).` : '',
+    opt ? `\u05D4\u05DE\u05DC\u05E6\u05D4: ${opt.nameHe} (${opt.priceLabel}).` : '',
     ignitionProfile
-      ? `התנעה עסקית: דחיפות ${ignitionProfile.urgency === 'high' ? 'גבוהה' : ignitionProfile.urgency === 'low' ? 'נמוכה' : 'בינונית'}.`
+      ? `\u05D4\u05EA\u05E0\u05E2\u05D4 \u05E2\u05E1\u05E7\u05D9\u05EA: \u05D3\u05D7\u05D9\u05E4\u05D5\u05EA ${ignitionProfile.urgency === 'high' ? '\u05D2\u05D1\u05D5\u05D4\u05D4' : ignitionProfile.urgency === 'low' ? '\u05E0\u05DE\u05D5\u05DB\u05D4' : '\u05D1\u05D9\u05E0\u05D5\u05E0\u05D9\u05EA'}.`
       : '',
   ]
     .filter(Boolean)
@@ -1018,12 +1018,12 @@ export function buildPlanFromQuestionnaire(
 
   const baseNext =
     optionId === 'sprint'
-      ? 'הפעלת ספרינט חוסם עורקים (14 יום): BIA, מפת פער דלתא, DDD, Tech Tourniquet, Handover.'
+      ? '\u05D4\u05E4\u05E2\u05DC\u05EA \u05E1\u05E4\u05E8\u05D9\u05E0\u05D8 \u05D7\u05D5\u05E1\u05DD \u05E2\u05D5\u05E8\u05E7\u05D9\u05DD (14 \u05D9\u05D5\u05DD): BIA, \u05DE\u05E4\u05EA \u05E4\u05E2\u05E8 \u05D3\u05DC\u05EA\u05D0, DDD, Tech Tourniquet, Handover.'
       : optionId === 'retainer'
-        ? 'הצעת Resilience Retainer לאחר Live Demo ראשוני — ליווי אסטרטגי שוטף.'
-        : 'קיום Live Demo אבחוני (הזנת מסמכים, הוכחה מתמטית). לאחר מכן — הצעת מסלול לפי ממצאים.'
+        ? '\u05D4\u05E6\u05E2\u05EA Resilience Retainer \u05DC\u05D0\u05D7\u05E8 Live Demo \u05E8\u05D0\u05E9\u05D5\u05E0\u05D9 — \u05DC\u05D9\u05D5\u05D5\u05D9 \u05D0\u05E1\u05D8\u05E8\u05D8\u05D2\u05D9 \u05E9\u05D5\u05D8\u05E3.'
+        : '\u05E7\u05D9\u05D5\u05DD Live Demo \u05D0\u05D1\u05D7\u05D5\u05E0\u05D9 (\u05D4\u05D6\u05E0\u05EA \u05DE\u05E1\u05DE\u05DB\u05D9\u05DD, \u05D4\u05D5\u05DB\u05D7\u05D4 \u05DE\u05EA\u05DE\u05D8\u05D9\u05EA). \u05DC\u05D0\u05D7\u05E8 \u05DE\u05DB\u05DF — \u05D4\u05E6\u05E2\u05EA \u05DE\u05E1\u05DC\u05D5\u05DC \u05DC\u05E4\u05D9 \u05DE\u05DE\u05E6\u05D0\u05D9\u05DD.'
   const nextSteps = ignitionProfile
-    ? `${baseNext} התנעה: ${ignitionProfile.firstMoveHe}`
+    ? `${baseNext} \u05D4\u05EA\u05E0\u05E2\u05D4: ${ignitionProfile.firstMoveHe}`
     : baseNext
 
   return {

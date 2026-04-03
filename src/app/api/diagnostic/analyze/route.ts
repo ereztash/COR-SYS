@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
   const nonEmpty = Object.values(answers).filter(v => v?.trim().length > 10)
   if (nonEmpty.length < 3) {
     return NextResponse.json(
-      { error: 'נדרשות לפחות 3 תשובות לאבחון' },
+      { error: '\u05E0\u05D3\u05E8\u05E9\u05D5\u05EA \u05DC\u05E4\u05D7\u05D5\u05EA 3 \u05EA\u05E9\u05D5\u05D1\u05D5\u05EA \u05DC\u05D0\u05D1\u05D7\u05D5\u05DF' },
       { status: 422 }
     )
   }

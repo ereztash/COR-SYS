@@ -29,7 +29,7 @@ interface CreateDiagnosticSprintInput {
 export async function createDiagnosticSprintAction(
   input: CreateDiagnosticSprintInput
 ): Promise<{ ok: boolean; error?: string; sprintId?: string }> {
-  if (!isValidUuid(input.clientId)) return { ok: false, error: 'מזהה לקוח לא חוקי' }
+  if (!isValidUuid(input.clientId)) return { ok: false, error: '\u05DE\u05D6\u05D4\u05D4 \u05DC\u05E7\u05D5\u05D7 \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9' }
 
   const supabase = await createClient()
 
@@ -37,7 +37,7 @@ export async function createDiagnosticSprintAction(
   const end14 = new Date(Date.now() + 13 * 86400000).toISOString().split('T')[0]
 
   const profileLabel = PROFILE_LABELS[input.profile] ?? input.profile
-  const sprintTitle = `ספרינט אבחון — ${profileLabel} | ${input.dominantAxis} ↑`
+  const sprintTitle = `\u05E1\u05E4\u05E8\u05D9\u05E0\u05D8 \u05D0\u05D1\u05D7\u05D5\u05DF — ${profileLabel} | ${input.dominantAxis} ↑`
   const goal = `DR ${input.dr.toFixed(1)} · ND ${input.nd.toFixed(1)} · UC ${input.uc.toFixed(1)} — ${input.interventions.map(i => i.title_he).join(' / ')}`
   const sprintPayload: Pick<Sprint, 'client_id' | 'sprint_number' | 'title' | 'start_date' | 'end_date' | 'status' | 'goal'> = {
     client_id: input.clientId,
@@ -56,7 +56,7 @@ export async function createDiagnosticSprintAction(
     .single()
 
   if (sprintErr || !sprint) {
-    return { ok: false, error: sprintErr?.message ?? 'שגיאה ביצירת ספרינט' }
+    return { ok: false, error: sprintErr?.message ?? '\u05E9\u05D2\u05D9\u05D0\u05D4 \u05D1\u05D9\u05E6\u05D9\u05E8\u05EA \u05E1\u05E4\u05E8\u05D9\u05E0\u05D8' }
   }
 
   const sprintId = (sprint as { id: string }).id
@@ -67,7 +67,7 @@ export async function createDiagnosticSprintAction(
     sprint_id: sprintId,
     client_id: input.clientId,
     title: item.title_he,
-    description: `${item.what_he}\n\nמדד הצלחה: ${item.metric_he}\n\nמנגנון: ${item.why_he}`,
+    description: `${item.what_he}\n\n\u05DE\u05D3\u05D3 \u05D4\u05E6\u05DC\u05D7\u05D4: ${item.metric_he}\n\n\u05DE\u05E0\u05D2\u05E0\u05D5\u05DF: ${item.why_he}`,
     status: 'todo' as const,
     priority: i === 0 ? 'critical' : i === 1 ? 'high' : 'medium',
     estimated_hours: item.horizon === '14d' ? 4 : item.horizon === '30d' ? 8 : 16,

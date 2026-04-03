@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { isValidUuid, isClientStatus, isClientOperatingContext, toFiniteNumber } from '@/lib/validation'
 
-/** שגיאת PostgREST/PG כש־operating_context לא בטבלה או לא בקאש הסכמה */
+/** \u05E9\u05D2\u05D9\u05D0\u05EA PostgREST/PG \u05DB\u05E9\u05BEoperating_context \u05DC\u05D0 \u05D1\u05D8\u05D1\u05DC\u05D4 \u05D0\u05D5 \u05DC\u05D0 \u05D1\u05E7\u05D0\u05E9 \u05D4\u05E1\u05DB\u05DE\u05D4 */
 function isOperatingContextSchemaError(message: string, code?: string): boolean {
   const m = `${message} ${code ?? ''}`.toLowerCase()
   return (
@@ -34,9 +34,9 @@ type ClientPayload = {
 }
 
 export async function createClientAction(payload: ClientPayload): Promise<{ ok: boolean; error?: string; id?: string }> {
-  if (!isClientStatus(payload.status)) return { ok: false, error: 'סטטוס לא חוקי' }
+  if (!isClientStatus(payload.status)) return { ok: false, error: '\u05E1\u05D8\u05D8\u05D5\u05E1 \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9' }
   if (payload.operating_context != null && payload.operating_context !== '' && !isClientOperatingContext(payload.operating_context)) {
-    return { ok: false, error: 'הקשר תפעולי לא חוקי' }
+    return { ok: false, error: '\u05D4\u05E7\u05E9\u05E8 \u05EA\u05E4\u05E2\u05D5\u05DC\u05D9 \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9' }
   }
   const safePayload: Record<string, unknown> = {
     ...payload,
@@ -64,7 +64,7 @@ export async function createClientAction(payload: ClientPayload): Promise<{ ok: 
       return {
         ok: false,
         error:
-          'לא ניתן לשמור "הקשר שאלונים": ודא שהרצת ב-Supabase את הקובץ supabase-migration-client-operating-context.sql (כולל NOTIFY בסוף), או המתן דקה לרענון סכמה.',
+          '\u05DC\u05D0 \u05E0\u05D9\u05EA\u05DF \u05DC\u05E9\u05DE\u05D5\u05E8 "\u05D4\u05E7\u05E9\u05E8 \u05E9\u05D0\u05DC\u05D5\u05E0\u05D9\u05DD": \u05D5\u05D3\u05D0 \u05E9\u05D4\u05E8\u05E6\u05EA \u05D1-Supabase \u05D0\u05EA \u05D4\u05E7\u05D5\u05D1\u05E5 supabase-migration-client-operating-context.sql (\u05DB\u05D5\u05DC\u05DC NOTIFY \u05D1\u05E1\u05D5\u05E3), \u05D0\u05D5 \u05D4\u05DE\u05EA\u05DF \u05D3\u05E7\u05D4 \u05DC\u05E8\u05E2\u05E0\u05D5\u05DF \u05E1\u05DB\u05DE\u05D4.',
       }
     }
     // @ts-expect-error row shape
@@ -79,14 +79,14 @@ export async function createClientAction(payload: ClientPayload): Promise<{ ok: 
 }
 
 export async function updateClientAction(id: string, payload: Partial<ClientPayload>): Promise<{ ok: boolean; error?: string }> {
-  if (!isValidUuid(id)) return { ok: false, error: 'מזהה לא חוקי' }
-  if (payload.status != null && !isClientStatus(payload.status)) return { ok: false, error: 'סטטוס לא חוקי' }
+  if (!isValidUuid(id)) return { ok: false, error: '\u05DE\u05D6\u05D4\u05D4 \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9' }
+  if (payload.status != null && !isClientStatus(payload.status)) return { ok: false, error: '\u05E1\u05D8\u05D8\u05D5\u05E1 \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9' }
   if (
     payload.operating_context != null &&
     payload.operating_context !== '' &&
     !isClientOperatingContext(payload.operating_context)
   ) {
-    return { ok: false, error: 'הקשר תפעולי לא חוקי' }
+    return { ok: false, error: '\u05D4\u05E7\u05E9\u05E8 \u05EA\u05E4\u05E2\u05D5\u05DC\u05D9 \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9' }
   }
   const safePayload = { ...payload }
   if (payload.operating_context !== undefined) {
@@ -114,7 +114,7 @@ export async function updateClientAction(id: string, payload: Partial<ClientPayl
       return {
         ok: false,
         error:
-          'לא ניתן לשמור "הקשר שאלונים": הרץ את supabase-migration-client-operating-context.sql ב-SQL Editor (או רענון סכמה ב-API).',
+          '\u05DC\u05D0 \u05E0\u05D9\u05EA\u05DF \u05DC\u05E9\u05DE\u05D5\u05E8 "\u05D4\u05E7\u05E9\u05E8 \u05E9\u05D0\u05DC\u05D5\u05E0\u05D9\u05DD": \u05D4\u05E8\u05E5 \u05D0\u05EA supabase-migration-client-operating-context.sql \u05D1-SQL Editor (\u05D0\u05D5 \u05E8\u05E2\u05E0\u05D5\u05DF \u05E1\u05DB\u05DE\u05D4 \u05D1-API).',
       }
     }
     // @ts-expect-error row shape

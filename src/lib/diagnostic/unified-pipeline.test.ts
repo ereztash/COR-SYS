@@ -25,7 +25,7 @@ describe('runUnifiedTreatmentPipeline', () => {
     expect(result.orgPathology.primaryType).toBe('CS')
     expect(result.orgPathology.csAmplifier).toBe(true)
     expect(result.sequencing_alerts_he.length).toBeGreaterThan(0)
-    expect(result.sequencing_alerts_he.some((s) => s.includes('קסקדה'))).toBe(true)
+    expect(result.sequencing_alerts_he.some((s) => s.includes('\u05E7\u05E1\u05E7\u05D3\u05D4'))).toBe(true)
   })
 
   it('NOD with elevated SC applies ND sequencing lock when criteria match', () => {
@@ -37,7 +37,7 @@ describe('runUnifiedTreatmentPipeline', () => {
     expect(result.orgPathology.csAmplifier).toBe(false)
     const locked = result.items.filter((i) => i.sequencing_locked)
     expect(locked.length).toBeGreaterThan(0)
-    expect(locked.some((i) => (i.sequencing_lock_reason_he ?? '').includes('בעלות'))).toBe(true)
+    expect(locked.some((i) => (i.sequencing_lock_reason_he ?? '').includes('\u05D1\u05E2\u05DC\u05D5\u05EA'))).toBe(true)
   })
 
   it('extreme envelope does not throw', () => {

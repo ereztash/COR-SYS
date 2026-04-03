@@ -169,7 +169,7 @@ export async function GET(
   }
 }
 
-// ג”€ג”€ג”€ Score-only diagnosis reconstruction ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+// \u05D2”€\u05D2”€\u05D2”€ Score-only diagnosis reconstruction \u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€\u05D2”€
 
 /**
  * Reconstruct a minimal DSMDiagnosis from numeric scores alone.

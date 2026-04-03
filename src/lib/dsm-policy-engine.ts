@@ -24,7 +24,7 @@
 
 import type { DSMDiagnosis, PathologyCode, SeverityLevel } from './dsm-engine'
 
-// ─── Benchmark Context (אפיק א׳ — מה עשו בעולם) ─────────────────────────────
+// ─── Benchmark Context (\u05D0\u05E4\u05D9\u05E7 \u05D0\u05F3 — \u05DE\u05D4 \u05E2\u05E9\u05D5 \u05D1\u05E2\u05D5\u05DC\u05DD) ─────────────────────────────
 
 /**
  * Cohort percentile benchmarks derived from:
@@ -48,88 +48,88 @@ export const BENCHMARK_CONTEXTS: BenchmarkContext[] = [
   {
     pathologyCode: 'DR',
     scoreRange: [0, 2.5],
-    percentileEstimate: 'top 25% — רמת תחרות פנימית נמוכה',
-    cohortNote: 'ארגונים בטווח זה מציגים שיתוף פעולה בין-מחלקתי גבוה (OHI: "Direction" ≥ 75th)',
+    percentileEstimate: 'top 25% — \u05E8\u05DE\u05EA \u05EA\u05D7\u05E8\u05D5\u05EA \u05E4\u05E0\u05D9\u05DE\u05D9\u05EA \u05E0\u05DE\u05D5\u05DB\u05D4',
+    cohortNote: '\u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05DD \u05D1\u05D8\u05D5\u05D5\u05D7 \u05D6\u05D4 \u05DE\u05E6\u05D9\u05D2\u05D9\u05DD \u05E9\u05D9\u05EA\u05D5\u05E3 \u05E4\u05E2\u05D5\u05DC\u05D4 \u05D1\u05D9\u05DF-\u05DE\u05D7\u05DC\u05E7\u05EA\u05D9 \u05D2\u05D1\u05D5\u05D4 (OHI: "Direction" ≥ 75th)',
     referenceTools: ['McKinsey OHI — Direction', 'CultureAmp — Collaboration'],
   },
   {
     pathologyCode: 'DR',
     scoreRange: [2.5, 5.5],
-    percentileEstimate: 'percentile 40–70 — תחרות פנימית מתונה',
-    cohortNote: 'טיפוסי לארגונים בצמיחה (50–300 עובדים) בשלב מעבר מבניות',
+    percentileEstimate: 'percentile 40–70 — \u05EA\u05D7\u05E8\u05D5\u05EA \u05E4\u05E0\u05D9\u05DE\u05D9\u05EA \u05DE\u05EA\u05D5\u05E0\u05D4',
+    cohortNote: '\u05D8\u05D9\u05E4\u05D5\u05E1\u05D9 \u05DC\u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05DD \u05D1\u05E6\u05DE\u05D9\u05D7\u05D4 (50–300 \u05E2\u05D5\u05D1\u05D3\u05D9\u05DD) \u05D1\u05E9\u05DC\u05D1 \u05DE\u05E2\u05D1\u05E8 \u05DE\u05D1\u05E0\u05D9\u05D5\u05EA',
     referenceTools: ['McKinsey OHI — Direction', 'Atlassian Health Monitor — Shared Understanding'],
   },
   {
     pathologyCode: 'DR',
     scoreRange: [5.5, 10],
-    percentileEstimate: 'bottom 30% — תחרות פנימית גבוהה',
-    cohortNote: 'מתאם שלילי עם ROI ארגוני (Różycka-Tran BZSG r=−.41, N=10,000)',
+    percentileEstimate: 'bottom 30% — \u05EA\u05D7\u05E8\u05D5\u05EA \u05E4\u05E0\u05D9\u05DE\u05D9\u05EA \u05D2\u05D1\u05D5\u05D4\u05D4',
+    cohortNote: '\u05DE\u05EA\u05D0\u05DD \u05E9\u05DC\u05D9\u05DC\u05D9 \u05E2\u05DD ROI \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9 (Różycka-Tran BZSG r=−.41, N=10,000)',
     referenceTools: ['McKinsey OHI — Direction', 'Qualtrics EmployeeXM — Conflict Index'],
   },
   // ND benchmarks
   {
     pathologyCode: 'ND',
     scoreRange: [0, 2.5],
-    percentileEstimate: 'top 25% — עמידה גבוהה בנהלים',
-    cohortNote: 'ארגונים בטווח זה מציגים BIA accuracy גבוה ו-near-miss reporting אפקטיבי',
+    percentileEstimate: 'top 25% — \u05E2\u05DE\u05D9\u05D3\u05D4 \u05D2\u05D1\u05D5\u05D4\u05D4 \u05D1\u05E0\u05D4\u05DC\u05D9\u05DD',
+    cohortNote: '\u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05DD \u05D1\u05D8\u05D5\u05D5\u05D7 \u05D6\u05D4 \u05DE\u05E6\u05D9\u05D2\u05D9\u05DD BIA accuracy \u05D2\u05D1\u05D5\u05D4 \u05D5-near-miss reporting \u05D0\u05E4\u05E7\u05D8\u05D9\u05D1\u05D9',
     referenceTools: ['ISO 22301 BCM Maturity', 'Atlassian Health Monitor — Health Checks'],
   },
   {
     pathologyCode: 'ND',
     scoreRange: [2.5, 5.5],
-    percentileEstimate: 'percentile 35–65 — NOD מתון',
-    cohortNote: 'Vaughan Stage 2–3: סטיות מוכרות אך עדיין לא מנורמלות לחלוטין',
+    percentileEstimate: 'percentile 35–65 — NOD \u05DE\u05EA\u05D5\u05DF',
+    cohortNote: 'Vaughan Stage 2–3: \u05E1\u05D8\u05D9\u05D5\u05EA \u05DE\u05D5\u05DB\u05E8\u05D5\u05EA \u05D0\u05DA \u05E2\u05D3\u05D9\u05D9\u05DF \u05DC\u05D0 \u05DE\u05E0\u05D5\u05E8\u05DE\u05DC\u05D5\u05EA \u05DC\u05D7\u05DC\u05D5\u05D8\u05D9\u05DF',
     referenceTools: ['ISO 22301', 'CultureAmp — Process Adherence'],
   },
   {
     pathologyCode: 'ND',
     scoreRange: [5.5, 10],
-    percentileEstimate: 'bottom 25% — NOD חמור',
-    cohortNote: 'Vaughan Stage 4–5: סטיות הפכו לנורמה; סיכון גבוה לאירועי BCM',
+    percentileEstimate: 'bottom 25% — NOD \u05D7\u05DE\u05D5\u05E8',
+    cohortNote: 'Vaughan Stage 4–5: \u05E1\u05D8\u05D9\u05D5\u05EA \u05D4\u05E4\u05DB\u05D5 \u05DC\u05E0\u05D5\u05E8\u05DE\u05D4; \u05E1\u05D9\u05DB\u05D5\u05DF \u05D2\u05D1\u05D5\u05D4 \u05DC\u05D0\u05D9\u05E8\u05D5\u05E2\u05D9 BCM',
     referenceTools: ['ISO 22301', 'Qualtrics EmployeeXM — Risk Culture'],
   },
   // UC benchmarks
   {
     pathologyCode: 'UC',
     scoreRange: [0, 2.5],
-    percentileEstimate: 'top 20% — למידה ארגונית גבוהה',
-    cohortNote: 'Edmondson Psychological Safety ≥ 4.2/5; Double-Loop learning מתועד',
+    percentileEstimate: 'top 20% — \u05DC\u05DE\u05D9\u05D3\u05D4 \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05EA \u05D2\u05D1\u05D5\u05D4\u05D4',
+    cohortNote: 'Edmondson Psychological Safety ≥ 4.2/5; Double-Loop learning \u05DE\u05EA\u05D5\u05E2\u05D3',
     referenceTools: ['Edmondson PSYCH-SAFE scale', 'CultureAmp — Learning & Development'],
   },
   {
     pathologyCode: 'UC',
     scoreRange: [2.5, 5.5],
-    percentileEstimate: 'percentile 35–65 — למידה מעורבת',
-    cohortNote: 'Single-loop בעיקר; AAR מתבצע אך ממצאים לא מתורגמים לשינוי מבני',
+    percentileEstimate: 'percentile 35–65 — \u05DC\u05DE\u05D9\u05D3\u05D4 \u05DE\u05E2\u05D5\u05E8\u05D1\u05EA',
+    cohortNote: 'Single-loop \u05D1\u05E2\u05D9\u05E7\u05E8; AAR \u05DE\u05EA\u05D1\u05E6\u05E2 \u05D0\u05DA \u05DE\u05DE\u05E6\u05D0\u05D9\u05DD \u05DC\u05D0 \u05DE\u05EA\u05D5\u05E8\u05D2\u05DE\u05D9\u05DD \u05DC\u05E9\u05D9\u05E0\u05D5\u05D9 \u05DE\u05D1\u05E0\u05D9',
     referenceTools: ['CultureAmp — Learning', 'Qualtrics EmployeeXM — Feedback Culture'],
   },
   {
     pathologyCode: 'UC',
     scoreRange: [5.5, 10],
-    percentileEstimate: 'bottom 25% — כשל למידה חמור',
-    cohortNote: 'Semantic drift גבוה + תרבות האשמה; Floridi Ontological Friction > threshold',
+    percentileEstimate: 'bottom 25% — \u05DB\u05E9\u05DC \u05DC\u05DE\u05D9\u05D3\u05D4 \u05D7\u05DE\u05D5\u05E8',
+    cohortNote: 'Semantic drift \u05D2\u05D1\u05D5\u05D4 + \u05EA\u05E8\u05D1\u05D5\u05EA \u05D4\u05D0\u05E9\u05DE\u05D4; Floridi Ontological Friction > threshold',
     referenceTools: ['Edmondson PSYCH-SAFE scale', 'McKinsey OHI — Innovation & Learning'],
   },
   // SC benchmarks
   {
     pathologyCode: 'SC',
     scoreRange: [0, 2.5],
-    percentileEstimate: 'top 25% — בהירות מבנית גבוהה',
-    cohortNote: 'RACI ברור, תהליכי ליבה מתועדים, ו-decision rights מוגדרים',
+    percentileEstimate: 'top 25% — \u05D1\u05D4\u05D9\u05E8\u05D5\u05EA \u05DE\u05D1\u05E0\u05D9\u05EA \u05D2\u05D1\u05D5\u05D4\u05D4',
+    cohortNote: 'RACI \u05D1\u05E8\u05D5\u05E8, \u05EA\u05D4\u05DC\u05D9\u05DB\u05D9 \u05DC\u05D9\u05D1\u05D4 \u05DE\u05EA\u05D5\u05E2\u05D3\u05D9\u05DD, \u05D5-decision rights \u05DE\u05D5\u05D2\u05D3\u05E8\u05D9\u05DD',
     referenceTools: ['RACI Audit', 'Gartner Org Design Maturity'],
   },
   {
     pathologyCode: 'SC',
     scoreRange: [2.5, 5.5],
-    percentileEstimate: 'percentile 35–65 — עמימות מבנית בינונית',
-    cohortNote: 'מבנה חלקי עם חיכוכי handoff ושטחים אפורים בין יחידות',
+    percentileEstimate: 'percentile 35–65 — \u05E2\u05DE\u05D9\u05DE\u05D5\u05EA \u05DE\u05D1\u05E0\u05D9\u05EA \u05D1\u05D9\u05E0\u05D5\u05E0\u05D9\u05EA',
+    cohortNote: '\u05DE\u05D1\u05E0\u05D4 \u05D7\u05DC\u05E7\u05D9 \u05E2\u05DD \u05D7\u05D9\u05DB\u05D5\u05DB\u05D9 handoff \u05D5\u05E9\u05D8\u05D7\u05D9\u05DD \u05D0\u05E4\u05D5\u05E8\u05D9\u05DD \u05D1\u05D9\u05DF \u05D9\u05D7\u05D9\u05D3\u05D5\u05EA',
     referenceTools: ['Operating Model Health Check', 'Process Documentation Audit'],
   },
   {
     pathologyCode: 'SC',
     scoreRange: [5.5, 10],
-    percentileEstimate: 'bottom 25% — כשל מבני חמור',
-    cohortNote: 'חוסר בהירות סמכותית ותהליכית שמייצר עיכוב החלטות ונורמליזציית מעקפים',
+    percentileEstimate: 'bottom 25% — \u05DB\u05E9\u05DC \u05DE\u05D1\u05E0\u05D9 \u05D7\u05DE\u05D5\u05E8',
+    cohortNote: '\u05D7\u05D5\u05E1\u05E8 \u05D1\u05D4\u05D9\u05E8\u05D5\u05EA \u05E1\u05DE\u05DB\u05D5\u05EA\u05D9\u05EA \u05D5\u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05EA \u05E9\u05DE\u05D9\u05D9\u05E6\u05E8 \u05E2\u05D9\u05DB\u05D5\u05D1 \u05D4\u05D7\u05DC\u05D8\u05D5\u05EA \u05D5\u05E0\u05D5\u05E8\u05DE\u05DC\u05D9\u05D6\u05E6\u05D9\u05D9\u05EA \u05DE\u05E2\u05E7\u05E4\u05D9\u05DD',
     referenceTools: ['RACI Heatmap', 'Decision Rights Assessment'],
   },
 ]
@@ -140,7 +140,7 @@ export function getBenchmarkForScore(code: PathologyCode, score: number): Benchm
   )
 }
 
-// ─── Research Modules (אפיק ב׳ — סינתזת מאמרים) ────────────────────────────
+// ─── Research Modules (\u05D0\u05E4\u05D9\u05E7 \u05D1\u05F3 — \u05E1\u05D9\u05E0\u05EA\u05D6\u05EA \u05DE\u05D0\u05DE\u05E8\u05D9\u05DD) ────────────────────────────
 
 /**
  * Each research module encodes a theoretical construct as a typed object.
@@ -150,8 +150,8 @@ export interface ResearchModule {
   id: string
   name: string
   theoreticalBasis: string
-  measuredConstruct: string       // מה המודול מודד
-  dependentVariable: string       // משתנה תלוי
+  measuredConstruct: string       // \u05DE\u05D4 \u05D4\u05DE\u05D5\u05D3\u05D5\u05DC \u05DE\u05D5\u05D3\u05D3
+  dependentVariable: string       // \u05DE\u05E9\u05EA\u05E0\u05D4 \u05EA\u05DC\u05D5\u05D9
   empiricalEvidence: string       // N, effect size, context
   pathologyMapping: PathologyCode[]
   calibratableParams: {
@@ -166,112 +166,112 @@ export const RESEARCH_MODULES: ResearchModule[] = [
     id: 'decision-latency',
     name: 'Decision Latency Index',
     theoreticalBasis: 'Cyert & March (1963) Behavioral Theory of the Firm; Eisenhardt (1989) Speed in Strategic Decision Making',
-    measuredConstruct: 'שעות ניהוליות שבועיות שנשרפות על המתנה, כיבוי שריפות ופגישות עודפות',
-    dependentVariable: 'J-Quotient = C(t)/E(t) — יחס קיבולת זמינה לאנטרופיה',
-    empiricalEvidence: 'Eisenhardt (1989): ארגונים עם decision latency נמוך מציגים ROI גבוה ב-30%; McKinsey (2019): 70% מהמנהלים מדווחים על >10h/שבוע אבוד',
+    measuredConstruct: '\u05E9\u05E2\u05D5\u05EA \u05E0\u05D9\u05D4\u05D5\u05DC\u05D9\u05D5\u05EA \u05E9\u05D1\u05D5\u05E2\u05D9\u05D5\u05EA \u05E9\u05E0\u05E9\u05E8\u05E4\u05D5\u05EA \u05E2\u05DC \u05D4\u05DE\u05EA\u05E0\u05D4, \u05DB\u05D9\u05D1\u05D5\u05D9 \u05E9\u05E8\u05D9\u05E4\u05D5\u05EA \u05D5\u05E4\u05D2\u05D9\u05E9\u05D5\u05EA \u05E2\u05D5\u05D3\u05E4\u05D5\u05EA',
+    dependentVariable: 'J-Quotient = C(t)/E(t) — \u05D9\u05D7\u05E1 \u05E7\u05D9\u05D1\u05D5\u05DC\u05EA \u05D6\u05DE\u05D9\u05E0\u05D4 \u05DC\u05D0\u05E0\u05D8\u05E8\u05D5\u05E4\u05D9\u05D4',
+    empiricalEvidence: 'Eisenhardt (1989): \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05DD \u05E2\u05DD decision latency \u05E0\u05DE\u05D5\u05DA \u05DE\u05E6\u05D9\u05D2\u05D9\u05DD ROI \u05D2\u05D1\u05D5\u05D4 \u05D1-30%; McKinsey (2019): 70% \u05DE\u05D4\u05DE\u05E0\u05D4\u05DC\u05D9\u05DD \u05DE\u05D3\u05D5\u05D5\u05D7\u05D9\u05DD \u05E2\u05DC >10h/\u05E9\u05D1\u05D5\u05E2 \u05D0\u05D1\u05D5\u05D3',
     pathologyMapping: ['DR', 'ND', 'UC'],
     calibratableParams: [
-      { name: 'hoursThresholdCritical', currentValue: 15, description: 'שעות אבודות/שבוע שמגדירות latency קריטי' },
-      { name: 'hoursThresholdModerate', currentValue: 5, description: 'שעות אבודות/שבוע שמגדירות latency מתון' },
-      { name: 'workingHoursPerMonth', currentValue: 160, description: 'שעות עבודה חודשיות לחישוב עלות שעה' },
+      { name: 'hoursThresholdCritical', currentValue: 15, description: '\u05E9\u05E2\u05D5\u05EA \u05D0\u05D1\u05D5\u05D3\u05D5\u05EA/\u05E9\u05D1\u05D5\u05E2 \u05E9\u05DE\u05D2\u05D3\u05D9\u05E8\u05D5\u05EA latency \u05E7\u05E8\u05D9\u05D8\u05D9' },
+      { name: 'hoursThresholdModerate', currentValue: 5, description: '\u05E9\u05E2\u05D5\u05EA \u05D0\u05D1\u05D5\u05D3\u05D5\u05EA/\u05E9\u05D1\u05D5\u05E2 \u05E9\u05DE\u05D2\u05D3\u05D9\u05E8\u05D5\u05EA latency \u05DE\u05EA\u05D5\u05DF' },
+      { name: 'workingHoursPerMonth', currentValue: 160, description: '\u05E9\u05E2\u05D5\u05EA \u05E2\u05D1\u05D5\u05D3\u05D4 \u05D7\u05D5\u05D3\u05E9\u05D9\u05D5\u05EA \u05DC\u05D7\u05D9\u05E9\u05D5\u05D1 \u05E2\u05DC\u05D5\u05EA \u05E9\u05E2\u05D4' },
     ],
   },
   {
     id: 'psychological-safety',
     name: 'Psychological Safety / Learning Mode',
     theoreticalBasis: 'Edmondson (1999) Psychological Safety and Learning Behavior in Work Teams; Munn et al. (2023)',
-    measuredConstruct: 'מידת הבטחון של עובדים לדווח על טעויות, לבקש עזרה ולהציע רעיונות',
-    dependentVariable: 'UC score — כשל למידה ארגוני',
-    empiricalEvidence: 'Edmondson (1999): α=.82, r=.35 עם team learning; Munn et al. (2023): PS mediates 40% of safety outcomes',
+    measuredConstruct: '\u05DE\u05D9\u05D3\u05EA \u05D4\u05D1\u05D8\u05D7\u05D5\u05DF \u05E9\u05DC \u05E2\u05D5\u05D1\u05D3\u05D9\u05DD \u05DC\u05D3\u05D5\u05D5\u05D7 \u05E2\u05DC \u05D8\u05E2\u05D5\u05D9\u05D5\u05EA, \u05DC\u05D1\u05E7\u05E9 \u05E2\u05D6\u05E8\u05D4 \u05D5\u05DC\u05D4\u05E6\u05D9\u05E2 \u05E8\u05E2\u05D9\u05D5\u05E0\u05D5\u05EA',
+    dependentVariable: 'UC score — \u05DB\u05E9\u05DC \u05DC\u05DE\u05D9\u05D3\u05D4 \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9',
+    empiricalEvidence: 'Edmondson (1999): α=.82, r=.35 \u05E2\u05DD team learning; Munn et al. (2023): PS mediates 40% of safety outcomes',
     pathologyMapping: ['UC'],
     calibratableParams: [
-      { name: 'ucLearningWeight', currentValue: 0.4, description: 'משקל רכיב הלמידה בחישוב UC' },
-      { name: 'ucSemanticWeight', currentValue: 0.25, description: 'משקל רכיב הסמנטיקה בחישוב UC' },
-      { name: 'ucPsiWeight', currentValue: 0.2, description: 'משקל בטחון פסיכולוגי מנורמל (PSI normalized)' },
-      { name: 'ucAdaptiveWeight', currentValue: 0.15, description: 'משקל יכולת הסתגלות קדימה (UC-Forward)' },
-      { name: 'singleLoopHighDriftFloor', currentValue: 7, description: 'ציון מינימלי ל-UC כשיש גם single_loop וגם high_drift' },
+      { name: 'ucLearningWeight', currentValue: 0.4, description: '\u05DE\u05E9\u05E7\u05DC \u05E8\u05DB\u05D9\u05D1 \u05D4\u05DC\u05DE\u05D9\u05D3\u05D4 \u05D1\u05D7\u05D9\u05E9\u05D5\u05D1 UC' },
+      { name: 'ucSemanticWeight', currentValue: 0.25, description: '\u05DE\u05E9\u05E7\u05DC \u05E8\u05DB\u05D9\u05D1 \u05D4\u05E1\u05DE\u05E0\u05D8\u05D9\u05E7\u05D4 \u05D1\u05D7\u05D9\u05E9\u05D5\u05D1 UC' },
+      { name: 'ucPsiWeight', currentValue: 0.2, description: '\u05DE\u05E9\u05E7\u05DC \u05D1\u05D8\u05D7\u05D5\u05DF \u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9 \u05DE\u05E0\u05D5\u05E8\u05DE\u05DC (PSI normalized)' },
+      { name: 'ucAdaptiveWeight', currentValue: 0.15, description: '\u05DE\u05E9\u05E7\u05DC \u05D9\u05DB\u05D5\u05DC\u05EA \u05D4\u05E1\u05EA\u05D2\u05DC\u05D5\u05EA \u05E7\u05D3\u05D9\u05DE\u05D4 (UC-Forward)' },
+      { name: 'singleLoopHighDriftFloor', currentValue: 7, description: '\u05E6\u05D9\u05D5\u05DF \u05DE\u05D9\u05E0\u05D9\u05DE\u05DC\u05D9 \u05DC-UC \u05DB\u05E9\u05D9\u05E9 \u05D2\u05DD single_loop \u05D5\u05D2\u05DD high_drift' },
     ],
   },
   {
     id: 'normalization-of-deviance',
     name: 'Normalization of Deviance (NOD)',
     theoreticalBasis: 'Vaughan (1996) The Challenger Launch Decision; Banja (2010) Medical Errors and Moral Injury',
-    measuredConstruct: 'תדירות עקיפת נהלים רשמיים תחת לחץ ייצור',
-    dependentVariable: 'ND score — רמת נורמליזציית הסטייה',
+    measuredConstruct: '\u05EA\u05D3\u05D9\u05E8\u05D5\u05EA \u05E2\u05E7\u05D9\u05E4\u05EA \u05E0\u05D4\u05DC\u05D9\u05DD \u05E8\u05E9\u05DE\u05D9\u05D9\u05DD \u05EA\u05D7\u05EA \u05DC\u05D7\u05E5 \u05D9\u05D9\u05E6\u05D5\u05E8',
+    dependentVariable: 'ND score — \u05E8\u05DE\u05EA \u05E0\u05D5\u05E8\u05DE\u05DC\u05D9\u05D6\u05E6\u05D9\u05D9\u05EA \u05D4\u05E1\u05D8\u05D9\u05D9\u05D4',
     empiricalEvidence: 'Vaughan (1996): 5-stage NOD progression; Banja (2010): NOD present in 67% of medical errors',
     pathologyMapping: ['ND'],
     calibratableParams: [
-      { name: 'ndHighThreshold', currentValue: 8.5, description: 'ציון בסיס ל-NOD גבוה (high)' },
-      { name: 'ndMediumThreshold', currentValue: 5.0, description: 'ציון בסיס ל-NOD בינוני (medium)' },
-      { name: 'ndLowThreshold', currentValue: 1.5, description: 'ציון בסיס ל-NOD נמוך (low)' },
+      { name: 'ndHighThreshold', currentValue: 8.5, description: '\u05E6\u05D9\u05D5\u05DF \u05D1\u05E1\u05D9\u05E1 \u05DC-NOD \u05D2\u05D1\u05D5\u05D4 (high)' },
+      { name: 'ndMediumThreshold', currentValue: 5.0, description: '\u05E6\u05D9\u05D5\u05DF \u05D1\u05E1\u05D9\u05E1 \u05DC-NOD \u05D1\u05D9\u05E0\u05D5\u05E0\u05D9 (medium)' },
+      { name: 'ndLowThreshold', currentValue: 1.5, description: '\u05E6\u05D9\u05D5\u05DF \u05D1\u05E1\u05D9\u05E1 \u05DC-NOD \u05E0\u05DE\u05D5\u05DA (low)' },
     ],
   },
   {
     id: 'semantic-drift',
     name: 'Semantic Drift / Ontological Friction',
     theoreticalBasis: 'Floridi (2014) The Ethics of Artificial Intelligence; Weick (1995) Sensemaking in Organizations',
-    measuredConstruct: 'פערים בהגדרות עבודה, גבולות אחריות ומושגי יסוד בין מחלקות',
-    dependentVariable: 'UC score (רכיב סמנטי) — כיול לא-מייצג',
+    measuredConstruct: '\u05E4\u05E2\u05E8\u05D9\u05DD \u05D1\u05D4\u05D2\u05D3\u05E8\u05D5\u05EA \u05E2\u05D1\u05D5\u05D3\u05D4, \u05D2\u05D1\u05D5\u05DC\u05D5\u05EA \u05D0\u05D7\u05E8\u05D9\u05D5\u05EA \u05D5\u05DE\u05D5\u05E9\u05D2\u05D9 \u05D9\u05E1\u05D5\u05D3 \u05D1\u05D9\u05DF \u05DE\u05D7\u05DC\u05E7\u05D5\u05EA',
+    dependentVariable: 'UC score (\u05E8\u05DB\u05D9\u05D1 \u05E1\u05DE\u05E0\u05D8\u05D9) — \u05DB\u05D9\u05D5\u05DC \u05DC\u05D0-\u05DE\u05D9\u05D9\u05E6\u05D2',
     empiricalEvidence: 'Weick (1995): sensemaking failures precede 80% of organizational crises; Floridi: ontological friction ∝ coordination cost',
     pathologyMapping: ['UC'],
     calibratableParams: [
-      { name: 'semanticHighScore', currentValue: 8.0, description: 'ציון בסיס לסחיפה סמנטית גבוהה' },
-      { name: 'semanticMediumScore', currentValue: 4.5, description: 'ציון בסיס לסחיפה סמנטית בינונית' },
+      { name: 'semanticHighScore', currentValue: 8.0, description: '\u05E6\u05D9\u05D5\u05DF \u05D1\u05E1\u05D9\u05E1 \u05DC\u05E1\u05D7\u05D9\u05E4\u05D4 \u05E1\u05DE\u05E0\u05D8\u05D9\u05EA \u05D2\u05D1\u05D5\u05D4\u05D4' },
+      { name: 'semanticMediumScore', currentValue: 4.5, description: '\u05E6\u05D9\u05D5\u05DF \u05D1\u05E1\u05D9\u05E1 \u05DC\u05E1\u05D7\u05D9\u05E4\u05D4 \u05E1\u05DE\u05E0\u05D8\u05D9\u05EA \u05D1\u05D9\u05E0\u05D5\u05E0\u05D9\u05EA' },
     ],
   },
   {
     id: 'network-comorbidity',
     name: 'Network Effects / Comorbidity',
     theoreticalBasis: 'Borgatti et al. (2009) Network Analysis in the Social Sciences; Borsboom (2017) Network Theory of Mental Disorders',
-    measuredConstruct: 'קשרי גומלין בין פתולוגיות: DR↔ND, DR↔UC, ND↔UC, SC↔DR, SC↔ND, SC↔UC',
-    dependentVariable: 'totalEntropyScore — סכום אנטרופיה מערכתי',
+    measuredConstruct: '\u05E7\u05E9\u05E8\u05D9 \u05D2\u05D5\u05DE\u05DC\u05D9\u05DF \u05D1\u05D9\u05DF \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA: DR↔ND, DR↔UC, ND↔UC, SC↔DR, SC↔ND, SC↔UC',
+    dependentVariable: 'totalEntropyScore — \u05E1\u05DB\u05D5\u05DD \u05D0\u05E0\u05D8\u05E8\u05D5\u05E4\u05D9\u05D4 \u05DE\u05E2\u05E8\u05DB\u05EA\u05D9',
     empiricalEvidence: 'COR-SYS N=10,000: DR↔ND r=.19, DR↔UC r=−.27, ND↔UC r=.28, SC↔DR r=.32, SC↔ND r=.24, SC↔UC r=.18',
     pathologyMapping: ['DR', 'ND', 'UC', 'SC'],
     calibratableParams: [
-      { name: 'systemicCollapseEntropyThreshold', currentValue: 29, description: 'סף totalEntropyScore לקריסה מערכתית' },
-      { name: 'comorbidityActiveLevel', currentValue: 2, description: 'רמת חומרה מינימלית לקשר קומורבידיות פעיל' },
+      { name: 'systemicCollapseEntropyThreshold', currentValue: 29, description: '\u05E1\u05E3 totalEntropyScore \u05DC\u05E7\u05E8\u05D9\u05E1\u05D4 \u05DE\u05E2\u05E8\u05DB\u05EA\u05D9\u05EA' },
+      { name: 'comorbidityActiveLevel', currentValue: 2, description: '\u05E8\u05DE\u05EA \u05D7\u05D5\u05DE\u05E8\u05D4 \u05DE\u05D9\u05E0\u05D9\u05DE\u05DC\u05D9\u05EA \u05DC\u05E7\u05E9\u05E8 \u05E7\u05D5\u05DE\u05D5\u05E8\u05D1\u05D9\u05D3\u05D9\u05D5\u05EA \u05E4\u05E2\u05D9\u05DC' },
     ],
   },
   {
     id: 'greiner-moderator',
     name: 'Greiner Stage Moderator',
     theoreticalBasis: 'Greiner (1972) Evolution and Revolution as Organizations Grow',
-    measuredConstruct: 'שלב משבר צמיחה שממתן את ספי החומרה לפי ציר מבני/תהליכי',
+    measuredConstruct: '\u05E9\u05DC\u05D1 \u05DE\u05E9\u05D1\u05E8 \u05E6\u05DE\u05D9\u05D7\u05D4 \u05E9\u05DE\u05DE\u05EA\u05DF \u05D0\u05EA \u05E1\u05E4\u05D9 \u05D4\u05D7\u05D5\u05DE\u05E8\u05D4 \u05DC\u05E4\u05D9 \u05E6\u05D9\u05E8 \u05DE\u05D1\u05E0\u05D9/\u05EA\u05D4\u05DC\u05D9\u05DB\u05D9',
     dependentVariable: 'axis-specific severity thresholds (SC/ND/UC)',
     empiricalEvidence: 'Phase 3/4/5 crises correlate with control, red-tape, and renewal bottlenecks in growth-stage firms',
     pathologyMapping: ['SC', 'ND', 'UC'],
     calibratableParams: [
-      { name: 'phase3ScThresholdDelta', currentValue: -1.0, description: 'הנמכת סף SC ב-Phase 3' },
-      { name: 'phase4NdThresholdDelta', currentValue: -1.0, description: 'הנמכת סף ND ב-Phase 4' },
-      { name: 'phase5UcThresholdDelta', currentValue: -1.0, description: 'הנמכת סף UC ב-Phase 5' },
+      { name: 'phase3ScThresholdDelta', currentValue: -1.0, description: '\u05D4\u05E0\u05DE\u05DB\u05EA \u05E1\u05E3 SC \u05D1-Phase 3' },
+      { name: 'phase4NdThresholdDelta', currentValue: -1.0, description: '\u05D4\u05E0\u05DE\u05DB\u05EA \u05E1\u05E3 ND \u05D1-Phase 4' },
+      { name: 'phase5UcThresholdDelta', currentValue: -1.0, description: '\u05D4\u05E0\u05DE\u05DB\u05EA \u05E1\u05E3 UC \u05D1-Phase 5' },
     ],
   },
   {
     id: 'engagement-proxy',
     name: 'Engagement Outcome Proxy',
     theoreticalBasis: 'Kahn (1990), Maslach & Leiter (2016), JD-R model',
-    measuredConstruct: 'רמת אנרגיה ומחוברות ניהולית כמדד תוצאה (לא פתולוגיה)',
-    dependentVariable: 'validation consistency מול totalEntropyScore',
+    measuredConstruct: '\u05E8\u05DE\u05EA \u05D0\u05E0\u05E8\u05D2\u05D9\u05D4 \u05D5\u05DE\u05D7\u05D5\u05D1\u05E8\u05D5\u05EA \u05E0\u05D9\u05D4\u05D5\u05DC\u05D9\u05EA \u05DB\u05DE\u05D3\u05D3 \u05EA\u05D5\u05E6\u05D0\u05D4 (\u05DC\u05D0 \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D4)',
+    dependentVariable: 'validation consistency \u05DE\u05D5\u05DC totalEntropyScore',
     empiricalEvidence: 'Engagement erosion is typically downstream outcome of structural/cultural pathology clusters',
     pathologyMapping: ['DR', 'ND', 'UC', 'SC'],
     calibratableParams: [
-      { name: 'engagementAlertThreshold', currentValue: 'burnout', description: 'רמת סיכון שמפעילה התראה לבדיקת עומק' },
-      { name: 'anomalyGapThreshold', currentValue: 3, description: 'פער בין אנטרופיה גבוהה לדיווח מחוברות גבוהה' },
+      { name: 'engagementAlertThreshold', currentValue: 'burnout', description: '\u05E8\u05DE\u05EA \u05E1\u05D9\u05DB\u05D5\u05DF \u05E9\u05DE\u05E4\u05E2\u05D9\u05DC\u05D4 \u05D4\u05EA\u05E8\u05D0\u05D4 \u05DC\u05D1\u05D3\u05D9\u05E7\u05EA \u05E2\u05D5\u05DE\u05E7' },
+      { name: 'anomalyGapThreshold', currentValue: 3, description: '\u05E4\u05E2\u05E8 \u05D1\u05D9\u05DF \u05D0\u05E0\u05D8\u05E8\u05D5\u05E4\u05D9\u05D4 \u05D2\u05D1\u05D5\u05D4\u05D4 \u05DC\u05D3\u05D9\u05D5\u05D5\u05D7 \u05DE\u05D7\u05D5\u05D1\u05E8\u05D5\u05EA \u05D2\u05D1\u05D5\u05D4\u05D4' },
     ],
   },
 ]
 
-// ─── Golden Questions (todo 3 — 4 שאלות זהב) ────────────────────────────────
+// ─── Golden Questions (todo 3 — 4 \u05E9\u05D0\u05DC\u05D5\u05EA \u05D6\u05D4\u05D1) ────────────────────────────────
 
 export interface GoldenQuestionAnswers {
-  /** שאלה 1: מה מצב ה‑DSM הארגוני? */
+  /** \u05E9\u05D0\u05DC\u05D4 1: \u05DE\u05D4 \u05DE\u05E6\u05D1 \u05D4‑DSM \u05D4\u05D0\u05E8\u05D2\u05D5\u05E0\u05D9? */
   systemState: {
     profile: string
     primaryPathology: PathologyCode
     codes: string[]
     narrativeHe: string
   }
-  /** שאלה 2: איפה צוואר הבקבוק הראשי? */
+  /** \u05E9\u05D0\u05DC\u05D4 2: \u05D0\u05D9\u05E4\u05D4 \u05E6\u05D5\u05D5\u05D0\u05E8 \u05D4\u05D1\u05E7\u05D1\u05D5\u05E7 \u05D4\u05E8\u05D0\u05E9\u05D9? */
   bottleneck: {
     pathologyCode: PathologyCode
     score: number
@@ -279,7 +279,7 @@ export interface GoldenQuestionAnswers {
     activeComorbidities: string[]
     bottleneckNarrativeHe: string
   }
-  /** שאלה 3: כמה כסף/קיבולת הולכים לאיבוד? */
+  /** \u05E9\u05D0\u05DC\u05D4 3: \u05DB\u05DE\u05D4 \u05DB\u05E1\u05E3/\u05E7\u05D9\u05D1\u05D5\u05DC\u05EA \u05D4\u05D5\u05DC\u05DB\u05D9\u05DD \u05DC\u05D0\u05D9\u05D1\u05D5\u05D3? */
   economicImpact: {
     annualWasteILS: number
     weeklyWasteILS: number
@@ -287,7 +287,7 @@ export interface GoldenQuestionAnswers {
     jInterpretationHe: string
     urgencySignal: 'critical' | 'elevated' | 'moderate'
   }
-  /** שאלה 4: מה מהלך ההתערבות המומלץ? */
+  /** \u05E9\u05D0\u05DC\u05D4 4: \u05DE\u05D4 \u05DE\u05D4\u05DC\u05DA \u05D4\u05D4\u05EA\u05E2\u05E8\u05D1\u05D5\u05EA \u05D4\u05DE\u05D5\u05DE\u05DC\u05E5? */
   recommendedAction: {
     ctaType: 'sprint' | 'retainer' | 'live-demo'
     ctaLabelHe: string
@@ -320,10 +320,10 @@ export function buildGoldenQuestions(
     jQuotient < 0.35 ? 'critical' : jQuotient < 0.6 ? 'elevated' : 'moderate'
   const jInterpretation =
     jQuotient < 0.35
-      ? 'אזור קריסה תפעולית — פחות מ-35% מהקיבולת הניהולית זמינה לעבודה אסטרטגית'
+      ? '\u05D0\u05D6\u05D5\u05E8 \u05E7\u05E8\u05D9\u05E1\u05D4 \u05EA\u05E4\u05E2\u05D5\u05DC\u05D9\u05EA — \u05E4\u05D7\u05D5\u05EA \u05DE-35% \u05DE\u05D4\u05E7\u05D9\u05D1\u05D5\u05DC\u05EA \u05D4\u05E0\u05D9\u05D4\u05D5\u05DC\u05D9\u05EA \u05D6\u05DE\u05D9\u05E0\u05D4 \u05DC\u05E2\u05D1\u05D5\u05D3\u05D4 \u05D0\u05E1\u05D8\u05E8\u05D8\u05D2\u05D9\u05EA'
       : jQuotient < 0.6
-        ? 'אזור חוב החלטות — 35–60% קיבולת זמינה; צוואר בקבוק מתפתח'
-        : 'קיבולת ניהולית זמינה — מעל 60% מהזמן מוקדש לעבודה ערכית'
+        ? '\u05D0\u05D6\u05D5\u05E8 \u05D7\u05D5\u05D1 \u05D4\u05D7\u05DC\u05D8\u05D5\u05EA — 35–60% \u05E7\u05D9\u05D1\u05D5\u05DC\u05EA \u05D6\u05DE\u05D9\u05E0\u05D4; \u05E6\u05D5\u05D5\u05D0\u05E8 \u05D1\u05E7\u05D1\u05D5\u05E7 \u05DE\u05EA\u05E4\u05EA\u05D7'
+        : '\u05E7\u05D9\u05D1\u05D5\u05DC\u05EA \u05E0\u05D9\u05D4\u05D5\u05DC\u05D9\u05EA \u05D6\u05DE\u05D9\u05E0\u05D4 — \u05DE\u05E2\u05DC 60% \u05DE\u05D4\u05D6\u05DE\u05DF \u05DE\u05D5\u05E7\u05D3\u05E9 \u05DC\u05E2\u05D1\u05D5\u05D3\u05D4 \u05E2\u05E8\u05DB\u05D9\u05EA'
 
   // Q4 — Recommended Action (Policy Engine)
   const policy = computePolicy(diagnosis, jQuotient)
@@ -359,26 +359,26 @@ function buildStateNarrative(diagnosis: DSMDiagnosis): string {
   const level2 = pathologies.filter((p) => p.level === 2).map((p) => p.code)
 
   if (severityProfile === 'systemic-collapse') {
-    return `קריסה מערכתית: ${level3.join(' + ')} ברמת חומרה 3 עם אנטרופיה כוללת ${totalEntropyScore.toFixed(1)}/30. מספר פתולוגיות חמורות פועלות במקביל ומחזקות זו את זו.`
+    return `\u05E7\u05E8\u05D9\u05E1\u05D4 \u05DE\u05E2\u05E8\u05DB\u05EA\u05D9\u05EA: ${level3.join(' + ')} \u05D1\u05E8\u05DE\u05EA \u05D7\u05D5\u05DE\u05E8\u05D4 3 \u05E2\u05DD \u05D0\u05E0\u05D8\u05E8\u05D5\u05E4\u05D9\u05D4 \u05DB\u05D5\u05DC\u05DC\u05EA ${totalEntropyScore.toFixed(1)}/30. \u05DE\u05E1\u05E4\u05E8 \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA \u05D7\u05DE\u05D5\u05E8\u05D5\u05EA \u05E4\u05D5\u05E2\u05DC\u05D5\u05EA \u05D1\u05DE\u05E7\u05D1\u05D9\u05DC \u05D5\u05DE\u05D7\u05D6\u05E7\u05D5\u05EA \u05D6\u05D5 \u05D0\u05EA \u05D6\u05D5.`
   }
   if (severityProfile === 'critical') {
-    return `מצב קריטי: ${level3[0]} ברמת חומרה 3. פתולוגיה ראשית דומיננטית עם פוטנציאל להתפשטות.`
+    return `\u05DE\u05E6\u05D1 \u05E7\u05E8\u05D9\u05D8\u05D9: ${level3[0]} \u05D1\u05E8\u05DE\u05EA \u05D7\u05D5\u05DE\u05E8\u05D4 3. \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D4 \u05E8\u05D0\u05E9\u05D9\u05EA \u05D3\u05D5\u05DE\u05D9\u05E0\u05E0\u05D8\u05D9\u05EA \u05E2\u05DD \u05E4\u05D5\u05D8\u05E0\u05E6\u05D9\u05D0\u05DC \u05DC\u05D4\u05EA\u05E4\u05E9\u05D8\u05D5\u05EA.`
   }
   if (severityProfile === 'at-risk') {
-    return `בסיכון: ${level2.join(' + ')} ברמת חומרה 2. פתולוגיה מתונה — חלון ההתערבות פתוח לפני הסלמה.`
+    return `\u05D1\u05E1\u05D9\u05DB\u05D5\u05DF: ${level2.join(' + ')} \u05D1\u05E8\u05DE\u05EA \u05D7\u05D5\u05DE\u05E8\u05D4 2. \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D4 \u05DE\u05EA\u05D5\u05E0\u05D4 — \u05D7\u05DC\u05D5\u05DF \u05D4\u05D4\u05EA\u05E2\u05E8\u05D1\u05D5\u05EA \u05E4\u05EA\u05D5\u05D7 \u05DC\u05E4\u05E0\u05D9 \u05D4\u05E1\u05DC\u05DE\u05D4.`
   }
-  return 'מצב תקין: כל הפתולוגיות ברמת subclinical. מומלץ מעקב מניעתי.'
+  return '\u05DE\u05E6\u05D1 \u05EA\u05E7\u05D9\u05DF: \u05DB\u05DC \u05D4\u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA \u05D1\u05E8\u05DE\u05EA subclinical. \u05DE\u05D5\u05DE\u05DC\u05E5 \u05DE\u05E2\u05E7\u05D1 \u05DE\u05E0\u05D9\u05E2\u05EA\u05D9.'
 }
 
 function buildActiveComorbidities(diagnosis: DSMDiagnosis): string[] {
   const scoreMap = Object.fromEntries(diagnosis.pathologies.map((p) => [p.code, p]))
   const active: string[] = []
-  if (scoreMap['DR'].level >= 2 && scoreMap['ND'].level >= 2) active.push('DR→ND (לחץ ייצור מנרמל סטיות)')
-  if (scoreMap['DR'].level >= 2 && scoreMap['UC'].level >= 2) active.push('DR→UC (תחרות פוגעת בבטחון פסיכולוגי)')
-  if (scoreMap['ND'].level >= 2 && scoreMap['UC'].level >= 2) active.push('ND→UC (נורמליזציה מבטלת trigger ללמידה)')
-  if (scoreMap['SC']?.level >= 2 && scoreMap['DR'].level >= 2) active.push('SC→DR (עמימות מבנית מייצרת חיכוך סמכותי)')
-  if (scoreMap['SC']?.level >= 2 && scoreMap['ND'].level >= 2) active.push('SC→ND (חוסר מבנה מנרמל מעקפים)')
-  if (scoreMap['SC']?.level >= 2 && scoreMap['UC'].level >= 2) active.push('SC→UC (עמימות מחלישה כיול ולמידה)')
+  if (scoreMap['DR'].level >= 2 && scoreMap['ND'].level >= 2) active.push('DR→ND (\u05DC\u05D7\u05E5 \u05D9\u05D9\u05E6\u05D5\u05E8 \u05DE\u05E0\u05E8\u05DE\u05DC \u05E1\u05D8\u05D9\u05D5\u05EA)')
+  if (scoreMap['DR'].level >= 2 && scoreMap['UC'].level >= 2) active.push('DR→UC (\u05EA\u05D7\u05E8\u05D5\u05EA \u05E4\u05D5\u05D2\u05E2\u05EA \u05D1\u05D1\u05D8\u05D7\u05D5\u05DF \u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9)')
+  if (scoreMap['ND'].level >= 2 && scoreMap['UC'].level >= 2) active.push('ND→UC (\u05E0\u05D5\u05E8\u05DE\u05DC\u05D9\u05D6\u05E6\u05D9\u05D4 \u05DE\u05D1\u05D8\u05DC\u05EA trigger \u05DC\u05DC\u05DE\u05D9\u05D3\u05D4)')
+  if (scoreMap['SC']?.level >= 2 && scoreMap['DR'].level >= 2) active.push('SC→DR (\u05E2\u05DE\u05D9\u05DE\u05D5\u05EA \u05DE\u05D1\u05E0\u05D9\u05EA \u05DE\u05D9\u05D9\u05E6\u05E8\u05EA \u05D7\u05D9\u05DB\u05D5\u05DA \u05E1\u05DE\u05DB\u05D5\u05EA\u05D9)')
+  if (scoreMap['SC']?.level >= 2 && scoreMap['ND'].level >= 2) active.push('SC→ND (\u05D7\u05D5\u05E1\u05E8 \u05DE\u05D1\u05E0\u05D4 \u05DE\u05E0\u05E8\u05DE\u05DC \u05DE\u05E2\u05E7\u05E4\u05D9\u05DD)')
+  if (scoreMap['SC']?.level >= 2 && scoreMap['UC'].level >= 2) active.push('SC→UC (\u05E2\u05DE\u05D9\u05DE\u05D5\u05EA \u05DE\u05D7\u05DC\u05D9\u05E9\u05D4 \u05DB\u05D9\u05D5\u05DC \u05D5\u05DC\u05DE\u05D9\u05D3\u05D4)')
   return active
 }
 
@@ -386,9 +386,9 @@ function buildBottleneckNarrative(
   primary: { code: PathologyCode; score: number; level: SeverityLevel; nameHe: string },
   activeComorbidities: string[]
 ): string {
-  const base = `הפתולוגיה הדומיננטית היא ${primary.nameHe} (${primary.code}) עם ציון ${primary.score.toFixed(1)}/10.`
-  if (activeComorbidities.length === 0) return base + ' אין קשרי קומורבידיות פעילים.'
-  return base + ` קשרים פעילים: ${activeComorbidities.join('; ')}.`
+  const base = `\u05D4\u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D4 \u05D4\u05D3\u05D5\u05DE\u05D9\u05E0\u05E0\u05D8\u05D9\u05EA \u05D4\u05D9\u05D0 ${primary.nameHe} (${primary.code}) \u05E2\u05DD \u05E6\u05D9\u05D5\u05DF ${primary.score.toFixed(1)}/10.`
+  if (activeComorbidities.length === 0) return base + ' \u05D0\u05D9\u05DF \u05E7\u05E9\u05E8\u05D9 \u05E7\u05D5\u05DE\u05D5\u05E8\u05D1\u05D9\u05D3\u05D9\u05D5\u05EA \u05E4\u05E2\u05D9\u05DC\u05D9\u05DD.'
+  return base + ` \u05E7\u05E9\u05E8\u05D9\u05DD \u05E4\u05E2\u05D9\u05DC\u05D9\u05DD: ${activeComorbidities.join('; ')}.`
 }
 
 // ─── Decision Rules / Policy Engine (todo 4) ─────────────────────────────────
@@ -416,84 +416,84 @@ const DECISION_RULES: DecisionRule[] = [
   {
     id: 'systemic-collapse-sprint',
     priority: 1,
-    description: 'קריסה מערכתית → Sprint חוסם עורקים מיידי',
+    description: '\u05E7\u05E8\u05D9\u05E1\u05D4 \u05DE\u05E2\u05E8\u05DB\u05EA\u05D9\u05EA → Sprint \u05D7\u05D5\u05E1\u05DD \u05E2\u05D5\u05E8\u05E7\u05D9\u05DD \u05DE\u05D9\u05D9\u05D3\u05D9',
     condition: (d) => d.severityProfile === 'systemic-collapse',
     result: {
       ctaType: 'sprint',
-      ctaLabelHe: 'Sprint חוסם עורקים — 14 יום',
+      ctaLabelHe: 'Sprint \u05D7\u05D5\u05E1\u05DD \u05E2\u05D5\u05E8\u05E7\u05D9\u05DD — 14 \u05D9\u05D5\u05DD',
       timeToActMonths: 0,
-      rationale: 'קריסה מערכתית עם 2+ פתולוגיות חמורות. כל יום של המתנה מגביר את האנטרופיה. Sprint מיידי לחיתוך צווארי בקבוק.',
+      rationale: '\u05E7\u05E8\u05D9\u05E1\u05D4 \u05DE\u05E2\u05E8\u05DB\u05EA\u05D9\u05EA \u05E2\u05DD 2+ \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA \u05D7\u05DE\u05D5\u05E8\u05D5\u05EA. \u05DB\u05DC \u05D9\u05D5\u05DD \u05E9\u05DC \u05D4\u05DE\u05EA\u05E0\u05D4 \u05DE\u05D2\u05D1\u05D9\u05E8 \u05D0\u05EA \u05D4\u05D0\u05E0\u05D8\u05E8\u05D5\u05E4\u05D9\u05D4. Sprint \u05DE\u05D9\u05D9\u05D3\u05D9 \u05DC\u05D7\u05D9\u05EA\u05D5\u05DA \u05E6\u05D5\u05D5\u05D0\u05E8\u05D9 \u05D1\u05E7\u05D1\u05D5\u05E7.',
       primaryProtocolId: 'integrated-system',
     },
   },
   {
     id: 'critical-j-sprint',
     priority: 2,
-    description: 'מצב קריטי + J נמוך → Sprint',
+    description: '\u05DE\u05E6\u05D1 \u05E7\u05E8\u05D9\u05D8\u05D9 + J \u05E0\u05DE\u05D5\u05DA → Sprint',
     condition: (d, j) => d.severityProfile === 'critical' && j < 0.35,
     result: {
       ctaType: 'sprint',
-      ctaLabelHe: 'Sprint חוסם עורקים — 14 יום',
+      ctaLabelHe: 'Sprint \u05D7\u05D5\u05E1\u05DD \u05E2\u05D5\u05E8\u05E7\u05D9\u05DD — 14 \u05D9\u05D5\u05DD',
       timeToActMonths: 0,
-      rationale: 'פתולוגיה חמורה + קיבולת ניהולית קריטית (J < 0.35). שילוב זה מצביע על דימום קוגניטיבי פעיל.',
+      rationale: '\u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D4 \u05D7\u05DE\u05D5\u05E8\u05D4 + \u05E7\u05D9\u05D1\u05D5\u05DC\u05EA \u05E0\u05D9\u05D4\u05D5\u05DC\u05D9\u05EA \u05E7\u05E8\u05D9\u05D8\u05D9\u05EA (J < 0.35). \u05E9\u05D9\u05DC\u05D5\u05D1 \u05D6\u05D4 \u05DE\u05E6\u05D1\u05D9\u05E2 \u05E2\u05DC \u05D3\u05D9\u05DE\u05D5\u05DD \u05E7\u05D5\u05D2\u05E0\u05D9\u05D8\u05D9\u05D1\u05D9 \u05E4\u05E2\u05D9\u05DC.',
       primaryProtocolId: 'nod-bia-remediation',
     },
   },
   {
     id: 'nd-dr-safety-debt',
     priority: 3,
-    description: 'DR + ND גבוהים → חוב בטיחות, Sprint',
+    description: 'DR + ND \u05D2\u05D1\u05D5\u05D4\u05D9\u05DD → \u05D7\u05D5\u05D1 \u05D1\u05D8\u05D9\u05D7\u05D5\u05EA, Sprint',
     condition: (d) => {
       const scoreMap = Object.fromEntries(d.pathologies.map((p) => [p.code, p]))
       return scoreMap['DR'].level >= 2 && scoreMap['ND'].level >= 3
     },
     result: {
       ctaType: 'sprint',
-      ctaLabelHe: 'Sprint — טיפול בחוב בטיחות',
+      ctaLabelHe: 'Sprint — \u05D8\u05D9\u05E4\u05D5\u05DC \u05D1\u05D7\u05D5\u05D1 \u05D1\u05D8\u05D9\u05D7\u05D5\u05EA',
       timeToActMonths: 1,
-      rationale: 'DR מתון + ND חמור: לחץ ייצור מנרמל סטיות. סיכון גבוה לאירוע BCM. NOD→BIA Remediation בעדיפות.',
+      rationale: 'DR \u05DE\u05EA\u05D5\u05DF + ND \u05D7\u05DE\u05D5\u05E8: \u05DC\u05D7\u05E5 \u05D9\u05D9\u05E6\u05D5\u05E8 \u05DE\u05E0\u05E8\u05DE\u05DC \u05E1\u05D8\u05D9\u05D5\u05EA. \u05E1\u05D9\u05DB\u05D5\u05DF \u05D2\u05D1\u05D5\u05D4 \u05DC\u05D0\u05D9\u05E8\u05D5\u05E2 BCM. NOD→BIA Remediation \u05D1\u05E2\u05D3\u05D9\u05E4\u05D5\u05EA.',
       primaryProtocolId: 'nod-bia-remediation',
     },
   },
   {
     id: 'uc-high-retainer',
     priority: 4,
-    description: 'UC חמור בלי קריסה → Retainer לבניית למידה',
+    description: 'UC \u05D7\u05DE\u05D5\u05E8 \u05D1\u05DC\u05D9 \u05E7\u05E8\u05D9\u05E1\u05D4 → Retainer \u05DC\u05D1\u05E0\u05D9\u05D9\u05EA \u05DC\u05DE\u05D9\u05D3\u05D4',
     condition: (d) => {
       const scoreMap = Object.fromEntries(d.pathologies.map((p) => [p.code, p]))
       return scoreMap['UC'].level === 3 && d.severityProfile !== 'systemic-collapse'
     },
     result: {
       ctaType: 'retainer',
-      ctaLabelHe: 'Resilience Retainer — ליווי שוטף 6 חודשים',
+      ctaLabelHe: 'Resilience Retainer — \u05DC\u05D9\u05D5\u05D5\u05D9 \u05E9\u05D5\u05D8\u05E3 6 \u05D7\u05D5\u05D3\u05E9\u05D9\u05DD',
       timeToActMonths: 1,
-      rationale: 'UC חמור דורש בניית בטחון פסיכולוגי ולמידה דו-לולאתית לאורך זמן. לא ניתן לפתור ב-Sprint בודד.',
+      rationale: 'UC \u05D7\u05DE\u05D5\u05E8 \u05D3\u05D5\u05E8\u05E9 \u05D1\u05E0\u05D9\u05D9\u05EA \u05D1\u05D8\u05D7\u05D5\u05DF \u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9 \u05D5\u05DC\u05DE\u05D9\u05D3\u05D4 \u05D3\u05D5-\u05DC\u05D5\u05DC\u05D0\u05EA\u05D9\u05EA \u05DC\u05D0\u05D5\u05E8\u05DA \u05D6\u05DE\u05DF. \u05DC\u05D0 \u05E0\u05D9\u05EA\u05DF \u05DC\u05E4\u05EA\u05D5\u05E8 \u05D1-Sprint \u05D1\u05D5\u05D3\u05D3.',
       primaryProtocolId: 'learning-exercise-design',
     },
   },
   {
     id: 'at-risk-elevated-j',
     priority: 5,
-    description: 'בסיכון + J מוגבר → Live Demo + Retainer',
+    description: '\u05D1\u05E1\u05D9\u05DB\u05D5\u05DF + J \u05DE\u05D5\u05D2\u05D1\u05E8 → Live Demo + Retainer',
     condition: (d, j) => d.severityProfile === 'at-risk' && j < 0.6,
     result: {
       ctaType: 'retainer',
       ctaLabelHe: 'Live Demo + Resilience Retainer',
       timeToActMonths: 2,
-      rationale: 'פתולוגיה מתונה עם J מוגבר. חלון ההתערבות פתוח — Retainer מונע הסלמה לרמה קריטית.',
+      rationale: '\u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D4 \u05DE\u05EA\u05D5\u05E0\u05D4 \u05E2\u05DD J \u05DE\u05D5\u05D2\u05D1\u05E8. \u05D7\u05DC\u05D5\u05DF \u05D4\u05D4\u05EA\u05E2\u05E8\u05D1\u05D5\u05EA \u05E4\u05EA\u05D5\u05D7 — Retainer \u05DE\u05D5\u05E0\u05E2 \u05D4\u05E1\u05DC\u05DE\u05D4 \u05DC\u05E8\u05DE\u05D4 \u05E7\u05E8\u05D9\u05D8\u05D9\u05EA.',
       primaryProtocolId: null,
     },
   },
   {
     id: 'default-live-demo',
     priority: 6,
-    description: 'ברירת מחדל — Live Demo אבחוני',
+    description: '\u05D1\u05E8\u05D9\u05E8\u05EA \u05DE\u05D7\u05D3\u05DC — Live Demo \u05D0\u05D1\u05D7\u05D5\u05E0\u05D9',
     condition: () => true,
     result: {
       ctaType: 'live-demo',
-      ctaLabelHe: 'Live Demo אבחוני — חינמי',
+      ctaLabelHe: 'Live Demo \u05D0\u05D1\u05D7\u05D5\u05E0\u05D9 — \u05D7\u05D9\u05E0\u05DE\u05D9',
       timeToActMonths: 3,
-      rationale: 'רמת אנטרופיה נמוכה. Live Demo יספק הוכחה מתמטית לערך ההתערבות לפני מחויבות.',
+      rationale: '\u05E8\u05DE\u05EA \u05D0\u05E0\u05D8\u05E8\u05D5\u05E4\u05D9\u05D4 \u05E0\u05DE\u05D5\u05DB\u05D4. Live Demo \u05D9\u05E1\u05E4\u05E7 \u05D4\u05D5\u05DB\u05D7\u05D4 \u05DE\u05EA\u05DE\u05D8\u05D9\u05EA \u05DC\u05E2\u05E8\u05DA \u05D4\u05D4\u05EA\u05E2\u05E8\u05D1\u05D5\u05EA \u05DC\u05E4\u05E0\u05D9 \u05DE\u05D7\u05D5\u05D9\u05D1\u05D5\u05EA.',
       primaryProtocolId: null,
     },
   },
@@ -534,11 +534,11 @@ export interface DiagnosticFeedback {
     totalEntropyScore: number
   }
   consultantFeedback: {
-    ctaAccurate: boolean | null          // האם ה-CTA היה מדויק?
-    wouldChooseDifferent: boolean | null // האם היית בוחר אחרת?
+    ctaAccurate: boolean | null          // \u05D4\u05D0\u05DD \u05D4-CTA \u05D4\u05D9\u05D4 \u05DE\u05D3\u05D5\u05D9\u05E7?
+    wouldChooseDifferent: boolean | null // \u05D4\u05D0\u05DD \u05D4\u05D9\u05D9\u05EA \u05D1\u05D5\u05D7\u05E8 \u05D0\u05D7\u05E8\u05EA?
     alternativeCta?: 'sprint' | 'retainer' | 'live-demo'
-    overrideReason?: string              // למה עקפת את המחשבון?
-    confidenceRating: 1 | 2 | 3 | 4 | 5 // כמה סמכת על האבחון?
+    overrideReason?: string              // \u05DC\u05DE\u05D4 \u05E2\u05E7\u05E4\u05EA \u05D0\u05EA \u05D4\u05DE\u05D7\u05E9\u05D1\u05D5\u05DF?
+    confidenceRating: 1 | 2 | 3 | 4 | 5 // \u05DB\u05DE\u05D4 \u05E1\u05DE\u05DB\u05EA \u05E2\u05DC \u05D4\u05D0\u05D1\u05D7\u05D5\u05DF?
   }
 }
 

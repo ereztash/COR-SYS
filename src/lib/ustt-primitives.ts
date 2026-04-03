@@ -16,11 +16,11 @@ import type { ExtendedPathologyCode } from './dsm-org-taxonomy'
 export type AtomicOp = 'S' | 'delta' | 'T' | 'M' | 'arrow'
 
 export const ATOMIC_OPERATIONS: Record<AtomicOp, { name: string; nameHe: string; symbol: string }> = {
-  S: { name: 'Sensing', nameHe: 'חישה', symbol: 'S' },
-  delta: { name: 'Comparison', nameHe: 'השוואה', symbol: 'Δ' },
-  T: { name: 'Threshold', nameHe: 'סף', symbol: 'T' },
-  M: { name: 'Mode Switch', nameHe: 'מעבר מצב', symbol: 'M' },
-  arrow: { name: 'Propagation', nameHe: 'הפצה', symbol: '→' },
+  S: { name: 'Sensing', nameHe: '\u05D7\u05D9\u05E9\u05D4', symbol: 'S' },
+  delta: { name: 'Comparison', nameHe: '\u05D4\u05E9\u05D5\u05D5\u05D0\u05D4', symbol: 'Δ' },
+  T: { name: 'Threshold', nameHe: '\u05E1\u05E3', symbol: 'T' },
+  M: { name: 'Mode Switch', nameHe: '\u05DE\u05E2\u05D1\u05E8 \u05DE\u05E6\u05D1', symbol: 'M' },
+  arrow: { name: 'Propagation', nameHe: '\u05D4\u05E4\u05E6\u05D4', symbol: '→' },
 }
 
 // ━━━ Meta-Categories ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -34,19 +34,19 @@ export const META_CATEGORIES: Record<MetaCategory, {
   coreQuestion: string
 }> = {
   Process: {
-    nameHe: 'תהליך',
+    nameHe: '\u05EA\u05D4\u05DC\u05D9\u05DA',
     color: '#B87333',
     primitiveIds: ['P1', 'P2', 'P3', 'P4'],
     coreQuestion: 'What happens on the time axis?',
   },
   Structure: {
-    nameHe: 'מבנה',
+    nameHe: '\u05DE\u05D1\u05E0\u05D4',
     color: '#2A6B6B',
     primitiveIds: ['P6', 'P7', 'P8', 'P9', 'P10'],
     coreQuestion: 'What is the topology of the system?',
   },
   Epistemics: {
-    nameHe: 'אפיסטמיקה',
+    nameHe: '\u05D0\u05E4\u05D9\u05E1\u05D8\u05DE\u05D9\u05E7\u05D4',
     color: '#8A5627',
     primitiveIds: ['P5', 'P11', 'P12'],
     coreQuestion: 'What does the system know about itself?',
@@ -71,7 +71,7 @@ export const PRIMITIVES: Record<string, Primitive> = {
   P1: {
     id: 'P1',
     name: 'Negative Feedback Loop',
-    nameHe: 'לולאת משוב שלילית',
+    nameHe: '\u05DC\u05D5\u05DC\u05D0\u05EA \u05DE\u05E9\u05D5\u05D1 \u05E9\u05DC\u05D9\u05DC\u05D9\u05EA',
     category: 'Process',
     formula: 'output -> sensor -> comparator -> corrector -> output',
     atomicSequence: 'S->delta->T(correct)',
@@ -82,7 +82,7 @@ export const PRIMITIVES: Record<string, Primitive> = {
   P2: {
     id: 'P2',
     name: 'Positive Feedback Loop',
-    nameHe: 'לולאת משוב חיובית',
+    nameHe: '\u05DC\u05D5\u05DC\u05D0\u05EA \u05DE\u05E9\u05D5\u05D1 \u05D7\u05D9\u05D5\u05D1\u05D9\u05EA',
     category: 'Process',
     formula: 'output -> amplifier -> output (no brake)',
     atomicSequence: 'S->delta->T(amplify)',
@@ -93,7 +93,7 @@ export const PRIMITIVES: Record<string, Primitive> = {
   P3: {
     id: 'P3',
     name: 'Threshold / Phase Transition',
-    nameHe: 'סף / מעבר פאזה',
+    nameHe: '\u05E1\u05E3 / \u05DE\u05E2\u05D1\u05E8 \u05E4\u05D0\u05D6\u05D4',
     category: 'Process',
     formula: 'accumulation -> critical_mass -> state_change',
     atomicSequence: 'S->delta->T(accumulate)->M(phase)',
@@ -104,7 +104,7 @@ export const PRIMITIVES: Record<string, Primitive> = {
   P4: {
     id: 'P4',
     name: 'Decay Function',
-    nameHe: 'פונקציית דעיכה',
+    nameHe: '\u05E4\u05D5\u05E0\u05E7\u05E6\u05D9\u05D9\u05EA \u05D3\u05E2\u05D9\u05DB\u05D4',
     category: 'Process',
     formula: 'value(t) = value(0) * e^(-lambda*t)',
     atomicSequence: 'S(t1)->delta(t1,t2)->T(below)',
@@ -115,7 +115,7 @@ export const PRIMITIVES: Record<string, Primitive> = {
   P5: {
     id: 'P5',
     name: 'Signal-to-Noise Ratio',
-    nameHe: 'יחס אות לרעש',
+    nameHe: '\u05D9\u05D7\u05E1 \u05D0\u05D5\u05EA \u05DC\u05E8\u05E2\u05E9',
     category: 'Epistemics',
     formula: 'useful_signal / total_information',
     atomicSequence: 'S(total)->delta(signal,noise)->T(ratio)',
@@ -126,7 +126,7 @@ export const PRIMITIVES: Record<string, Primitive> = {
   P6: {
     id: 'P6',
     name: 'Emergence from Local Rules',
-    nameHe: 'צמיחה מכללים מקומיים',
+    nameHe: '\u05E6\u05DE\u05D9\u05D7\u05D4 \u05DE\u05DB\u05DC\u05DC\u05D9\u05DD \u05DE\u05E7\u05D5\u05DE\u05D9\u05D9\u05DD',
     category: 'Structure',
     formula: 'local_rules -> interactions -> global_pattern != intended',
     atomicSequence: 'M(local)->T(emerge)->delta(intended,actual)',
@@ -137,7 +137,7 @@ export const PRIMITIVES: Record<string, Primitive> = {
   P7: {
     id: 'P7',
     name: 'Bottleneck',
-    nameHe: 'צוואר בקבוק',
+    nameHe: '\u05E6\u05D5\u05D5\u05D0\u05E8 \u05D1\u05E7\u05D1\u05D5\u05E7',
     category: 'Structure',
     formula: 'flow_rate = min(capacity_of_each_node)',
     atomicSequence: 'S->T(capacity)->delta(min)',
@@ -148,7 +148,7 @@ export const PRIMITIVES: Record<string, Primitive> = {
   P8: {
     id: 'P8',
     name: 'Gradient / Flow',
-    nameHe: 'מפל / זרימה',
+    nameHe: '\u05DE\u05E4\u05DC / \u05D6\u05E8\u05D9\u05DE\u05D4',
     category: 'Structure',
     formula: 'flow = -gradient(potential) * conductivity',
     atomicSequence: 'S(topology)->T(path_exists?)->delta',
@@ -159,7 +159,7 @@ export const PRIMITIVES: Record<string, Primitive> = {
   P9: {
     id: 'P9',
     name: 'Coupling / Decoupling',
-    nameHe: 'צימוד / ניתוק',
+    nameHe: '\u05E6\u05D9\u05DE\u05D5\u05D3 / \u05E0\u05D9\u05EA\u05D5\u05E7',
     category: 'Structure',
     formula: 'correlation(A,B) -> tight/loose -> conflict/autonomy',
     atomicSequence: 'S(A)->S(B)->delta(A,B)->T(conflict)',
@@ -170,7 +170,7 @@ export const PRIMITIVES: Record<string, Primitive> = {
   P10: {
     id: 'P10',
     name: 'Conservation (COR)',
-    nameHe: 'שימור משאבים',
+    nameHe: '\u05E9\u05D9\u05DE\u05D5\u05E8 \u05DE\u05E9\u05D0\u05D1\u05D9\u05DD',
     category: 'Structure',
     formula: 'loss_impact = alpha * gain_impact (alpha > 1)',
     atomicSequence: 'S(loss)->delta(loss,gain)->T(alpha>1)',
@@ -181,7 +181,7 @@ export const PRIMITIVES: Record<string, Primitive> = {
   P11: {
     id: 'P11',
     name: 'Perturbation as Signal Amplifier',
-    nameHe: 'הפרעה כמגבר אות',
+    nameHe: '\u05D4\u05E4\u05E8\u05E2\u05D4 \u05DB\u05DE\u05D2\u05D1\u05E8 \u05D0\u05D5\u05EA',
     category: 'Epistemics',
     formula: 'stress_event -> hidden_structure_becomes_visible',
     atomicSequence: 'M(perturb)->S(hidden)->delta(visible)',
@@ -192,7 +192,7 @@ export const PRIMITIVES: Record<string, Primitive> = {
   P12: {
     id: 'P12',
     name: 'Representation-Reality Gap',
-    nameHe: 'פער ייצוג-מציאות',
+    nameHe: '\u05E4\u05E2\u05E8 \u05D9\u05D9\u05E6\u05D5\u05D2-\u05DE\u05E6\u05D9\u05D0\u05D5\u05EA',
     category: 'Epistemics',
     formula: 'delta(declared_state, actual_state) > 0',
     atomicSequence: 'S(declared)->S(actual)->delta->T(>0)',

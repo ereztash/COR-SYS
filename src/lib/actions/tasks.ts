@@ -19,8 +19,8 @@ type TaskPayload = {
 }
 
 export async function createTaskAction(payload: TaskPayload): Promise<{ ok: boolean; error?: string; id?: string }> {
-  if (!isValidUuid(payload.sprint_id) || !isValidUuid(payload.client_id)) return { ok: false, error: 'מזהה לא חוקי' }
-  if (!isTaskStatus(payload.status) || !isTaskPriority(payload.priority)) return { ok: false, error: 'סטטוס או עדיפות לא חוקיים' }
+  if (!isValidUuid(payload.sprint_id) || !isValidUuid(payload.client_id)) return { ok: false, error: '\u05DE\u05D6\u05D4\u05D4 \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9' }
+  if (!isTaskStatus(payload.status) || !isTaskPriority(payload.priority)) return { ok: false, error: '\u05E1\u05D8\u05D8\u05D5\u05E1 \u05D0\u05D5 \u05E2\u05D3\u05D9\u05E4\u05D5\u05EA \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9\u05D9\u05DD' }
   const safePayload = {
     ...payload,
     estimated_hours: payload.estimated_hours != null ? clampHours(payload.estimated_hours) : null,
@@ -35,9 +35,9 @@ export async function createTaskAction(payload: TaskPayload): Promise<{ ok: bool
 }
 
 export async function updateTaskAction(id: string, payload: Partial<TaskPayload>): Promise<{ ok: boolean; error?: string }> {
-  if (!isValidUuid(id)) return { ok: false, error: 'מזהה לא חוקי' }
-  if (payload.status != null && !isTaskStatus(payload.status)) return { ok: false, error: 'סטטוס לא חוקי' }
-  if (payload.priority != null && !isTaskPriority(payload.priority)) return { ok: false, error: 'עדיפות לא חוקית' }
+  if (!isValidUuid(id)) return { ok: false, error: '\u05DE\u05D6\u05D4\u05D4 \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9' }
+  if (payload.status != null && !isTaskStatus(payload.status)) return { ok: false, error: '\u05E1\u05D8\u05D8\u05D5\u05E1 \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9' }
+  if (payload.priority != null && !isTaskPriority(payload.priority)) return { ok: false, error: '\u05E2\u05D3\u05D9\u05E4\u05D5\u05EA \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9\u05EA' }
   const safePayload = payload.estimated_hours !== undefined ? { ...payload, estimated_hours: toFiniteNumber(payload.estimated_hours) ?? payload.estimated_hours } : payload
   const supabase = await createClient()
   // @ts-expect-error Supabase inferred types are strict; payload matches tasks Update shape
@@ -48,8 +48,8 @@ export async function updateTaskAction(id: string, payload: Partial<TaskPayload>
 }
 
 export async function moveTaskAction(taskId: string, newStatus: TaskStatus, clientId: string, sprintId: string): Promise<{ ok: boolean; error?: string }> {
-  if (!isValidUuid(taskId) || !isValidUuid(clientId) || !isValidUuid(sprintId)) return { ok: false, error: 'מזהה לא חוקי' }
-  if (!isTaskStatus(newStatus)) return { ok: false, error: 'סטטוס לא חוקי' }
+  if (!isValidUuid(taskId) || !isValidUuid(clientId) || !isValidUuid(sprintId)) return { ok: false, error: '\u05DE\u05D6\u05D4\u05D4 \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9' }
+  if (!isTaskStatus(newStatus)) return { ok: false, error: '\u05E1\u05D8\u05D8\u05D5\u05E1 \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9' }
   const supabase = await createClient()
   // @ts-expect-error Supabase inferred types are strict; partial update is valid
   const { error } = await supabase.from('tasks').update({
@@ -63,7 +63,7 @@ export async function moveTaskAction(taskId: string, newStatus: TaskStatus, clie
 }
 
 export async function deleteTaskAction(taskId: string, clientId: string, sprintId: string): Promise<{ ok: boolean; error?: string }> {
-  if (!isValidUuid(taskId) || !isValidUuid(clientId) || !isValidUuid(sprintId)) return { ok: false, error: 'מזהה לא חוקי' }
+  if (!isValidUuid(taskId) || !isValidUuid(clientId) || !isValidUuid(sprintId)) return { ok: false, error: '\u05DE\u05D6\u05D4\u05D4 \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9' }
   const supabase = await createClient()
   const { error } = await supabase.from('tasks').delete().eq('id', taskId)
   if (error) return { ok: false, error: error.message }

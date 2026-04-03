@@ -16,22 +16,22 @@ export function formatDate(date: string | null | undefined): string {
 }
 
 export const STATUS_LABELS: Record<string, string> = {
-  active: 'פעיל',
-  prospect: 'פוטנציאלי',
-  churned: 'עזב',
-  paused: 'מושהה',
-  volunteer: 'התנדבות',
-  planned: 'מתוכנן',
-  completed: 'הושלם',
-  cancelled: 'בוטל',
-  todo: 'לביצוע',
-  in_progress: 'בביצוע',
-  done: 'הושלם',
-  blocked: 'חסום',
-  critical: 'קריטי',
-  high: 'גבוה',
-  medium: 'בינוני',
-  low: 'נמוך',
+  active: '\u05E4\u05E2\u05D9\u05DC',
+  prospect: '\u05E4\u05D5\u05D8\u05E0\u05E6\u05D9\u05D0\u05DC\u05D9',
+  churned: '\u05E2\u05D6\u05D1',
+  paused: '\u05DE\u05D5\u05E9\u05D4\u05D4',
+  volunteer: '\u05D4\u05EA\u05E0\u05D3\u05D1\u05D5\u05EA',
+  planned: '\u05DE\u05EA\u05D5\u05DB\u05E0\u05DF',
+  completed: '\u05D4\u05D5\u05E9\u05DC\u05DD',
+  cancelled: '\u05D1\u05D5\u05D8\u05DC',
+  todo: '\u05DC\u05D1\u05D9\u05E6\u05D5\u05E2',
+  in_progress: '\u05D1\u05D1\u05D9\u05E6\u05D5\u05E2',
+  done: '\u05D4\u05D5\u05E9\u05DC\u05DD',
+  blocked: '\u05D7\u05E1\u05D5\u05DD',
+  critical: '\u05E7\u05E8\u05D9\u05D8\u05D9',
+  high: '\u05D2\u05D1\u05D5\u05D4',
+  medium: '\u05D1\u05D9\u05E0\u05D5\u05E0\u05D9',
+  low: '\u05E0\u05DE\u05D5\u05DA',
 }
 
 export const STATUS_COLORS: Record<string, string> = {

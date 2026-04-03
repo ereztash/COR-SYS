@@ -15,7 +15,7 @@ export interface AssessmentCompletedPayload {
   dsmCodes: string[]
 }
 
-/** שולח מייל התראה לאחר מילוי שאלון הערכה — ליועץ */
+/** \u05E9\u05D5\u05DC\u05D7 \u05DE\u05D9\u05D9\u05DC \u05D4\u05EA\u05E8\u05D0\u05D4 \u05DC\u05D0\u05D7\u05E8 \u05DE\u05D9\u05DC\u05D5\u05D9 \u05E9\u05D0\u05DC\u05D5\u05DF \u05D4\u05E2\u05E8\u05DB\u05D4 — \u05DC\u05D9\u05D5\u05E2\u05E5 */
 export async function sendAssessmentCompletedEmail(
   to: string,
   payload: AssessmentCompletedPayload
@@ -31,12 +31,12 @@ export async function sendAssessmentCompletedEmail(
     const { error } = await resend.emails.send({
       from: FROM,
       to: [to],
-      subject: `הערכה הושלמה — ${clientName} | COR-SYS`,
+      subject: `\u05D4\u05E2\u05E8\u05DB\u05D4 \u05D4\u05D5\u05E9\u05DC\u05DE\u05D4 — ${clientName} | COR-SYS`,
       html: `
-        <h2>הערכה ארגונית הושלמה</h2>
-        <p><strong>לקוח:</strong> ${escapeHtml(clientName)}</p>
-        <p><strong>קודי DSM:</strong> ${escapeHtml(codesText)}</p>
-        <p><a href="${escapeHtml(resultsUrl)}">צפייה בתוצאות והמלצות</a></p>
+        <h2>\u05D4\u05E2\u05E8\u05DB\u05D4 \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05EA \u05D4\u05D5\u05E9\u05DC\u05DE\u05D4</h2>
+        <p><strong>\u05DC\u05E7\u05D5\u05D7:</strong> ${escapeHtml(clientName)}</p>
+        <p><strong>\u05E7\u05D5\u05D3\u05D9 DSM:</strong> ${escapeHtml(codesText)}</p>
+        <p><a href="${escapeHtml(resultsUrl)}">\u05E6\u05E4\u05D9\u05D9\u05D4 \u05D1\u05EA\u05D5\u05E6\u05D0\u05D5\u05EA \u05D5\u05D4\u05DE\u05DC\u05E6\u05D5\u05EA</a></p>
       `,
     })
     if (error) return { ok: false, error: error.message }

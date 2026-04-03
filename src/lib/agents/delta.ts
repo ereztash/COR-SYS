@@ -100,34 +100,34 @@ export async function buildDeltaPayload(planId: string): Promise<DeltaPayload> {
   const reasoningTrace: DeltaReasoningStep[] = [
     {
       title: 'System state',
-      detail: `Severity ${snapshot.severity_profile} עם DR=${snapshot.score_dr.toFixed(1)}, ND=${snapshot.score_nd.toFixed(1)}, UC=${snapshot.score_uc.toFixed(1)}.`,
+      detail: `Severity ${snapshot.severity_profile} \u05E2\u05DD DR=${snapshot.score_dr.toFixed(1)}, ND=${snapshot.score_nd.toFixed(1)}, UC=${snapshot.score_uc.toFixed(1)}.`,
     },
     {
       title: 'Case memory',
-      detail: `נמצאו ${rankedCases.length} מקרים דומים, מדורגים באמצעות Wilson + EoC-aware ranking.`,
+      detail: `\u05E0\u05DE\u05E6\u05D0\u05D5 ${rankedCases.length} \u05DE\u05E7\u05E8\u05D9\u05DD \u05D3\u05D5\u05DE\u05D9\u05DD, \u05DE\u05D3\u05D5\u05E8\u05D2\u05D9\u05DD \u05D1\u05D0\u05DE\u05E6\u05E2\u05D5\u05EA Wilson + EoC-aware ranking.`,
     },
     {
       title: 'Recommended intervention',
       detail: topRecommendation
-        ? `${topRecommendation.intervention_type} הוא המסלול המוביל עם Wilson ${topRecommendation.wilson_score.toFixed(2)} ותמיכת ${topRecommendation.supporting_cases} מקרים.`
-        : 'אין מספיק מקרים ולכן נדרש fallback מדיניות.',
+        ? `${topRecommendation.intervention_type} \u05D4\u05D5\u05D0 \u05D4\u05DE\u05E1\u05DC\u05D5\u05DC \u05D4\u05DE\u05D5\u05D1\u05D9\u05DC \u05E2\u05DD Wilson ${topRecommendation.wilson_score.toFixed(2)} \u05D5\u05EA\u05DE\u05D9\u05DB\u05EA ${topRecommendation.supporting_cases} \u05DE\u05E7\u05E8\u05D9\u05DD.`
+        : '\u05D0\u05D9\u05DF \u05DE\u05E1\u05E4\u05D9\u05E7 \u05DE\u05E7\u05E8\u05D9\u05DD \u05D5\u05DC\u05DB\u05DF \u05E0\u05D3\u05E8\u05E9 fallback \u05DE\u05D3\u05D9\u05E0\u05D9\u05D5\u05EA.',
     },
     {
       title: 'Simulation',
       detail: topSimulation
-        ? `Beta מעריך ROI חציוני ${topSimulation.roiPercentiles.p50.toFixed(2)} ותחום סיכון ${topSimulation.riskPercentiles.p5.toFixed(0)}-${topSimulation.riskPercentiles.p95.toFixed(0)}.`
-        : 'אין סימולציה זמינה.',
+        ? `Beta \u05DE\u05E2\u05E8\u05D9\u05DA ROI \u05D7\u05E6\u05D9\u05D5\u05E0\u05D9 ${topSimulation.roiPercentiles.p50.toFixed(2)} \u05D5\u05EA\u05D7\u05D5\u05DD \u05E1\u05D9\u05DB\u05D5\u05DF ${topSimulation.riskPercentiles.p5.toFixed(0)}-${topSimulation.riskPercentiles.p95.toFixed(0)}.`
+        : '\u05D0\u05D9\u05DF \u05E1\u05D9\u05DE\u05D5\u05DC\u05E6\u05D9\u05D4 \u05D6\u05DE\u05D9\u05E0\u05D4.',
     },
   ]
 
   const socraticQuestions = [
     gamma.feedbackLoopType === 'runaway'
-      ? 'איזו לולאה מחזקת כרגע את ההסלמה בין DR, ND ו-UC?'
-      : 'מהו האילוץ הארגוני שאם נשנה אותו, יפחית את זמן ההחלטה מהר ביותר?',
+      ? '\u05D0\u05D9\u05D6\u05D5 \u05DC\u05D5\u05DC\u05D0\u05D4 \u05DE\u05D7\u05D6\u05E7\u05EA \u05DB\u05E8\u05D2\u05E2 \u05D0\u05EA \u05D4\u05D4\u05E1\u05DC\u05DE\u05D4 \u05D1\u05D9\u05DF DR, ND \u05D5-UC?'
+      : '\u05DE\u05D4\u05D5 \u05D4\u05D0\u05D9\u05DC\u05D5\u05E5 \u05D4\u05D0\u05E8\u05D2\u05D5\u05E0\u05D9 \u05E9\u05D0\u05DD \u05E0\u05E9\u05E0\u05D4 \u05D0\u05D5\u05EA\u05D5, \u05D9\u05E4\u05D7\u05D9\u05EA \u05D0\u05EA \u05D6\u05DE\u05DF \u05D4\u05D4\u05D7\u05DC\u05D8\u05D4 \u05DE\u05D4\u05E8 \u05D1\u05D9\u05D5\u05EA\u05E8?',
     gamma.semanticDriftKl > 0.45
-      ? 'איפה המסרים המוצהרים של ההנהלה אינם תואמים להתנהגות בפועל?'
-      : 'איזו יחידה ארגונית יכולה לשמש מוקד ניסוי מהיר ללא סיכון מערכתי?',
-    'איזו הנחת יסוד בתוכנית הנוכחית טרם נבדקה אמפירית?',
+      ? '\u05D0\u05D9\u05E4\u05D4 \u05D4\u05DE\u05E1\u05E8\u05D9\u05DD \u05D4\u05DE\u05D5\u05E6\u05D4\u05E8\u05D9\u05DD \u05E9\u05DC \u05D4\u05D4\u05E0\u05D4\u05DC\u05D4 \u05D0\u05D9\u05E0\u05DD \u05EA\u05D5\u05D0\u05DE\u05D9\u05DD \u05DC\u05D4\u05EA\u05E0\u05D4\u05D2\u05D5\u05EA \u05D1\u05E4\u05D5\u05E2\u05DC?'
+      : '\u05D0\u05D9\u05D6\u05D5 \u05D9\u05D7\u05D9\u05D3\u05D4 \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05EA \u05D9\u05DB\u05D5\u05DC\u05D4 \u05DC\u05E9\u05DE\u05E9 \u05DE\u05D5\u05E7\u05D3 \u05E0\u05D9\u05E1\u05D5\u05D9 \u05DE\u05D4\u05D9\u05E8 \u05DC\u05DC\u05D0 \u05E1\u05D9\u05DB\u05D5\u05DF \u05DE\u05E2\u05E8\u05DB\u05EA\u05D9?',
+    '\u05D0\u05D9\u05D6\u05D5 \u05D4\u05E0\u05D7\u05EA \u05D9\u05E1\u05D5\u05D3 \u05D1\u05EA\u05D5\u05DB\u05E0\u05D9\u05EA \u05D4\u05E0\u05D5\u05DB\u05D7\u05D9\u05EA \u05D8\u05E8\u05DD \u05E0\u05D1\u05D3\u05E7\u05D4 \u05D0\u05DE\u05E4\u05D9\u05E8\u05D9\u05EA?',
   ]
 
   return {

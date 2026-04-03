@@ -38,7 +38,7 @@ export type DiagnosticResult = {
   /** @deprecated Prefer `unifiedTreatmentPlan`. Retained for shadow diff when UNIFIED_PIPELINE_SHADOW=true. */
   interventionProtocols: InterventionProtocol[]
   unifiedTreatmentPlan: UnifiedTreatmentPlanResult
-  /** פרופיל התנעה לעצמאים — null כשלא רלוונטי או לא מולא שאלון */
+  /** \u05E4\u05E8\u05D5\u05E4\u05D9\u05DC \u05D4\u05EA\u05E0\u05E2\u05D4 \u05DC\u05E2\u05E6\u05DE\u05D0\u05D9\u05DD — null \u05DB\u05E9\u05DC\u05D0 \u05E8\u05DC\u05D5\u05D5\u05E0\u05D8\u05D9 \u05D0\u05D5 \u05DC\u05D0 \u05DE\u05D5\u05DC\u05D0 \u05E9\u05D0\u05DC\u05D5\u05DF */
   ignition: IgnitionProfile | null
 }
 

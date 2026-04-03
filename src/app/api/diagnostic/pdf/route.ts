@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: `PDF generation failed: ${msg}` }, { status: 500 })
   }
 
-  const safeClient = body.clientName.replace(/[^א-תa-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '_')
+  const safeClient = body.clientName.replace(/[^\u05D0-\u05EAa-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '_')
   const filename   = `COR-SYS_${safeClient}_diagnostic.pdf`
 
   return new NextResponse(pdfBuffer as unknown as BodyInit, {

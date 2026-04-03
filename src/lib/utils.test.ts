@@ -27,11 +27,11 @@ describe('formatDate', () => {
 
 describe('STATUS_LABELS / STATUS_COLORS', () => {
   it('has client statuses', () => {
-    expect(STATUS_LABELS.active).toBe('פעיל')
-    expect(STATUS_LABELS.prospect).toBe('פוטנציאלי')
+    expect(STATUS_LABELS.active).toBe('\u05E4\u05E2\u05D9\u05DC')
+    expect(STATUS_LABELS.prospect).toBe('\u05E4\u05D5\u05D8\u05E0\u05E6\u05D9\u05D0\u05DC\u05D9')
   })
   it('has sprint statuses', () => {
-    expect(STATUS_LABELS.planned).toBe('מתוכנן')
+    expect(STATUS_LABELS.planned).toBe('\u05DE\u05EA\u05D5\u05DB\u05E0\u05DF')
     expect(STATUS_COLORS.active).toBeDefined()
   })
 })

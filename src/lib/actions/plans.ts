@@ -10,7 +10,7 @@ import { revalidatePath } from 'next/cache'
 import { isValidUuid } from '@/lib/validation'
 
 export async function savePlanFromQuestionnaire(clientId: string, clientName: string, answers: QuestionnaireAnswer): Promise<{ ok: boolean; error?: string }> {
-  if (!isValidUuid(clientId)) return { ok: false, error: 'מזהה לקוח לא חוקי' }
+  if (!isValidUuid(clientId)) return { ok: false, error: '\u05DE\u05D6\u05D4\u05D4 \u05DC\u05E7\u05D5\u05D7 \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9' }
   const supabase = await createClient()
 
   const { data: clientRow } = await supabase
@@ -30,7 +30,7 @@ export async function savePlanFromQuestionnaire(clientId: string, clientName: st
     dsmDiagnosis = diagnose(merged)
   } catch (e) {
     console.error('[savePlanFromQuestionnaire] DSM computation failed', e)
-    return { ok: false, error: 'שגיאה בחישוב האבחון — נסה שוב' }
+    return { ok: false, error: '\u05E9\u05D2\u05D9\u05D0\u05D4 \u05D1\u05D7\u05D9\u05E9\u05D5\u05D1 \u05D4\u05D0\u05D1\u05D7\u05D5\u05DF — \u05E0\u05E1\u05D4 \u05E9\u05D5\u05D1' }
   }
 
   const { title, summary, nextSteps, recommendedChannelId, recommendedOptionId } = planResult

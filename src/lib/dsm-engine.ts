@@ -26,16 +26,16 @@ export interface PathologySeverity {
   nameEn: string
   score: number            // 0–10
   level: SeverityLevel     // 1 = subclinical, 2 = moderate, 3 = severe
-  levelLabel: string       // תיאור בעברית
-  contributors: string[]   // שאלות שתרמו לציון
+  levelLabel: string       // \u05EA\u05D9\u05D0\u05D5\u05E8 \u05D1\u05E2\u05D1\u05E8\u05D9\u05EA
+  contributors: string[]   // \u05E9\u05D0\u05DC\u05D5\u05EA \u05E9\u05EA\u05E8\u05DE\u05D5 \u05DC\u05E6\u05D9\u05D5\u05DF
 }
 
 export interface DSMDiagnosis {
   codes: string[]                     // ["DR-2", "ND-3", "UC-1", "SC-2"]
-  primaryDiagnosis: PathologyCode     // הפתולוגיה החמורה ביותר
+  primaryDiagnosis: PathologyCode     // \u05D4\u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D4 \u05D4\u05D7\u05DE\u05D5\u05E8\u05D4 \u05D1\u05D9\u05D5\u05EA\u05E8
   severityProfile: SeverityProfile
   pathologies: PathologySeverity[]
-  totalEntropyScore: number           // 0–40 (סכום ציוני חומרה — 4 ממדים)
+  totalEntropyScore: number           // 0–40 (\u05E1\u05DB\u05D5\u05DD \u05E6\u05D9\u05D5\u05E0\u05D9 \u05D7\u05D5\u05DE\u05E8\u05D4 — 4 \u05DE\u05DE\u05D3\u05D9\u05DD)
   tamSignature?: TAMSignature         // T/A/M cost vector for this diagnosis
   cascadeState?: CascadeStateInfo     // Cascade State detection (v2)
   sequencingViolations?: SequencingViolation[] // Active sequencing rule violations
@@ -82,43 +82,43 @@ export interface InterventionProtocol {
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const PATHOLOGY_NAMES: Record<PathologyCode, { he: string; en: string }> = {
-  DR: { he: 'הדדיות מעוותת', en: 'Distorted Reciprocity' },
-  ND: { he: 'נורמליזציית סטייה', en: 'Normalization of Deviance' },
-  UC: { he: 'כיול לא-מייצג', en: 'Unrepresentative Calibration' },
-  SC: { he: 'עמימות מבנית', en: 'Structural Clarity Deficit' },
+  DR: { he: '\u05D4\u05D3\u05D3\u05D9\u05D5\u05EA \u05DE\u05E2\u05D5\u05D5\u05EA\u05EA', en: 'Distorted Reciprocity' },
+  ND: { he: '\u05E0\u05D5\u05E8\u05DE\u05DC\u05D9\u05D6\u05E6\u05D9\u05D9\u05EA \u05E1\u05D8\u05D9\u05D9\u05D4', en: 'Normalization of Deviance' },
+  UC: { he: '\u05DB\u05D9\u05D5\u05DC \u05DC\u05D0-\u05DE\u05D9\u05D9\u05E6\u05D2', en: 'Unrepresentative Calibration' },
+  SC: { he: '\u05E2\u05DE\u05D9\u05DE\u05D5\u05EA \u05DE\u05D1\u05E0\u05D9\u05EA', en: 'Structural Clarity Deficit' },
 }
 
 const LEVEL_LABELS: Record<SeverityLevel, string> = {
-  1: 'תפקוד תקין / subclinical',
-  2: 'פתולוגיה מתונה / בינונית',
-  3: 'פתולוגיה חמורה / גבוהה',
+  1: '\u05EA\u05E4\u05E7\u05D5\u05D3 \u05EA\u05E7\u05D9\u05DF / subclinical',
+  2: '\u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D4 \u05DE\u05EA\u05D5\u05E0\u05D4 / \u05D1\u05D9\u05E0\u05D5\u05E0\u05D9\u05EA',
+  3: '\u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D4 \u05D7\u05DE\u05D5\u05E8\u05D4 / \u05D2\u05D1\u05D5\u05D4\u05D4',
 }
 
 /** Research-based correlations from N=10,000 simulation */
 const CORRELATIONS: { from: PathologyCode; to: PathologyCode; r: number; mechanism: string }[] = [
   {
     from: 'DR', to: 'ND', r: 0.19,
-    mechanism: 'תחרות פנימית מייצרת לחץ ייצור שמנרמל סטיות מנהלים — הצלחה במדדים דורשת עקיפת נהלים',
+    mechanism: '\u05EA\u05D7\u05E8\u05D5\u05EA \u05E4\u05E0\u05D9\u05DE\u05D9\u05EA \u05DE\u05D9\u05D9\u05E6\u05E8\u05EA \u05DC\u05D7\u05E5 \u05D9\u05D9\u05E6\u05D5\u05E8 \u05E9\u05DE\u05E0\u05E8\u05DE\u05DC \u05E1\u05D8\u05D9\u05D5\u05EA \u05DE\u05E0\u05D4\u05DC\u05D9\u05DD — \u05D4\u05E6\u05DC\u05D7\u05D4 \u05D1\u05DE\u05D3\u05D3\u05D9\u05DD \u05D3\u05D5\u05E8\u05E9\u05EA \u05E2\u05E7\u05D9\u05E4\u05EA \u05E0\u05D4\u05DC\u05D9\u05DD',
   },
   {
     from: 'DR', to: 'UC', r: -0.27,
-    mechanism: 'תחרות מעכבת למידה ארגונית — בסביבה תחרותית, הודאה בטעות = חולשה; בטחון פסיכולוגי נפגע',
+    mechanism: '\u05EA\u05D7\u05E8\u05D5\u05EA \u05DE\u05E2\u05DB\u05D1\u05EA \u05DC\u05DE\u05D9\u05D3\u05D4 \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05EA — \u05D1\u05E1\u05D1\u05D9\u05D1\u05D4 \u05EA\u05D7\u05E8\u05D5\u05EA\u05D9\u05EA, \u05D4\u05D5\u05D3\u05D0\u05D4 \u05D1\u05D8\u05E2\u05D5\u05EA = \u05D7\u05D5\u05DC\u05E9\u05D4; \u05D1\u05D8\u05D7\u05D5\u05DF \u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9 \u05E0\u05E4\u05D2\u05E2',
   },
   {
     from: 'ND', to: 'UC', r: 0.28,
-    mechanism: 'נורמליזציית סטיות פוגעת ביכולת הלמידה מטעויות — כשסטיות נתפסות כנורמליות, אין trigger ללמידה',
+    mechanism: '\u05E0\u05D5\u05E8\u05DE\u05DC\u05D9\u05D6\u05E6\u05D9\u05D9\u05EA \u05E1\u05D8\u05D9\u05D5\u05EA \u05E4\u05D5\u05D2\u05E2\u05EA \u05D1\u05D9\u05DB\u05D5\u05DC\u05EA \u05D4\u05DC\u05DE\u05D9\u05D3\u05D4 \u05DE\u05D8\u05E2\u05D5\u05D9\u05D5\u05EA — \u05DB\u05E9\u05E1\u05D8\u05D9\u05D5\u05EA \u05E0\u05EA\u05E4\u05E1\u05D5\u05EA \u05DB\u05E0\u05D5\u05E8\u05DE\u05DC\u05D9\u05D5\u05EA, \u05D0\u05D9\u05DF trigger \u05DC\u05DC\u05DE\u05D9\u05D3\u05D4',
   },
   {
     from: 'SC', to: 'DR', r: 0.32,
-    mechanism: 'עמימות מבנית מייצרת ואקום סמכותי שמגביר מאבקי בעלות ותחרות פנימית',
+    mechanism: '\u05E2\u05DE\u05D9\u05DE\u05D5\u05EA \u05DE\u05D1\u05E0\u05D9\u05EA \u05DE\u05D9\u05D9\u05E6\u05E8\u05EA \u05D5\u05D0\u05E7\u05D5\u05DD \u05E1\u05DE\u05DB\u05D5\u05EA\u05D9 \u05E9\u05DE\u05D2\u05D1\u05D9\u05E8 \u05DE\u05D0\u05D1\u05E7\u05D9 \u05D1\u05E2\u05DC\u05D5\u05EA \u05D5\u05EA\u05D7\u05E8\u05D5\u05EA \u05E4\u05E0\u05D9\u05DE\u05D9\u05EA',
   },
   {
     from: 'SC', to: 'ND', r: 0.24,
-    mechanism: 'כאשר מבנה ותהליכים אינם ברורים, מעקפים הופכים לברירת מחדל תפעולית',
+    mechanism: '\u05DB\u05D0\u05E9\u05E8 \u05DE\u05D1\u05E0\u05D4 \u05D5\u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD \u05D0\u05D9\u05E0\u05DD \u05D1\u05E8\u05D5\u05E8\u05D9\u05DD, \u05DE\u05E2\u05E7\u05E4\u05D9\u05DD \u05D4\u05D5\u05E4\u05DB\u05D9\u05DD \u05DC\u05D1\u05E8\u05D9\u05E8\u05EA \u05DE\u05D7\u05D3\u05DC \u05EA\u05E4\u05E2\u05D5\u05DC\u05D9\u05EA',
   },
   {
     from: 'SC', to: 'UC', r: 0.18,
-    mechanism: 'חוסר בהירות מבנית מחליש sensemaking ופוגע ביכולת כיול ולמידה מערכתית',
+    mechanism: '\u05D7\u05D5\u05E1\u05E8 \u05D1\u05D4\u05D9\u05E8\u05D5\u05EA \u05DE\u05D1\u05E0\u05D9\u05EA \u05DE\u05D7\u05DC\u05D9\u05E9 sensemaking \u05D5\u05E4\u05D5\u05D2\u05E2 \u05D1\u05D9\u05DB\u05D5\u05DC\u05EA \u05DB\u05D9\u05D5\u05DC \u05D5\u05DC\u05DE\u05D9\u05D3\u05D4 \u05DE\u05E2\u05E8\u05DB\u05EA\u05D9\u05EA',
   },
 ]
 
@@ -192,7 +192,7 @@ function computeLatencyFactorFromModifier(latencyMod: number): number {
 }
 
 function scoreToLevel(score: number): SeverityLevel {
-  // ספים מותאמים לסקאלה היוריסטית:
+  // \u05E1\u05E4\u05D9\u05DD \u05DE\u05D5\u05EA\u05D0\u05DE\u05D9\u05DD \u05DC\u05E1\u05E7\u05D0\u05DC\u05D4 \u05D4\u05D9\u05D5\u05E8\u05D9\u05E1\u05D8\u05D9\u05EA:
   // 0–2.5 ≈ subclinical, 2.5–5.5 ≈ moderate, 5.5–10 ≈ severe
   if (score <= 2.5) return 1
   if (score <= 5.5) return 2
@@ -252,7 +252,7 @@ export function diagnose(answers: QuestionnaireAnswer): DSMDiagnosis {
   const ucBase = 0.4 * ucLearning + 0.25 * ucSemantic + 0.2 * psiNorm + 0.15 * adaptive
   let ucScore = clampScore((ucBase + (ucBase > 3.0 ? latencyMod : 0)) * latencyFactor)
 
-  // אם גם למידה single_loop וגם סחיפה סמנטית גבוהה — UC תמיד ברמת 3
+  // \u05D0\u05DD \u05D2\u05DD \u05DC\u05DE\u05D9\u05D3\u05D4 single_loop \u05D5\u05D2\u05DD \u05E1\u05D7\u05D9\u05E4\u05D4 \u05E1\u05DE\u05E0\u05D8\u05D9\u05EA \u05D2\u05D1\u05D5\u05D4\u05D4 — UC \u05EA\u05DE\u05D9\u05D3 \u05D1\u05E8\u05DE\u05EA 3
   if (answers.pathologyLearning === 'single_loop' && answers.pathologySemantic === 'high_drift') {
     ucScore = Math.max(ucScore, 7)
   }
@@ -393,7 +393,7 @@ function computeSeverityProfile(pathologies: PathologySeverity[]): SeverityProfi
   const level2Count = pathologies.filter((p) => p.level === 2).length
   const totalScore = pathologies.reduce((sum, p) => sum + p.score, 0)
 
-  // קריסה מערכתית דורשת גם עומס אנטרופיה גבוה, לא רק שתי פתולוגיות חמורות
+  // \u05E7\u05E8\u05D9\u05E1\u05D4 \u05DE\u05E2\u05E8\u05DB\u05EA\u05D9\u05EA \u05D3\u05D5\u05E8\u05E9\u05EA \u05D2\u05DD \u05E2\u05D5\u05DE\u05E1 \u05D0\u05E0\u05D8\u05E8\u05D5\u05E4\u05D9\u05D4 \u05D2\u05D1\u05D5\u05D4, \u05DC\u05D0 \u05E8\u05E7 \u05E9\u05EA\u05D9 \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA \u05D7\u05DE\u05D5\u05E8\u05D5\u05EA
   // Threshold scaled from 22/30 (3D) → 29/40 (4D) proportionally
   if (level3Count >= 2 && totalScore >= 29) return 'systemic-collapse'
   if (level3Count === 1) return 'critical'
@@ -429,19 +429,19 @@ const PROTOCOLS: InterventionProtocol[] = [
   {
     id: 'nod-bia-remediation',
     triggerCode: 'ND',
-    nameHe: 'רמדיציית NOD→BIA',
+    nameHe: '\u05E8\u05DE\u05D3\u05D9\u05E6\u05D9\u05D9\u05EA NOD→BIA',
     nameEn: 'NOD → BIA Remediation',
-    phase: 'חודשים 1-3',
+    phase: '\u05D7\u05D5\u05D3\u05E9\u05D9\u05DD 1-3',
     components: [
-      { step: 'ביקורת BIA חיצונית', detail: 'יועצים חיצוניים מבצעים Business Impact Analysis עצמאי כדי להתגבר על עיוורון נורמליזציה פנימי' },
-      { step: 'ניתוח לחצי ייצור', detail: 'זיהוי מקורות לחץ דדליינים ועלויות שמניעים קיצורי דרך; ההנהלה מטפלת בשורשי הבעיה' },
-      { step: 'מערכת דיווח near-miss', detail: 'הקמת דיווח מובנה לסטיות שלא גרמו נזק, מעקב אחר נורמליזציה לפני אסון' },
-      { step: 'תיעוד סף סיכון', detail: 'קביעת סטנדרטים כתובים לסיכון מקובל, מעקב רבעוני אחר סחיפה' },
+      { step: '\u05D1\u05D9\u05E7\u05D5\u05E8\u05EA BIA \u05D7\u05D9\u05E6\u05D5\u05E0\u05D9\u05EA', detail: '\u05D9\u05D5\u05E2\u05E6\u05D9\u05DD \u05D7\u05D9\u05E6\u05D5\u05E0\u05D9\u05D9\u05DD \u05DE\u05D1\u05E6\u05E2\u05D9\u05DD Business Impact Analysis \u05E2\u05E6\u05DE\u05D0\u05D9 \u05DB\u05D3\u05D9 \u05DC\u05D4\u05EA\u05D2\u05D1\u05E8 \u05E2\u05DC \u05E2\u05D9\u05D5\u05D5\u05E8\u05D5\u05DF \u05E0\u05D5\u05E8\u05DE\u05DC\u05D9\u05D6\u05E6\u05D9\u05D4 \u05E4\u05E0\u05D9\u05DE\u05D9' },
+      { step: '\u05E0\u05D9\u05EA\u05D5\u05D7 \u05DC\u05D7\u05E6\u05D9 \u05D9\u05D9\u05E6\u05D5\u05E8', detail: '\u05D6\u05D9\u05D4\u05D5\u05D9 \u05DE\u05E7\u05D5\u05E8\u05D5\u05EA \u05DC\u05D7\u05E5 \u05D3\u05D3\u05DC\u05D9\u05D9\u05E0\u05D9\u05DD \u05D5\u05E2\u05DC\u05D5\u05D9\u05D5\u05EA \u05E9\u05DE\u05E0\u05D9\u05E2\u05D9\u05DD \u05E7\u05D9\u05E6\u05D5\u05E8\u05D9 \u05D3\u05E8\u05DA; \u05D4\u05D4\u05E0\u05D4\u05DC\u05D4 \u05DE\u05D8\u05E4\u05DC\u05EA \u05D1\u05E9\u05D5\u05E8\u05E9\u05D9 \u05D4\u05D1\u05E2\u05D9\u05D4' },
+      { step: '\u05DE\u05E2\u05E8\u05DB\u05EA \u05D3\u05D9\u05D5\u05D5\u05D7 near-miss', detail: '\u05D4\u05E7\u05DE\u05EA \u05D3\u05D9\u05D5\u05D5\u05D7 \u05DE\u05D5\u05D1\u05E0\u05D4 \u05DC\u05E1\u05D8\u05D9\u05D5\u05EA \u05E9\u05DC\u05D0 \u05D2\u05E8\u05DE\u05D5 \u05E0\u05D6\u05E7, \u05DE\u05E2\u05E7\u05D1 \u05D0\u05D7\u05E8 \u05E0\u05D5\u05E8\u05DE\u05DC\u05D9\u05D6\u05E6\u05D9\u05D4 \u05DC\u05E4\u05E0\u05D9 \u05D0\u05E1\u05D5\u05DF' },
+      { step: '\u05EA\u05D9\u05E2\u05D5\u05D3 \u05E1\u05E3 \u05E1\u05D9\u05DB\u05D5\u05DF', detail: '\u05E7\u05D1\u05D9\u05E2\u05EA \u05E1\u05D8\u05E0\u05D3\u05E8\u05D8\u05D9\u05DD \u05DB\u05EA\u05D5\u05D1\u05D9\u05DD \u05DC\u05E1\u05D9\u05DB\u05D5\u05DF \u05DE\u05E7\u05D5\u05D1\u05DC, \u05DE\u05E2\u05E7\u05D1 \u05E8\u05D1\u05E2\u05D5\u05E0\u05D9 \u05D0\u05D7\u05E8 \u05E1\u05D7\u05D9\u05E4\u05D4' },
     ],
     successMetrics: [
-      'ירידה של ≥1.5 נקודות בציון ND תוך 6 חודשים',
-      'BIA מזהה ≥20% יותר תלויות קריטיות מההערכה הקודמת',
-      'עלייה בדיווחי near-miss (שיפור זיהוי, לא החמרת מצב)',
+      '\u05D9\u05E8\u05D9\u05D3\u05D4 \u05E9\u05DC ≥1.5 \u05E0\u05E7\u05D5\u05D3\u05D5\u05EA \u05D1\u05E6\u05D9\u05D5\u05DF ND \u05EA\u05D5\u05DA 6 \u05D7\u05D5\u05D3\u05E9\u05D9\u05DD',
+      'BIA \u05DE\u05D6\u05D4\u05D4 ≥20% \u05D9\u05D5\u05EA\u05E8 \u05EA\u05DC\u05D5\u05D9\u05D5\u05EA \u05E7\u05E8\u05D9\u05D8\u05D9\u05D5\u05EA \u05DE\u05D4\u05D4\u05E2\u05E8\u05DB\u05D4 \u05D4\u05E7\u05D5\u05D3\u05DE\u05EA',
+      '\u05E2\u05DC\u05D9\u05D9\u05D4 \u05D1\u05D3\u05D9\u05D5\u05D5\u05D7\u05D9 near-miss (\u05E9\u05D9\u05E4\u05D5\u05E8 \u05D6\u05D9\u05D4\u05D5\u05D9, \u05DC\u05D0 \u05D4\u05D7\u05DE\u05E8\u05EA \u05DE\u05E6\u05D1)',
     ],
     researchBasis: 'Vaughan (1996) — NOD five-stage progression; Section 4.1 integrated-model.md',
     timelineMonths: 6,
@@ -449,20 +449,20 @@ const PROTOCOLS: InterventionProtocol[] = [
   {
     id: 'learning-exercise-design',
     triggerCode: 'UC',
-    nameHe: 'למידה → עיצוב תרגולים',
+    nameHe: '\u05DC\u05DE\u05D9\u05D3\u05D4 → \u05E2\u05D9\u05E6\u05D5\u05D1 \u05EA\u05E8\u05D2\u05D5\u05DC\u05D9\u05DD',
     nameEn: 'Learning Deficits → Exercise Design',
-    phase: 'חודשים 1-6',
+    phase: '\u05D7\u05D5\u05D3\u05E9\u05D9\u05DD 1-6',
     components: [
-      { step: 'בניית בטחון פסיכולוגי', detail: 'מודלינג פגיעות מנהיגותי, סקירות תקריות ללא האשמה, הכשרת Just Culture' },
-      { step: 'עיצוב תרגילים אדפטיבי', detail: 'התאמת תרחישי tabletop לליקוי למידה ספציפי — אם "אנשים מעמידים פנים שהם יודעים", כלול אופציות "אני לא יודע" מפורשות' },
-      { step: 'AAR מובנה', detail: 'מסגרת 4 שאלות: מה היה אמור לקרות? מה קרה? מה עבד? מה לשפר? עם תיעוד ומעקב' },
-      { step: 'ניהול ידע', detail: 'שבירת סילואים דרך השתתפות חוצת-פונקציות בתרגילים ומאגרי למידה משותפים' },
+      { step: '\u05D1\u05E0\u05D9\u05D9\u05EA \u05D1\u05D8\u05D7\u05D5\u05DF \u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9', detail: '\u05DE\u05D5\u05D3\u05DC\u05D9\u05E0\u05D2 \u05E4\u05D2\u05D9\u05E2\u05D5\u05EA \u05DE\u05E0\u05D4\u05D9\u05D2\u05D5\u05EA\u05D9, \u05E1\u05E7\u05D9\u05E8\u05D5\u05EA \u05EA\u05E7\u05E8\u05D9\u05D5\u05EA \u05DC\u05DC\u05D0 \u05D4\u05D0\u05E9\u05DE\u05D4, \u05D4\u05DB\u05E9\u05E8\u05EA Just Culture' },
+      { step: '\u05E2\u05D9\u05E6\u05D5\u05D1 \u05EA\u05E8\u05D2\u05D9\u05DC\u05D9\u05DD \u05D0\u05D3\u05E4\u05D8\u05D9\u05D1\u05D9', detail: '\u05D4\u05EA\u05D0\u05DE\u05EA \u05EA\u05E8\u05D7\u05D9\u05E9\u05D9 tabletop \u05DC\u05DC\u05D9\u05E7\u05D5\u05D9 \u05DC\u05DE\u05D9\u05D3\u05D4 \u05E1\u05E4\u05E6\u05D9\u05E4\u05D9 — \u05D0\u05DD "\u05D0\u05E0\u05E9\u05D9\u05DD \u05DE\u05E2\u05DE\u05D9\u05D3\u05D9\u05DD \u05E4\u05E0\u05D9\u05DD \u05E9\u05D4\u05DD \u05D9\u05D5\u05D3\u05E2\u05D9\u05DD", \u05DB\u05DC\u05D5\u05DC \u05D0\u05D5\u05E4\u05E6\u05D9\u05D5\u05EA "\u05D0\u05E0\u05D9 \u05DC\u05D0 \u05D9\u05D5\u05D3\u05E2" \u05DE\u05E4\u05D5\u05E8\u05E9\u05D5\u05EA' },
+      { step: 'AAR \u05DE\u05D5\u05D1\u05E0\u05D4', detail: '\u05DE\u05E1\u05D2\u05E8\u05EA 4 \u05E9\u05D0\u05DC\u05D5\u05EA: \u05DE\u05D4 \u05D4\u05D9\u05D4 \u05D0\u05DE\u05D5\u05E8 \u05DC\u05E7\u05E8\u05D5\u05EA? \u05DE\u05D4 \u05E7\u05E8\u05D4? \u05DE\u05D4 \u05E2\u05D1\u05D3? \u05DE\u05D4 \u05DC\u05E9\u05E4\u05E8? \u05E2\u05DD \u05EA\u05D9\u05E2\u05D5\u05D3 \u05D5\u05DE\u05E2\u05E7\u05D1' },
+      { step: '\u05E0\u05D9\u05D4\u05D5\u05DC \u05D9\u05D3\u05E2', detail: '\u05E9\u05D1\u05D9\u05E8\u05EA \u05E1\u05D9\u05DC\u05D5\u05D0\u05D9\u05DD \u05D3\u05E8\u05DA \u05D4\u05E9\u05EA\u05EA\u05E4\u05D5\u05EA \u05D7\u05D5\u05E6\u05EA-\u05E4\u05D5\u05E0\u05E7\u05E6\u05D9\u05D5\u05EA \u05D1\u05EA\u05E8\u05D2\u05D9\u05DC\u05D9\u05DD \u05D5\u05DE\u05D0\u05D2\u05E8\u05D9 \u05DC\u05DE\u05D9\u05D3\u05D4 \u05DE\u05E9\u05D5\u05EA\u05E4\u05D9\u05DD' },
     ],
     successMetrics: [
-      'ירידה של ≥1.5 נקודות בציון UC תוך 6 חודשים',
-      'עלייה של ≥15% בהשתתפות בתרגילים',
-      'AAR מפיק ≥5 שיפורים ישימים עם מעקב מתועד',
-      'ירידה בטעויות חוזרות (מדידה דרך ניתוח דפוסי תקריות)',
+      '\u05D9\u05E8\u05D9\u05D3\u05D4 \u05E9\u05DC ≥1.5 \u05E0\u05E7\u05D5\u05D3\u05D5\u05EA \u05D1\u05E6\u05D9\u05D5\u05DF UC \u05EA\u05D5\u05DA 6 \u05D7\u05D5\u05D3\u05E9\u05D9\u05DD',
+      '\u05E2\u05DC\u05D9\u05D9\u05D4 \u05E9\u05DC ≥15% \u05D1\u05D4\u05E9\u05EA\u05EA\u05E4\u05D5\u05EA \u05D1\u05EA\u05E8\u05D2\u05D9\u05DC\u05D9\u05DD',
+      'AAR \u05DE\u05E4\u05D9\u05E7 ≥5 \u05E9\u05D9\u05E4\u05D5\u05E8\u05D9\u05DD \u05D9\u05E9\u05D9\u05DE\u05D9\u05DD \u05E2\u05DD \u05DE\u05E2\u05E7\u05D1 \u05DE\u05EA\u05D5\u05E2\u05D3',
+      '\u05D9\u05E8\u05D9\u05D3\u05D4 \u05D1\u05D8\u05E2\u05D5\u05D9\u05D5\u05EA \u05D7\u05D5\u05D6\u05E8\u05D5\u05EA (\u05DE\u05D3\u05D9\u05D3\u05D4 \u05D3\u05E8\u05DA \u05E0\u05D9\u05EA\u05D5\u05D7 \u05D3\u05E4\u05D5\u05E1\u05D9 \u05EA\u05E7\u05E8\u05D9\u05D5\u05EA)',
     ],
     researchBasis: 'Edmondson (1999) Psychological Safety; Argyris Double-Loop Learning; Section 4.2 integrated-model.md',
     timelineMonths: 6,
@@ -470,20 +470,20 @@ const PROTOCOLS: InterventionProtocol[] = [
   {
     id: 'blame-reporting',
     triggerCode: 'UC',
-    nameHe: 'תרבות האשמה → דיווח משבר',
+    nameHe: '\u05EA\u05E8\u05D1\u05D5\u05EA \u05D4\u05D0\u05E9\u05DE\u05D4 → \u05D3\u05D9\u05D5\u05D5\u05D7 \u05DE\u05E9\u05D1\u05E8',
     nameEn: 'Blame Culture → Crisis Reporting',
-    phase: 'חודשים 1-6',
+    phase: '\u05D7\u05D5\u05D3\u05E9\u05D9\u05DD 1-6',
     components: [
-      { step: 'הטמעת Just Culture', detail: 'הכשרת מנהלים להבחין בין טעויות (בעיות מערכתיות), התנהגות מסוכנת (נורמליזציה), ופזיזות (אחריות אמיתית)' },
-      { step: 'ערוצי דיווח אנונימיים', detail: 'הקמת דיווח תקריות חסוי עם מדיניות אי-תגמול' },
-      { step: 'מודלינג פגיעות מנהיגותי', detail: 'מנהלים בכירים מודים פומבית באי-ודאות, מודים בטעויות, מבקשים קלט על בעיות' },
-      { step: 'פרוטוקולי תקשורת משבר', detail: 'נהלים מפורשים לדיווח בזמן אמת במהלך אירועים עם הגנות בטחון פסיכולוגי' },
+      { step: '\u05D4\u05D8\u05DE\u05E2\u05EA Just Culture', detail: '\u05D4\u05DB\u05E9\u05E8\u05EA \u05DE\u05E0\u05D4\u05DC\u05D9\u05DD \u05DC\u05D4\u05D1\u05D7\u05D9\u05DF \u05D1\u05D9\u05DF \u05D8\u05E2\u05D5\u05D9\u05D5\u05EA (\u05D1\u05E2\u05D9\u05D5\u05EA \u05DE\u05E2\u05E8\u05DB\u05EA\u05D9\u05D5\u05EA), \u05D4\u05EA\u05E0\u05D4\u05D2\u05D5\u05EA \u05DE\u05E1\u05D5\u05DB\u05E0\u05EA (\u05E0\u05D5\u05E8\u05DE\u05DC\u05D9\u05D6\u05E6\u05D9\u05D4), \u05D5\u05E4\u05D6\u05D9\u05D6\u05D5\u05EA (\u05D0\u05D7\u05E8\u05D9\u05D5\u05EA \u05D0\u05DE\u05D9\u05EA\u05D9\u05EA)' },
+      { step: '\u05E2\u05E8\u05D5\u05E6\u05D9 \u05D3\u05D9\u05D5\u05D5\u05D7 \u05D0\u05E0\u05D5\u05E0\u05D9\u05DE\u05D9\u05D9\u05DD', detail: '\u05D4\u05E7\u05DE\u05EA \u05D3\u05D9\u05D5\u05D5\u05D7 \u05EA\u05E7\u05E8\u05D9\u05D5\u05EA \u05D7\u05E1\u05D5\u05D9 \u05E2\u05DD \u05DE\u05D3\u05D9\u05E0\u05D9\u05D5\u05EA \u05D0\u05D9-\u05EA\u05D2\u05DE\u05D5\u05DC' },
+      { step: '\u05DE\u05D5\u05D3\u05DC\u05D9\u05E0\u05D2 \u05E4\u05D2\u05D9\u05E2\u05D5\u05EA \u05DE\u05E0\u05D4\u05D9\u05D2\u05D5\u05EA\u05D9', detail: '\u05DE\u05E0\u05D4\u05DC\u05D9\u05DD \u05D1\u05DB\u05D9\u05E8\u05D9\u05DD \u05DE\u05D5\u05D3\u05D9\u05DD \u05E4\u05D5\u05DE\u05D1\u05D9\u05EA \u05D1\u05D0\u05D9-\u05D5\u05D3\u05D0\u05D5\u05EA, \u05DE\u05D5\u05D3\u05D9\u05DD \u05D1\u05D8\u05E2\u05D5\u05D9\u05D5\u05EA, \u05DE\u05D1\u05E7\u05E9\u05D9\u05DD \u05E7\u05DC\u05D8 \u05E2\u05DC \u05D1\u05E2\u05D9\u05D5\u05EA' },
+      { step: '\u05E4\u05E8\u05D5\u05D8\u05D5\u05E7\u05D5\u05DC\u05D9 \u05EA\u05E7\u05E9\u05D5\u05E8\u05EA \u05DE\u05E9\u05D1\u05E8', detail: '\u05E0\u05D4\u05DC\u05D9\u05DD \u05DE\u05E4\u05D5\u05E8\u05E9\u05D9\u05DD \u05DC\u05D3\u05D9\u05D5\u05D5\u05D7 \u05D1\u05D6\u05DE\u05DF \u05D0\u05DE\u05EA \u05D1\u05DE\u05D4\u05DC\u05DA \u05D0\u05D9\u05E8\u05D5\u05E2\u05D9\u05DD \u05E2\u05DD \u05D4\u05D2\u05E0\u05D5\u05EA \u05D1\u05D8\u05D7\u05D5\u05DF \u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9' },
     ],
     successMetrics: [
-      'ירידה של ≥2.0 נקודות בפריטי UC-crisis תוך 6 חודשים',
-      'עלייה של ≥25% בדיווחי תקריות (שיפור זיהוי)',
-      '≥70% מהעובדים מרגישים בטוחים לדווח על בעיות (סקר אנונימי)',
-      'צופי תרגילי משבר מתעדים ירידה בתקשורת מבוססת-פחד',
+      '\u05D9\u05E8\u05D9\u05D3\u05D4 \u05E9\u05DC ≥2.0 \u05E0\u05E7\u05D5\u05D3\u05D5\u05EA \u05D1\u05E4\u05E8\u05D9\u05D8\u05D9 UC-crisis \u05EA\u05D5\u05DA 6 \u05D7\u05D5\u05D3\u05E9\u05D9\u05DD',
+      '\u05E2\u05DC\u05D9\u05D9\u05D4 \u05E9\u05DC ≥25% \u05D1\u05D3\u05D9\u05D5\u05D5\u05D7\u05D9 \u05EA\u05E7\u05E8\u05D9\u05D5\u05EA (\u05E9\u05D9\u05E4\u05D5\u05E8 \u05D6\u05D9\u05D4\u05D5\u05D9)',
+      '≥70% \u05DE\u05D4\u05E2\u05D5\u05D1\u05D3\u05D9\u05DD \u05DE\u05E8\u05D2\u05D9\u05E9\u05D9\u05DD \u05D1\u05D8\u05D5\u05D7\u05D9\u05DD \u05DC\u05D3\u05D5\u05D5\u05D7 \u05E2\u05DC \u05D1\u05E2\u05D9\u05D5\u05EA (\u05E1\u05E7\u05E8 \u05D0\u05E0\u05D5\u05E0\u05D9\u05DE\u05D9)',
+      '\u05E6\u05D5\u05E4\u05D9 \u05EA\u05E8\u05D2\u05D9\u05DC\u05D9 \u05DE\u05E9\u05D1\u05E8 \u05DE\u05EA\u05E2\u05D3\u05D9\u05DD \u05D9\u05E8\u05D9\u05D3\u05D4 \u05D1\u05EA\u05E7\u05E9\u05D5\u05E8\u05EA \u05DE\u05D1\u05D5\u05E1\u05E1\u05EA-\u05E4\u05D7\u05D3',
     ],
     researchBasis: 'Munn et al. (2023) — psychological safety mediation; Edmondson (1999); Section 4.3 integrated-model.md',
     timelineMonths: 6,
@@ -491,19 +491,19 @@ const PROTOCOLS: InterventionProtocol[] = [
   {
     id: 'structural-clarity-remediation',
     triggerCode: 'SC',
-    nameHe: 'תיקון עמימות מבנית',
+    nameHe: '\u05EA\u05D9\u05E7\u05D5\u05DF \u05E2\u05DE\u05D9\u05DE\u05D5\u05EA \u05DE\u05D1\u05E0\u05D9\u05EA',
     nameEn: 'Structural Clarity Remediation',
-    phase: 'חודשים 1-4',
+    phase: '\u05D7\u05D5\u05D3\u05E9\u05D9\u05DD 1-4',
     components: [
-      { step: 'מיפוי תפקידים ואחריות (RACI)', detail: 'הגדרת מטריצת RACI לכל פרויקט ותהליך ליבה — Responsible, Accountable, Consulted, Informed' },
-      { step: 'תיעוד תהליכים קריטיים', detail: 'מיפוי ותיעוד 5-10 תהליכים קריטיים; שמירה ב-Wiki נגיש לכולם' },
-      { step: 'פרוטוקול קבלת החלטות', detail: 'קביעת מי מחליט בכל סוג החלטה (ממשל החלטות) + SLA לתגובה' },
-      { step: 'תוכנית העברת ידע', detail: 'מנגנונים למניעת Single Point of Failure: תיעוד, פיצול ידע, Buddy System' },
+      { step: '\u05DE\u05D9\u05E4\u05D5\u05D9 \u05EA\u05E4\u05E7\u05D9\u05D3\u05D9\u05DD \u05D5\u05D0\u05D7\u05E8\u05D9\u05D5\u05EA (RACI)', detail: '\u05D4\u05D2\u05D3\u05E8\u05EA \u05DE\u05D8\u05E8\u05D9\u05E6\u05EA RACI \u05DC\u05DB\u05DC \u05E4\u05E8\u05D5\u05D9\u05E7\u05D8 \u05D5\u05EA\u05D4\u05DC\u05D9\u05DA \u05DC\u05D9\u05D1\u05D4 — Responsible, Accountable, Consulted, Informed' },
+      { step: '\u05EA\u05D9\u05E2\u05D5\u05D3 \u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD \u05E7\u05E8\u05D9\u05D8\u05D9\u05D9\u05DD', detail: '\u05DE\u05D9\u05E4\u05D5\u05D9 \u05D5\u05EA\u05D9\u05E2\u05D5\u05D3 5-10 \u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD \u05E7\u05E8\u05D9\u05D8\u05D9\u05D9\u05DD; \u05E9\u05DE\u05D9\u05E8\u05D4 \u05D1-Wiki \u05E0\u05D2\u05D9\u05E9 \u05DC\u05DB\u05D5\u05DC\u05DD' },
+      { step: '\u05E4\u05E8\u05D5\u05D8\u05D5\u05E7\u05D5\u05DC \u05E7\u05D1\u05DC\u05EA \u05D4\u05D7\u05DC\u05D8\u05D5\u05EA', detail: '\u05E7\u05D1\u05D9\u05E2\u05EA \u05DE\u05D9 \u05DE\u05D7\u05DC\u05D9\u05D8 \u05D1\u05DB\u05DC \u05E1\u05D5\u05D2 \u05D4\u05D7\u05DC\u05D8\u05D4 (\u05DE\u05DE\u05E9\u05DC \u05D4\u05D7\u05DC\u05D8\u05D5\u05EA) + SLA \u05DC\u05EA\u05D2\u05D5\u05D1\u05D4' },
+      { step: '\u05EA\u05D5\u05DB\u05E0\u05D9\u05EA \u05D4\u05E2\u05D1\u05E8\u05EA \u05D9\u05D3\u05E2', detail: '\u05DE\u05E0\u05D2\u05E0\u05D5\u05E0\u05D9\u05DD \u05DC\u05DE\u05E0\u05D9\u05E2\u05EA Single Point of Failure: \u05EA\u05D9\u05E2\u05D5\u05D3, \u05E4\u05D9\u05E6\u05D5\u05DC \u05D9\u05D3\u05E2, Buddy System' },
     ],
     successMetrics: [
-      'ירידה של ≥1.5 נקודות בציון SC תוך 4 חודשים',
-      '≥80% מהתהליכים הקריטיים מתועדים ונגישים',
-      '≥70% מהעובדים יודעים מי מחליט בכל נושא עיקרי (סקר)',
+      '\u05D9\u05E8\u05D9\u05D3\u05D4 \u05E9\u05DC ≥1.5 \u05E0\u05E7\u05D5\u05D3\u05D5\u05EA \u05D1\u05E6\u05D9\u05D5\u05DF SC \u05EA\u05D5\u05DA 4 \u05D7\u05D5\u05D3\u05E9\u05D9\u05DD',
+      '≥80% \u05DE\u05D4\u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD \u05D4\u05E7\u05E8\u05D9\u05D8\u05D9\u05D9\u05DD \u05DE\u05EA\u05D5\u05E2\u05D3\u05D9\u05DD \u05D5\u05E0\u05D2\u05D9\u05E9\u05D9\u05DD',
+      '≥70% \u05DE\u05D4\u05E2\u05D5\u05D1\u05D3\u05D9\u05DD \u05D9\u05D5\u05D3\u05E2\u05D9\u05DD \u05DE\u05D9 \u05DE\u05D7\u05DC\u05D9\u05D8 \u05D1\u05DB\u05DC \u05E0\u05D5\u05E9\u05D0 \u05E2\u05D9\u05E7\u05E8\u05D9 (\u05E1\u05E7\u05E8)',
     ],
     researchBasis: 'Simon (1947) — Bounded Rationality; Weick (1979) — Organizing; Phase 4 MECE fourth dimension',
     timelineMonths: 4,
@@ -511,19 +511,19 @@ const PROTOCOLS: InterventionProtocol[] = [
   {
     id: 'integrated-system',
     triggerCode: 'MULTI',
-    nameHe: 'התערבות מערכתית משולבת',
+    nameHe: '\u05D4\u05EA\u05E2\u05E8\u05D1\u05D5\u05EA \u05DE\u05E2\u05E8\u05DB\u05EA\u05D9\u05EA \u05DE\u05E9\u05D5\u05DC\u05D1\u05EA',
     nameEn: 'Integrated System Intervention',
-    phase: 'חודשים 1-9',
+    phase: '\u05D7\u05D5\u05D3\u05E9\u05D9\u05DD 1-9',
     components: [
-      { step: 'Phase 1 — הפחתת DR (חודשים 1-3)', detail: 'ארגון מחדש של תגמולים לשיתוף פעולה, תמריצי שיתוף מידע, מיסגור מחדש של מדדי הצלחה ל-"win-win"' },
-      { step: 'Phase 2 — טיפול ב-ND (חודשים 4-6)', detail: 'ביקורות חיצוניות, הפחתת לחצי ייצור, מערכות near-miss' },
-      { step: 'Phase 3 — בניית UC (חודשים 7-9)', detail: 'בטחון פסיכולוגי, עיצוב מחדש של תרגילים, ניהול ידע' },
+      { step: 'Phase 1 — \u05D4\u05E4\u05D7\u05EA\u05EA DR (\u05D7\u05D5\u05D3\u05E9\u05D9\u05DD 1-3)', detail: '\u05D0\u05E8\u05D2\u05D5\u05DF \u05DE\u05D7\u05D3\u05E9 \u05E9\u05DC \u05EA\u05D2\u05DE\u05D5\u05DC\u05D9\u05DD \u05DC\u05E9\u05D9\u05EA\u05D5\u05E3 \u05E4\u05E2\u05D5\u05DC\u05D4, \u05EA\u05DE\u05E8\u05D9\u05E6\u05D9 \u05E9\u05D9\u05EA\u05D5\u05E3 \u05DE\u05D9\u05D3\u05E2, \u05DE\u05D9\u05E1\u05D2\u05D5\u05E8 \u05DE\u05D7\u05D3\u05E9 \u05E9\u05DC \u05DE\u05D3\u05D3\u05D9 \u05D4\u05E6\u05DC\u05D7\u05D4 \u05DC-"win-win"' },
+      { step: 'Phase 2 — \u05D8\u05D9\u05E4\u05D5\u05DC \u05D1-ND (\u05D7\u05D5\u05D3\u05E9\u05D9\u05DD 4-6)', detail: '\u05D1\u05D9\u05E7\u05D5\u05E8\u05D5\u05EA \u05D7\u05D9\u05E6\u05D5\u05E0\u05D9\u05D5\u05EA, \u05D4\u05E4\u05D7\u05EA\u05EA \u05DC\u05D7\u05E6\u05D9 \u05D9\u05D9\u05E6\u05D5\u05E8, \u05DE\u05E2\u05E8\u05DB\u05D5\u05EA near-miss' },
+      { step: 'Phase 3 — \u05D1\u05E0\u05D9\u05D9\u05EA UC (\u05D7\u05D5\u05D3\u05E9\u05D9\u05DD 7-9)', detail: '\u05D1\u05D8\u05D7\u05D5\u05DF \u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9, \u05E2\u05D9\u05E6\u05D5\u05D1 \u05DE\u05D7\u05D3\u05E9 \u05E9\u05DC \u05EA\u05E8\u05D2\u05D9\u05DC\u05D9\u05DD, \u05E0\u05D9\u05D4\u05D5\u05DC \u05D9\u05D3\u05E2' },
     ],
     successMetrics: [
-      'כל הפתולוגיות מתחת לסף התערבות (DR < 6.0, ND < 6.0, UC < 5.0) תוך 12 חודשים',
-      'שיפור במדדי אפקטיביות BCM (איכות BIA, ביצועי תרגילים, דיווח תקריות)',
-      'עלייה במחוברות עובדים',
-      'ייצוב או שיפור ביצועים ארגוניים (תחלופה, איכות, מדדי בטיחות)',
+      '\u05DB\u05DC \u05D4\u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA \u05DE\u05EA\u05D7\u05EA \u05DC\u05E1\u05E3 \u05D4\u05EA\u05E2\u05E8\u05D1\u05D5\u05EA (DR < 6.0, ND < 6.0, UC < 5.0) \u05EA\u05D5\u05DA 12 \u05D7\u05D5\u05D3\u05E9\u05D9\u05DD',
+      '\u05E9\u05D9\u05E4\u05D5\u05E8 \u05D1\u05DE\u05D3\u05D3\u05D9 \u05D0\u05E4\u05E7\u05D8\u05D9\u05D1\u05D9\u05D5\u05EA BCM (\u05D0\u05D9\u05DB\u05D5\u05EA BIA, \u05D1\u05D9\u05E6\u05D5\u05E2\u05D9 \u05EA\u05E8\u05D2\u05D9\u05DC\u05D9\u05DD, \u05D3\u05D9\u05D5\u05D5\u05D7 \u05EA\u05E7\u05E8\u05D9\u05D5\u05EA)',
+      '\u05E2\u05DC\u05D9\u05D9\u05D4 \u05D1\u05DE\u05D7\u05D5\u05D1\u05E8\u05D5\u05EA \u05E2\u05D5\u05D1\u05D3\u05D9\u05DD',
+      '\u05D9\u05D9\u05E6\u05D5\u05D1 \u05D0\u05D5 \u05E9\u05D9\u05E4\u05D5\u05E8 \u05D1\u05D9\u05E6\u05D5\u05E2\u05D9\u05DD \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05D9\u05DD (\u05EA\u05D7\u05DC\u05D5\u05E4\u05D4, \u05D0\u05D9\u05DB\u05D5\u05EA, \u05DE\u05D3\u05D3\u05D9 \u05D1\u05D8\u05D9\u05D7\u05D5\u05EA)',
     ],
     researchBasis: 'DR → ND → UC cascade evidence; Network model best AIC; Section 4.4 integrated-model.md',
     timelineMonths: 12,
@@ -577,10 +577,10 @@ export function getInterventionProtocols(
 // ─── Severity Profile Metadata ───────────────────────────────────────────────
 
 export const SEVERITY_PROFILES: Record<SeverityProfile, { labelHe: string; color: string; bgColor: string; borderColor: string }> = {
-  'healthy': { labelHe: 'תקין — אין פתולוגיות מזוהות', color: 'text-emerald-400', bgColor: 'bg-emerald-950/30', borderColor: 'border-emerald-500' },
-  'at-risk': { labelHe: 'בסיכון — פתולוגיה מתונה מזוהה', color: 'text-yellow-400', bgColor: 'bg-yellow-950/20', borderColor: 'border-yellow-500' },
-  'critical': { labelHe: 'קריטי — פתולוגיה חמורה מזוהה', color: 'text-red-400', bgColor: 'bg-red-950/30', borderColor: 'border-red-500' },
-  'systemic-collapse': { labelHe: 'קריסה מערכתית — מספר פתולוגיות חמורות', color: 'text-red-300', bgColor: 'bg-red-950/40', borderColor: 'border-red-400' },
+  'healthy': { labelHe: '\u05EA\u05E7\u05D9\u05DF — \u05D0\u05D9\u05DF \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA \u05DE\u05D6\u05D5\u05D4\u05D5\u05EA', color: 'text-emerald-400', bgColor: 'bg-emerald-950/30', borderColor: 'border-emerald-500' },
+  'at-risk': { labelHe: '\u05D1\u05E1\u05D9\u05DB\u05D5\u05DF — \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D4 \u05DE\u05EA\u05D5\u05E0\u05D4 \u05DE\u05D6\u05D5\u05D4\u05D4', color: 'text-yellow-400', bgColor: 'bg-yellow-950/20', borderColor: 'border-yellow-500' },
+  'critical': { labelHe: '\u05E7\u05E8\u05D9\u05D8\u05D9 — \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D4 \u05D7\u05DE\u05D5\u05E8\u05D4 \u05DE\u05D6\u05D5\u05D4\u05D4', color: 'text-red-400', bgColor: 'bg-red-950/30', borderColor: 'border-red-500' },
+  'systemic-collapse': { labelHe: '\u05E7\u05E8\u05D9\u05E1\u05D4 \u05DE\u05E2\u05E8\u05DB\u05EA\u05D9\u05EA — \u05DE\u05E1\u05E4\u05E8 \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA \u05D7\u05DE\u05D5\u05E8\u05D5\u05EA', color: 'text-red-300', bgColor: 'bg-red-950/40', borderColor: 'border-red-400' },
 }
 
 export const LEVEL_COLORS: Record<SeverityLevel, { text: string; bg: string; bar: string }> = {
@@ -632,8 +632,8 @@ export function detectCascadeState(diagnosis: DSMDiagnosis): CascadeStateInfo {
     isActive,
     concurrentSevereCount: severeCount,
     triggerDescription: isActive
-      ? `מצב קסקדה: ${severeCount} פתולוגיות ברמת חומרה 3 עם אנטרופיה ${diagnosis.totalEntropyScore.toFixed(1)}. נדרשת עצירת כל היוזמות (Halt).`
-      : 'לא זוהה מצב קסקדה.',
+      ? `\u05DE\u05E6\u05D1 \u05E7\u05E1\u05E7\u05D3\u05D4: ${severeCount} \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA \u05D1\u05E8\u05DE\u05EA \u05D7\u05D5\u05DE\u05E8\u05D4 3 \u05E2\u05DD \u05D0\u05E0\u05D8\u05E8\u05D5\u05E4\u05D9\u05D4 ${diagnosis.totalEntropyScore.toFixed(1)}. \u05E0\u05D3\u05E8\u05E9\u05EA \u05E2\u05E6\u05D9\u05E8\u05EA \u05DB\u05DC \u05D4\u05D9\u05D5\u05D6\u05DE\u05D5\u05EA (Halt).`
+      : '\u05DC\u05D0 \u05D6\u05D5\u05D4\u05D4 \u05DE\u05E6\u05D1 \u05E7\u05E1\u05E7\u05D3\u05D4.',
     haltRequired: isActive,
   }
 }

@@ -84,7 +84,7 @@ describe('computeEntropyScore', () => {
 describe('buildPlanFromQuestionnaire', () => {
   it('returns title with client name', () => {
     const r = buildPlanFromQuestionnaire('Test Client', {})
-    expect(r.title).toBe('תוכנית עסקית — Test Client')
+    expect(r.title).toBe('\u05EA\u05D5\u05DB\u05E0\u05D9\u05EA \u05E2\u05E1\u05E7\u05D9\u05EA — Test Client')
   })
 
   // ─── Rule 3: L1 Live Demo ─────────────────────────────────────────────────
@@ -192,13 +192,13 @@ describe('buildPlanFromQuestionnaire', () => {
 
   it('summary contains ICP note for 50_150', () => {
     const r = buildPlanFromQuestionnaire('Acme', { companySize: '50_150' })
-    expect(r.summary).toContain('התאמה ל-ICP')
+    expect(r.summary).toContain('\u05D4\u05EA\u05D0\u05DE\u05D4 \u05DC-ICP')
     expect(r.nextSteps.length).toBeGreaterThan(0)
   })
 
   it('summary notes non-ICP for under_50', () => {
     const r = buildPlanFromQuestionnaire('Acme', { companySize: 'under_50' })
-    expect(r.summary).toContain('חורג מ-ICP')
+    expect(r.summary).toContain('\u05D7\u05D5\u05E8\u05D2 \u05DE-ICP')
   })
 
   it('summary notes One man show path when operatingContext is one_man_show', () => {
@@ -239,12 +239,12 @@ describe('buildPlanFromQuestionnaire', () => {
       companySize: '150_300',
     })
     expect(r.dynamicSummary.roleParagraph).toContain('COO')
-    expect(r.dynamicSummary.roleParagraph).toContain('דאנבר')
+    expect(r.dynamicSummary.roleParagraph).toContain('\u05D3\u05D0\u05E0\u05D1\u05E8')
   })
 
   it('dynamicSummary ctaParagraph mentions sprint for sprint recommendation', () => {
     const r = buildPlanFromQuestionnaire('C', { decisionLatency: 'over_15' })
-    expect(r.dynamicSummary.ctaParagraph).toContain('ספרינט')
+    expect(r.dynamicSummary.ctaParagraph).toContain('\u05E1\u05E4\u05E8\u05D9\u05E0\u05D8')
   })
 
   it('OMS ignition nudge upgrades live-demo to sprint when commercial action is stale', () => {
@@ -289,9 +289,9 @@ describe('buildDynamicSummary', () => {
     expect(ds.roleParagraph).toContain('CFO')
   })
 
-  it('CEO role paragraph mentions מנכ"ל', () => {
+  it('CEO role paragraph mentions \u05DE\u05E0\u05DB"\u05DC', () => {
     const ds = buildDynamicSummary({ championRole: 'ceo' }, { channelId: 'l1', optionId: 'live-demo' })
-    expect(ds.roleParagraph).toContain('מנכ"ל')
+    expect(ds.roleParagraph).toContain('\u05DE\u05E0\u05DB"\u05DC')
   })
 
   it('retainer CTA mentions retainer', () => {
@@ -316,6 +316,6 @@ describe('buildDynamicSummary', () => {
     )
     expect(prof).not.toBeNull()
     const ds = buildDynamicSummary({}, { channelId: 'l1', optionId: 'live-demo' }, prof)
-    expect(ds.ignitionParagraph).toContain('צעד ראשון מומלץ')
+    expect(ds.ignitionParagraph).toContain('\u05E6\u05E2\u05D3 \u05E8\u05D0\u05E9\u05D5\u05DF \u05DE\u05D5\u05DE\u05DC\u05E5')
   })
 })

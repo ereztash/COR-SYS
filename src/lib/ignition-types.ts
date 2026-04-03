@@ -1,4 +1,4 @@
-/** טיפוסים וקבועים לשאלון התנעה — ללא תלות ב-corsys-questionnaire */
+/** \u05D8\u05D9\u05E4\u05D5\u05E1\u05D9\u05DD \u05D5\u05E7\u05D1\u05D5\u05E2\u05D9\u05DD \u05DC\u05E9\u05D0\u05DC\u05D5\u05DF \u05D4\u05EA\u05E0\u05E2\u05D4 — \u05DC\u05DC\u05D0 \u05EA\u05DC\u05D5\u05EA \u05D1-corsys-questionnaire */
 
 export const IGNITION_PRIMARY_VECTORS = [
   'internal_push',
@@ -56,7 +56,7 @@ export type IgnitionProfile = {
   suggestsSprintNudge: boolean
 }
 
-/** שדות שאלון נדרשים ל־computeIgnitionProfile — ללא ייבוא מ־corsys-questionnaire */
+/** \u05E9\u05D3\u05D5\u05EA \u05E9\u05D0\u05DC\u05D5\u05DF \u05E0\u05D3\u05E8\u05E9\u05D9\u05DD \u05DC\u05BEcomputeIgnitionProfile — \u05DC\u05DC\u05D0 \u05D9\u05D9\u05D1\u05D5\u05D0 \u05DE\u05BEcorsys-questionnaire */
 export type IgnitionAnswerFields = {
   operatingContext?: 'team' | 'one_man_show'
   ignitionPrimaryVector?: IgnitionPrimaryVector

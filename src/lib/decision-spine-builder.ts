@@ -32,16 +32,16 @@ export interface ClientEconomicParams {
 // ─── Severity helpers ──────────────────────────────────────────────────────────
 
 const SEVERITY_LABEL: Record<string, string> = {
-  'healthy':           'תקין',
-  'at-risk':           'בסיכון',
-  'critical':          'קריטי',
-  'systemic-collapse': 'קריסה מערכתית',
+  'healthy':           '\u05EA\u05E7\u05D9\u05DF',
+  'at-risk':           '\u05D1\u05E1\u05D9\u05DB\u05D5\u05DF',
+  'critical':          '\u05E7\u05E8\u05D9\u05D8\u05D9',
+  'systemic-collapse': '\u05E7\u05E8\u05D9\u05E1\u05D4 \u05DE\u05E2\u05E8\u05DB\u05EA\u05D9\u05EA',
 }
 
 const CTA_LABELS: Record<string, string> = {
-  sprint:    'Sprint חוסם עורקים',
+  sprint:    'Sprint \u05D7\u05D5\u05E1\u05DD \u05E2\u05D5\u05E8\u05E7\u05D9\u05DD',
   retainer:  'Resilience Retainer',
-  'live-demo': 'Live Demo אבחוני',
+  'live-demo': 'Live Demo \u05D0\u05D1\u05D7\u05D5\u05E0\u05D9',
 }
 
 // ─── Primary pathology from scores ────────────────────────────────────────────
@@ -63,27 +63,27 @@ function stateNarrativeFromScores(
 ): string {
   const primary = primaryPathologyFromScores(dr, nd, uc)
   if (severity === 'systemic-collapse') {
-    return `קריסה מערכתית: DR=${dr.toFixed(1)}, ND=${nd.toFixed(1)}, UC=${uc.toFixed(1)} — פתולוגיות מרובות פועלות במקביל.`
+    return `\u05E7\u05E8\u05D9\u05E1\u05D4 \u05DE\u05E2\u05E8\u05DB\u05EA\u05D9\u05EA: DR=${dr.toFixed(1)}, ND=${nd.toFixed(1)}, UC=${uc.toFixed(1)} — \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA \u05DE\u05E8\u05D5\u05D1\u05D5\u05EA \u05E4\u05D5\u05E2\u05DC\u05D5\u05EA \u05D1\u05DE\u05E7\u05D1\u05D9\u05DC.`
   }
   if (severity === 'critical') {
-    return `מצב קריטי: ${primary}=${Math.max(dr, nd, uc).toFixed(1)} — פתולוגיה ראשית דומיננטית, חלון התערבות מצומצם.`
+    return `\u05DE\u05E6\u05D1 \u05E7\u05E8\u05D9\u05D8\u05D9: ${primary}=${Math.max(dr, nd, uc).toFixed(1)} — \u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D4 \u05E8\u05D0\u05E9\u05D9\u05EA \u05D3\u05D5\u05DE\u05D9\u05E0\u05E0\u05D8\u05D9\u05EA, \u05D7\u05DC\u05D5\u05DF \u05D4\u05EA\u05E2\u05E8\u05D1\u05D5\u05EA \u05DE\u05E6\u05D5\u05DE\u05E6\u05DD.`
   }
   if (severity === 'at-risk') {
-    return `בסיכון: ${primary} מתפתח — חלון ההתערבות פתוח לפני הסלמה.`
+    return `\u05D1\u05E1\u05D9\u05DB\u05D5\u05DF: ${primary} \u05DE\u05EA\u05E4\u05EA\u05D7 — \u05D7\u05DC\u05D5\u05DF \u05D4\u05D4\u05EA\u05E2\u05E8\u05D1\u05D5\u05EA \u05E4\u05EA\u05D5\u05D7 \u05DC\u05E4\u05E0\u05D9 \u05D4\u05E1\u05DC\u05DE\u05D4.`
   }
-  return 'מצב תקין: כל הפתולוגיות ברמת subclinical. מומלץ מעקב מניעתי.'
+  return '\u05DE\u05E6\u05D1 \u05EA\u05E7\u05D9\u05DF: \u05DB\u05DC \u05D4\u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA \u05D1\u05E8\u05DE\u05EA subclinical. \u05DE\u05D5\u05DE\u05DC\u05E5 \u05DE\u05E2\u05E7\u05D1 \u05DE\u05E0\u05D9\u05E2\u05EA\u05D9.'
 }
 
 // ─── CTA from severity (fallback when no golden_questions) ───────────────────
 
 function ctaFromSeverity(severity: string): { ctaType: string; timeToActMonths: number; rationale: string } {
   if (severity === 'systemic-collapse' || severity === 'critical') {
-    return { ctaType: 'sprint', timeToActMonths: 0, rationale: 'חומרה גבוהה מחייבת התערבות מיידית' }
+    return { ctaType: 'sprint', timeToActMonths: 0, rationale: '\u05D7\u05D5\u05DE\u05E8\u05D4 \u05D2\u05D1\u05D5\u05D4\u05D4 \u05DE\u05D7\u05D9\u05D9\u05D1\u05EA \u05D4\u05EA\u05E2\u05E8\u05D1\u05D5\u05EA \u05DE\u05D9\u05D9\u05D3\u05D9\u05EA' }
   }
   if (severity === 'at-risk') {
-    return { ctaType: 'retainer', timeToActMonths: 1, rationale: 'מניעה עדיפה על טיפול — חלון ההתערבות פתוח' }
+    return { ctaType: 'retainer', timeToActMonths: 1, rationale: '\u05DE\u05E0\u05D9\u05E2\u05D4 \u05E2\u05D3\u05D9\u05E4\u05D4 \u05E2\u05DC \u05D8\u05D9\u05E4\u05D5\u05DC — \u05D7\u05DC\u05D5\u05DF \u05D4\u05D4\u05EA\u05E2\u05E8\u05D1\u05D5\u05EA \u05E4\u05EA\u05D5\u05D7' }
   }
-  return { ctaType: 'live-demo', timeToActMonths: 3, rationale: 'מצב תקין — אבחון מניעתי מספיק' }
+  return { ctaType: 'live-demo', timeToActMonths: 3, rationale: '\u05DE\u05E6\u05D1 \u05EA\u05E7\u05D9\u05DF — \u05D0\u05D1\u05D7\u05D5\u05DF \u05DE\u05E0\u05D9\u05E2\u05EA\u05D9 \u05DE\u05E1\u05E4\u05D9\u05E7' }
 }
 
 // ─── Main builder ─────────────────────────────────────────────────────────────

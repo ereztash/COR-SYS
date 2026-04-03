@@ -49,7 +49,7 @@ export const PATHOLOGY_KB: PathologyEntry[] = [
     dr_range: [0, 2.5],
     nd_range: [0, 2.5],
     uc_range: [0, 2.5],
-    label_he: 'תקין',
+    label_he: '\u05EA\u05E7\u05D9\u05DF',
     description: `
 Organisation demonstrates low decision latency: decisions are made at the appropriate level
 within 24–72 hours, escalations are rare and justified, and there is a clear owner for each
@@ -70,7 +70,7 @@ improvisation happens within guardrails, not instead of them.
     dr_range: [2.5, 5],
     nd_range: [2.5, 5],
     uc_range: [2.5, 5],
-    label_he: 'בסיכון',
+    label_he: '\u05D1\u05E1\u05D9\u05DB\u05D5\u05DF',
     description: `
 Organisation shows early warning signs of systemic stress. Decision latency is creeping upward:
 managers hesitate to decide without senior approval, meetings multiply without outputs, and
@@ -91,7 +91,7 @@ COR loss spiral has started: people are protecting remaining resources by doing 
     dr_range: [5, 7.5],
     nd_range: [5, 7.5],
     uc_range: [5, 7.5],
-    label_he: 'קריטי',
+    label_he: '\u05E7\u05E8\u05D9\u05D8\u05D9',
     description: `
 Organisation is operating in Edmondson's "anxiety zone" — high accountability demands with low
 psychological safety. Decision latency is severe: weeks pass between identifying a problem and
@@ -114,7 +114,7 @@ Leadership is in "hyperbolic discounting" mode — trading long-term stability f
     dr_range: [7.5, 10],
     nd_range: [7.5, 10],
     uc_range: [7.5, 10],
-    label_he: 'קריסה מערכתית',
+    label_he: '\u05E7\u05E8\u05D9\u05E1\u05D4 \u05DE\u05E2\u05E8\u05DB\u05EA\u05D9\u05EA',
     description: `
 Organisation has crossed the threshold of irreversible resource loss spiral (Hobfoll).
 Decision-making has effectively stopped at the operational level — only the CEO or senior VP
@@ -161,7 +161,7 @@ export interface PathologyTypeEntry {
 export const PATHOLOGY_TYPE_KB: PathologyTypeEntry[] = [
   {
     type: 'NOD',
-    label_he: 'נורמליזציה של סטייה',
+    label_he: '\u05E0\u05D5\u05E8\u05DE\u05DC\u05D9\u05D6\u05E6\u05D9\u05D4 \u05E9\u05DC \u05E1\u05D8\u05D9\u05D9\u05D4',
     label_en: 'Normalization of Deviance',
     tam: { t: 4, a: 3, m: 5 },
     primary_axes: ['ND', 'DR'],
@@ -198,7 +198,7 @@ stress, deviations normalise faster). CLT → NOD (when overloaded, shortcuts be
   },
   {
     type: 'ZSG_SAFETY',
-    label_he: 'גירעון בביטחון פסיכולוגי',
+    label_he: '\u05D2\u05D9\u05E8\u05E2\u05D5\u05DF \u05D1\u05D1\u05D9\u05D8\u05D7\u05D5\u05DF \u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9',
     label_en: 'Psychological Safety Deficit (Edmondson)',
     tam: { t: 2, a: 4, m: 3 },
     primary_axes: ['ND', 'UC'],
@@ -216,7 +216,7 @@ ZSG_SAFETY often co-occurs with ZSG_CULTURE (zero-sum incentives amplify fear of
   },
   {
     type: 'ZSG_CULTURE',
-    label_he: 'תרבות ניכור פנים-ארגונית (סכום-אפס)',
+    label_he: '\u05EA\u05E8\u05D1\u05D5\u05EA \u05E0\u05D9\u05DB\u05D5\u05E8 \u05E4\u05E0\u05D9\u05DD-\u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05EA (\u05E1\u05DB\u05D5\u05DD-\u05D0\u05E4\u05E1)',
     label_en: 'Zero-Sum Game Culture',
     tam: { t: 3, a: 3, m: 5 },
     primary_axes: ['ND', 'DR'],
@@ -238,7 +238,7 @@ Comorbidities: ZSG_CULTURE → OLD; ZSG_CULTURE → CS under sustained threat.
   },
   {
     type: 'OLD',
-    label_he: 'מוגבלויות למידה ארגונית',
+    label_he: '\u05DE\u05D5\u05D2\u05D1\u05DC\u05D5\u05D9\u05D5\u05EA \u05DC\u05DE\u05D9\u05D3\u05D4 \u05D0\u05E8\u05D2\u05D5\u05E0\u05D9\u05EA',
     label_en: 'Organizational Learning Disabilities',
     tam: { t: 3, a: 4, m: 4 },
     primary_axes: ['ND', 'UC'],
@@ -281,7 +281,7 @@ Comorbidities: NOD → OLD (primary cascade). ZSG_SAFETY / ZSG_CULTURE → OLD (
   },
   {
     type: 'CLT',
-    label_he: 'עומס קוגניטיבי כרוני',
+    label_he: '\u05E2\u05D5\u05DE\u05E1 \u05E7\u05D5\u05D2\u05E0\u05D9\u05D8\u05D9\u05D1\u05D9 \u05DB\u05E8\u05D5\u05E0\u05D9',
     label_en: 'Chronic Cognitive Load / Stimulus Overload',
     tam: { t: 2, a: 5, m: 4 },
     primary_axes: ['UC', 'DR'],
@@ -321,7 +321,7 @@ Comorbidities: CLT → NOD (shortcuts become habits when overloaded). CS → CLT
   },
   {
     type: 'CS',
-    label_he: 'לחץ כרוני וספירלות הפסד',
+    label_he: '\u05DC\u05D7\u05E5 \u05DB\u05E8\u05D5\u05E0\u05D9 \u05D5\u05E1\u05E4\u05D9\u05E8\u05DC\u05D5\u05EA \u05D4\u05E4\u05E1\u05D3',
     label_en: 'Chronic Stress & Loss Spirals',
     tam: { t: 4, a: 5, m: 5 },
     primary_axes: ['DR', 'UC'],

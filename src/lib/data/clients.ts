@@ -2,7 +2,7 @@ import { cache } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import type { Client, ClientBusinessPlan, ClientOperatingContext, ClientStatus } from '@/types/database'
 
-/** שורה מצומצמת לסטטיסטיקות — PostgREST לפעמים מסיק `never` ל-select חלקי */
+/** \u05E9\u05D5\u05E8\u05D4 \u05DE\u05E6\u05D5\u05DE\u05E6\u05DE\u05EA \u05DC\u05E1\u05D8\u05D8\u05D9\u05E1\u05D8\u05D9\u05E7\u05D5\u05EA — PostgREST \u05DC\u05E4\u05E2\u05DE\u05D9\u05DD \u05DE\u05E1\u05D9\u05E7 `never` \u05DC-select \u05D7\u05DC\u05E7\u05D9 */
 type ClientStatsRow = Pick<Client, 'id' | 'status'> & {
   operating_context?: ClientOperatingContext | null
 }
@@ -11,19 +11,19 @@ type PlanStatsRow = Pick<ClientBusinessPlan, 'client_id' | 'recommended_option_i
 
 const STATUS_LIST: ClientStatus[] = ['active', 'prospect', 'churned', 'paused', 'volunteer']
 
-/** סטטיסטיקות מצטברות לדשבורד לקוחות */
+/** \u05E1\u05D8\u05D8\u05D9\u05E1\u05D8\u05D9\u05E7\u05D5\u05EA \u05DE\u05E6\u05D8\u05D1\u05E8\u05D5\u05EA \u05DC\u05D3\u05E9\u05D1\u05D5\u05E8\u05D3 \u05DC\u05E7\u05D5\u05D7\u05D5\u05EA */
 export type ClientPortfolioStats = {
   total: number
   byStatus: Record<ClientStatus, number>
   operating: { team: number; one_man_show: number; unset: number }
   clientsWithPlan: number
-  /** ספירה לפי recommended_option_id מתוכניות שמורות */
+  /** \u05E1\u05E4\u05D9\u05E8\u05D4 \u05DC\u05E4\u05D9 recommended_option_id \u05DE\u05EA\u05D5\u05DB\u05E0\u05D9\u05D5\u05EA \u05E9\u05DE\u05D5\u05E8\u05D5\u05EA */
   recommendations: Record<string, number>
 }
 
 export const getClientPortfolioStats = cache(async function getClientPortfolioStats(): Promise<ClientPortfolioStats | null> {
   const supabase = await createClient()
-  // `select('*')` — לא מציינים operating_context במפורש כדי שלא יישבר לפני מיגרציית Supabase
+  // `select('*')` — \u05DC\u05D0 \u05DE\u05E6\u05D9\u05D9\u05E0\u05D9\u05DD operating_context \u05D1\u05DE\u05E4\u05D5\u05E8\u05E9 \u05DB\u05D3\u05D9 \u05E9\u05DC\u05D0 \u05D9\u05D9\u05E9\u05D1\u05E8 \u05DC\u05E4\u05E0\u05D9 \u05DE\u05D9\u05D2\u05E8\u05E6\u05D9\u05D9\u05EA Supabase
   const { data: clients, error: cErr } = await supabase
     .from('clients')
     .select('*')

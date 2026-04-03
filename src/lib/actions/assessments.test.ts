@@ -22,7 +22,7 @@ describe('saveAssessmentAnswers — token validation gate', () => {
     const { saveAssessmentAnswers } = await import('./assessments')
     const result = await saveAssessmentAnswers('', {})
     expect(result.ok).toBe(false)
-    expect(result.error).toBe('חסר token')
+    expect(result.error).toBe('\u05D7\u05E1\u05E8 token')
   })
 })
 
@@ -34,21 +34,21 @@ describe('savePlanFromQuestionnaire — clientId validation gate', () => {
     const { savePlanFromQuestionnaire } = await import('./plans')
     const result = await savePlanFromQuestionnaire('not-a-uuid', 'Test', {})
     expect(result.ok).toBe(false)
-    expect(result.error).toBe('מזהה לקוח לא חוקי')
+    expect(result.error).toBe('\u05DE\u05D6\u05D4\u05D4 \u05DC\u05E7\u05D5\u05D7 \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9')
   })
 
   it('returns { ok: false } for empty clientId', async () => {
     const { savePlanFromQuestionnaire } = await import('./plans')
     const result = await savePlanFromQuestionnaire('', 'Test', {})
     expect(result.ok).toBe(false)
-    expect(result.error).toBe('מזהה לקוח לא חוקי')
+    expect(result.error).toBe('\u05DE\u05D6\u05D4\u05D4 \u05DC\u05E7\u05D5\u05D7 \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9')
   })
 
   it('returns { ok: false } for SQL-injection-like clientId', async () => {
     const { savePlanFromQuestionnaire } = await import('./plans')
     const result = await savePlanFromQuestionnaire("'; DROP TABLE clients; --", 'Test', {})
     expect(result.ok).toBe(false)
-    expect(result.error).toBe('מזהה לקוח לא חוקי')
+    expect(result.error).toBe('\u05DE\u05D6\u05D4\u05D4 \u05DC\u05E7\u05D5\u05D7 \u05DC\u05D0 \u05D7\u05D5\u05E7\u05D9')
   })
 })
 
@@ -59,7 +59,7 @@ describe('createAssessment — auth gate', () => {
     vi.resetModules()
   })
 
-  it('returns { ok: false, error: "נדרשת התחברות" } when no user session', async () => {
+  it('returns { ok: false, error: "\u05E0\u05D3\u05E8\u05E9\u05EA \u05D4\u05EA\u05D7\u05D1\u05E8\u05D5\u05EA" } when no user session', async () => {
     vi.doMock('@/lib/supabase/server', () => ({
       createClient: vi.fn().mockResolvedValue({
         auth: {
@@ -71,6 +71,6 @@ describe('createAssessment — auth gate', () => {
     const { createAssessment } = await import('./assessments')
     const result = await createAssessment(null)
     expect(result.ok).toBe(false)
-    expect(result.error).toBe('נדרשת התחברות')
+    expect(result.error).toBe('\u05E0\u05D3\u05E8\u05E9\u05EA \u05D4\u05EA\u05D7\u05D1\u05E8\u05D5\u05EA')
   })
 })
