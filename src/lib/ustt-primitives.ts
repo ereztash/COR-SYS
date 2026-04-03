@@ -56,13 +56,13 @@ export const PATHOLOGY_PRIMITIVE_MAP: PathologyPrimitiveMapping[] = [
   {
     pathology: 'DR',
     primitiveIds: ['P10', 'P2'],
-    crossCategory: 'S x P',
+    crossCategory: 'E x P',
     mechanism: 'Conservation breach triggers positive feedback spiral of disengagement',
   },
   {
     pathology: 'ND',
     primitiveIds: ['P4', 'P6'],
-    crossCategory: 'P x S',
+    crossCategory: 'P',
     mechanism: 'Local rules produce workarounds that decay standards silently',
   },
   {
