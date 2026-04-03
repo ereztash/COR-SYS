@@ -52,8 +52,8 @@ export interface TamSignatureWithPrimitives {
 }
 
 export const TAM_SIGNATURES: Record<ExtendedPathologyCode, TAMSignature> = {
-  DR: { T: 3, A: 3, M: 4, primitives: ['P10', 'P2'], crossCategory: 'E x P', mechanism: 'Conservation breach triggers positive feedback spiral of disengagement' },
-  ND: { T: 4, A: 3, M: 5, primitives: ['P4', 'P6'], crossCategory: 'P', mechanism: 'Local rules produce workarounds that decay standards silently' },
+  DR: { T: 3, A: 3, M: 4, primitives: ['P10', 'P2'], crossCategory: 'S x P', mechanism: 'Conservation breach triggers positive feedback spiral of disengagement' },
+  ND: { T: 4, A: 3, M: 5, primitives: ['P4', 'P6'], crossCategory: 'P x S', mechanism: 'Local rules produce workarounds that decay standards silently' },
   UC: { T: 3, A: 4, M: 3, primitives: ['P12', 'P1'], crossCategory: 'E x P', mechanism: 'Reality gap grows because feedback loop is broken' },
   SC: { T: 5, A: 3, M: 4, primitives: ['P7', 'P9'], crossCategory: 'S', mechanism: 'Bottlenecks amplified by coupling conflicts between units' },
   ZSG_SAFETY: { T: 2, A: 4, M: 3, primitives: ['P12', 'P8'], crossCategory: 'E x S', mechanism: 'Reality gap hides unsafe conditions; flow of safety info blocked' },
