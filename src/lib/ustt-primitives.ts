@@ -9,7 +9,6 @@
  * Integration: dsm-org-taxonomy.ts pathologies reference these primitives.
  */
 
-import type { PathologyCode } from './dsm-engine'
 import type { ExtendedPathologyCode } from './dsm-org-taxonomy'
 
 // ━━━ Atomic Operations ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -311,7 +310,7 @@ export const CROSS_CATEGORY_PATHS: CrossCategoryPath[] = [
   },
 ]
 
-// ━━━ Utility: Get primitives for a pathology ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━ Utility Functions ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export function getPrimitivesForPathology(code: ExtendedPathologyCode): Primitive[] {
   const map = PATHOLOGY_PRIMITIVE_MAP.find(m => m.pathology === code)
