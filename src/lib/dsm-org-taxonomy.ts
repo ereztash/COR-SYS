@@ -8,6 +8,13 @@
  */
 
 import type { PathologyCode } from './dsm-engine'
+import {
+  PATHOLOGY_PRIMITIVE_MAP,
+  getPrimitivesForPathology,
+  getCrossCategoryMechanism,
+  type MetaCategory,
+  type Primitive,
+} from './ustt-primitives'
 
 // ΓפאΓפאΓפא Extended Pathology Codes ΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפא
 
@@ -30,17 +37,29 @@ export interface TAMSignature {
   T: number  // Time cost (1-5)
   A: number  // Attention cost (1-5)
   M: number  // Money cost (1-5)
+  primitives: string[]
+  crossCategory: string | null
+  mechanism: string
+}
+
+export interface TamSignatureWithPrimitives {
+  time: string
+  attention: string
+  money: string
+  primitives: string[]
+  crossCategory: string | null
+  mechanism: string
 }
 
 export const TAM_SIGNATURES: Record<ExtendedPathologyCode, TAMSignature> = {
-  DR: { T: 3, A: 3, M: 4 },
-  ND: { T: 4, A: 3, M: 5 },
-  UC: { T: 3, A: 4, M: 3 },
-  SC: { T: 5, A: 3, M: 4 },
-  ZSG_SAFETY: { T: 2, A: 4, M: 3 },
-  ZSG_CULTURE: { T: 3, A: 3, M: 5 },
-  CLT: { T: 2, A: 5, M: 4 },
-  OLD: { T: 3, A: 4, M: 3 },
+  DR: { T: 3, A: 3, M: 4, primitives: ['P10', 'P2'], crossCategory: 'S x P', mechanism: 'Conservation breach triggers positive feedback spiral of disengagement' },
+  ND: { T: 4, A: 3, M: 5, primitives: ['P4', 'P6'], crossCategory: 'P x S', mechanism: 'Local rules produce workarounds that decay standards silently' },
+  UC: { T: 3, A: 4, M: 3, primitives: ['P12', 'P1'], crossCategory: 'E x P', mechanism: 'Reality gap grows because feedback loop is broken' },
+  SC: { T: 5, A: 3, M: 4, primitives: ['P7', 'P9'], crossCategory: 'S', mechanism: 'Bottlenecks amplified by coupling conflicts between units' },
+  ZSG_SAFETY: { T: 2, A: 4, M: 3, primitives: ['P12', 'P8'], crossCategory: 'E x S', mechanism: 'Reality gap hides unsafe conditions; flow of safety info blocked' },
+  ZSG_CULTURE: { T: 3, A: 3, M: 5, primitives: ['P2', 'P9'], crossCategory: 'P x S', mechanism: 'Competitive coupling feeds positive feedback loop of zero-sum behavior' },
+  CLT: { T: 2, A: 5, M: 4, primitives: ['P5', 'P7'], crossCategory: 'E x S', mechanism: 'Signal-to-noise collapse creates cognitive bottleneck' },
+  OLD: { T: 3, A: 4, M: 3, primitives: ['P1', 'P12'], crossCategory: 'P x E', mechanism: 'Broken feedback prevents learning; reality gap protects assumptions' },
 }
 
 // ΓפאΓפאΓפא DSM-Org 7 Parts ΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפאΓפא
@@ -60,6 +79,7 @@ export interface DsmOrgPart {
   nameHe: string
   nameEn: string
   description: string
+  primitiveIds?: string[]
   subTopics: DsmOrgSubTopic[]
 }
 
@@ -69,6 +89,7 @@ export const DSM_ORG_PARTS: DsmOrgPart[] = [
     nameHe: '╫¬╫⌐╫¬╫ש╫¬ ╫פ╫₧╫ף╫ש╫ף╫פ ╫ץ╫פ╫ר╫¿╫ש╫נ╫צ\'',
     nameEn: 'Measurement & Triage Framework',
     description: '╫¢╫ש╫ª╫ף ╫פ╫נ╫¿╫ע╫ץ╫ƒ ╫₧╫₧╫ש╫¿ "╫¢╫נ╫ס╫ש╫¥" ╫£╫¬╫ª╫ץ╫¿╫פ ╫₧╫¬╫₧╫ר╫ש╫¬ ╫⌐╫£ ╫ó╫£╫ץ╫ש╫ץ╫¬ ╫ץ╫₧╫ף╫ף╫ש ╫ס╫⌐╫£╫ץ╫¬',
+    primitiveIds: ['P10', 'P2', 'P7'],
     subTopics: [
       {
         id: 'tam-signature',
@@ -116,6 +137,7 @@ export const DSM_ORG_PARTS: DsmOrgPart[] = [
     nameHe: '╫ñ╫¬╫ץ╫£╫ץ╫ע╫ש╫ץ╫¬ ╫¬╫º╫⌐╫ץ╫¿╫¬ ╫ץ╫₧╫¿╫ק╫ס ╫ñ╫í╫ש╫¢╫ץ╫£╫ץ╫ע╫ש',
     nameEn: 'Communication & Psychological Space Pathologies',
     description: '╫¢╫⌐╫£╫ש╫¥ ╫ס╫ש╫¢╫ץ╫£╫¬ ╫פ╫נ╫¿╫ע╫ץ╫ƒ ╫£╫á╫פ╫£ ╫צ╫¿╫ש╫₧╫¬ ╫₧╫ש╫ף╫ó ╫ק╫ץ╫ñ╫⌐╫ש╫¬ ╫ץ╫£╫פ╫ª╫ש╫ú ╫ר╫ó╫ץ╫ש╫ץ╫¬ ╫£╫£╫נ ╫ñ╫ק╫ף',
+    primitiveIds: ['P7', 'P8', 'P9'],
     subTopics: [
       {
         id: 'zsg',
@@ -164,6 +186,7 @@ export const DSM_ORG_PARTS: DsmOrgPart[] = [
     nameHe: '╫ñ╫¬╫ץ╫£╫ץ╫ע╫ש╫ץ╫¬ ╫í╫ר╫ש╫ש╫פ ╫¬╫פ╫£╫ש╫¢╫ש╫¬ ╫ץ╫₧╫ס╫á╫ש╫¬',
     nameEn: 'Process & Structural Deviation Pathologies',
     description: '╫פ╫í╫¬╫ע╫£╫ץ╫¬ ╫£╫¬╫º╫ש╫á╫ץ╫¬ ╫⌐╫ע╫ץ╫ש╫פ ╫ץ╫נ╫ץ╫ס╫ף╫ƒ ╫₧╫⌐╫₧╫ó╫¬ ╫¬╫פ╫£╫ש╫¢╫ש╫¬',
+    primitiveIds: ['P5', 'P8', 'P1'],
     subTopics: [
       {
         id: 'nod',
@@ -211,6 +234,7 @@ export const DSM_ORG_PARTS: DsmOrgPart[] = [
     nameHe: '╫ñ╫¬╫ץ╫£╫ץ╫ע╫ש╫ץ╫¬ ╫º╫ץ╫ע╫á╫ש╫ר╫ש╫ס╫ש╫ץ╫¬ ╫ץ╫º╫ש╫ס╫ó╫ץ╫ƒ ╫£╫₧╫ש╫ף╫פ',
     nameEn: 'Cognitive & Learning Fixation Pathologies',
     description: '╫ק╫ץ╫í╫¿ ╫ש╫¢╫ץ╫£╫¬ ╫פ╫נ╫¿╫ע╫ץ╫ƒ ╫£╫ó╫¢╫£ ╫₧╫ש╫ף╫ó ╫ק╫ף╫⌐ ╫ץ╫£╫פ╫í╫ש╫º ╫₧╫í╫º╫á╫ץ╫¬ ╫ó╫₧╫ץ╫º╫ץ╫¬',
+    primitiveIds: ['P7', 'P3', 'P12'],
     subTopics: [
       {
         id: 'old',
@@ -258,6 +282,7 @@ export const DSM_ORG_PARTS: DsmOrgPart[] = [
     nameHe: '╫ñ╫¬╫ץ╫£╫ץ╫ע╫ש╫ץ╫¬ ╫ק╫ץ╫í╫ƒ ╫ץ╫⌐╫ק╫ש╫º╫פ',
     nameEn: 'Resilience & Burnout Pathologies',
     description: '╫ף╫£╫ף╫ץ╫£ ╫נ╫á╫¿╫ע╫ש╫פ ╫₧╫ó╫¿╫¢╫¬╫ש╫¬, ╫⌐╫ס╫ש╫¿╫¬ ╫á╫נ╫₧╫á╫ץ╫¬ ╫ץ╫º╫ש╫ñ╫נ╫ץ╫ƒ ╫¢╫ץ╫ק ╫נ╫ף╫¥',
+    primitiveIds: ['P6', 'P9', 'P4'],
     subTopics: [
       {
         id: 'distorted-reciprocity',
@@ -305,6 +330,7 @@ export const DSM_ORG_PARTS: DsmOrgPart[] = [
     nameHe: '╫¬╫ק╫£╫ץ╫נ╫פ ╫¢╫ñ╫ץ╫£╫פ ╫ץ╫ק╫ץ╫º╫ש ╫¿╫ª╫ú',
     nameEn: 'Comorbidity & Sequencing Rules',
     description: '╫í╫ף╫¿ ╫ñ╫ó╫ץ╫£╫ץ╫¬ ╫ף╫ר╫¿╫₧╫ש╫á╫ש╫í╫ר╫ש ╫ס╫ó╫¬ ╫פ╫ץ╫ñ╫ó╫¬ ╫₧╫í╫ñ╫¿ ╫ñ╫¬╫ץ╫£╫ץ╫ע╫ש╫ץ╫¬ ╫ש╫ק╫ף',
+    primitiveIds: ['P12', 'P8', 'P11'],
     subTopics: [
       {
         id: 'cascade-state',
@@ -352,6 +378,7 @@ export const DSM_ORG_PARTS: DsmOrgPart[] = [
     nameHe: '╫ñ╫¿╫ץ╫ר╫ץ╫º╫ץ╫£╫ש ╫פ╫¬╫ó╫¿╫ס╫ץ╫¬ ╫º╫£╫ש╫á╫ש╫¬',
     nameEn: 'Intervention Playbooks',
     description: '╫í╫ñ╫¿╫ש╫ש╫¬ ╫¢╫£╫ש╫¥ ╫ץ╫ñ╫¿╫º╫ר╫ש╫º╫ץ╫¬ ╫£╫¿╫ש╫ñ╫ץ╫ש ╫₧╫ס╫ץ╫í╫í╫ש ╫¿╫ñ╫ץ╫נ╫¬ ╫₧╫ó╫¿╫¢╫ץ╫¬',
+    primitiveIds: ['P1', 'P11', 'P12'],
     subTopics: [
       {
         id: 'just-culture',
@@ -672,3 +699,24 @@ export const EXTENDED_INTERVENTIONS: ExtendedIntervention[] = [
     changeFatigueRisk: 'high',
   },
 ]
+
+// ── Full Diagnostic Context ─────────────────────────────────────────────────
+
+/**
+ * Get full diagnostic context for a pathology:
+ * TAM signature + USTT primitives + cross-category mechanism
+ */
+export function getFullDiagnosticContext(code: ExtendedPathologyCode) {
+  const tam = TAM_SIGNATURES[code]
+  const primitives = getPrimitivesForPathology(code)
+  const mechanism = getCrossCategoryMechanism(code)
+  const map = PATHOLOGY_PRIMITIVE_MAP.find(m => m.pathology === code)
+
+  return {
+    pathology: code,
+    tam,
+    primitives,
+    crossCategory: map?.crossCategory ?? null,
+    mechanism,
+  }
+}
