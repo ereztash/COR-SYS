@@ -610,11 +610,14 @@ export function computeTAMSignature(diagnosis: DSMDiagnosis): TAMSignature {
     totalWeight += weight
   }
 
-  if (totalWeight === 0) return { T: 1, A: 1, M: 1 }
+  if (totalWeight === 0) return { T: 1, A: 1, M: 1, primitives: [], crossCategory: null, mechanism: '' }
   return {
     T: Math.min(5, Math.round((wT / totalWeight) * 10) / 10),
     A: Math.min(5, Math.round((wA / totalWeight) * 10) / 10),
     M: Math.min(5, Math.round((wM / totalWeight) * 10) / 10),
+    primitives: [],
+    crossCategory: null,
+    mechanism: '',
   }
 }
 
