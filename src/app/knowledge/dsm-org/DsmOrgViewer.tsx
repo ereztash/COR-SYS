@@ -833,42 +833,46 @@ export function DsmOrgViewer() {
               </div>
             </section>
 
-            {/* Section IV: Sequencing Rules */}
+            {/* Section IV: Sequencing Rules — hardcoded to avoid encoding pipeline issues */}
             <section id="section-sequencing" className="smooth-section">
               <div className="bento-card p-5 md:p-6 border-t-4 border-t-red-500">
-                <p className="type-meta mb-1">חלק IV</p>
-                <h2 className="type-h1 text-white mb-2">חוקי סיקוונסינג וקומורבידיות</h2>
-                <p className="type-body text-slate-400 mb-5">חוקים דטרמיניסטיים המגדירים איזו פתולוגיה יש לטפל ראשונה. הפרה של חוקים אלו מובילה לנזק יאטרוגני (נזק מהטיפול עצמו).</p>
+                <p className="type-meta mb-1">{"חלק IV"}</p>
+                <h2 className="type-h1 text-white mb-2">{"חוקי סיקוונסינג וקומורבידיות"}</h2>
+                <p className="type-body text-slate-400 mb-5">{"חוקים דטרמיניסטיים המגדירים איזו פתולוגיה יש לטפל ראשונה. הפרה של חוקים אלו מובילה לנזק יאטרוגני (נזק מהטיפול עצמו)."}</p>
 
                 <div className="space-y-3 mb-5">
-                  {SEQUENCING_RULES.map(rule => {
-                    if (typeof window !== 'undefined') console.log('[DEBUG] rule.rationale:', rule.rationale, 'has ╫:', rule.rationale.includes('╫'))
-                    return (
+                  {([
+                    { id: 'zsg-safety-before-old', severity: 'mandatory' as const, condition: 'IF ZSG_SAFETY \u2265 2 AND OLD \u2265 2', prerequisite: 'ZSG_SAFETY', blocked: 'OLD', rationale: '\u05D0\u05D9 \u05D0\u05E4\u05E9\u05E8 \u05DC\u05D3\u05E8\u05D5\u05E9 \u05DC\u05DE\u05D9\u05D3\u05D4 \u05DE\u05D8\u05E2\u05D5\u05D9\u05D5\u05EA (OLD) \u05DB\u05E9\u05D1\u05D9\u05D8\u05D7\u05D5\u05DF \u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9 \u05E0\u05DE\u05D5\u05DA \u05DE\u05D5\u05E0\u05E2 \u05D3\u05D9\u05D5\u05D5\u05D7 \u05DB\u05E0\u05D4. \u05D9\u05E9 \u05DC\u05D9\u05D9\u05E6\u05D1 \u05D1\u05D8\u05D9\u05D7\u05D5\u05EA \u05DC\u05E4\u05E0\u05D9 \u05D3\u05E8\u05D9\u05E9\u05EA \u05DC\u05DE\u05D9\u05D3\u05D4.' },
+                    { id: 'zsg-culture-before-old', severity: 'mandatory' as const, condition: 'IF ZSG_CULTURE \u2265 2 AND OLD \u2265 2', prerequisite: 'ZSG_CULTURE', blocked: 'OLD', rationale: '\u05D0\u05D9 \u05D0\u05E4\u05E9\u05E8 \u05DC\u05D3\u05E8\u05D5\u05E9 \u05DC\u05DE\u05D9\u05D3\u05D4 \u05DE\u05D8\u05E2\u05D5\u05D9\u05D5\u05EA (OLD) \u05DB\u05E9\u05EA\u05E8\u05D1\u05D5\u05EA \u05E1\u05DB\u05D5\u05DD-\u05D0\u05E4\u05E1 \u05D2\u05D5\u05E8\u05DE\u05EA \u05DC\u05D4\u05E1\u05EA\u05E8\u05EA \u05DB\u05E9\u05DC\u05D9\u05DD \u05D5\u05DC\u05DE\u05D0\u05D1\u05E7\u05D9 \u05D1\u05E2\u05DC\u05D5\u05EA. \u05D9\u05E9 \u05DC\u05D9\u05D9\u05E9\u05E8 \u05EA\u05DE\u05E8\u05D9\u05E6\u05D9\u05DD \u05DC\u05E4\u05E0\u05D9 \u05DC\u05DE\u05D9\u05D3\u05D4.' },
+                    { id: 'clt-before-sc', severity: 'mandatory' as const, condition: 'IF CLT \u2265 2 AND SC \u2265 2', prerequisite: 'CLT', blocked: 'SC', rationale: '\u05E9\u05D9\u05E0\u05D5\u05D9 \u05DE\u05D1\u05E0\u05D9 (SC) \u05D3\u05D5\u05E8\u05E9 \u05E7\u05D9\u05D1\u05D5\u05DC\u05EA \u05E7\u05D5\u05D2\u05E0\u05D9\u05D8\u05D9\u05D1\u05D9\u05EA. \u05D0\u05DD CLT \u05D2\u05D1\u05D5\u05D4, \u05D4\u05E6\u05D5\u05D5\u05EA\u05D9\u05DD \u05DC\u05D0 \u05D9\u05E6\u05DC\u05D9\u05D7\u05D5 \u05DC\u05E2\u05DB\u05DC \u05E9\u05D9\u05E0\u05D5\u05D9 \u05DE\u05D1\u05E0\u05D9. \u05D9\u05E9 \u05DC\u05D4\u05E4\u05D7\u05D9\u05EA \u05E2\u05D5\u05DE\u05E1 \u05E7\u05D5\u05D2\u05E0\u05D9\u05D8\u05D9\u05D1\u05D9 \u05E7\u05D5\u05D3\u05DD.' },
+                    { id: 'zsg-safety-before-nd', severity: 'mandatory' as const, condition: 'IF ZSG_SAFETY \u2265 2 AND ND \u2265 2', prerequisite: 'ZSG_SAFETY', blocked: 'ND', rationale: '\u05E4\u05EA\u05E8\u05D5\u05DF \u05E0\u05E8\u05DE\u05D5\u05DC \u05E1\u05D8\u05D9\u05D5\u05EA (ND) \u05D3\u05D5\u05E8\u05E9 \u05D3\u05D9\u05D5\u05D5\u05D7 \u05DB\u05E0\u05D4. \u05D1\u05DC\u05D9 \u05D1\u05D8\u05D7\u05D5\u05DF \u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9 \u2014 \u05D4\u05E2\u05D5\u05D1\u05D3\u05D9\u05DD \u05D9\u05DE\u05E9\u05D9\u05DB\u05D5 \u05DC\u05D4\u05E1\u05EA\u05D9\u05E8 \u05DE\u05E2\u05E7\u05E4\u05D9\u05DD.' },
+                    { id: 'zsg-culture-before-nd', severity: 'mandatory' as const, condition: 'IF ZSG_CULTURE \u2265 2 AND ND \u2265 2', prerequisite: 'ZSG_CULTURE', blocked: 'ND', rationale: '\u05E4\u05EA\u05E8\u05D5\u05DF \u05E0\u05E8\u05DE\u05D5\u05DC \u05E1\u05D8\u05D9\u05D5\u05EA (ND) \u05D3\u05D5\u05E8\u05E9 \u05D3\u05D9\u05D5\u05D5\u05D7 \u05DB\u05E0\u05D4. \u05DB\u05DC \u05E2\u05D5\u05D3 \u05E1\u05DB\u05D5\u05DD-\u05D0\u05E4\u05E1 \u05E4\u05E0\u05D9\u05DE\u05D9 \u05DC\u05D0 \u05DE\u05D8\u05D5\u05E4\u05DC \u2014 \u05D4\u05E2\u05D5\u05D1\u05D3\u05D9\u05DD \u05D9\u05DE\u05E9\u05D9\u05DB\u05D5 \u05DC\u05D4\u05E1\u05EA\u05D9\u05E8 \u05DE\u05E2\u05E7\u05E4\u05D9\u05DD.' },
+                    { id: 'dr-before-old', severity: 'recommended' as const, condition: 'IF DR \u2265 3 AND OLD \u2265 2', prerequisite: 'DR', blocked: 'OLD', rationale: '\u05DB\u05E9\u05D9\u05E9 \u05D4\u05D3\u05D3\u05D9\u05D5\u05EA \u05DE\u05E2\u05D5\u05D5\u05EA\u05EA \u05D7\u05DE\u05D5\u05E8\u05D4, \u05D4\u05D5\u05D3\u05D0\u05D4 \u05D1\u05D8\u05E2\u05D5\u05EA = \u05D7\u05D5\u05DC\u05E9\u05D4. \u05D9\u05E9 \u05DC\u05EA\u05E7\u05DF \u05D0\u05EA \u05D4\u05D7\u05D5\u05D6\u05D4 \u05D4\u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9 \u05DC\u05E4\u05E0\u05D9 \u05D3\u05E8\u05D9\u05E9\u05D4 \u05DC\u05DC\u05DE\u05D9\u05D3\u05D4.' },
+                  ]).map(rule => (
                     <div key={rule.id} className={`rounded-xl p-4 border ${rule.severity === 'mandatory' ? 'border-red-500/60 panel-dr' : 'border-amber-500/40 panel-nd'}`}>
                       <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
                         <span className={`status-badge ${rule.severity === 'mandatory' ? 'status-danger' : 'status-warning'}`}>
-                          {rule.severity === 'mandatory' ? 'חובה' : 'מומלץ'}
+                          {rule.severity === 'mandatory' ? '\u05D7\u05D5\u05D1\u05D4' : '\u05DE\u05D5\u05DE\u05DC\u05E5'}
                         </span>
                         <code className="text-xs text-slate-400 font-mono">{rule.condition}</code>
                       </div>
                       <div className="flex items-center gap-2 mb-2 text-sm">
                         <span className="status-badge status-info">{rule.prerequisite}</span>
-                        <span className="text-slate-500">→ לפני →</span>
+                        <span className="text-slate-500">{'\u2192 \u05DC\u05E4\u05E0\u05D9 \u2192'}</span>
                         <span className="status-badge status-warning">{rule.blocked}</span>
                       </div>
                       <p className="text-xs text-slate-300 leading-relaxed">{rule.rationale}</p>
                     </div>
-                  )})}
-
+                  ))}
                 </div>
 
                 <div className="rounded-xl panel-nd px-4 py-3 mb-4">
-                  <p className="type-meta text-amber-300 mb-1">חוקי תעדוף מודל ה-DSM-Org</p>
+                  <p className="type-meta text-amber-300 mb-1">{"\u05D7\u05D5\u05E7\u05D9 \u05EA\u05E2\u05D3\u05D5\u05E3 \u05DE\u05D5\u05D3\u05DC \u05D4-DSM-Org"}</p>
                   <div className="space-y-2">
                     {MANDATORY_COMORBIDITY_SEQUENCES.map(seq => (
                       <div key={seq.id} className="flex items-center gap-2 text-xs text-slate-300">
                         <span className="status-badge status-info">{seq.first}</span>
-                        <span className="text-slate-500">→</span>
+                        <span className="text-slate-500">{'\u2192'}</span>
                         <span className="status-badge status-warning">{seq.then}</span>
                         <span className="text-slate-500">|</span>
                         <span>{seq.when}</span>
@@ -878,18 +882,18 @@ export function DsmOrgViewer() {
                 </div>
 
                 <div className="rounded-xl panel-dr px-4 py-3">
-                  <p className="type-meta text-red-300 mb-1">אזהרה קלינית</p>
-                  <p className="text-xs text-slate-300">כל ניסיון לפתור NOD בארגון ללא ביטחון פסיכולוגי (PSG) ייכשל — העובדים ימשיכו להסתיר סטיות. יש לבנות PSG קודם. באופן דומה, שינוי מבני (SC) נחסם כשעומס קוגניטיבי (CLT) גבוה.</p>
+                  <p className="type-meta text-red-300 mb-1">{"\u05D0\u05D6\u05D4\u05E8\u05D4 \u05E7\u05DC\u05D9\u05E0\u05D9\u05EA"}</p>
+                  <p className="text-xs text-slate-300">{"\u05DB\u05DC \u05E0\u05D9\u05E1\u05D9\u05D5\u05DF \u05DC\u05E4\u05EA\u05D5\u05E8 NOD \u05D1\u05D0\u05E8\u05D2\u05D5\u05DF \u05DC\u05DC\u05D0 \u05D1\u05D9\u05D8\u05D7\u05D5\u05DF \u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9 (PSG) \u05D9\u05D9\u05DB\u05E9\u05DC \u2014 \u05D4\u05E2\u05D5\u05D1\u05D3\u05D9\u05DD \u05D9\u05DE\u05E9\u05D9\u05DB\u05D5 \u05DC\u05D4\u05E1\u05EA\u05D9\u05E8 \u05E1\u05D8\u05D9\u05D5\u05EA. \u05D9\u05E9 \u05DC\u05D1\u05E0\u05D5\u05EA PSG \u05E7\u05D5\u05D3\u05DD. \u05D1\u05D0\u05D5\u05E4\u05DF \u05D3\u05D5\u05DE\u05D4, \u05E9\u05D9\u05E0\u05D5\u05D9 \u05DE\u05D1\u05E0\u05D9 (SC) \u05E0\u05D7\u05E1\u05DD \u05DB\u05E9\u05E2\u05D5\u05DE\u05E1 \u05E7\u05D5\u05D2\u05E0\u05D9\u05D8\u05D9\u05D1\u05D9 (CLT) \u05D2\u05D1\u05D5\u05D4."}</p>
                 </div>
               </div>
             </section>
 
-            {/* Section VII: DSM 7×21 Overview */}
+            {/* Section VII: DSM 7x21 Overview — uses inline data to bypass encoding issues */}
             <section id="section-dsm7x21" className="smooth-section">
               <div className="mb-4">
-                <p className="type-meta mb-1">חלק VII</p>
-                <h2 className="type-h1 text-white">DSM-Org 7×21 — מפת תוכן מלאה</h2>
-                <p className="type-body text-slate-400 mt-1">שבעה חלקים, 21 תתי-נושאים — כל אחד מקושר לפתולוגיות, צירי אבחון, וחוברות התערבות.</p>
+                <p className="type-meta mb-1">{"\u05D7\u05DC\u05E7 VII"}</p>
+                <h2 className="type-h1 text-white">{"DSM-Org 7\u00D721 \u2014 \u05DE\u05E4\u05EA \u05EA\u05D5\u05DB\u05DF \u05DE\u05DC\u05D0\u05D4"}</h2>
+                <p className="type-body text-slate-400 mt-1">{"\u05E9\u05D1\u05E2\u05D4 \u05D7\u05DC\u05E7\u05D9\u05DD, 21 \u05EA\u05EA\u05D9-\u05E0\u05D5\u05E9\u05D0\u05D9\u05DD \u2014 \u05DB\u05DC \u05D0\u05D7\u05D3 \u05DE\u05E7\u05D5\u05E9\u05E8 \u05DC\u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA, \u05E6\u05D9\u05E8\u05D9 \u05D0\u05D1\u05D7\u05D5\u05DF, \u05D5\u05D7\u05D5\u05D1\u05E8\u05D5\u05EA \u05D4\u05EA\u05E2\u05E8\u05D1\u05D5\u05EA."}</p>
               </div>
               <div className="space-y-6">
                 {DSM_ORG_PARTS.map(part => (
@@ -929,7 +933,7 @@ export function DsmOrgViewer() {
                               </div>
                             )}
                             {link && link.playbookIds.length > 0 && (
-                              <p className="text-[10px] text-emerald-400 mt-1.5">התערבויות: {link.playbookIds.join(', ')}</p>
+                              <p className="text-[10px] text-emerald-400 mt-1.5">{"\u05D4\u05EA\u05E2\u05E8\u05D1\u05D5\u05D9\u05D5\u05EA: "}{link.playbookIds.join(', ')}</p>
                             )}
                           </div>
                         )
