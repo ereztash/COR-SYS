@@ -1,12 +1,7 @@
-import { DsmOrgViewer } from './DsmOrgViewer'
+import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata = {
-  title: 'DSM-Org v1.0 | מדריך אבחוני קליני | COR-SYS',
-  description: 'מסגרת קלינית לאבחון, סיווג, והתערבות בכשלים ארגוניים מבניים — COR-SYS Clinical Reference',
-}
-
 export default function DsmOrgPage() {
-  return <DsmOrgViewer />
+  redirect('/knowledge/dsm-v2')
 }
