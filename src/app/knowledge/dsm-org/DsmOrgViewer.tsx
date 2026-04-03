@@ -841,7 +841,9 @@ export function DsmOrgViewer() {
                 <p className="type-body text-slate-400 mb-5">חוקים דטרמיניסטיים המגדירים איזו פתולוגיה יש לטפל ראשונה. הפרה של חוקים אלו מובילה לנזק יאטרוגני (נזק מהטיפול עצמו).</p>
 
                 <div className="space-y-3 mb-5">
-                  {SEQUENCING_RULES.map(rule => (
+                  {SEQUENCING_RULES.map(rule => {
+                    if (typeof window !== 'undefined') console.log('[DEBUG] rule.rationale:', rule.rationale, 'has ╫:', rule.rationale.includes('╫'))
+                    return (
                     <div key={rule.id} className={`rounded-xl p-4 border ${rule.severity === 'mandatory' ? 'border-red-500/60 panel-dr' : 'border-amber-500/40 panel-nd'}`}>
                       <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
                         <span className={`status-badge ${rule.severity === 'mandatory' ? 'status-danger' : 'status-warning'}`}>
@@ -856,7 +858,8 @@ export function DsmOrgViewer() {
                       </div>
                       <p className="text-xs text-slate-300 leading-relaxed">{rule.rationale}</p>
                     </div>
-                  ))}
+                  )})}
+
                 </div>
 
                 <div className="rounded-xl panel-nd px-4 py-3 mb-4">
