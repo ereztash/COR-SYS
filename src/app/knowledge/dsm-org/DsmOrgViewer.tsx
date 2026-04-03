@@ -332,6 +332,10 @@ export function DsmOrgViewer() {
 
   return (
     <div className="min-h-screen p-4 md:p-6">
+      {/* CANARY — if you see this red banner, the browser loaded the LATEST code */}
+      <div style={{background:'red',color:'white',padding:'20px',fontSize:'24px',fontWeight:'bold',textAlign:'center',marginBottom:'20px',borderRadius:'12px'}}>
+        BUILD f40ed7a — {new Date().toISOString().slice(0,16)} — IF YOU SEE THIS, CODE IS FRESH
+      </div>
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
