@@ -1,6 +1,6 @@
 import { DsmOrgViewer } from './DsmOrgViewer'
 
-export const revalidate = 3600
+export const dynamic = 'force-dynamic'
 
 export const metadata = {
   title: 'DSM-Org v1.0 | מדריך אבחוני קליני | COR-SYS',
