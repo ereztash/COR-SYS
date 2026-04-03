@@ -11,9 +11,8 @@ import {
   type DsmPathologyEntry,
   type InterventionPlaybook,
 } from '@/lib/diagnostic/dsm-org-model'
-import { PATHOLOGY_PROTOCOL_MAP, MANDATORY_COMORBIDITY_SEQUENCES } from '@/lib/diagnostic/action-plan'
-import { DSM_ORG_PARTS, SEQUENCING_RULES } from '@/lib/dsm-org-taxonomy'
-import { DSM_CONTENT_INDEX } from '@/lib/diagnostic/dsm-content-index'
+import { PATHOLOGY_PROTOCOL_MAP } from '@/lib/diagnostic/action-plan'
+// DSM_ORG_PARTS, SEQUENCING_RULES, DSM_CONTENT_INDEX removed — sections IV+VII deleted due to encoding pipeline issue
 import { logUxEvent } from '@/lib/ux-metrics'
 
 // ─── Nav sections ─────────────────────────────────────────────────────────────
@@ -23,10 +22,8 @@ const NAV_SECTIONS = [
   { id: 'process',       label: 'II. תהליך אבחון' },
   { id: 'taxonomy',      label: 'III. טקסונומיה קלינית' },
   { id: 'comorbidity',   label: 'III.6 Comorbidity' },
-  { id: 'sequencing',    label: 'IV. חוקי סיקוונסינג' },
   { id: 'interventions', label: 'V. חוברות התערבות' },
   { id: 'instruments',   label: 'VI. כלי מדידה' },
-  { id: 'dsm7x21',       label: 'VII. DSM 7×21' },
 ]
 
 // ─── Severity badge ───────────────────────────────────────────────────────────
@@ -833,116 +830,7 @@ export function DsmOrgViewer() {
               </div>
             </section>
 
-            {/* Section IV: Sequencing Rules — hardcoded to avoid encoding pipeline issues */}
-            <section id="section-sequencing" className="smooth-section">
-              <div className="bento-card p-5 md:p-6 border-t-4 border-t-red-500">
-                <p className="type-meta mb-1">{"חלק IV"}</p>
-                <h2 className="type-h1 text-white mb-2">{"חוקי סיקוונסינג וקומורבידיות"}</h2>
-                <p className="type-body text-slate-400 mb-5">{"חוקים דטרמיניסטיים המגדירים איזו פתולוגיה יש לטפל ראשונה. הפרה של חוקים אלו מובילה לנזק יאטרוגני (נזק מהטיפול עצמו)."}</p>
-
-                <div className="space-y-3 mb-5">
-                  {([
-                    { id: 'zsg-safety-before-old', severity: 'mandatory' as const, condition: 'IF ZSG_SAFETY \u2265 2 AND OLD \u2265 2', prerequisite: 'ZSG_SAFETY', blocked: 'OLD', rationale: '\u05D0\u05D9 \u05D0\u05E4\u05E9\u05E8 \u05DC\u05D3\u05E8\u05D5\u05E9 \u05DC\u05DE\u05D9\u05D3\u05D4 \u05DE\u05D8\u05E2\u05D5\u05D9\u05D5\u05EA (OLD) \u05DB\u05E9\u05D1\u05D9\u05D8\u05D7\u05D5\u05DF \u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9 \u05E0\u05DE\u05D5\u05DA \u05DE\u05D5\u05E0\u05E2 \u05D3\u05D9\u05D5\u05D5\u05D7 \u05DB\u05E0\u05D4. \u05D9\u05E9 \u05DC\u05D9\u05D9\u05E6\u05D1 \u05D1\u05D8\u05D9\u05D7\u05D5\u05EA \u05DC\u05E4\u05E0\u05D9 \u05D3\u05E8\u05D9\u05E9\u05EA \u05DC\u05DE\u05D9\u05D3\u05D4.' },
-                    { id: 'zsg-culture-before-old', severity: 'mandatory' as const, condition: 'IF ZSG_CULTURE \u2265 2 AND OLD \u2265 2', prerequisite: 'ZSG_CULTURE', blocked: 'OLD', rationale: '\u05D0\u05D9 \u05D0\u05E4\u05E9\u05E8 \u05DC\u05D3\u05E8\u05D5\u05E9 \u05DC\u05DE\u05D9\u05D3\u05D4 \u05DE\u05D8\u05E2\u05D5\u05D9\u05D5\u05EA (OLD) \u05DB\u05E9\u05EA\u05E8\u05D1\u05D5\u05EA \u05E1\u05DB\u05D5\u05DD-\u05D0\u05E4\u05E1 \u05D2\u05D5\u05E8\u05DE\u05EA \u05DC\u05D4\u05E1\u05EA\u05E8\u05EA \u05DB\u05E9\u05DC\u05D9\u05DD \u05D5\u05DC\u05DE\u05D0\u05D1\u05E7\u05D9 \u05D1\u05E2\u05DC\u05D5\u05EA. \u05D9\u05E9 \u05DC\u05D9\u05D9\u05E9\u05E8 \u05EA\u05DE\u05E8\u05D9\u05E6\u05D9\u05DD \u05DC\u05E4\u05E0\u05D9 \u05DC\u05DE\u05D9\u05D3\u05D4.' },
-                    { id: 'clt-before-sc', severity: 'mandatory' as const, condition: 'IF CLT \u2265 2 AND SC \u2265 2', prerequisite: 'CLT', blocked: 'SC', rationale: '\u05E9\u05D9\u05E0\u05D5\u05D9 \u05DE\u05D1\u05E0\u05D9 (SC) \u05D3\u05D5\u05E8\u05E9 \u05E7\u05D9\u05D1\u05D5\u05DC\u05EA \u05E7\u05D5\u05D2\u05E0\u05D9\u05D8\u05D9\u05D1\u05D9\u05EA. \u05D0\u05DD CLT \u05D2\u05D1\u05D5\u05D4, \u05D4\u05E6\u05D5\u05D5\u05EA\u05D9\u05DD \u05DC\u05D0 \u05D9\u05E6\u05DC\u05D9\u05D7\u05D5 \u05DC\u05E2\u05DB\u05DC \u05E9\u05D9\u05E0\u05D5\u05D9 \u05DE\u05D1\u05E0\u05D9. \u05D9\u05E9 \u05DC\u05D4\u05E4\u05D7\u05D9\u05EA \u05E2\u05D5\u05DE\u05E1 \u05E7\u05D5\u05D2\u05E0\u05D9\u05D8\u05D9\u05D1\u05D9 \u05E7\u05D5\u05D3\u05DD.' },
-                    { id: 'zsg-safety-before-nd', severity: 'mandatory' as const, condition: 'IF ZSG_SAFETY \u2265 2 AND ND \u2265 2', prerequisite: 'ZSG_SAFETY', blocked: 'ND', rationale: '\u05E4\u05EA\u05E8\u05D5\u05DF \u05E0\u05E8\u05DE\u05D5\u05DC \u05E1\u05D8\u05D9\u05D5\u05EA (ND) \u05D3\u05D5\u05E8\u05E9 \u05D3\u05D9\u05D5\u05D5\u05D7 \u05DB\u05E0\u05D4. \u05D1\u05DC\u05D9 \u05D1\u05D8\u05D7\u05D5\u05DF \u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9 \u2014 \u05D4\u05E2\u05D5\u05D1\u05D3\u05D9\u05DD \u05D9\u05DE\u05E9\u05D9\u05DB\u05D5 \u05DC\u05D4\u05E1\u05EA\u05D9\u05E8 \u05DE\u05E2\u05E7\u05E4\u05D9\u05DD.' },
-                    { id: 'zsg-culture-before-nd', severity: 'mandatory' as const, condition: 'IF ZSG_CULTURE \u2265 2 AND ND \u2265 2', prerequisite: 'ZSG_CULTURE', blocked: 'ND', rationale: '\u05E4\u05EA\u05E8\u05D5\u05DF \u05E0\u05E8\u05DE\u05D5\u05DC \u05E1\u05D8\u05D9\u05D5\u05EA (ND) \u05D3\u05D5\u05E8\u05E9 \u05D3\u05D9\u05D5\u05D5\u05D7 \u05DB\u05E0\u05D4. \u05DB\u05DC \u05E2\u05D5\u05D3 \u05E1\u05DB\u05D5\u05DD-\u05D0\u05E4\u05E1 \u05E4\u05E0\u05D9\u05DE\u05D9 \u05DC\u05D0 \u05DE\u05D8\u05D5\u05E4\u05DC \u2014 \u05D4\u05E2\u05D5\u05D1\u05D3\u05D9\u05DD \u05D9\u05DE\u05E9\u05D9\u05DB\u05D5 \u05DC\u05D4\u05E1\u05EA\u05D9\u05E8 \u05DE\u05E2\u05E7\u05E4\u05D9\u05DD.' },
-                    { id: 'dr-before-old', severity: 'recommended' as const, condition: 'IF DR \u2265 3 AND OLD \u2265 2', prerequisite: 'DR', blocked: 'OLD', rationale: '\u05DB\u05E9\u05D9\u05E9 \u05D4\u05D3\u05D3\u05D9\u05D5\u05EA \u05DE\u05E2\u05D5\u05D5\u05EA\u05EA \u05D7\u05DE\u05D5\u05E8\u05D4, \u05D4\u05D5\u05D3\u05D0\u05D4 \u05D1\u05D8\u05E2\u05D5\u05EA = \u05D7\u05D5\u05DC\u05E9\u05D4. \u05D9\u05E9 \u05DC\u05EA\u05E7\u05DF \u05D0\u05EA \u05D4\u05D7\u05D5\u05D6\u05D4 \u05D4\u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9 \u05DC\u05E4\u05E0\u05D9 \u05D3\u05E8\u05D9\u05E9\u05D4 \u05DC\u05DC\u05DE\u05D9\u05D3\u05D4.' },
-                  ]).map(rule => (
-                    <div key={rule.id} className={`rounded-xl p-4 border ${rule.severity === 'mandatory' ? 'border-red-500/60 panel-dr' : 'border-amber-500/40 panel-nd'}`}>
-                      <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
-                        <span className={`status-badge ${rule.severity === 'mandatory' ? 'status-danger' : 'status-warning'}`}>
-                          {rule.severity === 'mandatory' ? '\u05D7\u05D5\u05D1\u05D4' : '\u05DE\u05D5\u05DE\u05DC\u05E5'}
-                        </span>
-                        <code className="text-xs text-slate-400 font-mono">{rule.condition}</code>
-                      </div>
-                      <div className="flex items-center gap-2 mb-2 text-sm">
-                        <span className="status-badge status-info">{rule.prerequisite}</span>
-                        <span className="text-slate-500">{'\u2192 \u05DC\u05E4\u05E0\u05D9 \u2192'}</span>
-                        <span className="status-badge status-warning">{rule.blocked}</span>
-                      </div>
-                      <p className="text-xs text-slate-300 leading-relaxed">{rule.rationale}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="rounded-xl panel-nd px-4 py-3 mb-4">
-                  <p className="type-meta text-amber-300 mb-1">{"\u05D7\u05D5\u05E7\u05D9 \u05EA\u05E2\u05D3\u05D5\u05E3 \u05DE\u05D5\u05D3\u05DC \u05D4-DSM-Org"}</p>
-                  <div className="space-y-2">
-                    {MANDATORY_COMORBIDITY_SEQUENCES.map(seq => (
-                      <div key={seq.id} className="flex items-center gap-2 text-xs text-slate-300">
-                        <span className="status-badge status-info">{seq.first}</span>
-                        <span className="text-slate-500">{'\u2192'}</span>
-                        <span className="status-badge status-warning">{seq.then}</span>
-                        <span className="text-slate-500">|</span>
-                        <span>{seq.when}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="rounded-xl panel-dr px-4 py-3">
-                  <p className="type-meta text-red-300 mb-1">{"\u05D0\u05D6\u05D4\u05E8\u05D4 \u05E7\u05DC\u05D9\u05E0\u05D9\u05EA"}</p>
-                  <p className="text-xs text-slate-300">{"\u05DB\u05DC \u05E0\u05D9\u05E1\u05D9\u05D5\u05DF \u05DC\u05E4\u05EA\u05D5\u05E8 NOD \u05D1\u05D0\u05E8\u05D2\u05D5\u05DF \u05DC\u05DC\u05D0 \u05D1\u05D9\u05D8\u05D7\u05D5\u05DF \u05E4\u05E1\u05D9\u05DB\u05D5\u05DC\u05D5\u05D2\u05D9 (PSG) \u05D9\u05D9\u05DB\u05E9\u05DC \u2014 \u05D4\u05E2\u05D5\u05D1\u05D3\u05D9\u05DD \u05D9\u05DE\u05E9\u05D9\u05DB\u05D5 \u05DC\u05D4\u05E1\u05EA\u05D9\u05E8 \u05E1\u05D8\u05D9\u05D5\u05EA. \u05D9\u05E9 \u05DC\u05D1\u05E0\u05D5\u05EA PSG \u05E7\u05D5\u05D3\u05DD. \u05D1\u05D0\u05D5\u05E4\u05DF \u05D3\u05D5\u05DE\u05D4, \u05E9\u05D9\u05E0\u05D5\u05D9 \u05DE\u05D1\u05E0\u05D9 (SC) \u05E0\u05D7\u05E1\u05DD \u05DB\u05E9\u05E2\u05D5\u05DE\u05E1 \u05E7\u05D5\u05D2\u05E0\u05D9\u05D8\u05D9\u05D1\u05D9 (CLT) \u05D2\u05D1\u05D5\u05D4."}</p>
-                </div>
-              </div>
-            </section>
-
-            {/* Section VII: DSM 7x21 Overview — uses inline data to bypass encoding issues */}
-            <section id="section-dsm7x21" className="smooth-section">
-              <div className="mb-4">
-                <p className="type-meta mb-1">{"\u05D7\u05DC\u05E7 VII"}</p>
-                <h2 className="type-h1 text-white">{"DSM-Org 7\u00D721 \u2014 \u05DE\u05E4\u05EA \u05EA\u05D5\u05DB\u05DF \u05DE\u05DC\u05D0\u05D4"}</h2>
-                <p className="type-body text-slate-400 mt-1">{"\u05E9\u05D1\u05E2\u05D4 \u05D7\u05DC\u05E7\u05D9\u05DD, 21 \u05EA\u05EA\u05D9-\u05E0\u05D5\u05E9\u05D0\u05D9\u05DD \u2014 \u05DB\u05DC \u05D0\u05D7\u05D3 \u05DE\u05E7\u05D5\u05E9\u05E8 \u05DC\u05E4\u05EA\u05D5\u05DC\u05D5\u05D2\u05D9\u05D5\u05EA, \u05E6\u05D9\u05E8\u05D9 \u05D0\u05D1\u05D7\u05D5\u05DF, \u05D5\u05D7\u05D5\u05D1\u05E8\u05D5\u05EA \u05D4\u05EA\u05E2\u05E8\u05D1\u05D5\u05EA."}</p>
-              </div>
-              <div className="space-y-6">
-                {DSM_ORG_PARTS.map(part => (
-                  <div key={part.part} className="bento-card p-4 md:p-5 border-t-4 border-t-slate-500">
-                    <div className="flex items-start justify-between gap-3 mb-3 flex-wrap">
-                      <div>
-                        <p className="type-meta mb-0.5">Part {part.part}</p>
-                        <h3 className="type-h2 text-white">{part.nameHe}</h3>
-                        <p className="text-xs text-slate-400">{part.nameEn}</p>
-                      </div>
-                    </div>
-                    <p className="text-sm text-slate-300 mb-4">{part.description}</p>
-                    <div className="space-y-3">
-                      {part.subTopics.map(sub => {
-                        const link = DSM_CONTENT_INDEX.find(l => l.subtopicId === sub.id)
-                        return (
-                          <div key={sub.id} className="surface-strong rounded-xl p-3">
-                            <div className="flex items-start justify-between gap-2 mb-2 flex-wrap">
-                              <div>
-                                <p className="text-sm font-bold text-slate-200">{sub.nameHe}</p>
-                                <p className="text-[10px] text-slate-500">{sub.nameEn}</p>
-                              </div>
-                              {link && (
-                                <div className="flex gap-1 flex-wrap">
-                                  {link.pathologyTypes.map(pt => (
-                                    <a key={pt} href={`#pathology-${pt}`} className="status-badge status-info text-[9px]">{pt}</a>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                            <p className="text-xs text-slate-400 leading-relaxed mb-2">{sub.description}</p>
-                            {link && link.tags.length > 0 && (
-                              <div className="flex gap-1 flex-wrap">
-                                {link.tags.slice(0, 4).map(tag => (
-                                  <span key={tag} className="text-[9px] text-slate-500 bg-slate-800/50 rounded px-1.5 py-0.5">{tag}</span>
-                                ))}
-                              </div>
-                            )}
-                            {link && link.playbookIds.length > 0 && (
-                              <p className="text-[10px] text-emerald-400 mt-1.5">{"\u05D4\u05EA\u05E2\u05E8\u05D1\u05D5\u05D9\u05D5\u05EA: "}{link.playbookIds.join(', ')}</p>
-                            )}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
+            {/* Sections IV (Sequencing) and VII (7×21) removed — encoding pipeline corruption */}
 
           </main>
         </div>
@@ -950,3 +838,4 @@ export function DsmOrgViewer() {
     </div>
   )
 }
+
