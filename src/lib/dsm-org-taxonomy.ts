@@ -7,6 +7,7 @@
  * Canonical: ZSG_SAFETY (ביטחון פסיכולוגי) + ZSG_CULTURE (סכום-אפס), aligned with pathology-kb.
  */
 
+// @generated — rebuilt 2026-04-03T16:00:00Z to force webpack cache invalidation
 import type { PathologyCode } from './dsm-engine'
 import {
   PATHOLOGY_PRIMITIVE_MAP,
