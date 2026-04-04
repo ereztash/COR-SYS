@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { signInWithGoogle } from './actions'
 import { ModeBlurb } from '@/components/ui/ModeBlurb'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'התחברות | COR-SYS',
   description: 'התחברות עם גוגל',
