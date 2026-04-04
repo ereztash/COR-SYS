@@ -1,0 +1,14 @@
+diff --git a/node_modules/next/dist/build/webpack/plugins/minify-webpack-plugin/src/index.js b/node_modules/next/dist/build/webpack/plugins/minify-webpack-plugin/src/index.js
+index 663116d..af46c25 100644
+--- a/node_modules/next/dist/build/webpack/plugins/minify-webpack-plugin/src/index.js
++++ b/node_modules/next/dist/build/webpack/plugins/minify-webpack-plugin/src/index.js
+@@ -104,7 +104,8 @@ class MinifyPlugin {
+                             mangle,
+                             module: 'unknown',
+                             output: {
+-                                comments: false
++                                comments: false,
++                                ascii_only: true
+                             }
+                         });
+                         return result;
