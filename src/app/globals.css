@@ -1,6 +1,116 @@
 @import "tailwindcss";
+@plugin "tailwindcss-animate";
 
+/* ═══════════════════════════════════════════════
+   Tailwind v4 Theme — shadcn/ui semantic tokens
+   Mapped from CampaignCraft's tailwind.config.ts
+   ═══════════════════════════════════════════════ */
+@theme {
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+}
+
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+
+/* ═══════════════════════════════════════════════
+   Growth Module — CSS Variables (shadcn/ui tokens)
+   ═══════════════════════════════════════════════ */
 :root {
+  /* shadcn/ui semantic variables */
+  --background: 210 20% 98%;
+  --foreground: 215 20% 25%;
+  --card: 0 0% 100%;
+  --card-foreground: 215 20% 25%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 215 20% 25%;
+  --primary: 213 56% 24%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 20% 94%;
+  --secondary-foreground: 215 20% 25%;
+  --muted: 210 15% 93%;
+  --muted-foreground: 215 14% 46%;
+  --accent: 152 60% 45%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214 20% 88%;
+  --input: 214 20% 88%;
+  --ring: 213 56% 24%;
+  --radius: 0.75rem;
+  --chart-1: 213 56% 24%;
+  --chart-2: 152 60% 45%;
+  --chart-3: 32 95% 55%;
+  --chart-4: 280 60% 55%;
+  --chart-5: 0 84% 60%;
+  --neuro-tension: var(--destructive);
+  --neuro-trust: var(--primary);
+  --neuro-reward: var(--accent);
+  --neuro-insight: var(--chart-4);
+  --neuro-opportunity: var(--chart-3);
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 240 5.3% 26.1%;
+  --sidebar-primary: 240 5.9% 10%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 240 4.8% 95.9%;
+  --sidebar-accent-foreground: 240 5.9% 10%;
+  --sidebar-border: 220 13% 91%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+
+  /* COR-SYS original tokens */
   --bg-app: #0f172a;
   --bg-surface: rgba(30, 41, 59, 0.7);
   --bg-surface-strong: rgba(15, 23, 42, 0.9);
@@ -462,4 +572,112 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 :root[data-user-mode='research'] .mode-beginner-only {
   display: none !important;
+}
+
+/* ═══════════════════════════════════════════════
+   Growth Module — Dark Theme
+   ═══════════════════════════════════════════════ */
+.dark {
+  --background: 220 20% 7%;
+  --foreground: 210 18% 88%;
+  --card: 220 16% 12%;
+  --card-foreground: 210 18% 88%;
+  --popover: 220 16% 12%;
+  --popover-foreground: 210 18% 88%;
+  --primary: 210 50% 60%;
+  --primary-foreground: 220 20% 7%;
+  --secondary: 220 16% 16%;
+  --secondary-foreground: 210 18% 88%;
+  --muted: 220 16% 16%;
+  --muted-foreground: 215 14% 65%;
+  --accent: 152 45% 42%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 62% 30%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 220 15% 16%;
+  --input: 220 15% 16%;
+  --ring: 210 50% 60%;
+  --sidebar-background: 240 5.9% 10%;
+  --sidebar-foreground: 240 4.8% 95.9%;
+  --sidebar-primary: 224.3 76.3% 48%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 240 3.7% 15.9%;
+  --sidebar-accent-foreground: 240 4.8% 95.9%;
+  --sidebar-border: 240 3.7% 15.9%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+}
+
+/* ═══════════════════════════════════════════════
+   Growth Module — Adaptive Business Field Themes
+   ═══════════════════════════════════════════════ */
+:root[data-field="fashion"] { --primary: 340 65% 47%; --accent: 330 60% 55%; --chart-1: 340 65% 47%; }
+:root[data-field="fashion"].dark { --primary: 340 55% 60%; --accent: 330 50% 50%; }
+:root[data-field="food"] { --primary: 25 85% 50%; --accent: 145 55% 42%; --chart-1: 25 85% 50%; }
+:root[data-field="food"].dark { --primary: 25 75% 55%; --accent: 145 45% 40%; }
+:root[data-field="health"] { --primary: 160 50% 40%; --accent: 170 55% 45%; --chart-1: 160 50% 40%; }
+:root[data-field="health"].dark { --primary: 160 45% 50%; --accent: 170 45% 42%; }
+:root[data-field="personalBrand"] { --primary: 270 55% 50%; --accent: 280 50% 55%; --chart-1: 270 55% 50%; }
+:root[data-field="personalBrand"].dark { --primary: 270 50% 60%; --accent: 280 45% 50%; }
+:root[data-field="realEstate"] { --primary: 220 60% 30%; --accent: 180 45% 40%; --chart-1: 220 60% 30%; }
+:root[data-field="realEstate"].dark { --primary: 220 50% 55%; --accent: 180 40% 45%; }
+:root[data-field="education"] { --primary: 200 65% 50%; --accent: 160 50% 45%; --chart-1: 200 65% 50%; }
+:root[data-field="education"].dark { --primary: 200 55% 58%; --accent: 160 45% 42%; }
+:root[data-field="tourism"] { --primary: 185 60% 42%; --accent: 165 55% 45%; --chart-1: 185 60% 42%; }
+:root[data-field="tourism"].dark { --primary: 185 50% 52%; --accent: 165 45% 42%; }
+:root[data-audience="b2b"] { --accent: 175 45% 38%; }
+
+/* ═══════════════════════════════════════════════
+   Growth Module — Utility Classes
+   ═══════════════════════════════════════════════ */
+.funnel-gradient {
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+}
+
+.cta-warm {
+  background: hsl(25, 95%, 53%);
+  color: white;
+  border: none;
+  transition: all 0.2s ease;
+}
+.cta-warm:hover {
+  background: hsl(25, 95%, 46%);
+  transform: scale(1.03);
+}
+
+.card-hover {
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+.dark .card-hover:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.btn-press:active {
+  transform: scale(0.98);
+}
+
+.skip-to-content {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.skip-to-content:focus {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 100;
+  width: auto;
+  height: auto;
+  padding: 0.5rem 1rem;
+  overflow: visible;
+  clip: auto;
+  border-radius: 0.375rem;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
 }

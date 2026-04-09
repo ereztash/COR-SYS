@@ -11,7 +11,7 @@ type Props = {
   titleClassName?: string
 }
 
-export function Accordion({ id, title, children, className = '', titleClassName = '' }: Props) {
+export function CorAccordion({ id, title, children, className = '', titleClassName = '' }: Props) {
   const [open, setOpen] = useState(false)
   return (
     <div className={`rounded-lg overflow-hidden bg-slate-800/30 border border-slate-700/50 ${className}`}>

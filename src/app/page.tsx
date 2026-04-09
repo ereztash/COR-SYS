@@ -1,7 +1,7 @@
 import { getDashboardData } from '@/lib/data/dashboard'
 import { formatCurrency } from '@/lib/utils'
 import { YEAR_1_REVENUE_TARGET } from '@/lib/business-config'
-import { Badge } from '@/components/ui/Badge'
+import { StatusBadge as Badge } from '@/components/ui/StatusBadge'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Users, Zap } from 'lucide-react'
 import Link from 'next/link'

@@ -6,7 +6,7 @@ interface BadgeProps {
   className?: string
 }
 
-export function Badge({ status, className }: BadgeProps) {
+export function StatusBadge({ status, className }: BadgeProps) {
   const isActive = status === 'active'
   return (
     <span className={cn(

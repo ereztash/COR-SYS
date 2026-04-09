@@ -2,7 +2,7 @@ import { getClientWithPlan, getSprintsByClient, getFinancialsByClient, getLatest
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { formatDate, formatCurrency } from '@/lib/utils'
-import { Badge } from '@/components/ui/Badge'
+import { StatusBadge as Badge } from '@/components/ui/StatusBadge'
 import { SendAssessmentLink } from './SendAssessmentLink'
 import { CBRSection } from './CBRSection'
 import { AgentInsightsPanel } from './AgentInsightsPanel'
