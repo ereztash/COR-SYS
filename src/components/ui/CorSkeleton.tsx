@@ -6,7 +6,7 @@ interface SkeletonProps {
   circle?: boolean
 }
 
-export function Skeleton({ className, circle }: SkeletonProps) {
+export function CorSkeleton({ className, circle }: SkeletonProps) {
   return (
     <div
       aria-hidden

@@ -10,6 +10,11 @@ import {
   Users,
   Zap,
   Wallet,
+  Rocket,
+  Wand2,
+  FileText,
+  Target,
+  BarChart3,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -32,6 +37,15 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
         <NavLink href="/clients" icon={Users} label="לקוחות" onNavigate={onNavigate} />
         <NavLink href="/sprints" icon={Zap} label="ספרינטים" onNavigate={onNavigate} />
         <NavLink href="/financials" icon={Wallet} label="כספים" onNavigate={onNavigate} />
+
+        <div className="mt-4 mb-2 border-t border-slate-800 pt-3">
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-3">Growth</span>
+        </div>
+        <NavLink href="/growth/hub" icon={Rocket} label="Growth Hub" onNavigate={onNavigate} />
+        <NavLink href="/growth/wizard" icon={Wand2} label="Strategy Wizard" onNavigate={onNavigate} />
+        <NavLink href="/growth/plans" icon={FileText} label="Campaign Plans" onNavigate={onNavigate} />
+        <NavLink href="/growth/differentiate" icon={Target} label="Differentiation" onNavigate={onNavigate} />
+        <NavLink href="/growth/dashboard" icon={BarChart3} label="Dashboard" onNavigate={onNavigate} />
       </nav>
 
       <div className="border-t border-slate-800 pt-4 mt-4 space-y-1">

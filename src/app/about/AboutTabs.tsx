@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Accordion } from '@/components/ui/Accordion'
+import { CorAccordion as Accordion } from '@/components/ui/CorAccordion'
 import { getStrongestCases, type CalibrationCase } from '@/lib/calibration-cases'
 import { OSINT_DISCLAIMER_SHORT } from '@/lib/osint-display-policy'
 

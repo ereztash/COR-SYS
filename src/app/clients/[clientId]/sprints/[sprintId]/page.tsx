@@ -3,7 +3,7 @@ import { getClientById } from '@/lib/data/clients'
 import { getTasksBySprint } from '@/lib/data/tasks'
 import { notFound } from 'next/navigation'
 import { SprintBoard } from '@/components/SprintBoard'
-import { Badge } from '@/components/ui/Badge'
+import { StatusBadge as Badge } from '@/components/ui/StatusBadge'
 import Link from 'next/link'
 import { ModeBlurb } from '@/components/ui/ModeBlurb'
 

@@ -1,4 +1,4 @@
-import { Skeleton } from '@/components/ui/Skeleton'
+import { CorSkeleton as Skeleton } from '@/components/ui/CorSkeleton'
 
 export default function ClientDetailLoading() {
   return (
